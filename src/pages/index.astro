@@ -2,82 +2,82 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
 
-// Mock featured products (TODO: Replace cu date reale din Baserow/n8n)
+// Mock featured products (temporary - will be replaced with n8n API)
 const featuredProducts = [
   {
     id: 1,
-    nume: "Jachetă Softshell Pro",
-    slug: "jacheta-softshell-pro",
-    categorie: "Îmbrăcăminte de Lucru",
-    descriereScurta: "Rezistentă la apă și vânt, perfectă pentru șantiere în orice anotimp.",
-    imaginePrincipala: "/images/jacheta-placeholder.jpg",
-    tipProdus: ["Jachete", "High-Vis"],
+    nume: 'Jachetă Softshell Pro',
+    slug: 'jacheta-softshell-pro',
+    categorie: 'Îmbrăcăminte de Lucru',
+    descriereScurta: 'Jachetă rezistentă la apă și vânt, cu buzunare multiple',
+    imaginePrincipala: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800',
+    tipProdus: ['Jachete', 'High-Vis'],
     featured: true
   },
   {
     id: 2,
-    nume: "Bocanci S3 Safety",
-    slug: "bocanci-s3-safety",
-    categorie: "Încălțăminte de Protecție",
-    descriereScurta: "Protecție completă cu bombeu metalic și talpă anti-perforație.",
-    imaginePrincipala: "/images/bocanci-placeholder.jpg",
-    tipProdus: ["Bocanci", "S3"],
+    nume: 'Bocanci S3 Safety',
+    slug: 'bocanci-s3-safety',
+    categorie: 'Încălțăminte de Protecție',
+    descriereScurta: 'Bocanci de protecție cu bombeu metalic și talpă antiperforație',
+    imaginePrincipala: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800',
+    tipProdus: ['Bocanci', 'S3'],
     featured: true
   },
   {
     id: 3,
-    nume: "Vestă High-Visibility",
-    slug: "vesta-high-visibility",
-    categorie: "Echipamente & Accesorii",
-    descriereScurta: "Vizibilitate maximă conform EN ISO 20471, personalizabilă cu logo.",
-    imaginePrincipala: "/images/vesta-placeholder.jpg",
-    tipProdus: ["Veste", "High-Vis"],
+    nume: 'Vestă High-Visibility',
+    slug: 'vesta-high-visibility',
+    categorie: 'Îmbrăcăminte de Lucru',
+    descriereScurta: 'Vestă reflectorizantă pentru vizibilitate maximă în condiții reduse de lumină',
+    imaginePrincipala: 'https://images.unsplash.com/photo-1614359994188-cf53931af646?w=800',
+    tipProdus: ['Veste', 'High-Vis'],
     featured: true
   },
   {
     id: 4,
-    nume: "Mănuși Mecanice Pro",
-    slug: "manusi-mecanice-pro",
-    categorie: "Echipamente & Accesorii",
-    descriereScurta: "Protecție mecanică nivel 4, grip excelent, rezistente la uzură.",
-    imaginePrincipala: "/images/manusi-placeholder.jpg",
-    tipProdus: ["Mănuși", "Protecție Mecanică"],
+    nume: 'Mănuși Mecanice Pro',
+    slug: 'manusi-mecanice-pro',
+    categorie: 'Echipamente & Accesorii',
+    descriereScurta: 'Mănuși cu protecție pentru muncă mecanică și manipulare obiecte',
+    imaginePrincipala: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800',
+    tipProdus: ['Mănuși', 'Mecanice'],
     featured: true
   }
 ];
 ---
 
-<BaseLayout title="You Protect - Echipamente de Protecție și Uniforme Personalizate">
+<BaseLayout 
+  title="Acasă" 
+  description="You Protect - Furnizor de echipamente de protecție și uniforme personalizate pentru companii din România."
+>
   <!-- Hero Section -->
-  <section class="relative min-h-screen flex items-center bg-yp-black">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-      <img 
-        src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2000" 
-        alt="Echipă de construcții" 
-        class="w-full h-full object-cover opacity-40"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-yp-black/70 via-yp-black/80 to-yp-black"></div>
+  <section class="relative min-h-screen flex items-center justify-center">
+    <div 
+      class="absolute inset-0 z-0"
+      style="background-image: url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920'); background-size: cover; background-position: center;"
+    >
+      <div class="absolute inset-0 bg-gradient-to-br from-yp-black/80 to-yp-black/60"></div>
     </div>
-
-    <!-- Content -->
-    <div class="relative z-10 max-w-6xl mx-auto px-4 py-20 text-center">
-      <h1 class="text-5xl md:text-7xl font-heading mb-6 leading-tight">
-        [COMPLETEAZĂ: Headline Principal]<br/>
-        <span class="text-yp-yellow">[COMPLETEAZĂ: Emphasis]</span>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
+      <h1 class="font-heading text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight">
+        [COMPLETEAZĂ: Headline Principal]
       </h1>
-      <p class="text-xl md:text-2xl text-yp-white/80 mb-12 max-w-3xl mx-auto">
-        [COMPLETEAZĂ: Subheadline - beneficiul principal pentru client]
+      <p class="text-xl md:text-2xl text-yp-white/90 mb-10 max-w-3xl mx-auto">
+        [COMPLETEAZĂ: Subheading - 1-2 propoziții despre beneficiul principal]
       </p>
       
-      <!-- CTA Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+        <button 
+          class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-xl transition-all"
+          onclick="alert('TODO: Open Lead Modal')"
+        >
           Cere Ofertă Personalizată
         </button>
         <a 
           href="#featured-products"
-          class="border-2 border-yp-green text-yp-green font-heading font-bold px-6 py-3 rounded-lg text-lg bg-transparent hover:bg-yp-green hover:text-yp-white transition-all"
+          class="border-2 border-yp-green text-yp-green font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-green hover:text-yp-white transition-all"
         >
           Vezi Produsele
         </a>
@@ -87,117 +87,116 @@ const featuredProducts = [
 
   <!-- Problem Section (Pain Points) -->
   <section class="py-20 bg-yp-gray relative overflow-hidden">
-    <!-- Pattern Overlay (Optional) -->
-    <div class="absolute inset-0 opacity-5">
-      <div class="absolute inset-0" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(227, 252, 2, 0.1) 35px, rgba(227, 252, 2, 0.1) 70px);"></div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 relative z-10">
-      <h2 class="text-4xl md:text-5xl font-heading mb-4 text-center">
-        [COMPLETEAZĂ: Titlu Probleme]
+    <!-- Pattern overlay -->
+    <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zM22.344 0L13.858 8.485 15.272 9.9l7.9-7.9h-.828zM27 0l-5.657 5.657 1.414 1.414L27 2.828V0zm5.657 0l5.657 5.657-1.414 1.414L32.657 2.828V0zM41.002 0l1.415 1.414L38.174 5.657 36.76 4.243 41.002 0zm-23.59 0l-1.415 1.414L20.24 5.657l1.414-1.414L17.412 0zM0 27l2.828-2.828 1.415 1.414L0 30.243V27zm0 5.657l7.07-7.07 1.415 1.414-8.485 8.485V32.657zm0 5.657L13.656 21.728l1.415 1.414L0 38.314v-5.172zm0 5.657L19.798 27.828l1.415 1.414L0 49.97v-5.828zm0 5.657L25.94 33.9l1.415 1.414L0 55.627v-5.828zm0 5.657l32.083-32.083 1.415 1.414L0 61.284v-5.828z\" fill=\"%23E3FC02\" fill-opacity=\"1\" fill-rule=\"evenodd\"/%3E%3C/svg%3E');"></div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4">
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-16">
+        [COMPLETEAZĂ: Headline Probleme]
       </h2>
-      <p class="text-xl text-yp-white/70 text-center mb-16 max-w-3xl mx-auto">
-        [COMPLETEAZĂ: Subtitle probleme comune]
-      </p>
-
+      
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Pain Point 1 -->
+        <!-- Problem Card 1 -->
         <div class="bg-yp-black p-8 rounded-xl">
           <div class="text-5xl mb-4">⚠️</div>
-          <h3 class="text-2xl font-heading mb-4 text-yp-yellow">
-            [COMPLETEAZĂ: Problemă 1]
-          </h3>
-          <p class="text-yp-white/80">
-            [COMPLETEAZĂ: Descriere problemă 1 - ex: Achiziții dezorganizate, pierdere de timp]
+          <h3 class="font-heading text-2xl mb-4">[COMPLETEAZĂ: Problemă 1]</h3>
+          <p class="text-yp-white/70">
+            [COMPLETEAZĂ: Descriere problemă - ex: Achiziții dezorganizate, mărimi greșite, pierdere de timp]
           </p>
         </div>
 
-        <!-- Pain Point 2 -->
+        <!-- Problem Card 2 -->
         <div class="bg-yp-black p-8 rounded-xl">
           <div class="text-5xl mb-4">💸</div>
-          <h3 class="text-2xl font-heading mb-4 text-yp-yellow">
-            [COMPLETEAZĂ: Problemă 2]
-          </h3>
-          <p class="text-yp-white/80">
-            [COMPLETEAZĂ: Descriere problemă 2 - ex: Costuri ascunse, înlocuiri frecvente]
+          <h3 class="font-heading text-2xl mb-4">[COMPLETEAZĂ: Problemă 2]</h3>
+          <p class="text-yp-white/70">
+            [COMPLETEAZĂ: Descriere - ex: Costuri ascunse, calitate slabă, înlocuiri frecvente]
           </p>
         </div>
 
-        <!-- Pain Point 3 -->
+        <!-- Problem Card 3 -->
         <div class="bg-yp-black p-8 rounded-xl">
           <div class="text-5xl mb-4">⏱️</div>
-          <h3 class="text-2xl font-heading mb-4 text-yp-yellow">
-            [COMPLETEAZĂ: Problemă 3]
-          </h3>
-          <p class="text-yp-white/80">
-            [COMPLETEAZĂ: Descriere problemă 3 - ex: Imagine neprofesională, echipamente neuniforme]
+          <h3 class="font-heading text-2xl mb-4">[COMPLETEAZĂ: Problemă 3]</h3>
+          <p class="text-yp-white/70">
+            [COMPLETEAZĂ: Descriere - ex: Imagine neprofesională, echipament neuniform]
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Solution Section (Beneficii) -->
+  <!-- Solution Section (Benefits) -->
   <section class="py-20 bg-yp-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-heading mb-16 text-center">
-        [COMPLETEAZĂ: Titlu Soluții]
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-20">
+        [COMPLETEAZĂ: Headline Soluție]
       </h2>
-
-      <!-- Benefit 1 (Image Left, Text Right) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
-        <div class="order-2 md:order-1">
-          <div class="bg-yp-gray/30 aspect-video rounded-xl flex items-center justify-center">
-            <span class="text-yp-white/50">[Imagine: Achiziții organizate]</span>
-          </div>
+      
+      <!-- Benefit 1: Image Left, Text Right -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800" 
+            alt="Placeholder" 
+            class="w-full h-full object-cover"
+          />
         </div>
-        <div class="order-1 md:order-2">
-          <div class="text-5xl mb-4">✓</div>
-          <h3 class="text-3xl font-heading mb-6 text-yp-yellow">
-            [COMPLETEAZĂ: Beneficiu 1 - ex: Achiziții Organizate]
-          </h3>
-          <p class="text-yp-white/80 text-lg leading-relaxed mb-4">
-            [COMPLETEAZĂ: Descriere beneficiu 1]
+        <div>
+          <div class="text-5xl text-yp-yellow mb-4">✓</div>
+          <h3 class="font-heading text-3xl mb-6">[COMPLETEAZĂ: Beneficiu 1]</h3>
+          <p class="text-yp-white/70 mb-6">
+            [COMPLETEAZĂ: Descriere - ex: Achiziții organizate, sistem clar, recurență simplă]
           </p>
-          <ul class="space-y-2 text-yp-white/70">
-            <li class="flex items-start">
-              <span class="text-yp-yellow mr-2">•</span>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
               <span>[COMPLETEAZĂ: Sub-beneficiu 1]</span>
             </li>
-            <li class="flex items-start">
-              <span class="text-yp-yellow mr-2">•</span>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
               <span>[COMPLETEAZĂ: Sub-beneficiu 2]</span>
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- Benefit 2 (Image Right, Text Left) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div>
-          <div class="text-5xl mb-4">✨</div>
-          <h3 class="text-3xl font-heading mb-6 text-yp-yellow">
-            [COMPLETEAZĂ: Beneficiu 2 - ex: Imagine Impecabilă]
-          </h3>
-          <p class="text-yp-white/80 text-lg leading-relaxed mb-4">
-            [COMPLETEAZĂ: Descriere beneficiu 2]
+      <!-- Benefit 2: Text Left, Image Right -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="order-2 lg:order-1">
+          <div class="text-5xl text-yp-yellow mb-4">✨</div>
+          <h3 class="font-heading text-3xl mb-6">[COMPLETEAZĂ: Beneficiu 2]</h3>
+          <p class="text-yp-white/70 mb-6">
+            [COMPLETEAZĂ: Descriere - ex: Imagine impecabilă, branding coerent, respect pentru echipă]
           </p>
-          <ul class="space-y-2 text-yp-white/70">
-            <li class="flex items-start">
-              <span class="text-yp-yellow mr-2">•</span>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
               <span>[COMPLETEAZĂ: Sub-beneficiu 1]</span>
             </li>
-            <li class="flex items-start">
-              <span class="text-yp-yellow mr-2">•</span>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
               <span>[COMPLETEAZĂ: Sub-beneficiu 2]</span>
             </li>
           </ul>
         </div>
-        <div>
-          <div class="bg-yp-gray/30 aspect-video rounded-xl flex items-center justify-center">
-            <span class="text-yp-white/50">[Imagine: Echipă uniformă pe șantier]</span>
-          </div>
+        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden order-1 lg:order-2">
+          <img 
+            src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800" 
+            alt="Placeholder" 
+            class="w-full h-full object-cover"
+          />
         </div>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="text-center mt-16">
+        <button 
+          class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-xl transition-all"
+          onclick="alert('TODO: Open Lead Modal')"
+        >
+          Hai Să Discutăm
+        </button>
       </div>
     </div>
   </section>
@@ -205,21 +204,19 @@ const featuredProducts = [
   <!-- Featured Products -->
   <section id="featured-products" class="py-20 bg-yp-gray">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-heading mb-4">
-          Produse Recomandate
-        </h2>
-        <p class="text-xl text-yp-white/70">
-          Echipamente de calitate superioară, testate în condiții reale
-        </p>
-      </div>
-
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-4">Produse Recomandate</h2>
+      <p class="text-center text-yp-white/70 mb-16 text-lg">
+        [COMPLETEAZĂ: Scurtă descriere - ex: Echipamente testate și apreciate de clienții noștri]
+      </p>
+      
+      <!-- Product Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {featuredProducts.map(product => (
+        {featuredProducts.map((product) => (
           <ProductCard {...product} />
         ))}
       </div>
 
+      <!-- Link to Catalog -->
       <div class="text-center">
         <a 
           href="/produse" 
@@ -234,50 +231,34 @@ const featuredProducts = [
   <!-- Trust Indicators -->
   <section class="py-20 bg-yp-black">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        <!-- Stat 1 -->
-        <div>
-          <div class="text-5xl md:text-6xl font-heading text-yp-yellow mb-4">
-            [COMPLETEAZĂ: Număr]
-          </div>
-          <p class="text-xl text-yp-white/80">
-            [COMPLETEAZĂ: Metrica - ex: Ani de experiență]
-          </p>
+      <!-- Stats Row -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="text-center">
+          <div class="text-5xl font-heading text-yp-yellow mb-2">[XX]</div>
+          <div class="text-yp-white/70">Ani Experiență</div>
         </div>
-
-        <!-- Stat 2 -->
-        <div>
-          <div class="text-5xl md:text-6xl font-heading text-yp-yellow mb-4">
-            [COMPLETEAZĂ: Număr]
-          </div>
-          <p class="text-xl text-yp-white/80">
-            [COMPLETEAZĂ: Metrica - ex: Clienți activi]
-          </p>
+        <div class="text-center">
+          <div class="text-5xl font-heading text-yp-yellow mb-2">[XXX]+</div>
+          <div class="text-yp-white/70">Clienți Mulțumiți</div>
         </div>
-
-        <!-- Stat 3 -->
-        <div>
-          <div class="text-5xl md:text-6xl font-heading text-yp-yellow mb-4">
-            [COMPLETEAZĂ: Număr]
-          </div>
-          <p class="text-xl text-yp-white/80">
-            [COMPLETEAZĂ: Metrica - ex: Produse livrate]
-          </p>
+        <div class="text-center">
+          <div class="text-5xl font-heading text-yp-yellow mb-2">[X,XXX]+</div>
+          <div class="text-yp-white/70">Produse Livrate</div>
         </div>
       </div>
 
-      <!-- Optional: Certifications -->
-      <div class="mt-16 text-center">
-        <p class="text-yp-white/50 mb-6">Certificări și Standarde</p>
-        <div class="flex flex-wrap justify-center gap-8 items-center">
-          <div class="bg-yp-gray/30 px-8 py-4 rounded-lg">
-            <span class="text-yp-white/50">[Logo Certificare 1]</span>
+      <!-- Certifications (if applicable) -->
+      <div class="text-center">
+        <p class="text-yp-white/50 text-sm mb-6">Certificări și Parteneriate</p>
+        <div class="flex justify-center gap-8 flex-wrap opacity-50">
+          <div class="w-24 h-24 bg-yp-gray rounded-lg flex items-center justify-center">
+            [Logo 1]
           </div>
-          <div class="bg-yp-gray/30 px-8 py-4 rounded-lg">
-            <span class="text-yp-white/50">[Logo Certificare 2]</span>
+          <div class="w-24 h-24 bg-yp-gray rounded-lg flex items-center justify-center">
+            [Logo 2]
           </div>
-          <div class="bg-yp-gray/30 px-8 py-4 rounded-lg">
-            <span class="text-yp-white/50">[Logo Certificare 3]</span>
+          <div class="w-24 h-24 bg-yp-gray rounded-lg flex items-center justify-center">
+            [Logo 3]
           </div>
         </div>
       </div>
@@ -287,68 +268,50 @@ const featuredProducts = [
   <!-- Testimonials -->
   <section class="py-20 bg-yp-gray">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-heading mb-16 text-center">
-        Ce Spun Clienții Noștri
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-16">
+        [COMPLETEAZĂ: Headline Testimoniale]
       </h2>
-
+      
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Testimonial 1 -->
         <div class="bg-yp-black p-8 rounded-xl">
-          <div class="flex mb-4">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} class="text-yp-yellow text-2xl">★</span>
-            ))}
+          <div class="flex gap-1 text-yp-yellow text-xl mb-4">
+            ★★★★★
           </div>
-          <p class="text-yp-white/80 font-accent italic text-lg mb-6 leading-relaxed">
-            "[COMPLETEAZĂ: Testimonial 1 - feedback autentic de la client]"
+          <p class="font-accent italic text-yp-white/80 mb-6">
+            "[COMPLETEAZĂ: Quote client - ex: Echipamentele sunt de calitate, echipa You Protect ne-a ajutat să alegem exact ce ne trebuia]"
           </p>
-          <div class="border-t border-yp-gray pt-4">
-            <p class="text-yp-yellow font-heading">
-              [COMPLETEAZĂ: Nume Client]
-            </p>
-            <p class="text-yp-white/60 text-sm">
-              [COMPLETEAZĂ: Funcție, Companie]
-            </p>
+          <div class="border-t border-yp-gray/50 pt-4">
+            <p class="font-heading">[Nume Client]</p>
+            <p class="text-sm text-yp-white/50">[Funcție], [Companie]</p>
           </div>
         </div>
 
         <!-- Testimonial 2 -->
         <div class="bg-yp-black p-8 rounded-xl">
-          <div class="flex mb-4">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} class="text-yp-yellow text-2xl">★</span>
-            ))}
+          <div class="flex gap-1 text-yp-yellow text-xl mb-4">
+            ★★★★★
           </div>
-          <p class="text-yp-white/80 font-accent italic text-lg mb-6 leading-relaxed">
-            "[COMPLETEAZĂ: Testimonial 2]"
+          <p class="font-accent italic text-yp-white/80 mb-6">
+            "[COMPLETEAZĂ: Quote 2]"
           </p>
-          <div class="border-t border-yp-gray pt-4">
-            <p class="text-yp-yellow font-heading">
-              [COMPLETEAZĂ: Nume Client]
-            </p>
-            <p class="text-yp-white/60 text-sm">
-              [COMPLETEAZĂ: Funcție, Companie]
-            </p>
+          <div class="border-t border-yp-gray/50 pt-4">
+            <p class="font-heading">[Nume Client]</p>
+            <p class="text-sm text-yp-white/50">[Funcție], [Companie]</p>
           </div>
         </div>
 
         <!-- Testimonial 3 -->
         <div class="bg-yp-black p-8 rounded-xl">
-          <div class="flex mb-4">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} class="text-yp-yellow text-2xl">★</span>
-            ))}
+          <div class="flex gap-1 text-yp-yellow text-xl mb-4">
+            ★★★★★
           </div>
-          <p class="text-yp-white/80 font-accent italic text-lg mb-6 leading-relaxed">
-            "[COMPLETEAZĂ: Testimonial 3]"
+          <p class="font-accent italic text-yp-white/80 mb-6">
+            "[COMPLETEAZĂ: Quote 3]"
           </p>
-          <div class="border-t border-yp-gray pt-4">
-            <p class="text-yp-yellow font-heading">
-              [COMPLETEAZĂ: Nume Client]
-            </p>
-            <p class="text-yp-white/60 text-sm">
-              [COMPLETEAZĂ: Funcție, Companie]
-            </p>
+          <div class="border-t border-yp-gray/50 pt-4">
+            <p class="font-heading">[Nume Client]</p>
+            <p class="text-sm text-yp-white/50">[Funcție], [Companie]</p>
           </div>
         </div>
       </div>
@@ -358,18 +321,18 @@ const featuredProducts = [
   <!-- Final CTA -->
   <section class="py-20 bg-yp-yellow">
     <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-4xl md:text-5xl font-heading text-yp-black mb-6">
-        [COMPLETEAZĂ: CTA Final - ex: Hai Să Începem]
+      <h2 class="font-heading text-4xl md:text-5xl text-yp-black mb-6">
+        Hai Să Începem
       </h2>
-      <p class="text-xl text-yp-black/80 mb-8">
-        [COMPLETEAZĂ: CTA Description - beneficiul apelului]
+      <p class="text-yp-black/80 text-xl mb-10">
+        Consultanță gratuită. Răspuns în maximum 24 de ore.
       </p>
-      <button class="bg-yp-black text-yp-yellow font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-black/90 hover:shadow-xl transition-all">
-        Cere Ofertă Personalizată
+      <button 
+        class="bg-yp-black text-yp-yellow font-heading font-bold px-10 py-5 rounded-lg text-lg hover:bg-yp-black/90 hover:shadow-xl transition-all"
+        onclick="alert('TODO: Open Lead Modal')"
+      >
+        Cere Ofertă
       </button>
-      <p class="text-sm text-yp-black/60 mt-4">
-        Consultanță gratuită. Răspundem în 24 de ore.
-      </p>
     </div>
   </section>
 </BaseLayout>

@@ -1,0 +1,126 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-40 bg-yp-black/95 backdrop-blur-sm border-b border-yp-gray/50">
+  <div class="max-w-7xl mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 bg-yp-yellow rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+          <span class="text-yp-black font-heading font-bold text-xl">YP</span>
+        </div>
+        <div class="hidden sm:block">
+          <div class="text-yp-white font-heading text-lg leading-tight">You Protect</div>
+          <div class="text-yp-yellow/70 text-xs">Echipamente Profesionale</div>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a 
+          href="/" 
+          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === '/' ? 'text-yp-yellow' : ''}`}
+        >
+          Acasă
+        </a>
+        <a 
+          href="/despre-noi" 
+          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === '/despre-noi' ? 'text-yp-yellow' : ''}`}
+        >
+          Despre Noi
+        </a>
+        <a 
+          href="/cum-lucram" 
+          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === '/cum-lucram' ? 'text-yp-yellow' : ''}`}
+        >
+          Cum Lucrăm
+        </a>
+        <a 
+          href="/produse" 
+          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath.startsWith('/produse') ? 'text-yp-yellow' : ''}`}
+        >
+          Produse
+        </a>
+      </nav>
+
+      <!-- CTA Button (Desktop) -->
+      <button 
+        class="hidden md:block bg-yp-yellow text-yp-black font-heading font-bold px-6 py-2.5 rounded-lg hover:bg-yp-yellow/90 transition-all"
+        onclick="alert('TODO: Open Lead Modal')"
+      >
+        Cere Ofertă
+      </button>
+
+      <!-- Mobile Menu Button -->
+      <button 
+        id="mobile-menu-button"
+        class="md:hidden text-yp-white p-2"
+        aria-label="Meniu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu (Hidden by default) -->
+  <div 
+    id="mobile-menu" 
+    class="hidden md:hidden bg-yp-black border-t border-yp-gray/50"
+  >
+    <nav class="px-4 py-6 space-y-4">
+      <a 
+        href="/" 
+        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === '/' ? 'text-yp-yellow' : ''}`}
+      >
+        Acasă
+      </a>
+      <a 
+        href="/despre-noi" 
+        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === '/despre-noi' ? 'text-yp-yellow' : ''}`}
+      >
+        Despre Noi
+      </a>
+      <a 
+        href="/cum-lucram" 
+        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === '/cum-lucram' ? 'text-yp-yellow' : ''}`}
+      >
+        Cum Lucrăm
+      </a>
+      <a 
+        href="/produse" 
+        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath.startsWith('/produse') ? 'text-yp-yellow' : ''}`}
+      >
+        Produse
+      </a>
+      <button 
+        class="w-full bg-yp-yellow text-yp-black font-heading font-bold px-6 py-3 rounded-lg hover:bg-yp-yellow/90 transition-all mt-4"
+        onclick="alert('TODO: Open Lead Modal')"
+      >
+        Cere Ofertă
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Spacer (prevents content from hiding under fixed header) -->
+<div class="h-20"></div>
+
+<script>
+  // Mobile menu toggle
+  const menuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuButton?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!menuButton?.contains(e.target) && !mobileMenu?.contains(e.target)) {
+      mobileMenu?.classList.add('hidden');
+    }
+  });
+</script>
