@@ -3,26 +3,99 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="You Protect - Echipamente de Protecție Profesionale">
-  <main class="min-h-screen flex items-center justify-center px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-5xl md:text-6xl font-heading mb-6">
-        You Protect
+  <!-- Hero Section -->
+  <section class="min-h-screen flex items-center justify-center bg-cover bg-center relative" style="background-image: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920');">
+    <div class="max-w-6xl mx-auto px-4 text-center relative z-10">
+      <h1 class="text-5xl md:text-7xl font-heading mb-6 leading-tight">
+        [COMPLETEAZĂ: Titlu Hero Principal]
       </h1>
-      <p class="text-xl md:text-2xl text-yp-white/80 mb-8">
-        Echipamente de Protecție și Uniforme Profesionale
+      <p class="text-xl md:text-2xl text-yp-white/90 mb-8 max-w-3xl mx-auto">
+        [COMPLETEAZĂ: Subtitlu - elaborare 1-2 propoziții despre ce face You Protect]
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 transition-all">
+        <button class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-lg hover:-translate-y-0.5 transition-all">
           Cere Ofertă Personalizată
         </button>
-        <button class="border-2 border-yp-green text-yp-green font-heading font-bold px-6 py-3 rounded-lg text-lg hover:bg-yp-green hover:text-yp-white transition-all">
+        <a href="#featured-products" class="border-2 border-yp-green text-yp-green font-heading font-bold px-6 py-3 rounded-lg text-lg hover:bg-yp-green hover:text-yp-white transition-all">
           Vezi Produsele
-        </button>
-      </div>
-      <div class="mt-12 text-yp-white/60">
-        <p>Website în construcție - Coming Soon</p>
-        <p class="text-sm mt-2">Staging Environment: Cloudflare Pages</p>
+        </a>
       </div>
     </div>
-  </main>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="py-20 bg-yp-black">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-5xl font-heading text-center mb-16">
+        [COMPLETEAZĂ: Titlu Secțiune Probleme]
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Pain Point 1 -->
+        <div class="bg-yp-gray p-8 rounded-xl">
+          <div class="text-5xl mb-4">⚠️</div>
+          <h3 class="text-2xl font-heading mb-4">[COMPLETEAZĂ: Problemă 1]</h3>
+          <p class="text-yp-white/80">[COMPLETEAZĂ: Descriere problemă 1]</p>
+        </div>
+        <!-- Pain Point 2 -->
+        <div class="bg-yp-gray p-8 rounded-xl">
+          <div class="text-5xl mb-4">💸</div>
+          <h3 class="text-2xl font-heading mb-4">[COMPLETEAZĂ: Problemă 2]</h3>
+          <p class="text-yp-white/80">[COMPLETEAZĂ: Descriere problemă 2]</p>
+        </div>
+        <!-- Pain Point 3 -->
+        <div class="bg-yp-gray p-8 rounded-xl">
+          <div class="text-5xl mb-4">⏱️</div>
+          <h3 class="text-2xl font-heading mb-4">[COMPLETEAZĂ: Problemă 3]</h3>
+          <p class="text-yp-white/80">[COMPLETEAZĂ: Descriere problemă 3]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="py-20 bg-yp-gray">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-5xl font-heading text-center mb-16">
+        [COMPLETEAZĂ: Titlu Secțiune Soluții]
+      </h2>
+      <div class="space-y-16">
+        <!-- Benefit 1 -->
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="md:w-1/2">
+            <div class="bg-yp-black/30 aspect-video rounded-xl flex items-center justify-center">
+              <span class="text-yp-white/50">[Imagine Beneficiu 1]</span>
+            </div>
+          </div>
+          <div class="md:w-1/2">
+            <h3 class="text-3xl font-heading mb-4">[COMPLETEAZĂ: Beneficiu 1 Titlu]</h3>
+            <p class="text-yp-white/80 text-lg">[COMPLETEAZĂ: Descriere beneficiu 1]</p>
+          </div>
+        </div>
+        <!-- Benefit 2 (reversed) -->
+        <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+          <div class="md:w-1/2">
+            <div class="bg-yp-black/30 aspect-video rounded-xl flex items-center justify-center">
+              <span class="text-yp-white/50">[Imagine Beneficiu 2]</span>
+            </div>
+          </div>
+          <div class="md:w-1/2">
+            <h3 class="text-3xl font-heading mb-4">[COMPLETEAZĂ: Beneficiu 2 Titlu]</h3>
+            <p class="text-yp-white/80 text-lg">[COMPLETEAZĂ: Descriere beneficiu 2]</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming Soon Notice -->
+  <section class="py-12 bg-yp-yellow">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-yp-black font-heading text-xl">
+        🚧 Website în construcție - Structură completă în dezvoltare
+      </p>
+      <p class="text-yp-black/70 mt-2">
+        Staging: youprotect-website.pages.dev
+      </p>
+    </div>
+  </section>
 </BaseLayout>
