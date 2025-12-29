@@ -1,0 +1,99 @@
+---
+interface Props {
+  id: number;
+  nume: string;
+  slug: string;
+  categorie: string;
+  descriereScurta: string;
+  imaginePrincipala: string;
+  tipProdus?: string[];
+  featured?: boolean;
+}
+
+const { 
+  id,
+  nume, 
+  slug, 
+  categorie, 
+  descriereScurta, 
+  imaginePrincipala,
+  tipProdus = [],
+  featured = false
+} = Astro.props;
+---
+
+<article class="group bg-yp-gray rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+  <!-- Image Container -->
+  <a href={`/produse/${slug}`} class="block relative aspect-[4/5] overflow-hidden">
+    <div class="w-full h-full bg-yp-black/30 flex items-center justify-center">
+      <span class="text-yp-white/50 text-sm">[Imagine: {nume}]</span>
+      <!-- TODO: Replace with actual image when available -->
+      <!-- <img src={imaginePrincipala} alt={nume} class="w-full h-full object-cover" /> -->
+    </div>
+    
+    <!-- Overlay on Hover -->
+    <div class="absolute inset-0 bg-yp-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <span class="text-yp-yellow font-heading text-lg">Vezi Detalii →</span>
+    </div>
+
+    <!-- Featured Badge (dacă e produs evidențiat) -->
+    {featured && (
+      <div class="absolute top-4 right-4 bg-yp-yellow text-yp-black px-3 py-1 rounded-full text-sm font-heading font-bold">
+        Recomandat
+      </div>
+    )}
+  </a>
+
+  <!-- Content -->
+  <div class="p-6">
+    <!-- Categorie Badge -->
+    <div class="mb-3">
+      <span class="inline-block bg-yp-black/50 text-yp-yellow text-xs font-heading px-3 py-1 rounded-full">
+        {categorie}
+      </span>
+    </div>
+
+    <!-- Titlu -->
+    <h3 class="text-xl font-heading mb-3 text-yp-white group-hover:text-yp-yellow transition-colors">
+      <a href={`/produse/${slug}`}>
+        {nume}
+      </a>
+    </h3>
+
+    <!-- Descriere Scurtă -->
+    <p class="text-yp-white/70 text-sm mb-4 line-clamp-2">
+      {descriereScurta}
+    </p>
+
+    <!-- Tip Produs Tags (dacă există) -->
+    {tipProdus.length > 0 && (
+      <div class="flex flex-wrap gap-2 mb-4">
+        {tipProdus.slice(0, 2).map(tip => (
+          <span class="text-xs text-yp-white/50 border border-yp-white/20 px-2 py-1 rounded">
+            {tip}
+          </span>
+        ))}
+        {tipProdus.length > 2 && (
+          <span class="text-xs text-yp-white/50">+{tipProdus.length - 2}</span>
+        )}
+      </div>
+    )}
+
+    <!-- CTA Button -->
+    <button 
+      class="w-full bg-yp-yellow text-yp-black font-heading font-bold py-3 rounded-lg hover:bg-yp-yellow/90 transition-all"
+      onclick="window.location.href='/produse/{slug}'"
+    >
+      Cere Ofertă
+    </button>
+  </div>
+</article>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
