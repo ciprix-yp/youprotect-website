@@ -7,6 +7,7 @@ interface Props {
   shortDescription: string;
   producatorName?: string;
   featured?: boolean;
+  merchandisingTags?: string[];
 }
 
 const { 
@@ -16,7 +17,8 @@ const {
   categoryName,
   shortDescription,
   producatorName = 'You Protect',
-  featured = false
+  featured = false,
+  merchandisingTags = []
 } = Astro.props;
 ---
 
@@ -34,10 +36,19 @@ const {
       </div>
     </div>
 
-    {featured && (
-      <span class="inline-flex items-center gap-1 mt-4 px-2.5 py-1 text-xs rounded-full bg-yp-yellow text-yp-black font-semibold">
-        Recomandat
-      </span>
+    {(featured || merchandisingTags.length > 0) && (
+      <div class="mt-4 flex flex-wrap gap-2">
+        {featured && (
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full bg-yp-yellow text-yp-black font-semibold">
+            Recomandat
+          </span>
+        )}
+        {merchandisingTags.slice(0, 3).map((tag) => (
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full border border-yp-white/25 text-yp-white/80">
+            {tag}
+          </span>
+        ))}
+      </div>
     )}
   </a>
 
