@@ -19,7 +19,7 @@
 
 ## Ce urmează imediat
 
-1. WP-001: integrarea catalog frontend pe read model.
+1. WP-001: validare live pe Cloudflare pentru `/produse` și `/produse/[slug]` cu `DATABASE_URL`.
 2. WP-002: shortlist UI + persistență.
 3. WP-003: wizard write + scoring.
 
@@ -28,6 +28,7 @@
 - Nu avem încă conținut final (copy + imagini) pentru toate paginile.
 - `producatori` nepopulat (non-blocking MVP, dar necesar pentru filtrare avansată).
 - Local `wrangler login` rămâne opțional doar pentru deploy direct manual.
+- Din mediul local curent, conexiunea directă la Railway Postgres (port 5432) expiră; validarea DB se face pe build/deploy environment.
 
 ## Checklist start sesiune viitoare
 
