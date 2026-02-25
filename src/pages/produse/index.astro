@@ -15,6 +15,16 @@ const categorySummary = [...categoryCountMap.entries()]
   .map(([name, count]) => ({ name, count }))
   .sort((left, right) => left.name.localeCompare(right.name, 'ro-RO'));
 
+const hasExactTag = (product: (typeof products)[number], target: string) =>
+  product.merchandisingTags.some((tag) => tag.trim().toLowerCase() === target);
+
+const hasSeasonTag = (product: (typeof products)[number]) =>
+  product.merchandisingTags.some((tag) => tag.trim().toLowerCase().startsWith('sezon'));
+
+const bestsellerCount = products.filter((product) => hasExactTag(product, 'bestseller')).length;
+const noveltyCount = products.filter((product) => hasExactTag(product, 'noutate')).length;
+const seasonalCount = products.filter((product) => hasSeasonTag(product)).length;
+
 const hasProducts = products.length > 0;
 ---
 
@@ -30,11 +40,12 @@ const hasProducts = products.length > 0;
 
     <div class="relative max-w-7xl mx-auto px-4 py-16 md:py-20">
       <p class="text-xs uppercase tracking-[0.2em] text-yp-yellow/80">Catalog produse premium</p>
-      <h1 class="mt-3 text-4xl md:text-5xl text-yp-white max-w-3xl leading-tight">
-        Echipamente durabile, moderne si validate in teren
+      <h1 class="mt-3 text-4xl md:text-5xl text-yp-white max-w-4xl leading-tight">
+        Echipamente profesionale pentru echipe care nu accepta compromisuri
       </h1>
-      <p class="mt-6 text-yp-white/70 max-w-2xl leading-relaxed">
-        Nu este ecommerce. Selectezi produse, trimiti cererea, apoi configuram oferta potrivita pentru echipa ta.
+      <p class="mt-6 text-yp-white/70 max-w-3xl leading-relaxed">
+        Selectezi produsele relevante, iar noi construim oferta in functie de roluri, marimi, culori si metoda de plata.
+        Fara checkout automat, fara selectie haotica.
       </p>
 
       <div class="mt-8 flex flex-wrap gap-3 text-sm">
@@ -59,7 +70,7 @@ const hasProducts = products.length > 0;
       <div id="shortlist-summary" class="mb-8 rounded-xl border border-yp-white/15 bg-yp-gray/30 p-5">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <p class="text-sm uppercase tracking-wide text-yp-yellow/80">Selectie pentru cerere oferta</p>
+            <p class="text-sm uppercase tracking-wide text-yp-yellow/80">Selectia ta pentru oferta</p>
             <p id="shortlist-count" class="text-yp-white text-lg mt-1">0 produse selectate</p>
           </div>
 
@@ -97,25 +108,61 @@ const hasProducts = products.length > 0;
     )}
 
     {hasProducts && categorySummary.length > 0 && (
-      <div class="mb-10">
-        <h2 class="text-lg text-yp-white mb-3">Filtreaza dupa categorie</h2>
-        <div class="flex flex-wrap gap-2" id="catalog-category-filters">
-          <button
-            type="button"
-            data-category-filter="all"
-            class="px-3 py-1.5 rounded-full text-xs border bg-yp-yellow border-yp-yellow text-yp-black font-semibold"
-          >
-            Toate ({products.length})
-          </button>
-          {categorySummary.map((category) => (
+      <div class="mb-10 space-y-6">
+        <div>
+          <h2 class="text-lg text-yp-white mb-3">Filtre pe categorie</h2>
+          <div class="flex flex-wrap gap-2" id="catalog-category-filters">
             <button
               type="button"
-              data-category-filter={category.name}
+              data-category-filter="all"
+              class="px-3 py-1.5 rounded-full text-xs border bg-yp-yellow border-yp-yellow text-yp-black font-semibold"
+            >
+              Toate ({products.length})
+            </button>
+            {categorySummary.map((category) => (
+              <button
+                type="button"
+                data-category-filter={category.name}
+                class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/75 hover:border-yp-white/50 hover:text-yp-white transition-colors"
+              >
+                {category.name} ({category.count})
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-lg text-yp-white mb-3">Filtre comerciale</h2>
+          <div class="flex flex-wrap gap-2" id="catalog-tag-filters">
+            <button
+              type="button"
+              data-tag-filter="all"
+              class="px-3 py-1.5 rounded-full text-xs border bg-yp-yellow border-yp-yellow text-yp-black font-semibold"
+            >
+              Toate
+            </button>
+            <button
+              type="button"
+              data-tag-filter="bestseller"
               class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/75 hover:border-yp-white/50 hover:text-yp-white transition-colors"
             >
-              {category.name} ({category.count})
+              Bestseller ({bestsellerCount})
             </button>
-          ))}
+            <button
+              type="button"
+              data-tag-filter="new"
+              class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/75 hover:border-yp-white/50 hover:text-yp-white transition-colors"
+            >
+              Noutati ({noveltyCount})
+            </button>
+            <button
+              type="button"
+              data-tag-filter="seasonal"
+              class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/75 hover:border-yp-white/50 hover:text-yp-white transition-colors"
+            >
+              De sezon ({seasonalCount})
+            </button>
+          </div>
         </div>
       </div>
     )}
@@ -132,7 +179,13 @@ const hasProducts = products.length > 0;
         <h2 class="text-2xl text-yp-white mb-5">Catalog produse</h2>
         <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {products.map((product) => (
-            <div data-catalog-item data-category={product.categoryName}>
+            <div
+              data-catalog-item
+              data-category={product.categoryName}
+              data-is-bestseller={hasExactTag(product, 'bestseller') ? '1' : '0'}
+              data-is-new={hasExactTag(product, 'noutate') ? '1' : '0'}
+              data-is-seasonal={hasSeasonTag(product) ? '1' : '0'}
+            >
               <ProductCard
                 id={product.id}
                 slug={product.slug}
@@ -148,7 +201,7 @@ const hasProducts = products.length > 0;
           ))}
         </div>
         <p id="catalog-empty-filter" class="hidden mt-5 text-sm text-yp-white/65">
-          Nu exista produse in categoria selectata.
+          Nu exista produse pentru combinatia de filtre selectata.
         </p>
       </div>
     )}
@@ -178,10 +231,12 @@ const hasProducts = products.length > 0;
         const clearBtn = document.getElementById('shortlist-clear');
         const toggleButtons = Array.from(document.querySelectorAll('[data-shortlist-toggle]'));
 
-        const filterButtons = Array.from(document.querySelectorAll('[data-category-filter]'));
+        const categoryButtons = Array.from(document.querySelectorAll('[data-category-filter]'));
+        const tagButtons = Array.from(document.querySelectorAll('[data-tag-filter]'));
         const catalogItems = Array.from(document.querySelectorAll('[data-catalog-item]'));
         const emptyFilterEl = document.getElementById('catalog-empty-filter');
         let activeCategory = 'all';
+        let activeTag = 'all';
 
         const showWarning = (message) => {
           if (!warningEl) return;
@@ -206,7 +261,7 @@ const hasProducts = products.length > 0;
           toggleButtons.forEach((button) => {
             const productId = button.getAttribute('data-product-id') || '';
             const selected = shortlist.isSelected(productId);
-            button.textContent = selected ? 'In selectie' : 'Adauga in selectie';
+            button.textContent = selected ? 'In selectie' : 'Selecteaza produs';
             button.classList.toggle('bg-yp-yellow', !selected);
             button.classList.toggle('text-yp-black', !selected);
             button.classList.toggle('hover:bg-yp-white', !selected);
@@ -259,12 +314,35 @@ const hasProducts = products.length > 0;
           shortlist.openLeadModal({ intent: 'view_samples', source });
         };
 
-        const refreshCategoryFilter = () => {
+        const matchesTag = (item) => {
+          if (activeTag === 'all') {
+            return true;
+          }
+
+          if (activeTag === 'bestseller') {
+            return item.getAttribute('data-is-bestseller') === '1';
+          }
+
+          if (activeTag === 'new') {
+            return item.getAttribute('data-is-new') === '1';
+          }
+
+          if (activeTag === 'seasonal') {
+            return item.getAttribute('data-is-seasonal') === '1';
+          }
+
+          return true;
+        };
+
+        const refreshFilters = () => {
           let visibleCount = 0;
 
           catalogItems.forEach((item) => {
             const category = item.getAttribute('data-category') || '';
-            const isVisible = activeCategory === 'all' || category === activeCategory;
+            const categoryMatch = activeCategory === 'all' || category === activeCategory;
+            const tagMatch = matchesTag(item);
+            const isVisible = categoryMatch && tagMatch;
+
             item.classList.toggle('hidden', !isVisible);
             if (isVisible) {
               visibleCount += 1;
@@ -275,9 +353,20 @@ const hasProducts = products.length > 0;
             emptyFilterEl.classList.toggle('hidden', visibleCount > 0);
           }
 
-          filterButtons.forEach((button) => {
+          categoryButtons.forEach((button) => {
             const filterValue = button.getAttribute('data-category-filter') || 'all';
             const isActive = filterValue === activeCategory;
+            button.classList.toggle('bg-yp-yellow', isActive);
+            button.classList.toggle('border-yp-yellow', isActive);
+            button.classList.toggle('text-yp-black', isActive);
+            button.classList.toggle('font-semibold', isActive);
+            button.classList.toggle('border-yp-white/20', !isActive);
+            button.classList.toggle('text-yp-white/75', !isActive);
+          });
+
+          tagButtons.forEach((button) => {
+            const filterValue = button.getAttribute('data-tag-filter') || 'all';
+            const isActive = filterValue === activeTag;
             button.classList.toggle('bg-yp-yellow', isActive);
             button.classList.toggle('border-yp-yellow', isActive);
             button.classList.toggle('text-yp-black', isActive);
@@ -300,10 +389,17 @@ const hasProducts = products.length > 0;
           });
         });
 
-        filterButtons.forEach((button) => {
+        categoryButtons.forEach((button) => {
           button.addEventListener('click', () => {
             activeCategory = button.getAttribute('data-category-filter') || 'all';
-            refreshCategoryFilter();
+            refreshFilters();
+          });
+        });
+
+        tagButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            activeTag = button.getAttribute('data-tag-filter') || 'all';
+            refreshFilters();
           });
         });
 
@@ -328,7 +424,7 @@ const hasProducts = products.length > 0;
 
         refreshButtons();
         refreshSummary();
-        refreshCategoryFilter();
+        refreshFilters();
         initialized = true;
         return true;
       };
