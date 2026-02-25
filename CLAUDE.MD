@@ -73,10 +73,10 @@ youprotect-website/
 
 ### Brand Colors (Tailwind)
 - **Yellow (Primary):** `yp-yellow` - #E3FC02 (Neon yellow, high contrast)
-- **Black:** `yp-black` - #1A1A1A (Background, text)
-- **Gray:** `yp-gray` - #2A2A2A (Secondary background)
+- **Black:** `yp-black` - #0A0A0A (Background, text)
+- **Gray:** `yp-gray` - #2E2E2E (Secondary background)
 - **White:** `yp-white` - #FFFFFF (Text on dark)
-- **Green (Accent):** `yp-green` - #00FF88 (CTA borders, accents)
+- **Green (Accent):** `yp-green` - #0F766E (Dark teal, CTA borders, accents)
 
 ### Typography
 - **Heading Font:** Montserrat (Bold, 700)
@@ -240,7 +240,7 @@ youprotect-website/
 - [x] Global Header & Footer
 - [x] Homepage structure (7 sections)
 - [x] ProductCard component
-- [x] LeadModal component with validation
+- [ ] LeadModal component (referit în cod, dar fișierul `LeadModal.tsx` nu există încă)
 - [x] How We Work page with production copy
 - [x] About page skeleton
 - [x] Design system (colors, fonts, Tailwind config)
