@@ -29,6 +29,7 @@
 - `producatori` nepopulat (non-blocking MVP, dar necesar pentru filtrare avansată).
 - Local `wrangler login` rămâne opțional doar pentru deploy direct manual.
 - Din mediul local curent, conexiunea directă la Railway Postgres (port 5432) expiră; validarea DB se face pe build/deploy environment.
+- Pe Cloudflare live (`/produse`) apare warning: `DATABASE_URL is missing`; trebuie setat env var în Pages project.
 
 ## Checklist start sesiune viitoare
 
