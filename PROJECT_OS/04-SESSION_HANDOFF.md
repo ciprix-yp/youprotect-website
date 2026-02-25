@@ -3,7 +3,7 @@
 ## Ultimul update
 
 - Data: `2026-02-25`
-- Status global: `FOUNDATION_READY`
+- Status global: `WP-002_DONE`
 
 ## Ce este finalizat
 
@@ -20,28 +20,38 @@
 
 ## Ce urmează imediat
 
-1. WP-002: shortlist UI + persistență.
-2. WP-003: wizard write + scoring.
-3. WP-004: bookings flow + pipeline update.
+1. WP-003: wizard write + scoring.
+2. WP-004: bookings flow + pipeline update.
+3. WP-005: finalizare content premium + CTA copy pass.
 
 ## Blocaje active
 
 - Nu avem încă conținut final (copy + imagini) pentru toate paginile.
 - `producatori` nepopulat (non-blocking MVP, dar necesar pentru filtrare avansată).
-- Local `wrangler login` rămâne opțional doar pentru deploy direct manual.
+- Flow-ul `Book a call` este încă pe submit generic; persistarea în `website_lead_pipeline` intră în WP-004.
 
 ## Rezolvat în sesiunea curentă
 
-- Baza corectă pentru website este confirmată în Railway project `passionate-wholeness`, service `Postgres`:
-  - `83` tabele publice
-  - `products=6`
-  - `supplier_products=29011`
-  - view `vw_catalog_products` prezent
-- `DATABASE_URL` Cloudflare Pages (`preview` + `production`) setat pe Railway `DATABASE_PUBLIC_URL`.
-- Redeploy Cloudflare executat din API (`deployment id: 54697714-1b30-4bf3-bd38-ebc126989de9`) cu status `success`.
-- Validare live:
-  - `/produse/` = `200`
-  - pagini detaliu produse (`/produse/<slug>/`) = `200` pentru toate slug-urile actuale.
+- `WP-002` implementat și închis (`DONE`).
+- Shortlist client-side implementat (max 12) cu:
+  - add/remove în catalog cards (`/produse`)
+  - add/remove pe pagina produs (`/produse/[slug]`)
+  - persistare în `localStorage` (`yp_shortlist_v1`)
+  - sumar shortlist + validări UX limită.
+- Lead modal refactorizat ca modal global bazat pe evenimente:
+  - deschidere din CTA-uri multiple (`header`, `homepage`, `catalog`, `product detail`)
+  - include shortlist în payload submit.
+- Endpoint `POST /api/leads` implementat în Pages Functions:
+  - write în `lead_requests`
+  - write în `lead_request_products`
+  - write/update în `website_lead_context` (intent + answers).
+- Runtime connectivity fix:
+  - `nodejs_compat` activat pe Cloudflare Pages (`preview` + `production`)
+  - Hyperdrive creat și legat (`HYPERDRIVE`, id `0e9c108d713140229e9081b5327a8f7d`)
+  - endpoint actualizat să folosească `env.HYPERDRIVE.connectionString`.
+- Validare live API (production):
+  - `POST /api/leads` -> `200` cu `lead_request_id=6`
+  - DB confirmat: rânduri noi în `lead_requests`, `lead_request_products`, `website_lead_context`.
 
 ## Checklist start sesiune viitoare
 
