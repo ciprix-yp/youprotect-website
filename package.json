@@ -5,7 +5,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "pm": "./PROJECT_OS/pm/pm",
+    "pm:status": "./PROJECT_OS/pm/pm status",
+    "pm:next": "./PROJECT_OS/pm/pm next",
+    "pm:review": "./PROJECT_OS/pm/pm review",
+    "cf:deploy": "./scripts/deploy-cloudflare.sh",
+    "release:iteration": "./scripts/release-iteration.sh"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
