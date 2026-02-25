@@ -10,8 +10,11 @@ interface Props {
 }
 
 const { title, description = 'Echipamente de protecție și uniforme personalizate pentru companii.' } = Astro.props;
+const defaultBookingsUrl = 'https://outlook.office.com/book/Booking@youprotect.ro/?ismsaljsauthenabled';
 const bookingsUrl =
-  import.meta.env.PUBLIC_MICROSOFT_BOOKINGS_URL || import.meta.env.PUBLIC_BOOKINGS_URL || '';
+  import.meta.env.PUBLIC_MICROSOFT_BOOKINGS_URL ||
+  import.meta.env.PUBLIC_BOOKINGS_URL ||
+  defaultBookingsUrl;
 ---
 
 <!DOCTYPE html>

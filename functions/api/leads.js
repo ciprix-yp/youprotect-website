@@ -4,6 +4,7 @@ const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DEFAULT_BOOKINGS_URL = 'https://outlook.office.com/book/Booking@youprotect.ro/?ismsaljsauthenabled';
 const MAX_WIZARD_QUESTIONS = 10;
 
 const ALLOWED_URGENCY = new Set(['urgent', 'normal', 'planificare', 'explorare']);
@@ -415,7 +416,8 @@ export const onRequestPost = async (context) => {
   const bookingUrlFromPayload = normalizeString(payload.booking_url, 2000);
   const bookingUrlFromEnv =
     normalizeString(env?.MICROSOFT_BOOKINGS_URL, 2000) ||
-    normalizeString(env?.BOOKINGS_URL, 2000);
+    normalizeString(env?.BOOKINGS_URL, 2000) ||
+    DEFAULT_BOOKINGS_URL;
   const bookingUrl = intent === 'book_call' ? bookingUrlFromPayload || bookingUrlFromEnv : null;
   const bookingReferenceInput =
     intent === 'book_call' ? normalizeString(payload.booking_reference, 255) : null;
