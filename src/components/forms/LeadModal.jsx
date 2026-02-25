@@ -248,6 +248,7 @@ export default function LeadModal({ bookingsUrl = '' }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [bookingFallbackUrl, setBookingFallbackUrl] = useState('');
   const [errors, setErrors] = useState({});
 
   const qualification = useMemo(() => calculateQualification(formData, intent), [formData, intent]);
@@ -261,6 +262,7 @@ export default function LeadModal({ bookingsUrl = '' }) {
     setFormData(INITIAL_FORM);
     setLoading(false);
     setSuccess(false);
+    setBookingFallbackUrl('');
     setErrors({});
     syncShortlist();
   };
@@ -434,6 +436,7 @@ export default function LeadModal({ bookingsUrl = '' }) {
     }
 
     setLoading(true);
+    setBookingFallbackUrl('');
 
     try {
       const utm = readUtmParams();
@@ -487,7 +490,8 @@ export default function LeadModal({ bookingsUrl = '' }) {
             : bookingsUrl;
 
         if (nextBookingUrl) {
-          window.location.assign(nextBookingUrl);
+          setBookingFallbackUrl(nextBookingUrl);
+          window.location.href = nextBookingUrl;
           return;
         }
       }
@@ -894,6 +898,18 @@ export default function LeadModal({ bookingsUrl = '' }) {
                 </div>
 
                 {errors.submit && <p className="text-red-400 text-center">{errors.submit}</p>}
+                {intent === 'book_call' && bookingFallbackUrl && (
+                  <p className="text-yp-white/70 text-center text-sm">
+                    Daca nu se deschide automat calendarul,{' '}
+                    <a
+                      href={bookingFallbackUrl}
+                      className="text-yp-yellow underline hover:text-yp-white"
+                    >
+                      continua aici
+                    </a>
+                    .
+                  </p>
+                )}
 
                 <button
                   type="submit"

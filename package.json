@@ -11,6 +11,7 @@
     "pm:next": "./PROJECT_OS/pm/pm next",
     "pm:review": "./PROJECT_OS/pm/pm review",
     "cf:deploy": "./scripts/deploy-cloudflare.sh",
+    "qc:smoke": "./scripts/qc-smoke.sh",
     "release:iteration": "./scripts/release-iteration.sh"
   },
   "dependencies": {
