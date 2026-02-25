@@ -15,10 +15,11 @@
 3. Capturare sugestii ad-hoc în `07-IDEA_INBOX.md` (dacă apar în timpul execuției).
 4. Implementare (code/data/content).
 5. `pm review <TASK_ID>` pentru quality gate.
-6. Commit pe branch + `npm run release:iteration -- <TASK_ID>`.
-7. Validare live Cloudflare (desktop + mobile).
-8. Actualizare documentație.
-9. `pm close <TASK_ID>` + update handoff.
+6. `npm run qc:smoke` (build + smoke API pentru `view_samples` și `book_call`).
+7. Commit pe branch + `npm run release:iteration -- <TASK_ID>`.
+8. Validare live Cloudflare (desktop + mobile).
+9. Actualizare documentație.
+10. `pm close <TASK_ID>` + update handoff.
 
 ## Definition of Done (task)
 
