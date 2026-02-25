@@ -164,6 +164,33 @@ const hasProducts = products.length > 0;
             </button>
           </div>
         </div>
+
+        <div>
+          <h2 class="text-lg text-yp-white mb-3">Sortare</h2>
+          <div class="flex flex-wrap gap-2" id="catalog-sort-filters">
+            <button
+              type="button"
+              data-sort-filter="relevance"
+              class="px-3 py-1.5 rounded-full text-xs border bg-yp-yellow border-yp-yellow text-yp-black font-semibold"
+            >
+              Relevanta
+            </button>
+            <button
+              type="button"
+              data-sort-filter="new"
+              class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/75 hover:border-yp-white/50 hover:text-yp-white transition-colors"
+            >
+              Noutati
+            </button>
+            <button
+              type="button"
+              data-sort-filter="az"
+              class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/75 hover:border-yp-white/50 hover:text-yp-white transition-colors"
+            >
+              A-Z
+            </button>
+          </div>
+        </div>
       </div>
     )}
 
@@ -178,13 +205,17 @@ const hasProducts = products.length > 0;
       <div>
         <h2 class="text-2xl text-yp-white mb-5">Catalog produse</h2>
         <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div
               data-catalog-item
+              data-original-index={index}
               data-category={product.categoryName}
               data-is-bestseller={hasExactTag(product, 'bestseller') ? '1' : '0'}
               data-is-new={hasExactTag(product, 'noutate') ? '1' : '0'}
               data-is-seasonal={hasSeasonTag(product) ? '1' : '0'}
+              data-sort-name={product.name.toLocaleLowerCase('ro-RO')}
+              data-sort-created={product.createdAt}
+              data-sort-featured={product.featured ? '1' : '0'}
             >
               <ProductCard
                 id={product.id}
@@ -233,10 +264,13 @@ const hasProducts = products.length > 0;
 
         const categoryButtons = Array.from(document.querySelectorAll('[data-category-filter]'));
         const tagButtons = Array.from(document.querySelectorAll('[data-tag-filter]'));
+        const sortButtons = Array.from(document.querySelectorAll('[data-sort-filter]'));
         const catalogItems = Array.from(document.querySelectorAll('[data-catalog-item]'));
+        const catalogGridEl = document.getElementById('catalog-grid');
         const emptyFilterEl = document.getElementById('catalog-empty-filter');
         let activeCategory = 'all';
         let activeTag = 'all';
+        let activeSort = 'relevance';
 
         const showWarning = (message) => {
           if (!warningEl) return;
@@ -334,6 +368,55 @@ const hasProducts = products.length > 0;
           return true;
         };
 
+        const parseDateValue = (value) => {
+          const timestamp = Date.parse(value || '');
+          return Number.isNaN(timestamp) ? 0 : timestamp;
+        };
+
+        const compareItems = (left, right) => {
+          if (activeSort === 'az') {
+            const leftName = left.getAttribute('data-sort-name') || '';
+            const rightName = right.getAttribute('data-sort-name') || '';
+            return leftName.localeCompare(rightName, 'ro-RO');
+          }
+
+          if (activeSort === 'new') {
+            const leftCreated = parseDateValue(left.getAttribute('data-sort-created'));
+            const rightCreated = parseDateValue(right.getAttribute('data-sort-created'));
+            if (rightCreated !== leftCreated) {
+              return rightCreated - leftCreated;
+            }
+          }
+
+          const leftFeatured = left.getAttribute('data-sort-featured') === '1' ? 1 : 0;
+          const rightFeatured = right.getAttribute('data-sort-featured') === '1' ? 1 : 0;
+          if (rightFeatured !== leftFeatured) {
+            return rightFeatured - leftFeatured;
+          }
+
+          const leftBestseller = left.getAttribute('data-is-bestseller') === '1' ? 1 : 0;
+          const rightBestseller = right.getAttribute('data-is-bestseller') === '1' ? 1 : 0;
+          if (rightBestseller !== leftBestseller) {
+            return rightBestseller - leftBestseller;
+          }
+
+          const leftNew = left.getAttribute('data-is-new') === '1' ? 1 : 0;
+          const rightNew = right.getAttribute('data-is-new') === '1' ? 1 : 0;
+          if (rightNew !== leftNew) {
+            return rightNew - leftNew;
+          }
+
+          const leftCreated = parseDateValue(left.getAttribute('data-sort-created'));
+          const rightCreated = parseDateValue(right.getAttribute('data-sort-created'));
+          if (rightCreated !== leftCreated) {
+            return rightCreated - leftCreated;
+          }
+
+          const leftIndex = Number(left.getAttribute('data-original-index') || '0');
+          const rightIndex = Number(right.getAttribute('data-original-index') || '0');
+          return leftIndex - rightIndex;
+        };
+
         const refreshFilters = () => {
           let visibleCount = 0;
 
@@ -353,6 +436,13 @@ const hasProducts = products.length > 0;
             emptyFilterEl.classList.toggle('hidden', visibleCount > 0);
           }
 
+          if (catalogGridEl) {
+            const ordered = [...catalogItems].sort(compareItems);
+            ordered.forEach((item) => {
+              catalogGridEl.appendChild(item);
+            });
+          }
+
           categoryButtons.forEach((button) => {
             const filterValue = button.getAttribute('data-category-filter') || 'all';
             const isActive = filterValue === activeCategory;
@@ -367,6 +457,17 @@ const hasProducts = products.length > 0;
           tagButtons.forEach((button) => {
             const filterValue = button.getAttribute('data-tag-filter') || 'all';
             const isActive = filterValue === activeTag;
+            button.classList.toggle('bg-yp-yellow', isActive);
+            button.classList.toggle('border-yp-yellow', isActive);
+            button.classList.toggle('text-yp-black', isActive);
+            button.classList.toggle('font-semibold', isActive);
+            button.classList.toggle('border-yp-white/20', !isActive);
+            button.classList.toggle('text-yp-white/75', !isActive);
+          });
+
+          sortButtons.forEach((button) => {
+            const filterValue = button.getAttribute('data-sort-filter') || 'relevance';
+            const isActive = filterValue === activeSort;
             button.classList.toggle('bg-yp-yellow', isActive);
             button.classList.toggle('border-yp-yellow', isActive);
             button.classList.toggle('text-yp-black', isActive);
@@ -399,6 +500,13 @@ const hasProducts = products.length > 0;
         tagButtons.forEach((button) => {
           button.addEventListener('click', () => {
             activeTag = button.getAttribute('data-tag-filter') || 'all';
+            refreshFilters();
+          });
+        });
+
+        sortButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            activeSort = button.getAttribute('data-sort-filter') || 'relevance';
             refreshFilters();
           });
         });
