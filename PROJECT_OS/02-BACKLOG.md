@@ -22,12 +22,12 @@ Format task:
 ## Sprint Curent (S1)
 
 ### WP-001
-- Status: `BLOCKED`
+- Status: `DONE`
 - Owner: `Codex`
 - Scope: Integrare frontend catalog pe `vw_catalog_products` + listare + detaliu.
 - Acceptance: Pagina produse și pagina produs funcționează pe date live DB.
 - Dependencies: DB core deja aplicat.
-- Next action: Setează un `DATABASE_URL` Railway public/valid (nu placeholder) și confirmă conectivitate externă (Cloudflare build -> Postgres).
+- Next action: Start WP-002 (shortlist UI + persistență în `lead_request_products`).
 
 ### WP-002
 - Status: `TODO`

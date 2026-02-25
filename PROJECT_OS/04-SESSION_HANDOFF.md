@@ -19,18 +19,28 @@
 
 ## Ce urmează imediat
 
-1. WP-001: validare live pe Cloudflare pentru `/produse` și `/produse/[slug]` cu `DATABASE_URL`.
-2. WP-002: shortlist UI + persistență.
-3. WP-003: wizard write + scoring.
+1. WP-002: shortlist UI + persistență.
+2. WP-003: wizard write + scoring.
+3. WP-004: bookings flow + pipeline update.
 
 ## Blocaje active
 
 - Nu avem încă conținut final (copy + imagini) pentru toate paginile.
 - `producatori` nepopulat (non-blocking MVP, dar necesar pentru filtrare avansată).
 - Local `wrangler login` rămâne opțional doar pentru deploy direct manual.
-- Din mediul local curent, conexiunea directă la Railway Postgres (port 5432) expiră; validarea DB se face pe build/deploy environment.
-- Pe Cloudflare live (`/produse`) apare warning: `DATABASE_URL is missing`; trebuie setat env var în Pages project.
-- `DATABASE_URL` este acum prezent în Cloudflare, dar build-ul returnează `Connection terminated due to connection timeout` la query pe `vw_catalog_products`.
+
+## Rezolvat în sesiunea curentă
+
+- Baza corectă pentru website este confirmată în Railway project `passionate-wholeness`, service `Postgres`:
+  - `83` tabele publice
+  - `products=6`
+  - `supplier_products=29011`
+  - view `vw_catalog_products` prezent
+- `DATABASE_URL` Cloudflare Pages (`preview` + `production`) setat pe Railway `DATABASE_PUBLIC_URL`.
+- Redeploy Cloudflare executat din API (`deployment id: 54697714-1b30-4bf3-bd38-ebc126989de9`) cu status `success`.
+- Validare live:
+  - `/produse/` = `200`
+  - pagini detaliu produse (`/produse/<slug>/`) = `200` pentru toate slug-urile actuale.
 
 ## Checklist start sesiune viitoare
 
