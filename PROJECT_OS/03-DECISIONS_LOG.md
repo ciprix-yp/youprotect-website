@@ -60,3 +60,12 @@
 - Decizie: Scoring + validare wizard mutate server-side în `/api/leads`, cu upsert complet în `website_lead_context` (`answers_json`, `pain_points`, `desired_outcomes`, `needs_summary`, `qualification_score`, `payment_method`, hints).
 - De ce: Consistență DB, protecție la payload incomplet/manipulat și aliniere la acceptance WP-003.
 - Impact: Agentul primește context complet în DB și label-ul (`low/medium/high`) este derivat automat prin trigger pe pragurile stabilite.
+
+## D-2026-02-25-07
+- Context: Flow-ul `Book a call` trebuia legat de pipeline-ul operațional, fără integrare directă complexă în Microsoft API pentru MVP.
+- Decizie: Upsert `website_lead_pipeline` direct în `/api/leads` cu reguli:
+  - `view_samples` -> `offer_in_progress`
+  - `book_call` fără confirmare booking -> `intake_new` + `booking_reference=pending_lead_<id>`
+  - `book_call` cu `booking_reference`/`booking_slot_at` -> `book_call_scheduled`
+- De ce: Asigurăm persistență imediată a stadiului și a referinței de booking, păstrând extensibilitatea pentru webhook/n8n ulterior.
+- Impact: Pipeline-ul este populat determinist la submit, iar răspunsul API include metadatele operaționale pentru pașii următori.

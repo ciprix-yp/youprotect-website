@@ -3,7 +3,7 @@
 ## Ultimul update
 
 - Data: `2026-02-25`
-- Status global: `WP-003_DONE`
+- Status global: `WP-004_DONE`
 
 ## Ce este finalizat
 
@@ -20,15 +20,15 @@
 
 ## Ce urmează imediat
 
-1. WP-004: bookings flow + `website_lead_pipeline` update.
-2. WP-005: finalizare content premium + CTA copy pass.
+1. WP-005: finalizare content premium + CTA copy pass.
+2. Configurare `PUBLIC_MICROSOFT_BOOKINGS_URL` / `MICROSOFT_BOOKINGS_URL` în Cloudflare pentru redirect live Bookings.
 3. Pregătire S2: automatizare ofertare + follow-up (n8n).
 
 ## Blocaje active
 
 - Nu avem încă conținut final (copy + imagini) pentru toate paginile.
 - `producatori` nepopulat (non-blocking MVP, dar necesar pentru filtrare avansată).
-- Flow-ul `Book a call` este încă pe submit generic; persistarea în `website_lead_pipeline` intră în WP-004.
+- Variabilele de mediu pentru URL-ul Microsoft Bookings nu sunt încă setate (`PUBLIC_MICROSOFT_BOOKINGS_URL` / `MICROSOFT_BOOKINGS_URL`), deci redirect-ul Bookings nu e activ live.
 
 ## Rezolvat în sesiunea curentă
 
@@ -46,6 +46,16 @@
 - Validare live API (production) după push:
   - `POST /api/leads` (`view_samples`) -> `200`, `lead_request_id=8`, `qualification_score=98.00`, `qualification_label=high`
   - `POST /api/leads` (`book_call`) -> `200`, `lead_request_id=9`, `qualification_score=51.00`, `qualification_label=medium`
+- `WP-004` implementat și închis (`DONE`).
+- `POST /api/leads` upsert-ează acum `website_lead_pipeline` + log în `website_lead_events`.
+- Reguli pipeline active:
+  - `view_samples` -> `offer_in_progress`
+  - `book_call` fără confirmare slot -> `intake_new` + `booking_reference=pending_lead_<id>`
+  - `book_call` cu payload booking -> `book_call_scheduled`
+- Validare live API (production) după deploy:
+  - `view_samples` -> `pipeline_stage=offer_in_progress`
+  - `book_call` pending -> `pipeline_stage=intake_new`, `booking_reference=pending_lead_16`
+  - `book_call` cu `booking_reference` + `booking_slot_at` -> `pipeline_stage=book_call_scheduled`
 
 ## Checklist start sesiune viitoare
 
