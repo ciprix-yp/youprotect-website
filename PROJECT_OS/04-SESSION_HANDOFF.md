@@ -30,6 +30,7 @@
 - Local `wrangler login` rămâne opțional doar pentru deploy direct manual.
 - Din mediul local curent, conexiunea directă la Railway Postgres (port 5432) expiră; validarea DB se face pe build/deploy environment.
 - Pe Cloudflare live (`/produse`) apare warning: `DATABASE_URL is missing`; trebuie setat env var în Pages project.
+- `DATABASE_URL` este acum prezent în Cloudflare, dar build-ul returnează `Connection terminated due to connection timeout` la query pe `vw_catalog_products`.
 
 ## Checklist start sesiune viitoare
 
