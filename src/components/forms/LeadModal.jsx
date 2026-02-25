@@ -250,6 +250,7 @@ export default function LeadModal({ bookingsUrl = '' }) {
   const [success, setSuccess] = useState(false);
   const [bookingFallbackUrl, setBookingFallbackUrl] = useState('');
   const [errors, setErrors] = useState({});
+  const resolvedBookingUrl = bookingFallbackUrl || bookingsUrl || '';
 
   const qualification = useMemo(() => calculateQualification(formData, intent), [formData, intent]);
 
@@ -507,6 +508,9 @@ export default function LeadModal({ bookingsUrl = '' }) {
       }, 2000);
     } catch (error) {
       console.error('Lead submission error:', error);
+      if (intent === 'book_call' && bookingsUrl) {
+        setBookingFallbackUrl(bookingsUrl);
+      }
       setErrors({
         submit: error instanceof Error ? error.message : 'A aparut o eroare la trimitere.',
       });
@@ -808,6 +812,19 @@ export default function LeadModal({ bookingsUrl = '' }) {
               <p className="text-yp-white/60 text-sm mb-6">
                 Scorul este consultativ; nu restrictioneaza programarea call-ului.
               </p>
+              {intent === 'book_call' && resolvedBookingUrl && (
+                <div className="mb-6 rounded-xl border border-yp-white/20 bg-yp-black/20 p-4">
+                  <p className="text-sm text-yp-white/80">
+                    Dupa trimitere, vei fi redirectionat in calendarul Microsoft Bookings.
+                  </p>
+                  <a
+                    href={resolvedBookingUrl}
+                    className="inline-flex mt-3 text-sm text-yp-yellow underline hover:text-yp-white"
+                  >
+                    Deschide calendarul acum
+                  </a>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -898,11 +915,11 @@ export default function LeadModal({ bookingsUrl = '' }) {
                 </div>
 
                 {errors.submit && <p className="text-red-400 text-center">{errors.submit}</p>}
-                {intent === 'book_call' && bookingFallbackUrl && (
+                {intent === 'book_call' && resolvedBookingUrl && (
                   <p className="text-yp-white/70 text-center text-sm">
                     Daca nu se deschide automat calendarul,{' '}
                     <a
-                      href={bookingFallbackUrl}
+                      href={resolvedBookingUrl}
                       className="text-yp-yellow underline hover:text-yp-white"
                     >
                       continua aici
