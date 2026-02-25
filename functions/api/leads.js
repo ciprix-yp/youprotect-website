@@ -4,6 +4,36 @@ const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_WIZARD_QUESTIONS = 10;
+
+const ALLOWED_URGENCY = new Set(['urgent', 'normal', 'planificare', 'explorare']);
+const ALLOWED_EQUIPMENT = new Set(['imbracaminte', 'incaltaminte', 'accesorii', 'complet']);
+const ALLOWED_TEAM_SIZE = new Set(['3_5', '6_20', '21_50', '50_plus']);
+const ALLOWED_DECISION_STAGE = new Set([
+  'pilot_activ',
+  'compar_oferte',
+  'buget_aprobat',
+  'research',
+]);
+const ALLOWED_PAIN_POINTS = new Set([
+  'confort_scazut',
+  'durata_mica',
+  'conformitate',
+  'imagine_neunitara',
+  'livrare_instabila',
+]);
+const ALLOWED_DESIRED_OUTCOMES = new Set([
+  'rata_purtare',
+  'cost_total',
+  'conformitate_audit',
+  'imagine_profesionala',
+  'predictibilitate',
+]);
+const ALLOWED_PAYMENT_METHODS = new Set([
+  'integral_la_comanda',
+  'partial_50_la_comanda',
+  'la_termen_instrument_plata',
+]);
 
 function normalizeString(value, maxLength = null) {
   if (typeof value !== 'string') {
@@ -24,6 +54,113 @@ function normalizeString(value, maxLength = null) {
 
 function normalizeIntent(rawIntent) {
   return rawIntent === 'book_call' ? 'book_call' : 'view_samples';
+}
+
+function normalizeEnum(rawValue, allowedValues, maxLength = 100) {
+  const value = normalizeString(rawValue, maxLength);
+  if (!value || !allowedValues.has(value)) {
+    return null;
+  }
+  return value;
+}
+
+function normalizeStringArray(rawItems, options = {}) {
+  const { allowedValues = null, maxItems = 10, itemMaxLength = 120 } = options;
+
+  if (!Array.isArray(rawItems)) {
+    return [];
+  }
+
+  const output = [];
+  const seen = new Set();
+
+  for (const rawItem of rawItems) {
+    const value = normalizeString(rawItem, itemMaxLength);
+    if (!value || seen.has(value)) {
+      continue;
+    }
+
+    if (allowedValues && !allowedValues.has(value)) {
+      continue;
+    }
+
+    seen.add(value);
+    output.push(value);
+
+    if (output.length >= maxItems) {
+      break;
+    }
+  }
+
+  return output;
+}
+
+function calculateQualificationScore({ intent, urgency, equipment, teamSize, decisionStage, painPoints, desiredOutcomes, paymentMethod }) {
+  const urgencyScore = {
+    urgent: 18,
+    normal: 14,
+    planificare: 9,
+    explorare: 4,
+  };
+
+  const equipmentScore = {
+    complet: 16,
+    imbracaminte: 12,
+    incaltaminte: 12,
+    accesorii: 9,
+  };
+
+  const teamScore = {
+    '3_5': 8,
+    '6_20': 12,
+    '21_50': 16,
+    '50_plus': 20,
+  };
+
+  const decisionScore = {
+    pilot_activ: 22,
+    compar_oferte: 17,
+    buget_aprobat: 20,
+    research: 8,
+  };
+
+  const paymentScore = {
+    integral_la_comanda: 12,
+    partial_50_la_comanda: 8,
+    la_termen_instrument_plata: 5,
+  };
+
+  let score = 0;
+  score += urgencyScore[urgency] || 0;
+  score += equipmentScore[equipment] || 0;
+  score += teamScore[teamSize] || 0;
+  score += decisionScore[decisionStage] || 0;
+  score += Math.min((painPoints?.length || 0) * 5, 15);
+  score += Math.min((desiredOutcomes?.length || 0) * 4, 12);
+
+  if (intent === 'view_samples') {
+    score += paymentScore[paymentMethod] || 0;
+  }
+
+  return Math.max(0, Math.min(100, Math.round(score * 100) / 100));
+}
+
+function buildNeedsSummary({ intent, urgency, equipment, teamSize, decisionStage, painPoints, desiredOutcomes, paymentMethod }) {
+  const parts = [
+    `intent=${intent}`,
+    `urgenta=${urgency || '-'}`,
+    `echipament=${equipment || '-'}`,
+    `team_size=${teamSize || '-'}`,
+    `decision_stage=${decisionStage || '-'}`,
+    `pain_points=${painPoints.length ? painPoints.join(', ') : '-'}`,
+    `desired_outcomes=${desiredOutcomes.length ? desiredOutcomes.join(', ') : '-'}`,
+  ];
+
+  if (intent === 'view_samples') {
+    parts.push(`payment_method=${paymentMethod || '-'}`);
+  }
+
+  return parts.join(' | ');
 }
 
 function normalizeSelectedProducts(rawItems) {
@@ -149,6 +286,39 @@ export const onRequestPost = async (context) => {
 
   const selectedProducts = normalizeSelectedProducts(payload.selected_products);
   const intent = normalizeIntent(payload.conversion_intent);
+  const urgency = normalizeEnum(payload.urgenta, ALLOWED_URGENCY);
+  const equipment = normalizeEnum(payload.echipament, ALLOWED_EQUIPMENT);
+  const teamSize = normalizeEnum(payload.team_size, ALLOWED_TEAM_SIZE);
+  const decisionStage = normalizeEnum(payload.decision_stage, ALLOWED_DECISION_STAGE);
+  const painPoints = normalizeStringArray(payload.pain_points, {
+    allowedValues: ALLOWED_PAIN_POINTS,
+    maxItems: 3,
+    itemMaxLength: 100,
+  });
+  const desiredOutcomes = normalizeStringArray(payload.desired_outcomes, {
+    allowedValues: ALLOWED_DESIRED_OUTCOMES,
+    maxItems: 3,
+    itemMaxLength: 100,
+  });
+  const paymentMethodRaw = normalizeEnum(payload.payment_method, ALLOWED_PAYMENT_METHODS, 50);
+  const paymentMethod = intent === 'view_samples' ? paymentMethodRaw : null;
+
+  if (
+    !urgency ||
+    !equipment ||
+    !teamSize ||
+    !decisionStage ||
+    painPoints.length === 0 ||
+    desiredOutcomes.length === 0
+  ) {
+    return jsonResponse(
+      {
+        success: false,
+        error: 'Completeaza toate raspunsurile obligatorii din wizard inainte de trimitere.',
+      },
+      400
+    );
+  }
 
   if (intent === 'view_samples' && selectedProducts.length === 0) {
     return jsonResponse(
@@ -160,13 +330,24 @@ export const onRequestPost = async (context) => {
     );
   }
 
+  if (intent === 'view_samples' && !paymentMethod) {
+    return jsonResponse(
+      {
+        success: false,
+        error: 'Selecteaza metoda de plata pentru fluxul "Vreau sa testez".',
+      },
+      400
+    );
+  }
+
   const sourceUrl = normalizeString(payload.source_url, 500) || '/';
   const sourcePageId = resolveSourcePageId(sourceUrl);
 
   const utmSource = normalizeString(payload.utm_source, 100);
   const utmMedium = normalizeString(payload.utm_medium, 100);
   const utmCampaign = normalizeString(payload.utm_campaign, 100);
-  const urgencyHint = normalizeString(payload.urgenta, 100);
+  const urgencyHint = urgency;
+  const companySizeHint = teamSize;
 
   const userAgent =
     normalizeString(payload.user_agent, 5000) ||
@@ -181,17 +362,42 @@ export const onRequestPost = async (context) => {
     : null;
 
   const firstProductId = selectedProducts.length > 0 ? selectedProducts[0].id : null;
-
   const answersJson = [
-    {
-      question: 'urgenta',
-      answer: normalizeString(payload.urgenta, 100) || null,
-    },
-    {
-      question: 'echipament',
-      answer: normalizeString(payload.echipament, 100) || null,
-    },
+    { question: 'urgenta', answer: urgency },
+    { question: 'echipament', answer: equipment },
+    { question: 'team_size', answer: teamSize },
+    { question: 'decision_stage', answer: decisionStage },
+    { question: 'pain_points', answer: painPoints },
+    { question: 'desired_outcomes', answer: desiredOutcomes },
   ];
+
+  if (intent === 'view_samples') {
+    answersJson.push({ question: 'payment_method', answer: paymentMethod });
+  }
+
+  const wizardQuestionCount = Math.min(answersJson.length, MAX_WIZARD_QUESTIONS);
+  const qualificationScore = calculateQualificationScore({
+    intent,
+    urgency,
+    equipment,
+    teamSize,
+    decisionStage,
+    painPoints,
+    desiredOutcomes,
+    paymentMethod,
+  });
+  const needsSummary =
+    normalizeString(payload.needs_summary, 5000) ||
+    buildNeedsSummary({
+      intent,
+      urgency,
+      equipment,
+      teamSize,
+      decisionStage,
+      painPoints,
+      desiredOutcomes,
+      paymentMethod,
+    });
 
   const client = new Client({
     connectionString: databaseUrl,
@@ -260,30 +466,51 @@ export const onRequestPost = async (context) => {
       );
     }
 
-    await client.query(
+    const contextUpsert = await client.query(
       `
       INSERT INTO website_lead_context (
         lead_request_id,
         conversion_intent,
+        payment_method,
+        qualification_score,
         wizard_question_count,
         answers_json,
+        pain_points,
+        desired_outcomes,
+        needs_summary,
+        company_size_hint,
         urgency_hint
-      ) VALUES ($1, $2, $3, $4::jsonb, $5)
+      ) VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7::jsonb, $8::jsonb, $9, $10, $11)
       ON CONFLICT (lead_request_id) DO UPDATE
       SET
         conversion_intent = EXCLUDED.conversion_intent,
+        payment_method = EXCLUDED.payment_method,
+        qualification_score = EXCLUDED.qualification_score,
         wizard_question_count = EXCLUDED.wizard_question_count,
         answers_json = EXCLUDED.answers_json,
+        pain_points = EXCLUDED.pain_points,
+        desired_outcomes = EXCLUDED.desired_outcomes,
+        needs_summary = EXCLUDED.needs_summary,
+        company_size_hint = EXCLUDED.company_size_hint,
         urgency_hint = EXCLUDED.urgency_hint
+      RETURNING qualification_score, qualification_label
       `,
       [
         leadRequestId,
         intent,
-        2,
+        paymentMethod,
+        qualificationScore,
+        wizardQuestionCount,
         JSON.stringify(answersJson),
+        JSON.stringify(painPoints),
+        JSON.stringify(desiredOutcomes),
+        needsSummary,
+        companySizeHint,
         urgencyHint,
       ]
     );
+
+    const savedContext = contextUpsert.rows[0] || null;
 
     await client.query('COMMIT');
 
@@ -292,6 +519,8 @@ export const onRequestPost = async (context) => {
       lead_request_id: leadRequestId,
       selected_products_count: selectedProducts.length,
       conversion_intent: intent,
+      qualification_score: savedContext?.qualification_score ?? qualificationScore,
+      qualification_label: savedContext?.qualification_label ?? null,
     });
   } catch (error) {
     try {
