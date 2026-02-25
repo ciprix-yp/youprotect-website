@@ -62,7 +62,11 @@ export interface CatalogProductDetailResult {
 let pool: pg.Pool | null = null;
 
 function getDatabaseUrl(): string | null {
-  const rawValue = import.meta.env.DATABASE_URL;
+  const metaEnvValue = import.meta.env.DATABASE_URL;
+  const processEnvValue = (
+    globalThis as { process?: { env?: Record<string, string | undefined> } }
+  ).process?.env?.DATABASE_URL;
+  const rawValue = metaEnvValue ?? processEnvValue;
 
   if (typeof rawValue !== 'string') {
     return null;
