@@ -16,10 +16,10 @@ const { product, mode, warning } = await getCatalogProductDetailBySlug(slug);
 const productName = product?.name ?? 'Produs indisponibil';
 const pageDescription =
   product?.shortDescription ||
-  'Detalii produs You Protect: beneficii, conformitate si modalitate de selectie pentru mostre returnabile.';
+  'Detalii produs You Protect: beneficii, conformitate si proces de testare fara risc.';
 
-const requestSamplesUrl = product
-  ? `mailto:office@youprotect.ro?subject=${encodeURIComponent(`Vreau mostre returnabile - ${product.name}`)}`
+const requestTestUrl = product
+  ? `mailto:office@youprotect.ro?subject=${encodeURIComponent(`Vreau sa testez - ${product.name}`)}`
   : 'mailto:office@youprotect.ro';
 
 const updatedLabel = product
@@ -77,10 +77,10 @@ const updatedLabel = product
 
           <div class="mt-8 flex flex-wrap gap-3">
             <a
-              href={requestSamplesUrl}
+              href={requestTestUrl}
               class="inline-flex items-center justify-center px-5 py-3 rounded-md bg-yp-yellow text-yp-black font-semibold hover:bg-yp-white transition-colors"
             >
-              Vreau mostre returnabile
+              Vreau sa testez
             </a>
             <a
               href="mailto:office@youprotect.ro?subject=Book%20a%20call%20You%20Protect"
@@ -89,6 +89,10 @@ const updatedLabel = product
               Book a call
             </a>
           </div>
+
+          <p class="mt-4 text-sm text-yp-white/70 max-w-3xl leading-relaxed">
+            Testare fara risc: echipam 3-5 membri ai echipei tale, cadem de acord pe produsele testate, platesti produsele, iar ai 90 de zile garantie money-back daca nu esti multumit.
+          </p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
