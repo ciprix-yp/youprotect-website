@@ -1,15 +1,99 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const MAX_SHORTLIST_ITEMS = 12;
+const MAX_MULTI_SELECT = 3;
 
 const INITIAL_FORM = {
   urgenta: '',
   echipament: '',
+  team_size: '',
+  decision_stage: '',
+  payment_method: '',
+  pain_points: [],
+  desired_outcomes: [],
   nume: '',
   email: '',
   telefon: '',
   companie: '',
   mesaj: '',
+};
+
+const URGENCY_OPTIONS = [
+  { value: 'urgent', label: 'Urgent (< 5 zile)', icon: '⚡' },
+  { value: 'normal', label: 'Normal (1-2 saptamani)', icon: '📅' },
+  { value: 'planificare', label: 'In planificare (> 1 luna)', icon: '📋' },
+  { value: 'explorare', label: 'Doar ma informez', icon: '🔍' },
+];
+
+const EQUIPMENT_OPTIONS = [
+  { value: 'imbracaminte', label: 'Imbracaminte de lucru', icon: '👔' },
+  { value: 'incaltaminte', label: 'Incaltaminte protectie', icon: '👢' },
+  { value: 'accesorii', label: 'Accesorii (manusi, ochelari)', icon: '🧤' },
+  { value: 'complet', label: 'Echipament complet', icon: '📦' },
+];
+
+const TEAM_SIZE_OPTIONS = [
+  { value: '3_5', label: '3-5 oameni (pilot)' },
+  { value: '6_20', label: '6-20 oameni' },
+  { value: '21_50', label: '21-50 oameni' },
+  { value: '50_plus', label: '50+ oameni' },
+];
+
+const DECISION_STAGE_OPTIONS = [
+  { value: 'pilot_activ', label: 'Vrem sa testam imediat' },
+  { value: 'compar_oferte', label: 'Comparam optiuni acum' },
+  { value: 'buget_aprobat', label: 'Buget aprobat, cautam varianta potrivita' },
+  { value: 'research', label: 'Research initial, decizie mai tarziu' },
+];
+
+const PAIN_POINT_OPTIONS = [
+  { value: 'confort_scazut', label: 'Confort slab in teren' },
+  { value: 'durata_mica', label: 'Produsele se uzeaza prea repede' },
+  { value: 'conformitate', label: 'Presiune pe conformitate/audit' },
+  { value: 'imagine_neunitara', label: 'Imagine neunitara a echipei' },
+  { value: 'livrare_instabila', label: 'Livrari instabile de la furnizori' },
+];
+
+const OUTCOME_OPTIONS = [
+  { value: 'rata_purtare', label: 'Rata mai buna de purtare' },
+  { value: 'cost_total', label: 'Cost total mai mic pe termen lung' },
+  { value: 'conformitate_audit', label: 'Conformitate clara la audit' },
+  { value: 'imagine_profesionala', label: 'Imagine profesionala a echipei' },
+  { value: 'predictibilitate', label: 'Predictibilitate in aprovizionare' },
+];
+
+const PAYMENT_OPTIONS = [
+  {
+    value: 'integral_la_comanda',
+    label: 'Plata integrala la comanda',
+    note: 'Discount comercial -10%',
+  },
+  {
+    value: 'partial_50_la_comanda',
+    label: 'Plata partiala (minim 50%)',
+    note: 'Discount comercial -5%',
+  },
+  {
+    value: 'la_termen_instrument_plata',
+    label: 'Plata la termen cu instrument de plata',
+    note: 'Discount comercial 0%',
+  },
+];
+
+const LABEL_BY_VALUE = {
+  ...Object.fromEntries(URGENCY_OPTIONS.map((item) => [item.value, item.label])),
+  ...Object.fromEntries(EQUIPMENT_OPTIONS.map((item) => [item.value, item.label])),
+  ...Object.fromEntries(TEAM_SIZE_OPTIONS.map((item) => [item.value, item.label])),
+  ...Object.fromEntries(DECISION_STAGE_OPTIONS.map((item) => [item.value, item.label])),
+  ...Object.fromEntries(PAIN_POINT_OPTIONS.map((item) => [item.value, item.label])),
+  ...Object.fromEntries(OUTCOME_OPTIONS.map((item) => [item.value, item.label])),
+  ...Object.fromEntries(PAYMENT_OPTIONS.map((item) => [item.value, item.label])),
+};
+
+const SCORE_LABEL_TEXT = {
+  low: 'Low fit',
+  medium: 'Medium fit',
+  high: 'High fit',
 };
 
 function readUtmParams() {
@@ -42,7 +126,120 @@ function getShortlistItems() {
   return shortlist.getItems().slice(0, MAX_SHORTLIST_ITEMS);
 }
 
-export default function LeadModal() {
+function toggleArrayValue(values, target) {
+  if (values.includes(target)) {
+    return values.filter((value) => value !== target);
+  }
+
+  if (values.length >= MAX_MULTI_SELECT) {
+    return values;
+  }
+
+  return [...values, target];
+}
+
+function buildNeedsSummary(formData, intent) {
+  const intentLabel = intent === 'book_call' ? 'Book a call' : 'View samples';
+
+  const pains = formData.pain_points.map((value) => LABEL_BY_VALUE[value] || value).join(', ');
+  const outcomes = formData.desired_outcomes
+    .map((value) => LABEL_BY_VALUE[value] || value)
+    .join(', ');
+
+  const parts = [
+    `Intent: ${intentLabel}`,
+    `Urgenta: ${LABEL_BY_VALUE[formData.urgenta] || '-'}`,
+    `Echipament: ${LABEL_BY_VALUE[formData.echipament] || '-'}`,
+    `Dimensiune echipa: ${LABEL_BY_VALUE[formData.team_size] || '-'}`,
+    `Stadiu decizie: ${LABEL_BY_VALUE[formData.decision_stage] || '-'}`,
+    `Pain points: ${pains || '-'}`,
+    `Outcomes: ${outcomes || '-'}`,
+  ];
+
+  if (intent === 'view_samples') {
+    parts.push(`Plata preferata: ${LABEL_BY_VALUE[formData.payment_method] || '-'}`);
+  }
+
+  return parts.join(' | ');
+}
+
+function calculateQualification(formData, intent) {
+  const urgencyScore = {
+    urgent: 18,
+    normal: 14,
+    planificare: 9,
+    explorare: 4,
+  };
+
+  const equipmentScore = {
+    complet: 16,
+    imbracaminte: 12,
+    incaltaminte: 12,
+    accesorii: 9,
+  };
+
+  const teamScore = {
+    '3_5': 8,
+    '6_20': 12,
+    '21_50': 16,
+    '50_plus': 20,
+  };
+
+  const decisionScore = {
+    pilot_activ: 22,
+    compar_oferte: 17,
+    buget_aprobat: 20,
+    research: 8,
+  };
+
+  const paymentScore = {
+    integral_la_comanda: 12,
+    partial_50_la_comanda: 8,
+    la_termen_instrument_plata: 5,
+  };
+
+  let score = 0;
+  score += urgencyScore[formData.urgenta] || 0;
+  score += equipmentScore[formData.echipament] || 0;
+  score += teamScore[formData.team_size] || 0;
+  score += decisionScore[formData.decision_stage] || 0;
+  score += Math.min(formData.pain_points.length * 5, 15);
+  score += Math.min(formData.desired_outcomes.length * 4, 12);
+
+  if (intent === 'view_samples') {
+    score += paymentScore[formData.payment_method] || 0;
+  }
+
+  const clamped = Math.max(0, Math.min(100, Math.round(score)));
+
+  let label = 'low';
+  if (clamped >= 75) {
+    label = 'high';
+  } else if (clamped >= 50) {
+    label = 'medium';
+  }
+
+  return { score: clamped, label };
+}
+
+function buildAnswersJson(formData, intent) {
+  const answers = [
+    { question: 'urgenta', answer: formData.urgenta || null },
+    { question: 'echipament', answer: formData.echipament || null },
+    { question: 'team_size', answer: formData.team_size || null },
+    { question: 'decision_stage', answer: formData.decision_stage || null },
+    { question: 'pain_points', answer: formData.pain_points },
+    { question: 'desired_outcomes', answer: formData.desired_outcomes },
+  ];
+
+  if (intent === 'view_samples') {
+    answers.push({ question: 'payment_method', answer: formData.payment_method || null });
+  }
+
+  return answers;
+}
+
+export default function LeadModal({ bookingsUrl = '' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState('qualification');
   const [intent, setIntent] = useState('view_samples');
@@ -52,6 +249,8 @@ export default function LeadModal() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
+
+  const qualification = useMemo(() => calculateQualification(formData, intent), [formData, intent]);
 
   const syncShortlist = () => {
     setSelectedProducts(getShortlistItems());
@@ -129,7 +328,18 @@ export default function LeadModal() {
     return undefined;
   }, [isOpen]);
 
-  const canProceedToContact = formData.urgenta && formData.echipament;
+  const hasCoreAnswers =
+    !!formData.urgenta &&
+    !!formData.echipament &&
+    !!formData.team_size &&
+    !!formData.decision_stage &&
+    formData.pain_points.length > 0 &&
+    formData.desired_outcomes.length > 0;
+
+  const hasPaymentForIntent = intent === 'book_call' || !!formData.payment_method;
+  const hasProductsForIntent = intent === 'book_call' || selectedProducts.length > 0;
+
+  const canProceedToContact = hasCoreAnswers && hasPaymentForIntent && hasProductsForIntent;
 
   const closeModal = () => {
     if (loading) {
@@ -143,6 +353,21 @@ export default function LeadModal() {
       ...prev,
       [field]: value,
     }));
+
+    if (errors.qualification) {
+      setErrors((prev) => ({ ...prev, qualification: '' }));
+    }
+  };
+
+  const handleToggleMulti = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: toggleArrayValue(prev[field], value),
+    }));
+
+    if (errors.qualification) {
+      setErrors((prev) => ({ ...prev, qualification: '' }));
+    }
   };
 
   const handleChange = (event) => {
@@ -186,6 +411,19 @@ export default function LeadModal() {
     return nextErrors;
   };
 
+  const handleGoToContact = () => {
+    if (!canProceedToContact) {
+      setErrors((prev) => ({
+        ...prev,
+        qualification:
+          'Completeaza toate raspunsurile obligatorii (inclusiv selectie produse si metoda de plata pentru testare).',
+      }));
+      return;
+    }
+
+    setStep('contact');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -200,11 +438,18 @@ export default function LeadModal() {
     try {
       const utm = readUtmParams();
       const sourceUrl = `${window.location.pathname}${window.location.search}`;
+      const answersJson = buildAnswersJson(formData, intent);
+      const needsSummary = buildNeedsSummary(formData, intent);
 
       const payload = {
         ...formData,
         conversion_intent: intent,
         selected_products: selectedProducts,
+        qualification_score: qualification.score,
+        qualification_label: qualification.label,
+        answers_json: answersJson,
+        needs_summary: needsSummary,
+        booking_url: intent === 'book_call' ? bookingsUrl || null : null,
         source_url: sourceUrl,
         source_trigger: triggerSource,
         user_agent: navigator.userAgent,
@@ -220,17 +465,31 @@ export default function LeadModal() {
         body: JSON.stringify(payload),
       });
 
+      let responseBody = null;
+      try {
+        responseBody = await response.json();
+      } catch (_error) {
+        responseBody = null;
+      }
+
       if (!response.ok) {
         let message = 'A aparut o eroare. Te rugam sa incerci din nou.';
-        try {
-          const body = await response.json();
-          if (body?.error) {
-            message = body.error;
-          }
-        } catch (_error) {
-          // Ignore JSON parse error and use generic message.
+        if (responseBody?.error) {
+          message = responseBody.error;
         }
         throw new Error(message);
+      }
+
+      if (intent === 'book_call') {
+        const nextBookingUrl =
+          typeof responseBody?.booking_url === 'string' && responseBody.booking_url.trim()
+            ? responseBody.booking_url.trim()
+            : bookingsUrl;
+
+        if (nextBookingUrl) {
+          window.location.assign(nextBookingUrl);
+          return;
+        }
       }
 
       if (intent === 'view_samples' && window.YouProtectShortlist) {
@@ -257,17 +516,17 @@ export default function LeadModal() {
   }
 
   const title =
-    intent === 'book_call' ? 'Mini-precalificare pentru Book a call' : 'Cateva intrebari pentru testare';
+    intent === 'book_call' ? 'Mini-precalificare pentru Book a call' : 'Wizard de testare fara risc';
   const subtitle =
     intent === 'book_call'
       ? 'Ne ajuta sa iti alocam rapid agentul potrivit.'
-      : 'Raspunsurile tale ne ajuta sa pregatim selectie si oferta relevanta.';
+      : 'Raspunsurile tale ne ajuta sa pregatim selectie, scoring si oferta relevanta.';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-yp-black/80 backdrop-blur-sm" onClick={closeModal} />
 
-      <div className="relative bg-yp-gray rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-yp-green/20">
+      <div className="relative bg-yp-gray rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-yp-green/20">
         <button
           onClick={closeModal}
           className="absolute top-4 right-4 text-yp-white/60 hover:text-yp-white text-3xl font-light z-10"
@@ -307,22 +566,38 @@ export default function LeadModal() {
           ) : step === 'qualification' ? (
             <>
               <h2 className="font-heading text-3xl text-yp-white mb-2">{title}</h2>
-              <p className="text-yp-white/70 mb-8">{subtitle}</p>
+              <p className="text-yp-white/70 mb-6">{subtitle}</p>
 
-              {intent === 'view_samples' && selectedProducts.length > 0 && (
+              <div className="mb-6 rounded-xl border border-yp-white/20 bg-yp-black/20 p-4">
+                <p className="text-sm text-yp-white/70">Scor consultativ estimat</p>
+                <p className="text-2xl font-heading text-yp-yellow mt-1">
+                  {qualification.score}% · {SCORE_LABEL_TEXT[qualification.label]}
+                </p>
+                <p className="text-xs text-yp-white/60 mt-1">
+                  Scorul este consultativ pentru agent si nu blocheaza conversatia.
+                </p>
+              </div>
+
+              {intent === 'view_samples' && (
                 <div className="mb-8 rounded-xl border border-yp-white/20 bg-yp-black/20 p-4">
                   <p className="text-sm text-yp-white/70 mb-2">
                     Shortlist activ ({selectedProducts.length}/{MAX_SHORTLIST_ITEMS})
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {selectedProducts.map((product) => (
-                      <span
-                        key={product.id}
-                        className="px-2.5 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80"
-                      >
-                        {product.name}
+                    {selectedProducts.length === 0 ? (
+                      <span className="text-xs text-amber-200">
+                        Nu ai produse in selectie. Revino in catalog si adauga produse.
                       </span>
-                    ))}
+                    ) : (
+                      selectedProducts.map((product) => (
+                        <span
+                          key={product.id}
+                          className="px-2.5 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80"
+                        >
+                          {product.name}
+                        </span>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -332,12 +607,7 @@ export default function LeadModal() {
                   1. Cand ai nevoie de echipament?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    { value: 'urgent', label: 'Urgent (< 5 zile)', icon: '⚡' },
-                    { value: 'normal', label: 'Normal (1-2 saptamani)', icon: '📅' },
-                    { value: 'planificare', label: 'In planificare (> 1 luna)', icon: '📋' },
-                    { value: 'explorare', label: 'Doar ma informez', icon: '🔍' },
-                  ].map((option) => (
+                  {URGENCY_OPTIONS.map((option) => (
                     <button
                       key={option.value}
                       type="button"
@@ -360,12 +630,7 @@ export default function LeadModal() {
                   2. Ce tip de echipament te intereseaza?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    { value: 'imbracaminte', label: 'Imbracaminte de lucru', icon: '👔' },
-                    { value: 'incaltaminte', label: 'Incaltaminte protectie', icon: '👢' },
-                    { value: 'accesorii', label: 'Accesorii (manusi, ochelari)', icon: '🧤' },
-                    { value: 'complet', label: 'Echipament complet', icon: '📦' },
-                  ].map((option) => (
+                  {EQUIPMENT_OPTIONS.map((option) => (
                     <button
                       key={option.value}
                       type="button"
@@ -383,9 +648,134 @@ export default function LeadModal() {
                 </div>
               </div>
 
+              <div className="mb-8">
+                <label className="block text-yp-white font-heading text-lg mb-4">
+                  3. Cati oameni vor fi echipati in prima etapa?
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {TEAM_SIZE_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleQualificationSelect('team_size', option.value)}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        formData.team_size === option.value
+                          ? 'border-yp-yellow bg-yp-yellow/10 text-yp-yellow'
+                          : 'border-yp-white/20 text-yp-white hover:border-yp-white/40'
+                      }`}
+                    >
+                      <span className="font-heading">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-8">
+                <label className="block text-yp-white font-heading text-lg mb-4">
+                  4. In ce stadiu este decizia de cumparare?
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {DECISION_STAGE_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleQualificationSelect('decision_stage', option.value)}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        formData.decision_stage === option.value
+                          ? 'border-yp-yellow bg-yp-yellow/10 text-yp-yellow'
+                          : 'border-yp-white/20 text-yp-white hover:border-yp-white/40'
+                      }`}
+                    >
+                      <span className="font-heading">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-yp-white font-heading text-lg">
+                    5. Care sunt punctele de durere principale? (max {MAX_MULTI_SELECT})
+                  </label>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {PAIN_POINT_OPTIONS.map((option) => {
+                    const selected = formData.pain_points.includes(option.value);
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleToggleMulti('pain_points', option.value)}
+                        className={`px-3 py-2 rounded-full text-sm border transition-colors ${
+                          selected
+                            ? 'border-yp-yellow bg-yp-yellow/10 text-yp-yellow'
+                            : 'border-yp-white/20 text-yp-white/80 hover:border-yp-white/50'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-yp-white font-heading text-lg">
+                    6. Ce rezultate vrei sa obtii? (max {MAX_MULTI_SELECT})
+                  </label>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {OUTCOME_OPTIONS.map((option) => {
+                    const selected = formData.desired_outcomes.includes(option.value);
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleToggleMulti('desired_outcomes', option.value)}
+                        className={`px-3 py-2 rounded-full text-sm border transition-colors ${
+                          selected
+                            ? 'border-yp-yellow bg-yp-yellow/10 text-yp-yellow'
+                            : 'border-yp-white/20 text-yp-white/80 hover:border-yp-white/50'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {intent === 'view_samples' && (
+                <div className="mb-8">
+                  <label className="block text-yp-white font-heading text-lg mb-4">
+                    7. Metoda de plata preferata
+                  </label>
+                  <div className="space-y-3">
+                    {PAYMENT_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleQualificationSelect('payment_method', option.value)}
+                        className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                          formData.payment_method === option.value
+                            ? 'border-yp-yellow bg-yp-yellow/10 text-yp-yellow'
+                            : 'border-yp-white/20 text-yp-white hover:border-yp-white/40'
+                        }`}
+                      >
+                        <p className="font-heading">{option.label}</p>
+                        <p className="text-xs mt-1 opacity-80">{option.note}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {errors.qualification && <p className="text-amber-300 mb-4">{errors.qualification}</p>}
+
               <button
                 type="button"
-                onClick={() => setStep('contact')}
+                onClick={handleGoToContact}
                 disabled={!canProceedToContact}
                 className={`w-full py-4 rounded-xl font-heading text-lg font-bold transition-all ${
                   canProceedToContact
@@ -407,27 +797,13 @@ export default function LeadModal() {
               </button>
 
               <h2 className="font-heading text-3xl text-yp-white mb-2">Detaliile tale de contact</h2>
-              <p className="text-yp-white/70 mb-6">
-                {intent === 'book_call'
-                  ? 'Te contactam rapid pentru confirmarea call-ului.'
-                  : 'Te contactam cu o propunere de testare in cel mai scurt timp.'}
+              <p className="text-yp-white/70 mb-2">
+                Scor estimat pentru agent: <span className="text-yp-yellow">{qualification.score}%</span>{' '}
+                ({SCORE_LABEL_TEXT[qualification.label]}).
               </p>
-
-              {intent === 'view_samples' && selectedProducts.length > 0 && (
-                <div className="mb-6 rounded-xl border border-yp-white/20 bg-yp-black/20 p-4">
-                  <p className="text-sm text-yp-white/70 mb-2">Produse selectate pentru testare</p>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProducts.map((product) => (
-                      <span
-                        key={product.id}
-                        className="px-2.5 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80"
-                      >
-                        {product.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <p className="text-yp-white/60 text-sm mb-6">
+                Scorul este consultativ; nu restrictioneaza programarea call-ului.
+              </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

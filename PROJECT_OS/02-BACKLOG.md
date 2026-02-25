@@ -46,7 +46,7 @@ Format task:
 - Next action: Start WP-004 (bookings + pipeline update).
 
 ### WP-004
-- Status: `TODO`
+- Status: `IN_PROGRESS`
 - Owner: `Codex`
 - Scope: Bookings flow + `website_lead_pipeline` update.
 - Acceptance: Booking reference și stage persistate.

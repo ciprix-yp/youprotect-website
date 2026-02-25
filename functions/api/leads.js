@@ -163,6 +163,20 @@ function buildNeedsSummary({ intent, urgency, equipment, teamSize, decisionStage
   return parts.join(' | ');
 }
 
+function normalizeIsoDateTime(rawValue) {
+  const value = normalizeString(rawValue, 100);
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return parsed.toISOString();
+}
+
 function normalizeSelectedProducts(rawItems) {
   if (!Array.isArray(rawItems)) {
     return [];
@@ -398,6 +412,15 @@ export const onRequestPost = async (context) => {
       desiredOutcomes,
       paymentMethod,
     });
+  const bookingUrlFromPayload = normalizeString(payload.booking_url, 2000);
+  const bookingUrlFromEnv =
+    normalizeString(env?.MICROSOFT_BOOKINGS_URL, 2000) ||
+    normalizeString(env?.BOOKINGS_URL, 2000);
+  const bookingUrl = intent === 'book_call' ? bookingUrlFromPayload || bookingUrlFromEnv : null;
+  const bookingReferenceInput =
+    intent === 'book_call' ? normalizeString(payload.booking_reference, 255) : null;
+  const bookingSlotAt = intent === 'book_call' ? normalizeIsoDateTime(payload.booking_slot_at) : null;
+  const hasConfirmedBooking = intent === 'book_call' && !!(bookingReferenceInput || bookingSlotAt);
 
   const client = new Client({
     connectionString: databaseUrl,
@@ -512,6 +535,73 @@ export const onRequestPost = async (context) => {
 
     const savedContext = contextUpsert.rows[0] || null;
 
+    const bookingReference =
+      intent === 'book_call' ? bookingReferenceInput || `pending_lead_${leadRequestId}` : null;
+    const pipelineStage =
+      intent === 'view_samples'
+        ? 'offer_in_progress'
+        : hasConfirmedBooking
+          ? 'book_call_scheduled'
+          : 'intake_new';
+
+    const pipelineUpsert = await client.query(
+      `
+      INSERT INTO website_lead_pipeline (
+        lead_request_id,
+        operational_stage,
+        first_confirmation_channel,
+        booking_provider,
+        booking_reference,
+        booking_slot_at,
+        booking_url
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+      ON CONFLICT (lead_request_id) DO UPDATE
+      SET
+        operational_stage = EXCLUDED.operational_stage,
+        first_confirmation_channel = EXCLUDED.first_confirmation_channel,
+        booking_provider = EXCLUDED.booking_provider,
+        booking_reference = EXCLUDED.booking_reference,
+        booking_slot_at = EXCLUDED.booking_slot_at,
+        booking_url = EXCLUDED.booking_url
+      RETURNING
+        operational_stage,
+        booking_provider,
+        booking_reference,
+        booking_slot_at,
+        booking_url
+      `,
+      [
+        leadRequestId,
+        pipelineStage,
+        'email',
+        intent === 'book_call' ? 'microsoft_bookings' : null,
+        bookingReference,
+        bookingSlotAt,
+        bookingUrl,
+      ]
+    );
+
+    const savedPipeline = pipelineUpsert.rows[0] || null;
+
+    await client.query(
+      `
+      INSERT INTO website_lead_events (
+        lead_request_id,
+        event_type,
+        payload
+      ) VALUES ($1, $2, $3::jsonb)
+      `,
+      [
+        leadRequestId,
+        'lead_submitted',
+        JSON.stringify({
+          conversion_intent: intent,
+          pipeline_stage: savedPipeline?.operational_stage || pipelineStage,
+          source_trigger: normalizeString(payload.source_trigger, 100),
+        }),
+      ]
+    );
+
     await client.query('COMMIT');
 
     return jsonResponse({
@@ -521,6 +611,10 @@ export const onRequestPost = async (context) => {
       conversion_intent: intent,
       qualification_score: savedContext?.qualification_score ?? qualificationScore,
       qualification_label: savedContext?.qualification_label ?? null,
+      pipeline_stage: savedPipeline?.operational_stage || pipelineStage,
+      booking_reference: savedPipeline?.booking_reference ?? bookingReference ?? null,
+      booking_slot_at: savedPipeline?.booking_slot_at ?? bookingSlotAt ?? null,
+      booking_url: savedPipeline?.booking_url ?? bookingUrl ?? null,
     });
   } catch (error) {
     try {
