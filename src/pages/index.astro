@@ -1,338 +1,118 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductCard from '../components/ProductCard.astro';
-
-// Mock featured products (temporary - will be replaced with n8n API)
-const featuredProducts = [
-  {
-    id: 1,
-    nume: 'Jachetă Softshell Pro',
-    slug: 'jacheta-softshell-pro',
-    categorie: 'Îmbrăcăminte de Lucru',
-    descriereScurta: 'Jachetă rezistentă la apă și vânt, cu buzunare multiple',
-    imaginePrincipala: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800',
-    tipProdus: ['Jachete', 'High-Vis'],
-    featured: true
-  },
-  {
-    id: 2,
-    nume: 'Bocanci S3 Safety',
-    slug: 'bocanci-s3-safety',
-    categorie: 'Încălțăminte de Protecție',
-    descriereScurta: 'Bocanci de protecție cu bombeu metalic și talpă antiperforație',
-    imaginePrincipala: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800',
-    tipProdus: ['Bocanci', 'S3'],
-    featured: true
-  },
-  {
-    id: 3,
-    nume: 'Vestă High-Visibility',
-    slug: 'vesta-high-visibility',
-    categorie: 'Îmbrăcăminte de Lucru',
-    descriereScurta: 'Vestă reflectorizantă pentru vizibilitate maximă în condiții reduse de lumină',
-    imaginePrincipala: 'https://images.unsplash.com/photo-1614359994188-cf53931af646?w=800',
-    tipProdus: ['Veste', 'High-Vis'],
-    featured: true
-  },
-  {
-    id: 4,
-    nume: 'Mănuși Mecanice Pro',
-    slug: 'manusi-mecanice-pro',
-    categorie: 'Echipamente & Accesorii',
-    descriereScurta: 'Mănuși cu protecție pentru muncă mecanică și manipulare obiecte',
-    imaginePrincipala: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800',
-    tipProdus: ['Mănuși', 'Mecanice'],
-    featured: true
-  }
-];
+import LeadModal from '../components/forms/LeadModal';
 ---
 
 <BaseLayout 
-  title="Acasă" 
-  description="You Protect - Furnizor de echipamente de protecție și uniforme personalizate pentru companii din România."
+  title="Acasă - You Protect" 
+  description="Echipament de protecție premium pentru companii care respectă echipa și imaginea. Consultanță gratuită în selecția pe roluri."
 >
-  <!-- Hero Section -->
-  <section class="relative min-h-screen flex items-center justify-center">
-    <div 
-      class="absolute inset-0 z-0"
-      style="background-image: url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920'); background-size: cover; background-position: center;"
+
+<main class="relative min-h-screen flex items-center overflow-hidden">
+  
+  <div class="absolute inset-0 z-0">
+    <img 
+      src="/hero-youprotect-highvis.jpg" 
+      alt="Echipamente de Protecție You Protect" 
+      class="w-full h-full object-cover object-[70%_center] opacity-70"
     >
-      <div class="absolute inset-0 bg-gradient-to-br from-yp-black/80 to-yp-black/60"></div>
-    </div>
-    
-    <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
-      <h1 class="font-heading text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight">
-        [COMPLETEAZĂ: Headline Principal]
-      </h1>
-      <p class="text-xl md:text-2xl text-yp-white/90 mb-10 max-w-3xl mx-auto">
-        [COMPLETEAZĂ: Subheading - 1-2 propoziții despre beneficiul principal]
-      </p>
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40"></div>
+    <div class="absolute inset-0 bg-blue-950/20 mix-blend-overlay"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full py-32">
+    <div class="lg:col-span-7 flex flex-col justify-center">
       
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm w-fit mb-8">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yp-yellow opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-yp-yellow"></span>
+        </span>
+        <span class="text-xs font-medium text-neutral-300 tracking-wide">Consultanță Gratuită 24/7</span>
+      </div>
+
+      <h1 class="text-5xl lg:text-[4.5rem] font-semibold tracking-tight leading-[1.05] text-white mb-6">
+        Echipamentul de protecție care <span class="text-yp-yellow">respectă echipa</span> și imaginea firmei
+      </h1>
+
+      <p class="text-lg lg:text-xl text-neutral-400 font-normal leading-relaxed mb-10 max-w-xl">
+        Te consiliem gratuit în selecția pe roluri, astfel <strong class="text-white font-medium">elimini disconfortul</strong>, <strong class="text-white font-medium">scazi costul real</strong> al înlocuirilor și <strong class="text-white font-medium">crești rata de purtare</strong> în teren.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 mb-16">
         <button 
-          class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-xl transition-all"
-          onclick="alert('TODO: Open Lead Modal')"
+          class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
+          onclick="document.getElementById('leadModal')?.classList.remove('hidden')"
         >
-          Cere Ofertă Personalizată
+          Cere Consultanță Gratuită
+          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
         </button>
+        
         <a 
-          href="#featured-products"
-          class="border-2 border-yp-green text-yp-green font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-green hover:text-yp-white transition-all"
+          href="/produse"
+          class="border border-white/15 text-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 transition-all duration-200"
         >
           Vezi Produsele
+          <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
         </a>
       </div>
-    </div>
-  </section>
 
-  <!-- Problem Section (Pain Points) -->
-  <section class="py-20 bg-yp-gray relative overflow-hidden">
-    <!-- Pattern overlay -->
-    <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zM22.344 0L13.858 8.485 15.272 9.9l7.9-7.9h-.828zM27 0l-5.657 5.657 1.414 1.414L27 2.828V0zm5.657 0l5.657 5.657-1.414 1.414L32.657 2.828V0zM41.002 0l1.415 1.414L38.174 5.657 36.76 4.243 41.002 0zm-23.59 0l-1.415 1.414L20.24 5.657l1.414-1.414L17.412 0zM0 27l2.828-2.828 1.415 1.414L0 30.243V27zm0 5.657l7.07-7.07 1.415 1.414-8.485 8.485V32.657zm0 5.657L13.656 21.728l1.415 1.414L0 38.314v-5.172zm0 5.657L19.798 27.828l1.415 1.414L0 49.97v-5.828zm0 5.657L25.94 33.9l1.415 1.414L0 55.627v-5.828zm0 5.657l32.083-32.083 1.415 1.414L0 61.284v-5.828z\" fill=\"%23E3FC02\" fill-opacity=\"1\" fill-rule=\"evenodd\"/%3E%3C/svg%3E');"></div>
-    
-    <div class="relative z-10 max-w-7xl mx-auto px-4">
-      <h2 class="font-heading text-4xl md:text-5xl text-center mb-16">
-        [COMPLETEAZĂ: Headline Probleme]
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Problem Card 1 -->
-        <div class="bg-yp-black p-8 rounded-xl">
-          <div class="text-5xl mb-4">⚠️</div>
-          <h3 class="font-heading text-2xl mb-4">[COMPLETEAZĂ: Problemă 1]</h3>
-          <p class="text-yp-white/70">
-            [COMPLETEAZĂ: Descriere problemă - ex: Achiziții dezorganizate, mărimi greșite, pierdere de timp]
-          </p>
-        </div>
+      <div class="border-t border-white/10 pt-8 w-full max-w-2xl">
+        <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-6">
+          Echipamente certificate și confortabile
+        </p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          
+          <div class="group cursor-pointer bg-transparent border border-white/10 rounded-[4px] p-4 hover:border-yp-yellow/50 transition-all duration-300 h-20 flex items-center justify-center">
+            <img 
+              src="/logos/logo-1.png" 
+              alt="Mascot" 
+              class="max-h-12 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+              loading="lazy"
+            />
+          </div>
 
-        <!-- Problem Card 2 -->
-        <div class="bg-yp-black p-8 rounded-xl">
-          <div class="text-5xl mb-4">💸</div>
-          <h3 class="font-heading text-2xl mb-4">[COMPLETEAZĂ: Problemă 2]</h3>
-          <p class="text-yp-white/70">
-            [COMPLETEAZĂ: Descriere - ex: Costuri ascunse, calitate slabă, înlocuiri frecvente]
-          </p>
-        </div>
+          <div class="group cursor-pointer bg-transparent border border-white/10 rounded-[4px] p-4 hover:border-yp-yellow/50 transition-all duration-300 h-20 flex items-center justify-center">
+            <img 
+              src="/logos/logo-2.png" 
+              alt="Sir Safety" 
+              class="max-h-12 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+              loading="lazy"
+            />
+          </div>
 
-        <!-- Problem Card 3 -->
-        <div class="bg-yp-black p-8 rounded-xl">
-          <div class="text-5xl mb-4">⏱️</div>
-          <h3 class="font-heading text-2xl mb-4">[COMPLETEAZĂ: Problemă 3]</h3>
-          <p class="text-yp-white/70">
-            [COMPLETEAZĂ: Descriere - ex: Imagine neprofesională, echipament neuniform]
-          </p>
+          <div class="group cursor-pointer bg-transparent border border-white/10 rounded-[4px] p-4 hover:border-yp-yellow/50 transition-all duration-300 h-20 flex items-center justify-center">
+            <img 
+              src="/logos/logo-3.png" 
+              alt="Certificare EN" 
+              class="max-h-12 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="group cursor-pointer bg-transparent border border-white/10 rounded-[4px] p-4 hover:border-yp-yellow/50 transition-all duration-300 h-20 flex items-center justify-center">
+            <img 
+              src="/logos/logo-4.png" 
+              alt="Certificare ISO" 
+              class="max-h-12 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+              loading="lazy"
+            />
+          </div>
+
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Solution Section (Benefits) -->
-  <section class="py-20 bg-yp-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-heading text-4xl md:text-5xl text-center mb-20">
-        [COMPLETEAZĂ: Headline Soluție]
-      </h2>
-      
-      <!-- Benefit 1: Image Left, Text Right -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden">
-          <img 
-            src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800" 
-            alt="Placeholder" 
-            class="w-full h-full object-cover"
-          />
-        </div>
-        <div>
-          <div class="text-5xl text-yp-yellow mb-4">✓</div>
-          <h3 class="font-heading text-3xl mb-6">[COMPLETEAZĂ: Beneficiu 1]</h3>
-          <p class="text-yp-white/70 mb-6">
-            [COMPLETEAZĂ: Descriere - ex: Achiziții organizate, sistem clar, recurență simplă]
-          </p>
-          <ul class="space-y-3 text-yp-white/70">
-            <li class="flex items-start gap-3">
-              <span class="text-yp-yellow mt-1">•</span>
-              <span>[COMPLETEAZĂ: Sub-beneficiu 1]</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-yp-yellow mt-1">•</span>
-              <span>[COMPLETEAZĂ: Sub-beneficiu 2]</span>
-            </li>
-          </ul>
-        </div>
-      </div>
+    <div class="hidden lg:block lg:col-span-5 h-full"></div>
+  </div>
+</main>
 
-      <!-- Benefit 2: Text Left, Image Right -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div class="order-2 lg:order-1">
-          <div class="text-5xl text-yp-yellow mb-4">✨</div>
-          <h3 class="font-heading text-3xl mb-6">[COMPLETEAZĂ: Beneficiu 2]</h3>
-          <p class="text-yp-white/70 mb-6">
-            [COMPLETEAZĂ: Descriere - ex: Imagine impecabilă, branding coerent, respect pentru echipă]
-          </p>
-          <ul class="space-y-3 text-yp-white/70">
-            <li class="flex items-start gap-3">
-              <span class="text-yp-yellow mt-1">•</span>
-              <span>[COMPLETEAZĂ: Sub-beneficiu 1]</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-yp-yellow mt-1">•</span>
-              <span>[COMPLETEAZĂ: Sub-beneficiu 2]</span>
-            </li>
-          </ul>
-        </div>
-        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden order-1 lg:order-2">
-          <img 
-            src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800" 
-            alt="Placeholder" 
-            class="w-full h-full object-cover"
-          />
-        </div>
-      </div>
+<LeadModal client:load />
 
-      <!-- CTA Button -->
-      <div class="text-center mt-16">
-        <button 
-          class="bg-yp-yellow text-yp-black font-heading font-bold px-8 py-4 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-xl transition-all"
-          onclick="alert('TODO: Open Lead Modal')"
-        >
-          Hai Să Discutăm
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured Products -->
-  <section id="featured-products" class="py-20 bg-yp-gray">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-heading text-4xl md:text-5xl text-center mb-4">Produse Recomandate</h2>
-      <p class="text-center text-yp-white/70 mb-16 text-lg">
-        [COMPLETEAZĂ: Scurtă descriere - ex: Echipamente testate și apreciate de clienții noștri]
-      </p>
-      
-      <!-- Product Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {featuredProducts.map((product) => (
-          <ProductCard {...product} />
-        ))}
-      </div>
-
-      <!-- Link to Catalog -->
-      <div class="text-center">
-        <a 
-          href="/produse" 
-          class="inline-block text-yp-yellow font-heading text-lg hover:underline"
-        >
-          Vezi tot catalogul →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Trust Indicators -->
-  <section class="py-20 bg-yp-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <!-- Stats Row -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        <div class="text-center">
-          <div class="text-5xl font-heading text-yp-yellow mb-2">[XX]</div>
-          <div class="text-yp-white/70">Ani Experiență</div>
-        </div>
-        <div class="text-center">
-          <div class="text-5xl font-heading text-yp-yellow mb-2">[XXX]+</div>
-          <div class="text-yp-white/70">Clienți Mulțumiți</div>
-        </div>
-        <div class="text-center">
-          <div class="text-5xl font-heading text-yp-yellow mb-2">[X,XXX]+</div>
-          <div class="text-yp-white/70">Produse Livrate</div>
-        </div>
-      </div>
-
-      <!-- Certifications (if applicable) -->
-      <div class="text-center">
-        <p class="text-yp-white/50 text-sm mb-6">Certificări și Parteneriate</p>
-        <div class="flex justify-center gap-8 flex-wrap opacity-50">
-          <div class="w-24 h-24 bg-yp-gray rounded-lg flex items-center justify-center">
-            [Logo 1]
-          </div>
-          <div class="w-24 h-24 bg-yp-gray rounded-lg flex items-center justify-center">
-            [Logo 2]
-          </div>
-          <div class="w-24 h-24 bg-yp-gray rounded-lg flex items-center justify-center">
-            [Logo 3]
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials -->
-  <section class="py-20 bg-yp-gray">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-heading text-4xl md:text-5xl text-center mb-16">
-        [COMPLETEAZĂ: Headline Testimoniale]
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Testimonial 1 -->
-        <div class="bg-yp-black p-8 rounded-xl">
-          <div class="flex gap-1 text-yp-yellow text-xl mb-4">
-            ★★★★★
-          </div>
-          <p class="font-accent italic text-yp-white/80 mb-6">
-            "[COMPLETEAZĂ: Quote client - ex: Echipamentele sunt de calitate, echipa You Protect ne-a ajutat să alegem exact ce ne trebuia]"
-          </p>
-          <div class="border-t border-yp-gray/50 pt-4">
-            <p class="font-heading">[Nume Client]</p>
-            <p class="text-sm text-yp-white/50">[Funcție], [Companie]</p>
-          </div>
-        </div>
-
-        <!-- Testimonial 2 -->
-        <div class="bg-yp-black p-8 rounded-xl">
-          <div class="flex gap-1 text-yp-yellow text-xl mb-4">
-            ★★★★★
-          </div>
-          <p class="font-accent italic text-yp-white/80 mb-6">
-            "[COMPLETEAZĂ: Quote 2]"
-          </p>
-          <div class="border-t border-yp-gray/50 pt-4">
-            <p class="font-heading">[Nume Client]</p>
-            <p class="text-sm text-yp-white/50">[Funcție], [Companie]</p>
-          </div>
-        </div>
-
-        <!-- Testimonial 3 -->
-        <div class="bg-yp-black p-8 rounded-xl">
-          <div class="flex gap-1 text-yp-yellow text-xl mb-4">
-            ★★★★★
-          </div>
-          <p class="font-accent italic text-yp-white/80 mb-6">
-            "[COMPLETEAZĂ: Quote 3]"
-          </p>
-          <div class="border-t border-yp-gray/50 pt-4">
-            <p class="font-heading">[Nume Client]</p>
-            <p class="text-sm text-yp-white/50">[Funcție], [Companie]</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Final CTA -->
-  <section class="py-20 bg-yp-yellow">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="font-heading text-4xl md:text-5xl text-yp-black mb-6">
-        Hai Să Începem
-      </h2>
-      <p class="text-yp-black/80 text-xl mb-10">
-        Consultanță gratuită. Răspuns în maximum 24 de ore.
-      </p>
-      <button 
-        class="bg-yp-black text-yp-yellow font-heading font-bold px-10 py-5 rounded-lg text-lg hover:bg-yp-black/90 hover:shadow-xl transition-all"
-        onclick="alert('TODO: Open Lead Modal')"
-      >
-        Cere Ofertă
-      </button>
-    </div>
-  </section>
 </BaseLayout>

@@ -1,0 +1,75 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  slug: string;
+  categoryName: string;
+  shortDescription: string;
+  producatorName?: string;
+  featured?: boolean;
+}
+
+const { 
+  id,
+  name,
+  slug, 
+  categoryName,
+  shortDescription,
+  producatorName = 'You Protect',
+  featured = false
+} = Astro.props;
+---
+
+<article class="group h-full bg-gradient-to-b from-yp-gray to-yp-black rounded-xl overflow-hidden border border-yp-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-yp-yellow/30">
+  <a href={`/produse/${slug}`} class="block relative p-6 pb-4 border-b border-yp-white/10">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-yp-yellow/80">{categoryName}</p>
+        <h3 class="text-xl text-yp-white mt-2">{name}</h3>
+        <p class="text-sm text-yp-white/60 mt-1">{producatorName}</p>
+      </div>
+
+      <div class="w-10 h-10 rounded-lg bg-yp-yellow/10 border border-yp-yellow/40 flex items-center justify-center text-yp-yellow text-xs font-bold">
+        {id.slice(0, 2).toUpperCase()}
+      </div>
+    </div>
+
+    {featured && (
+      <span class="inline-flex items-center gap-1 mt-4 px-2.5 py-1 text-xs rounded-full bg-yp-yellow text-yp-black font-semibold">
+        Recomandat
+      </span>
+    )}
+  </a>
+
+  <div class="p-6 flex flex-col h-[calc(100%-132px)]">
+    <p class="text-sm text-yp-white/75 leading-relaxed flex-1 line-clamp-3">
+      {shortDescription || 'Descriere in curs de completare.'}
+    </p>
+
+    <div class="mt-5 flex items-center justify-between gap-3">
+      <a
+        href={`/produse/${slug}`}
+        class="inline-flex items-center gap-2 text-sm text-yp-yellow hover:text-yp-white transition-colors"
+      >
+        Vezi detalii
+        <span aria-hidden="true">→</span>
+      </a>
+
+      <a
+        href={`/produse/${slug}`}
+        class="inline-flex items-center justify-center rounded-md bg-yp-yellow text-yp-black text-sm font-semibold px-3 py-2 hover:bg-yp-white transition-colors"
+      >
+        Vreau mostre
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

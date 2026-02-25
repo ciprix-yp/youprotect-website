@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/products/ProductCard.astro';
+import { getCatalogProducts } from '../../lib/catalog';
+
+const { products, mode, warning } = await getCatalogProducts();
+
+const categoryCountMap = new Map<string, number>();
+for (const product of products) {
+  const currentCount = categoryCountMap.get(product.categoryName) ?? 0;
+  categoryCountMap.set(product.categoryName, currentCount + 1);
+}
+
+const categorySummary = [...categoryCountMap.entries()]
+  .map(([name, count]) => ({ name, count }))
+  .sort((left, right) => left.name.localeCompare(right.name, 'ro-RO'));
+
+const featuredProducts = products.filter((product) => product.featured);
+const regularProducts = products.filter((product) => !product.featured);
+
+const hasProducts = products.length > 0;
+---
+
+<BaseLayout
+  title="Produse"
+  description="Catalog You Protect conectat la baza de date: echipamente de protectie, detalii tehnice si selectie pentru mostre returnabile."
+>
+  <section class="relative overflow-hidden border-b border-yp-white/10 bg-yp-black">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute -top-24 left-0 w-[440px] h-[440px] rounded-full bg-yp-yellow/10 blur-3xl"></div>
+      <div class="absolute -bottom-24 right-0 w-[460px] h-[460px] rounded-full bg-cyan-400/10 blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 py-16 md:py-20">
+      <p class="text-xs uppercase tracking-[0.2em] text-yp-yellow/80">Catalog showroom</p>
+      <h1 class="mt-3 text-4xl md:text-5xl text-yp-white max-w-3xl leading-tight">
+        Produse selectate pentru companii care trateaza siguranta ca standard
+      </h1>
+      <p class="mt-6 text-yp-white/70 max-w-2xl leading-relaxed">
+        Catalogul nu este ecommerce. Selectezi produsele de interes, iar echipa noastra iti construieste oferta in functie de context si metoda de plata.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3 text-sm">
+        <span class="px-3 py-1.5 rounded-full border border-yp-white/20 text-yp-white/70">
+          {products.length} produse in catalog
+        </span>
+        <span class="px-3 py-1.5 rounded-full border border-yp-white/20 text-yp-white/70">
+          max 12 produse in selectie
+        </span>
+        <a
+          href="mailto:office@youprotect.ro?subject=Book%20a%20call%20You%20Protect"
+          class="px-3 py-1.5 rounded-full border border-yp-yellow/40 text-yp-yellow hover:border-yp-white/40 hover:text-yp-white transition-colors"
+        >
+          Book a call
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-4 py-10 md:py-14">
+    {mode === 'degraded' && (
+      <div class="mb-8 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+        Catalogul nu a putut fi incarcat din DB in acest build. Motiv: {warning ?? 'necunoscut'}
+      </div>
+    )}
+
+    {hasProducts && categorySummary.length > 0 && (
+      <div class="mb-10">
+        <h2 class="text-lg text-yp-white mb-3">Categorii disponibile</h2>
+        <div class="flex flex-wrap gap-2">
+          {categorySummary.map((category) => (
+            <span class="px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/70">
+              {category.name} ({category.count})
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {!hasProducts ? (
+      <div class="rounded-xl border border-yp-white/15 bg-yp-gray/30 p-8 text-center">
+        <h2 class="text-2xl text-yp-white">Catalog in curs de sincronizare</h2>
+        <p class="mt-3 text-yp-white/70 max-w-xl mx-auto">
+          Nu avem inca produse publicate in feed-ul `vw_catalog_products`. Dupa ce datele sunt disponibile, paginile se regenereaza la urmatorul deploy.
+        </p>
+      </div>
+    ) : (
+      <>
+        {featuredProducts.length > 0 && (
+          <div class="mb-12">
+            <h2 class="text-2xl text-yp-white mb-5">Produse recomandate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard
+                  id={product.id}
+                  slug={product.slug}
+                  name={product.name}
+                  categoryName={product.categoryName}
+                  shortDescription={product.shortDescription}
+                  producatorName={product.producatorName}
+                  featured={product.featured}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {regularProducts.length > 0 && (
+          <div>
+            <h2 class="text-2xl text-yp-white mb-5">Toate produsele</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {regularProducts.map((product) => (
+                <ProductCard
+                  id={product.id}
+                  slug={product.slug}
+                  name={product.name}
+                  categoryName={product.categoryName}
+                  shortDescription={product.shortDescription}
+                  producatorName={product.producatorName}
+                  featured={product.featured}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </>
+    )}
+  </section>
+</BaseLayout>

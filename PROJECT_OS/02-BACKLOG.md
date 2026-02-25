@@ -22,12 +22,12 @@ Format task:
 ## Sprint Curent (S1)
 
 ### WP-001
-- Status: `TODO`
+- Status: `IN_PROGRESS`
 - Owner: `Codex`
 - Scope: Integrare frontend catalog pe `vw_catalog_products` + listare + detaliu.
 - Acceptance: Pagina produse și pagina produs funcționează pe date live DB.
 - Dependencies: DB core deja aplicat.
-- Next action: Define API/read path în website repo.
+- Next action: Configurează `DATABASE_URL` în Cloudflare Pages și validează live `/produse` + `/produse/[slug]`.
 
 ### WP-002
 - Status: `TODO`
