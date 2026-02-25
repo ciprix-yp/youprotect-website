@@ -8,64 +8,65 @@ interface Props {
   producatorName?: string;
   featured?: boolean;
   merchandisingTags?: string[];
+  thumbnailUrl?: string | null;
 }
 
-const { 
+const {
   id,
   name,
-  slug, 
+  slug,
   categoryName,
   shortDescription,
   producatorName = 'You Protect',
   featured = false,
-  merchandisingTags = []
+  merchandisingTags = [],
+  thumbnailUrl = null,
 } = Astro.props;
+
+const imageUrl = thumbnailUrl || '/hero-youprotect-highvis.jpg';
+const imageAlt = `${name} - ${categoryName}`;
+const normalizedTags = merchandisingTags
+  .filter((tag) => !(featured && tag.toLowerCase() === 'bestseller'))
+  .slice(0, 2);
 ---
 
-<article class="group h-full bg-gradient-to-b from-yp-gray to-yp-black rounded-xl overflow-hidden border border-yp-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-yp-yellow/30">
-  <a href={`/produse/${slug}`} class="block relative p-6 pb-4 border-b border-yp-white/10">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <p class="text-xs uppercase tracking-wide text-yp-yellow/80">{categoryName}</p>
-        <h3 class="text-xl text-yp-white mt-2">{name}</h3>
-        <p class="text-sm text-yp-white/60 mt-1">{producatorName}</p>
-      </div>
+<article class="group h-full flex flex-col bg-gradient-to-b from-yp-gray to-yp-black rounded-xl overflow-hidden border border-yp-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-yp-yellow/30">
+  <a href={`/produse/${slug}`} class="block relative overflow-hidden border-b border-yp-white/10">
+    <img
+      src={imageUrl}
+      alt={imageAlt}
+      loading="lazy"
+      class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-yp-black/90 via-yp-black/45 to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 p-5">
+      <p class="text-xs uppercase tracking-wide text-yp-yellow/85">{categoryName}</p>
+      <h3 class="text-2xl text-yp-white mt-2 leading-tight">{name}</h3>
+      <p class="text-sm text-yp-white/70 mt-1">{producatorName}</p>
 
-      <div class="w-10 h-10 rounded-lg bg-yp-yellow/10 border border-yp-yellow/40 flex items-center justify-center text-yp-yellow text-xs font-bold">
-        {id.slice(0, 2).toUpperCase()}
-      </div>
+      {(featured || normalizedTags.length > 0) && (
+        <div class="mt-3 flex flex-wrap gap-2">
+          {featured && (
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full bg-yp-yellow text-yp-black font-semibold">
+              Recomandat
+            </span>
+          )}
+          {normalizedTags.map((tag) => (
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full border border-yp-white/25 text-yp-white/85 bg-yp-black/35">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
-
-    {(featured || merchandisingTags.length > 0) && (
-      <div class="mt-4 flex flex-wrap gap-2">
-        {featured && (
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full bg-yp-yellow text-yp-black font-semibold">
-            Recomandat
-          </span>
-        )}
-        {merchandisingTags.slice(0, 3).map((tag) => (
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full border border-yp-white/25 text-yp-white/80">
-            {tag}
-          </span>
-        ))}
-      </div>
-    )}
   </a>
 
-  <div class="p-6 flex flex-col h-[calc(100%-132px)]">
+  <div class="p-5 flex flex-col flex-1">
     <p class="text-sm text-yp-white/75 leading-relaxed flex-1 line-clamp-3">
       {shortDescription || 'Descriere in curs de completare.'}
     </p>
 
-    <div class="mt-5 flex items-center justify-between gap-3">
-      <a
-        href={`/produse/${slug}`}
-        class="inline-flex items-center gap-2 text-sm text-yp-yellow hover:text-yp-white transition-colors"
-      >
-        Vezi detalii
-        <span aria-hidden="true">→</span>
-      </a>
-
+    <div class="mt-5 flex items-center justify-end">
       <button
         type="button"
         data-shortlist-toggle

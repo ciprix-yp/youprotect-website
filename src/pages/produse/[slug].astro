@@ -94,25 +94,14 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
               data-product-category={product.categoryName}
               class="inline-flex items-center justify-center px-5 py-3 rounded-md bg-yp-yellow text-yp-black font-semibold hover:bg-yp-white transition-colors"
             >
-              Vreau sa testez
-            </button>
-            <button
-              type="button"
-              id="product-toggle-shortlist"
-              data-product-id={product.id}
-              data-product-name={product.name}
-              data-product-slug={product.slug}
-              data-product-category={product.categoryName}
-              class="inline-flex items-center justify-center px-5 py-3 rounded-md border border-yp-yellow/40 text-yp-yellow hover:border-yp-white/40 hover:text-yp-white transition-colors"
-            >
-              Adauga in selectie
+              Cere oferta
             </button>
             <button
               type="button"
               id="product-open-booking"
               class="inline-flex items-center justify-center px-5 py-3 rounded-md border border-yp-white/25 text-yp-white hover:border-yp-yellow/40 hover:text-yp-yellow transition-colors"
             >
-              Book a call
+              Discuta cu noi
             </button>
           </div>
 
@@ -282,12 +271,11 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
           }
 
           const openTestBtn = document.getElementById('product-open-test');
-          const toggleBtn = document.getElementById('product-toggle-shortlist');
           const openBookingBtn = document.getElementById('product-open-booking');
           const stateEl = document.getElementById('product-shortlist-state');
           const warningEl = document.getElementById('product-shortlist-warning');
 
-          if (!openTestBtn || !toggleBtn) {
+          if (!openTestBtn) {
             return false;
           }
 
@@ -315,31 +303,16 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
             const selected = shortlist.isSelected(product.id);
             const total = shortlist.count();
 
-            toggleBtn.textContent = selected ? 'In selectie' : 'Adauga in selectie';
-            toggleBtn.classList.toggle('border-yp-yellow/40', !selected);
-            toggleBtn.classList.toggle('text-yp-yellow', !selected);
-            toggleBtn.classList.toggle('border-yp-white/30', selected);
-            toggleBtn.classList.toggle('text-yp-white', selected);
-
             if (stateEl) {
               if (selected) {
                 const label = total === 1 ? 'produs' : 'produse';
-                stateEl.textContent = `Produs in selectie (${total} ${label} total).`;
+                stateEl.textContent = `Produs inclus in selectie (${total} ${label} total).`;
               } else {
-                stateEl.textContent = 'Adauga produsul in selectie pentru a continua fluxul de testare.';
+                stateEl.textContent =
+                  'Cand apesi \"Cere oferta\", produsul este adaugat automat in selectie.';
               }
             }
           };
-
-          toggleBtn.addEventListener('click', () => {
-            const result = shortlist.toggle(getProduct());
-            if (!result.ok && result.error === 'max_reached') {
-              showWarning('Ai ajuns la limita de 12 produse in selectie.');
-              return;
-            }
-            clearWarning();
-            refreshState();
-          });
 
           openTestBtn.addEventListener('click', () => {
             const product = getProduct();

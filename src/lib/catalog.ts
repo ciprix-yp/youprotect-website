@@ -58,6 +58,20 @@ interface SupplierMetaRow {
   is_new_text: string | null;
 }
 
+interface CatalogProductImageMapRow {
+  product_id: string | null;
+  url: string | null;
+  type: string | null;
+}
+
+interface CatalogSupplierImageMapRow {
+  showroom_product_id: string | null;
+  url: string | null;
+  image_type: string | null;
+  is_primary: boolean | null;
+  display_order: number | null;
+}
+
 export interface CatalogColorSwatch {
   name: string;
   hex: string | null;
@@ -75,6 +89,7 @@ export interface CatalogProduct {
   name: string;
   description: string;
   shortDescription: string;
+  thumbnailUrl: string | null;
   featured: boolean;
   categoryName: string;
   categorySlug: string;
@@ -233,6 +248,7 @@ function toCatalogProduct(row: CatalogProductRow): CatalogProduct {
     name: row.name,
     description: row.description ?? '',
     shortDescription: row.short_description ?? row.description ?? '',
+    thumbnailUrl: null,
     featured: Boolean(row.featured),
     categoryName: row.category_name ?? 'Catalog general',
     categorySlug: row.category_slug ?? '',
@@ -356,6 +372,83 @@ async function fetchSupplierMetaByShowroomIds(ids: string[]): Promise<Map<string
 
       const existingTags = result.get(productId) ?? [];
       result.set(productId, mergeTags(existingTags, rowTags));
+    }
+  } catch {
+    return result;
+  }
+
+  return result;
+}
+
+async function fetchCatalogThumbnailsByShowroomIds(ids: string[]): Promise<Map<string, string>> {
+  const result = new Map<string, string>();
+
+  if (ids.length === 0) {
+    return result;
+  }
+
+  try {
+    const directRows = await queryRows<CatalogProductImageMapRow>(
+      `
+      SELECT
+        product_id,
+        url,
+        type
+      FROM product_images
+      WHERE product_id = ANY($1::uuid[])
+      ORDER BY
+        product_id,
+        CASE WHEN type IN ('primary', 'main', 'hero') THEN 0 ELSE 1 END,
+        id ASC
+      `,
+      [ids]
+    );
+
+    for (const row of directRows) {
+      const productId = safeText(row.product_id);
+      const url = normalizeImageUrl(row.url);
+      if (!productId || !url || result.has(productId)) {
+        continue;
+      }
+      result.set(productId, url);
+    }
+  } catch {
+    // Keep fallback flow from supplier images.
+  }
+
+  const missingIds = ids.filter((id) => !result.has(id));
+  if (missingIds.length === 0) {
+    return result;
+  }
+
+  try {
+    const supplierRows = await queryRows<CatalogSupplierImageMapRow>(
+      `
+      SELECT
+        sp.showroom_product_id,
+        COALESCE(spi.url_large, spi.url_medium, spi.url_thumbnail, spi.url_original) AS url,
+        spi.image_type,
+        spi.is_primary,
+        spi.display_order
+      FROM supplier_product_images spi
+      JOIN supplier_products sp ON sp.id = spi.product_id
+      WHERE sp.showroom_product_id = ANY($1::uuid[])
+      ORDER BY
+        sp.showroom_product_id,
+        spi.is_primary DESC,
+        spi.display_order ASC,
+        spi.id ASC
+      `,
+      [missingIds]
+    );
+
+    for (const row of supplierRows) {
+      const productId = safeText(row.showroom_product_id);
+      const url = normalizeImageUrl(row.url);
+      if (!productId || !url || result.has(productId)) {
+        continue;
+      }
+      result.set(productId, url);
     }
   } catch {
     return result;
@@ -656,6 +749,7 @@ export async function getCatalogProducts(): Promise<CatalogProductsResult> {
     const products = rows.map(toCatalogProduct);
     const ids = products.map((product) => product.id);
     const supplierMetaMap = await fetchSupplierMetaByShowroomIds(ids);
+    const thumbnailMap = await fetchCatalogThumbnailsByShowroomIds(ids);
 
     const enrichedProducts = products.map((product) => {
       const defaultTags = buildDefaultTags(product);
@@ -663,6 +757,7 @@ export async function getCatalogProducts(): Promise<CatalogProductsResult> {
 
       return {
         ...product,
+        thumbnailUrl: thumbnailMap.get(product.id) ?? null,
         merchandisingTags: mergeTags(defaultTags, supplierTags),
       };
     });
