@@ -52,3 +52,63 @@ Scop: capturam ideile noi fara sa rupem executia taskului curent.
 - Decizie PM: `accept`
 - Executie: `update PROJECT_OS docs`
 - Note: README + RUNBOOK + DECISIONS + HANDOFF aliniate.
+
+## I-2026-02-25-03
+- Status: `IMPLEMENTED`
+- Source: `user`
+- Sugestie: Pagina de produs sa includa galerie foto 3-5 imagini per produs.
+- Impact: `ux`
+- Task tinta: `WP-005`
+- Decizie PM: `accept`
+- Executie: `commit 2889de9`
+- Note: Necesita mapare sursa imagini (product_images vs supplier_product_images) + fallback.
+
+## I-2026-02-25-04
+- Status: `IMPLEMENTED`
+- Source: `user`
+- Sugestie: Pagina de produs sa afiseze marimi disponibile si culori disponibile.
+- Impact: `conversie`
+- Task tinta: `WP-005`
+- Decizie PM: `accept`
+- Executie: `commit 2889de9`
+- Note: Sursa canonică culori setata pe `supplier_product_variants`, cu fallback pe specs.
+
+## I-2026-02-25-05
+- Status: `IMPLEMENTED`
+- Source: `user`
+- Sugestie: Introducere tag-uri comerciale in catalog (bestseller, sezon, noutati).
+- Impact: `conversie`
+- Task tinta: `WP-005`
+- Decizie PM: `accept`
+- Executie: `commits 2889de9, 21fb809`
+- Note: Tag-urile sunt in carduri si utilizabile in filtre comerciale.
+
+## I-2026-02-25-06
+- Status: `TRIAGED`
+- Source: `user`
+- Sugestie: CTA system-wide: primary `Cere oferta`, secondary `Discuta cu noi`; pe catalog CTA secundar `Testeaza fara riscuri`.
+- Impact: `conversie`
+- Task tinta: `WP-005`
+- Decizie PM: `accept`
+- Executie: `commits 18dd9ed, 21fb809, 07c3021`
+- Note: Implementat pe `catalog + product + shortlist`; ramane pass final pe homepage/CTA globale.
+
+## I-2026-02-25-07
+- Status: `IMPLEMENTED`
+- Source: `user`
+- Sugestie: Coerență wireframe pe tot site-ul; pagina de produs sa fie mai orientata pe detaliu produs (nu stil de homepage).
+- Impact: `ux`
+- Task tinta: `WP-005`
+- Decizie PM: `accept`
+- Executie: `commits 18dd9ed, 21fb809, 07c3021`
+- Note: Include redenumire nav din `Produse` in `Catalog`, carduri cu imagine si layout consistent.
+
+## I-2026-02-25-08
+- Status: `IMPLEMENTED`
+- Source: `user`
+- Sugestie: Adaugare sticky shortlist bar pe mobil pentru acces rapid la conversie.
+- Impact: `conversie`
+- Task tinta: `WP-005`
+- Decizie PM: `accept`
+- Executie: `src/pages/produse/index.astro`
+- Note: Bara apare doar dupa selectie produse si include `Cere oferta` + `Discuta`.

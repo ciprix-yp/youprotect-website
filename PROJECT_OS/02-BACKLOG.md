@@ -54,12 +54,12 @@ Format task:
 - Next action: Start WP-005 (content premium + CTA copy pass).
 
 ### WP-005
-- Status: `TODO`
+- Status: `IN_PROGRESS`
 - Owner: `Codex`
 - Scope: Content premium pentru paginile cheie (`/`, `/produse`, CTA blocks).
 - Acceptance: Copy final MVP + tone consistent + CTA clar.
 - Dependencies: none.
-- Next action: Draft copy v1 + review.
+- Next action: Finalizare pass content premium pe `/` + CTA blocks globale, apoi `pm review WP-005`.
 
 ### OPS-001
 - Status: `DONE`

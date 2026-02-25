@@ -59,7 +59,7 @@ const hasProducts = products.length > 0;
     </div>
   </section>
 
-  <section class="max-w-7xl mx-auto px-4 py-10 md:py-14">
+  <section class="max-w-7xl mx-auto px-4 pt-10 pb-24 md:py-14">
     {mode === 'degraded' && (
       <div class="mb-8 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
         Catalogul nu a putut fi incarcat din DB in acest build. Motiv: {warning ?? 'necunoscut'}
@@ -238,6 +238,31 @@ const hasProducts = products.length > 0;
     )}
   </section>
 
+  <div
+    id="mobile-shortlist-bar"
+    class="hidden md:hidden fixed bottom-4 left-4 right-4 z-40 rounded-xl border border-yp-white/20 bg-yp-black/95 backdrop-blur-sm p-3 shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
+  >
+    <div class="flex items-center justify-between gap-3">
+      <p id="mobile-shortlist-count" class="text-sm text-yp-white/85">0 produse selectate</p>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="mobile-shortlist-open-booking"
+          class="px-3 py-2 rounded-md border border-yp-white/25 text-yp-white text-xs hover:border-yp-yellow/40 hover:text-yp-yellow transition-colors"
+        >
+          Discuta
+        </button>
+        <button
+          type="button"
+          id="mobile-shortlist-open-modal"
+          class="px-3 py-2 rounded-md bg-yp-yellow text-yp-black text-xs font-semibold hover:bg-yp-white transition-colors"
+        >
+          Cere oferta
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script is:inline>
     (() => {
       let initialized = false;
@@ -260,6 +285,10 @@ const hasProducts = products.length > 0;
         const openModalBtn = document.getElementById('shortlist-open-modal');
         const openBookingBtn = document.getElementById('shortlist-open-booking');
         const clearBtn = document.getElementById('shortlist-clear');
+        const mobileBarEl = document.getElementById('mobile-shortlist-bar');
+        const mobileCountEl = document.getElementById('mobile-shortlist-count');
+        const mobileOpenModalBtn = document.getElementById('mobile-shortlist-open-modal');
+        const mobileOpenBookingBtn = document.getElementById('mobile-shortlist-open-booking');
         const toggleButtons = Array.from(document.querySelectorAll('[data-shortlist-toggle]'));
 
         const categoryButtons = Array.from(document.querySelectorAll('[data-category-filter]'));
@@ -314,6 +343,9 @@ const hasProducts = products.length > 0;
           if (countEl) {
             countEl.textContent = `${items.length} ${label}`;
           }
+          if (mobileCountEl) {
+            mobileCountEl.textContent = `${items.length} ${label}`;
+          }
 
           if (actionsEl) {
             actionsEl.classList.toggle('hidden', items.length === 0);
@@ -335,6 +367,10 @@ const hasProducts = products.length > 0;
                 chipListEl.appendChild(chip);
               });
             }
+          }
+
+          if (mobileBarEl) {
+            mobileBarEl.classList.toggle('hidden', items.length === 0);
           }
         };
 
@@ -512,10 +548,17 @@ const hasProducts = products.length > 0;
         });
 
         openModalBtn?.addEventListener('click', () => openSamplesFlow('catalog_summary'));
+        mobileOpenModalBtn?.addEventListener('click', () =>
+          openSamplesFlow('catalog_mobile_sticky_primary')
+        );
 
         openBookingBtn?.addEventListener('click', () => {
           clearWarning();
           shortlist.openLeadModal({ intent: 'book_call', source: 'catalog_summary_secondary' });
+        });
+        mobileOpenBookingBtn?.addEventListener('click', () => {
+          clearWarning();
+          shortlist.openLeadModal({ intent: 'book_call', source: 'catalog_mobile_sticky_secondary' });
         });
 
         clearBtn?.addEventListener('click', () => {

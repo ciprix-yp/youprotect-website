@@ -3,7 +3,7 @@
 ## Ultimul update
 
 - Data: `2026-02-25`
-- Status global: `WP-004_DONE`
+- Status global: `WP-005_IN_PROGRESS`
 
 ## Ce este finalizat
 
@@ -20,8 +20,8 @@
 
 ## Ce urmează imediat
 
-1. WP-005: finalizare content premium + CTA copy pass.
-2. Configurare `PUBLIC_MICROSOFT_BOOKINGS_URL` / `MICROSOFT_BOOKINGS_URL` în Cloudflare pentru redirect live Bookings.
+1. WP-005: finalizare pass content premium pe homepage (`/`) + CTA blocks globale.
+2. Rulează `pm review WP-005` după ultimul pass de copy și aliniere CTA.
 3. Pregătire S2: automatizare ofertare + follow-up (n8n).
 
 ## Blocaje active
@@ -31,6 +31,22 @@
 - Variabilele de mediu pentru URL-ul Microsoft Bookings nu sunt încă setate (`PUBLIC_MICROSOFT_BOOKINGS_URL` / `MICROSOFT_BOOKINGS_URL`), deci redirect-ul Bookings nu e activ live.
 
 ## Rezolvat în sesiunea curentă
+
+- Iterații catalog UX/comercial livrate și puse live pe Cloudflare:
+  - `2889de9`: galerie produs + mărimi + culori din DB.
+  - `18dd9ed`: normalizare structură catalog, reducere CTA overload, nav `Catalog`.
+  - `21fb809`: filtre comerciale combinate + pass copy premium.
+  - `07c3021`: sortare (`Relevanta`, `Noutati`, `A-Z`) + card polish enterprise.
+- Sticky mobile shortlist bar implementat pe `/produse/` (activ doar cu selecție > 0) pentru acces rapid la:
+  - `Cere oferta`
+  - `Discuta`
+- Quality gate repetat după fiecare iterație:
+  - `npm run build` = PASS
+  - `npm run qc:smoke` = PASS
+- PM orchestration:
+  - `pm start WP-005` executat, status task setat `IN_PROGRESS`.
+  - `07-IDEA_INBOX` actualizat (idei catalog marcate `IMPLEMENTED`/`TRIAGED`).
+  - `03-DECISIONS_LOG` actualizat cu deciziile de IA catalog + sticky mobile + sortare.
 
 - `WP-003` implementat și închis (`DONE`).
 - Endpoint `POST /api/leads` extins pentru persistare completă în `website_lead_context`:
