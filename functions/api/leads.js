@@ -112,10 +112,14 @@ function jsonResponse(body, status = 200) {
 
 export const onRequestPost = async (context) => {
   const { request, env } = context;
-  const databaseUrl = env?.DATABASE_URL;
+  const hyperdriveUrl = normalizeString(env?.HYPERDRIVE?.connectionString);
+  const databaseUrl = hyperdriveUrl || normalizeString(env?.DATABASE_URL);
 
   if (!databaseUrl) {
-    return jsonResponse({ success: false, error: 'DATABASE_URL is missing.' }, 500);
+    return jsonResponse(
+      { success: false, error: 'No database binding configured (HYPERDRIVE/DATABASE_URL).' },
+      500
+    );
   }
 
   let payload;

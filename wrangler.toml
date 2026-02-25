@@ -2,3 +2,7 @@ name = "youprotect-website"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-02-25"
 compatibility_flags = ["nodejs_compat"]
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "0e9c108d713140229e9081b5327a8f7d"
