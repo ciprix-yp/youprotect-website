@@ -174,131 +174,154 @@ const hasProducts = products.length > 0;
 
   <script is:inline>
     (() => {
-      const shortlist = window.YouProtectShortlist;
-      if (!shortlist) return;
+      let initialized = false;
 
-      const warningEl = document.getElementById('shortlist-warning');
-      const countEl = document.getElementById('shortlist-count');
-      const chipListEl = document.getElementById('shortlist-chip-list');
-      const openModalBtn = document.getElementById('shortlist-open-modal');
-      const clearBtn = document.getElementById('shortlist-clear');
-      const openModalTopBtn = document.getElementById('catalog-open-modal-top');
-      const openBookingTopBtn = document.getElementById('catalog-open-booking-top');
-      const toggleButtons = Array.from(document.querySelectorAll('[data-shortlist-toggle]'));
+      const initShortlistBindings = () => {
+        if (initialized) {
+          return true;
+        }
 
-      const showWarning = (message) => {
-        if (!warningEl) return;
-        warningEl.textContent = message;
-        warningEl.classList.remove('hidden');
-      };
+        const shortlist = window.YouProtectShortlist;
+        if (!shortlist) {
+          return false;
+        }
 
-      const clearWarning = () => {
-        if (!warningEl) return;
-        warningEl.textContent = '';
-        warningEl.classList.add('hidden');
-      };
+        const warningEl = document.getElementById('shortlist-warning');
+        const countEl = document.getElementById('shortlist-count');
+        const chipListEl = document.getElementById('shortlist-chip-list');
+        const openModalBtn = document.getElementById('shortlist-open-modal');
+        const clearBtn = document.getElementById('shortlist-clear');
+        const openModalTopBtn = document.getElementById('catalog-open-modal-top');
+        const openBookingTopBtn = document.getElementById('catalog-open-booking-top');
+        const toggleButtons = Array.from(document.querySelectorAll('[data-shortlist-toggle]'));
 
-      const productFromButton = (button) => ({
-        id: button.getAttribute('data-product-id') || '',
-        name: button.getAttribute('data-product-name') || '',
-        slug: button.getAttribute('data-product-slug') || '',
-        categoryName: button.getAttribute('data-product-category') || '',
-      });
+        const showWarning = (message) => {
+          if (!warningEl) return;
+          warningEl.textContent = message;
+          warningEl.classList.remove('hidden');
+        };
 
-      const refreshButtons = () => {
-        toggleButtons.forEach((button) => {
-          const productId = button.getAttribute('data-product-id') || '';
-          const selected = shortlist.isSelected(productId);
-          button.textContent = selected ? 'In selectie' : 'Adauga in selectie';
-          button.classList.toggle('bg-yp-yellow', !selected);
-          button.classList.toggle('text-yp-black', !selected);
-          button.classList.toggle('hover:bg-yp-white', !selected);
-          button.classList.toggle('bg-transparent', selected);
-          button.classList.toggle('text-yp-white', selected);
-          button.classList.toggle('border', selected);
-          button.classList.toggle('border-yp-yellow/40', selected);
-          button.classList.toggle('hover:border-yp-white/60', selected);
+        const clearWarning = () => {
+          if (!warningEl) return;
+          warningEl.textContent = '';
+          warningEl.classList.add('hidden');
+        };
+
+        const productFromButton = (button) => ({
+          id: button.getAttribute('data-product-id') || '',
+          name: button.getAttribute('data-product-name') || '',
+          slug: button.getAttribute('data-product-slug') || '',
+          categoryName: button.getAttribute('data-product-category') || '',
         });
-      };
 
-      const refreshSummary = () => {
-        const items = shortlist.getItems();
-        const label = items.length === 1 ? 'produs selectat' : 'produse selectate';
+        const refreshButtons = () => {
+          toggleButtons.forEach((button) => {
+            const productId = button.getAttribute('data-product-id') || '';
+            const selected = shortlist.isSelected(productId);
+            button.textContent = selected ? 'In selectie' : 'Adauga in selectie';
+            button.classList.toggle('bg-yp-yellow', !selected);
+            button.classList.toggle('text-yp-black', !selected);
+            button.classList.toggle('hover:bg-yp-white', !selected);
+            button.classList.toggle('bg-transparent', selected);
+            button.classList.toggle('text-yp-white', selected);
+            button.classList.toggle('border', selected);
+            button.classList.toggle('border-yp-yellow/40', selected);
+            button.classList.toggle('hover:border-yp-white/60', selected);
+          });
+        };
 
-        if (countEl) {
-          countEl.textContent = `${items.length} ${label}`;
-        }
+        const refreshSummary = () => {
+          const items = shortlist.getItems();
+          const label = items.length === 1 ? 'produs selectat' : 'produse selectate';
 
-        if (chipListEl) {
-          chipListEl.innerHTML = '';
-
-          if (items.length === 0) {
-            const emptyMessage = document.createElement('span');
-            emptyMessage.className = 'text-sm text-yp-white/60';
-            emptyMessage.textContent =
-              'Selecteaza produse din catalog pentru a porni formularul de testare.';
-            chipListEl.appendChild(emptyMessage);
-          } else {
-            items.forEach((item) => {
-              const chip = document.createElement('span');
-              chip.className =
-                'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/80';
-              chip.textContent = item.name;
-              chipListEl.appendChild(chip);
-            });
+          if (countEl) {
+            countEl.textContent = `${items.length} ${label}`;
           }
-        }
 
-        if (openModalBtn) {
-          openModalBtn.disabled = items.length === 0;
-        }
-      };
+          if (chipListEl) {
+            chipListEl.innerHTML = '';
 
-      const openSamplesFlow = (source) => {
-        const items = shortlist.getItems();
-        if (items.length === 0) {
-          showWarning('Selecteaza cel putin un produs pentru testare.');
-          return;
-        }
-        clearWarning();
-        shortlist.openLeadModal({ intent: 'view_samples', source });
-      };
+            if (items.length === 0) {
+              const emptyMessage = document.createElement('span');
+              emptyMessage.className = 'text-sm text-yp-white/60';
+              emptyMessage.textContent =
+                'Selecteaza produse din catalog pentru a porni formularul de testare.';
+              chipListEl.appendChild(emptyMessage);
+            } else {
+              items.forEach((item) => {
+                const chip = document.createElement('span');
+                chip.className =
+                  'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border border-yp-white/20 text-yp-white/80';
+                chip.textContent = item.name;
+                chipListEl.appendChild(chip);
+              });
+            }
+          }
 
-      toggleButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          const result = shortlist.toggle(productFromButton(button));
-          if (!result.ok && result.error === 'max_reached') {
-            showWarning('Ai ajuns la limita de 12 produse in selectie.');
+          if (openModalBtn) {
+            openModalBtn.disabled = items.length === 0;
+          }
+        };
+
+        const openSamplesFlow = (source) => {
+          const items = shortlist.getItems();
+          if (items.length === 0) {
+            showWarning('Selecteaza cel putin un produs pentru testare.');
             return;
           }
+          clearWarning();
+          shortlist.openLeadModal({ intent: 'view_samples', source });
+        };
+
+        toggleButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            const result = shortlist.toggle(productFromButton(button));
+            if (!result.ok && result.error === 'max_reached') {
+              showWarning('Ai ajuns la limita de 12 produse in selectie.');
+              return;
+            }
+            clearWarning();
+            refreshButtons();
+            refreshSummary();
+          });
+        });
+
+        openModalBtn?.addEventListener('click', () => openSamplesFlow('catalog_summary'));
+        openModalTopBtn?.addEventListener('click', () => openSamplesFlow('catalog_top_cta'));
+
+        openBookingTopBtn?.addEventListener('click', () => {
+          clearWarning();
+          shortlist.openLeadModal({ intent: 'book_call', source: 'catalog_top_booking' });
+        });
+
+        clearBtn?.addEventListener('click', () => {
+          shortlist.clear();
           clearWarning();
           refreshButtons();
           refreshSummary();
         });
-      });
 
-      openModalBtn?.addEventListener('click', () => openSamplesFlow('catalog_summary'));
-      openModalTopBtn?.addEventListener('click', () => openSamplesFlow('catalog_top_cta'));
+        window.addEventListener('yp:shortlist-changed', () => {
+          refreshButtons();
+          refreshSummary();
+        });
 
-      openBookingTopBtn?.addEventListener('click', () => {
-        clearWarning();
-        shortlist.openLeadModal({ intent: 'book_call', source: 'catalog_top_booking' });
-      });
-
-      clearBtn?.addEventListener('click', () => {
-        shortlist.clear();
-        clearWarning();
         refreshButtons();
         refreshSummary();
-      });
+        initialized = true;
+        return true;
+      };
 
-      window.addEventListener('yp:shortlist-changed', () => {
-        refreshButtons();
-        refreshSummary();
-      });
+      if (initShortlistBindings()) {
+        return;
+      }
 
-      refreshButtons();
-      refreshSummary();
+      window.addEventListener('DOMContentLoaded', () => {
+        initShortlistBindings();
+      });
+      window.addEventListener('yp:shortlist-ready', () => {
+        initShortlistBindings();
+      });
     })();
   </script>
 </BaseLayout>

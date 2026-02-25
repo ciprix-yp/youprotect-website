@@ -158,5 +158,6 @@
     openLeadModal,
   };
 
+  window.dispatchEvent(new CustomEvent('yp:shortlist-ready'));
   emitChange(getItems());
 })();
