@@ -3,7 +3,7 @@
 ## Ultimul update
 
 - Data: `2026-02-25`
-- Status global: `WP-002_DONE`
+- Status global: `WP-003_DONE`
 
 ## Ce este finalizat
 
@@ -20,9 +20,9 @@
 
 ## Ce urmează imediat
 
-1. WP-003: wizard write + scoring.
-2. WP-004: bookings flow + pipeline update.
-3. WP-005: finalizare content premium + CTA copy pass.
+1. WP-004: bookings flow + `website_lead_pipeline` update.
+2. WP-005: finalizare content premium + CTA copy pass.
+3. Pregătire S2: automatizare ofertare + follow-up (n8n).
 
 ## Blocaje active
 
@@ -32,26 +32,20 @@
 
 ## Rezolvat în sesiunea curentă
 
-- `WP-002` implementat și închis (`DONE`).
-- Shortlist client-side implementat (max 12) cu:
-  - add/remove în catalog cards (`/produse`)
-  - add/remove pe pagina produs (`/produse/[slug]`)
-  - persistare în `localStorage` (`yp_shortlist_v1`)
-  - sumar shortlist + validări UX limită.
-- Lead modal refactorizat ca modal global bazat pe evenimente:
-  - deschidere din CTA-uri multiple (`header`, `homepage`, `catalog`, `product detail`)
-  - include shortlist în payload submit.
-- Endpoint `POST /api/leads` implementat în Pages Functions:
-  - write în `lead_requests`
-  - write în `lead_request_products`
-  - write/update în `website_lead_context` (intent + answers).
-- Runtime connectivity fix:
-  - `nodejs_compat` activat pe Cloudflare Pages (`preview` + `production`)
-  - Hyperdrive creat și legat (`HYPERDRIVE`, id `0e9c108d713140229e9081b5327a8f7d`)
-  - endpoint actualizat să folosească `env.HYPERDRIVE.connectionString`.
-- Validare live API (production):
-  - `POST /api/leads` -> `200` cu `lead_request_id=6`
-  - DB confirmat: rânduri noi în `lead_requests`, `lead_request_products`, `website_lead_context`.
+- `WP-003` implementat și închis (`DONE`).
+- Endpoint `POST /api/leads` extins pentru persistare completă în `website_lead_context`:
+  - `answers_json`
+  - `pain_points`
+  - `desired_outcomes`
+  - `needs_summary`
+  - `qualification_score` (calcul server-side)
+  - `payment_method` (pentru `view_samples`)
+  - `company_size_hint`, `urgency_hint`
+- Validări server-side adăugate pentru toate răspunsurile obligatorii din wizard și pentru metoda de plată pe fluxul `view_samples`.
+- `qualification_label` se obține automat prin trigger DB (`low`, `medium`, `high`) pe pragurile active `0-50`, `50-75`, `75-100`.
+- Validare live API (production) după push:
+  - `POST /api/leads` (`view_samples`) -> `200`, `lead_request_id=8`, `qualification_score=98.00`, `qualification_label=high`
+  - `POST /api/leads` (`book_call`) -> `200`, `lead_request_id=9`, `qualification_score=51.00`, `qualification_label=medium`
 
 ## Checklist start sesiune viitoare
 

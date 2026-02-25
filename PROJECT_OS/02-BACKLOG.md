@@ -38,12 +38,12 @@ Format task:
 - Next action: Start WP-003 (wizard write + scoring în `website_lead_context`).
 
 ### WP-003
-- Status: `TODO`
+- Status: `DONE`
 - Owner: `Codex`
 - Scope: Wizard smart -> write în `website_lead_context` + scoring.
 - Acceptance: Salvează answers/pain_points/outcomes/score/label.
 - Dependencies: WP-002.
-- Next action: Contract payload formular.
+- Next action: Start WP-004 (bookings + pipeline update).
 
 ### WP-004
 - Status: `TODO`
