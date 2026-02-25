@@ -6,8 +6,9 @@ Acesta este centrul operațional al proiectului. Orice sesiune începe de aici.
 
 1. `/Users/homefolder/youprotect-website/PROJECT_OS/00-NORTH_STAR.md`
 2. `/Users/homefolder/youprotect-website/PROJECT_OS/02-BACKLOG.md`
-3. `/Users/homefolder/youprotect-website/PROJECT_OS/03-DECISIONS_LOG.md`
-4. `/Users/homefolder/youprotect-website/PROJECT_OS/04-SESSION_HANDOFF.md`
+3. `/Users/homefolder/youprotect-website/PROJECT_OS/07-IDEA_INBOX.md`
+4. `/Users/homefolder/youprotect-website/PROJECT_OS/03-DECISIONS_LOG.md`
+5. `/Users/homefolder/youprotect-website/PROJECT_OS/04-SESSION_HANDOFF.md`
 
 ## Source of Truth extins
 
@@ -24,6 +25,10 @@ Acesta este centrul operațional al proiectului. Orice sesiune începe de aici.
 - Orice decizie structurală intră în `03-DECISIONS_LOG.md`.
 - La final de sesiune se actualizează obligatoriu `04-SESSION_HANDOFF.md`.
 - Fără lucru “invizibil”: tot ce facem se mapează pe backlog.
+- Sugestiile ad-hoc venite pe parcurs se capturează mai întâi în `07-IDEA_INBOX.md`.
+- O sugestie se execută doar dacă:
+  - este mapată la task-ul curent `IN_PROGRESS`, sau
+  - este planificată explicit ca task nou în backlog.
 
 ## PM local (orchestrator)
 
@@ -46,9 +51,10 @@ Reguli reviewer:
 
 1. `pm status`
 2. `pm next --start`
-3. implementare task
-4. `pm review <TASK_ID>`
-5. `npm run release:iteration -- <TASK_ID>`
-6. validare live pe Cloudflare (desktop + mobile)
-7. `pm close <TASK_ID>`
-8. update `04-SESSION_HANDOFF.md`
+3. capture sugestii noi în `07-IDEA_INBOX.md` (dacă apar)
+4. implementare task
+5. `pm review <TASK_ID>`
+6. `npm run release:iteration -- <TASK_ID>`
+7. validare live pe Cloudflare (desktop + mobile)
+8. `pm close <TASK_ID>`
+9. update `04-SESSION_HANDOFF.md`

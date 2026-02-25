@@ -77,6 +77,14 @@ Format task:
 - Dependencies: Cloudflare Pages project existent.
 - Next action: Folosește `release:iteration`; deploy-ul vine din integrarea Git Cloudflare.
 
+### OPS-003
+- Status: `DONE`
+- Owner: `Codex`
+- Scope: Protocol anti-deturnare: "idea intake" + mapare sugestii la task-uri înainte de execuție.
+- Acceptance: `07-IDEA_INBOX.md` introdus și conectat în runbook/readme/decision log; ideile sunt urmărite cu status.
+- Dependencies: OPS-001.
+- Next action: Toate sugestiile noi intră în `07-IDEA_INBOX.md` înainte de implementare.
+
 ---
 
 ## Next Sprint (S2)

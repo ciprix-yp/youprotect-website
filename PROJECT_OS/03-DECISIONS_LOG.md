@@ -42,3 +42,9 @@
 - Decizie: Folosim Git integration ca mecanism principal de deploy și păstrăm `wrangler` doar opțional.
 - De ce: Setup mai simplu, mai puține secrete/config de întreținut.
 - Impact: `release:iteration` devine `review + push`, iar deploy-ul se întâmplă automat.
+
+## D-2026-02-25-04
+- Context: Feedback-ul vizual ad-hoc e valoros, dar poate deturna execuția de la taskul activ.
+- Decizie: Introducem protocol "capture first": orice sugestie nouă intră în `07-IDEA_INBOX.md` și se execută doar când e mapată explicit la un task.
+- De ce: Păstrăm focusul sprintului fără să pierdem ideile bune.
+- Impact: Execuție mai disciplinată, trasabilitate mai bună între idee -> task -> implementare.

@@ -16,6 +16,7 @@
 - Reviewer gate adăugat (`PROJECT_OS/pm/REVIEWER_RULES.md`) pentru verificare înainte de `DONE`.
 - Deploy flow iterativ adăugat: script local `release:iteration` + CI build workflow.
 - Deploy flow simplificat: Cloudflare Git integration este canalul principal (push => deploy).
+- Protocol anti-deturnare activ: sugestiile ad-hoc intră în `07-IDEA_INBOX.md` și se execută doar când sunt mapate la task.
 
 ## Ce urmează imediat
 
@@ -46,5 +47,6 @@
 
 - Citește `PROJECT_OS/README.md`.
 - Verifică `02-BACKLOG.md` și marchează taskul curent `IN_PROGRESS`.
+- Verifică `07-IDEA_INBOX.md` și mapează ideile `TRIAGED/PLANNED` la taskul activ.
 - Lucrează pe un singur obiectiv clar.
 - La final, actualizează acest fișier.
