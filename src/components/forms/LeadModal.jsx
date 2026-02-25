@@ -1,54 +1,116 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function LeadModal({ isOpen, onClose, productContext = null }) {
+const MAX_SHORTLIST_ITEMS = 12;
+
+const INITIAL_FORM = {
+  urgenta: '',
+  echipament: '',
+  nume: '',
+  email: '',
+  telefon: '',
+  companie: '',
+  mesaj: '',
+};
+
+function readUtmParams() {
+  if (typeof window === 'undefined') {
+    return {
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+    };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  return {
+    utm_source: params.get('utm_source'),
+    utm_medium: params.get('utm_medium'),
+    utm_campaign: params.get('utm_campaign'),
+  };
+}
+
+function getShortlistItems() {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  const shortlist = window.YouProtectShortlist;
+  if (!shortlist) {
+    return [];
+  }
+
+  return shortlist.getItems().slice(0, MAX_SHORTLIST_ITEMS);
+}
+
+export default function LeadModal() {
+  const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState('qualification');
-  
-  const [formData, setFormData] = useState({
-    urgenta: '',
-    echipament: '',
-    nume: '',
-    email: '',
-    telefon: '',
-    companie: '',
-    mesaj: productContext?.produs_nume 
-      ? `Mă interesează o ofertă pentru ${productContext.produs_nume}.`
-      : '',
-  });
-
+  const [intent, setIntent] = useState('view_samples');
+  const [triggerSource, setTriggerSource] = useState('website');
+  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (!isOpen) {
-      setTimeout(() => {
-        setStep('qualification');
-        setFormData({
-          urgenta: '',
-          echipament: '',
-          nume: '',
-          email: '',
-          telefon: '',
-          companie: '',
-          mesaj: productContext?.produs_nume 
-            ? `Mă interesează o ofertă pentru ${productContext.produs_nume}.`
-            : '',
-        });
-        setSuccess(false);
-        setErrors({});
-      }, 300);
-    }
-  }, [isOpen, productContext]);
+  const syncShortlist = () => {
+    setSelectedProducts(getShortlistItems());
+  };
+
+  const resetModalState = () => {
+    setStep('qualification');
+    setFormData(INITIAL_FORM);
+    setLoading(false);
+    setSuccess(false);
+    setErrors({});
+    syncShortlist();
+  };
 
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
+    const handleOpen = (event) => {
+      const detail = event?.detail || {};
+      const shortlist = window.YouProtectShortlist;
+
+      if (detail.product && shortlist) {
+        shortlist.add(detail.product);
+      }
+
+      setIntent(detail.intent === 'book_call' ? 'book_call' : 'view_samples');
+      setTriggerSource(detail.source || 'website');
+      syncShortlist();
+      setIsOpen(true);
+    };
+
+    const handleShortlistChanged = (event) => {
+      const items = event?.detail?.items;
+      if (Array.isArray(items)) {
+        setSelectedProducts(items.slice(0, MAX_SHORTLIST_ITEMS));
+      } else {
+        syncShortlist();
       }
     };
+
+    window.addEventListener('yp:lead-modal-open', handleOpen);
+    window.addEventListener('yp:shortlist-changed', handleShortlistChanged);
+
+    syncShortlist();
+
+    return () => {
+      window.removeEventListener('yp:lead-modal-open', handleOpen);
+      window.removeEventListener('yp:shortlist-changed', handleShortlistChanged);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset';
@@ -57,114 +119,174 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
     };
   }, [isOpen]);
 
-  const handleQualificationSelect = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  useEffect(() => {
+    if (!isOpen) {
+      const timeout = setTimeout(() => {
+        resetModalState();
+      }, 250);
+      return () => clearTimeout(timeout);
+    }
+    return undefined;
+  }, [isOpen]);
 
   const canProceedToContact = formData.urgenta && formData.echipament;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+  const closeModal = () => {
+    if (loading) {
+      return;
+    }
+    setIsOpen(false);
+  };
+
+  const handleQualificationSelect = (field, value) => {
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [field]: value,
     }));
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateContactForm = () => {
-    const newErrors = {};
+    const nextErrors = {};
 
     if (!formData.nume || formData.nume.trim().length < 3) {
-      newErrors.nume = 'Numele trebuie să aibă minim 3 caractere';
+      nextErrors.nume = 'Numele trebuie sa aiba minim 3 caractere';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email || !emailRegex.test(formData.email)) {
-      newErrors.email = 'Email invalid';
+      nextErrors.email = 'Email invalid';
     }
 
     const phoneRegex = /^(\+40|0040|0)[27][0-9]{8}$/;
     const cleanPhone = formData.telefon.replace(/\s/g, '');
     if (!cleanPhone || !phoneRegex.test(cleanPhone)) {
-      newErrors.telefon = 'Telefon invalid (ex: 0721234567)';
+      nextErrors.telefon = 'Telefon invalid (ex: 0721234567)';
     }
 
     if (!formData.companie || formData.companie.trim().length < 2) {
-      newErrors.companie = 'Numele companiei este obligatoriu';
+      nextErrors.companie = 'Numele companiei este obligatoriu';
     }
 
-    return newErrors;
+    if (intent === 'view_samples' && selectedProducts.length === 0) {
+      nextErrors.submit = 'Selecteaza cel putin un produs in shortlist inainte de trimitere.';
+    }
+
+    return nextErrors;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const newErrors = validateContactForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const nextErrors = validateContactForm();
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
       return;
     }
 
     setLoading(true);
 
     try {
+      const utm = readUtmParams();
+      const sourceUrl = `${window.location.pathname}${window.location.search}`;
+
+      const payload = {
+        ...formData,
+        conversion_intent: intent,
+        selected_products: selectedProducts,
+        source_url: sourceUrl,
+        source_trigger: triggerSource,
+        user_agent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        ...utm,
+      };
+
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          sursa: 'Website Modal',
-          product_context: productContext,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error('Network error');
+      if (!response.ok) {
+        let message = 'A aparut o eroare. Te rugam sa incerci din nou.';
+        try {
+          const body = await response.json();
+          if (body?.error) {
+            message = body.error;
+          }
+        } catch (_error) {
+          // Ignore JSON parse error and use generic message.
+        }
+        throw new Error(message);
+      }
+
+      if (intent === 'view_samples' && window.YouProtectShortlist) {
+        window.YouProtectShortlist.clear();
+      }
 
       setSuccess(true);
+
       setTimeout(() => {
-        onClose();
+        setIsOpen(false);
       }, 2000);
     } catch (error) {
       console.error('Lead submission error:', error);
-      setErrors({ submit: 'A apărut o eroare. Te rugăm să încerci din nou.' });
+      setErrors({
+        submit: error instanceof Error ? error.message : 'A aparut o eroare la trimitere.',
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+
+  const title =
+    intent === 'book_call' ? 'Mini-precalificare pentru Book a call' : 'Cateva intrebari pentru testare';
+  const subtitle =
+    intent === 'book_call'
+      ? 'Ne ajuta sa iti alocam rapid agentul potrivit.'
+      : 'Raspunsurile tale ne ajuta sa pregatim selectie si oferta relevanta.';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-yp-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-yp-black/80 backdrop-blur-sm" onClick={closeModal} />
 
       <div className="relative bg-yp-gray rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-yp-green/20">
         <button
-          onClick={onClose}
+          onClick={closeModal}
           className="absolute top-4 right-4 text-yp-white/60 hover:text-yp-white text-3xl font-light z-10"
-          aria-label="Închide"
+          aria-label="Inchide"
         >
           ×
         </button>
 
         <div className="flex gap-2 p-6 pb-0">
-          <div className={`h-1 flex-1 rounded-full transition-colors ${
-            step === 'qualification' ? 'bg-yp-yellow' : 'bg-yp-green'
-          }`} />
-          <div className={`h-1 flex-1 rounded-full transition-colors ${
-            step === 'contact' ? 'bg-yp-yellow' : 'bg-yp-white/20'
-          }`} />
+          <div
+            className={`h-1 flex-1 rounded-full transition-colors ${
+              step === 'qualification' ? 'bg-yp-yellow' : 'bg-yp-green'
+            }`}
+          />
+          <div
+            className={`h-1 flex-1 rounded-full transition-colors ${
+              step === 'contact' ? 'bg-yp-yellow' : 'bg-yp-white/20'
+            }`}
+          />
         </div>
 
         <div className="p-8">
@@ -175,28 +297,46 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="font-heading text-2xl text-yp-white mb-2">Mulțumim!</h3>
-              <p className="text-yp-white/70">Cererea ta a fost trimisă. Te vom contacta în curând.</p>
+              <h3 className="font-heading text-2xl text-yp-white mb-2">Multumim!</h3>
+              <p className="text-yp-white/70">
+                {intent === 'book_call'
+                  ? 'Cererea pentru call a fost trimisa. Revenim cu confirmare pe email.'
+                  : 'Cererea pentru testare a fost trimisa. Revenim rapid cu urmatorii pasi.'}
+              </p>
             </div>
           ) : step === 'qualification' ? (
             <>
-              <h2 className="font-heading text-3xl text-yp-white mb-2">
-                Ajută-ne să te deservim mai bine
-              </h2>
-              <p className="text-yp-white/70 mb-8">
-                Două întrebări rapide pentru a-ți oferi o ofertă precisă
-              </p>
+              <h2 className="font-heading text-3xl text-yp-white mb-2">{title}</h2>
+              <p className="text-yp-white/70 mb-8">{subtitle}</p>
+
+              {intent === 'view_samples' && selectedProducts.length > 0 && (
+                <div className="mb-8 rounded-xl border border-yp-white/20 bg-yp-black/20 p-4">
+                  <p className="text-sm text-yp-white/70 mb-2">
+                    Shortlist activ ({selectedProducts.length}/{MAX_SHORTLIST_ITEMS})
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProducts.map((product) => (
+                      <span
+                        key={product.id}
+                        className="px-2.5 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80"
+                      >
+                        {product.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="mb-8">
                 <label className="block text-yp-white font-heading text-lg mb-4">
-                  1. Când ai nevoie de echipament?
+                  1. Cand ai nevoie de echipament?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     { value: 'urgent', label: 'Urgent (< 5 zile)', icon: '⚡' },
-                    { value: 'normal', label: 'Normal (1-2 săptămâni)', icon: '📅' },
-                    { value: 'planificare', label: 'În planificare (> 1 lună)', icon: '📋' },
-                    { value: 'explorare', label: 'Doar mă informez', icon: '🔍' },
+                    { value: 'normal', label: 'Normal (1-2 saptamani)', icon: '📅' },
+                    { value: 'planificare', label: 'In planificare (> 1 luna)', icon: '📋' },
+                    { value: 'explorare', label: 'Doar ma informez', icon: '🔍' },
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -217,13 +357,13 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
 
               <div className="mb-8">
                 <label className="block text-yp-white font-heading text-lg mb-4">
-                  2. Ce tip de echipament te interesează?
+                  2. Ce tip de echipament te intereseaza?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { value: 'imbracaminte', label: 'Îmbrăcăminte de lucru', icon: '👔' },
-                    { value: 'incaltaminte', label: 'Încălțăminte protecție', icon: '👢' },
-                    { value: 'accesorii', label: 'Accesorii (mănuși, ochelari)', icon: '🧤' },
+                    { value: 'imbracaminte', label: 'Imbracaminte de lucru', icon: '👔' },
+                    { value: 'incaltaminte', label: 'Incaltaminte protectie', icon: '👢' },
+                    { value: 'accesorii', label: 'Accesorii (manusi, ochelari)', icon: '🧤' },
                     { value: 'complet', label: 'Echipament complet', icon: '📦' },
                   ].map((option) => (
                     <button
@@ -253,7 +393,7 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
                     : 'bg-yp-white/10 text-yp-white/40 cursor-not-allowed'
                 }`}
               >
-                Continuă →
+                Continua →
               </button>
             </>
           ) : (
@@ -263,20 +403,36 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
                 onClick={() => setStep('qualification')}
                 className="text-yp-white/60 hover:text-yp-white mb-4 flex items-center gap-2"
               >
-                ← Înapoi
+                ← Inapoi
               </button>
 
-              <h2 className="font-heading text-3xl text-yp-white mb-2">
-                Detaliile tale de contact
-              </h2>
+              <h2 className="font-heading text-3xl text-yp-white mb-2">Detaliile tale de contact</h2>
               <p className="text-yp-white/70 mb-6">
-                Te vom contacta în maximum 24h cu o ofertă personalizată
+                {intent === 'book_call'
+                  ? 'Te contactam rapid pentru confirmarea call-ului.'
+                  : 'Te contactam cu o propunere de testare in cel mai scurt timp.'}
               </p>
+
+              {intent === 'view_samples' && selectedProducts.length > 0 && (
+                <div className="mb-6 rounded-xl border border-yp-white/20 bg-yp-black/20 p-4">
+                  <p className="text-sm text-yp-white/70 mb-2">Produse selectate pentru testare</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProducts.map((product) => (
+                      <span
+                        key={product.id}
+                        className="px-2.5 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80"
+                      >
+                        {product.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label htmlFor="nume" className="block text-yp-white mb-2 font-heading">
-                    Nume și Prenume *
+                    Nume si Prenume *
                   </label>
                   <input
                     type="text"
@@ -348,7 +504,7 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
 
                 <div>
                   <label htmlFor="mesaj" className="block text-yp-white mb-2 font-heading">
-                    Mesaj (opțional)
+                    Mesaj (optional)
                   </label>
                   <textarea
                     id="mesaj"
@@ -357,20 +513,22 @@ export default function LeadModal({ isOpen, onClose, productContext = null }) {
                     onChange={handleChange}
                     rows={3}
                     className="w-full px-4 py-3 bg-yp-black border border-yp-white/20 rounded-lg text-yp-white focus:outline-none focus:border-yp-yellow transition-colors resize-none"
-                    placeholder="Detalii suplimentare despre necesitățile tale..."
+                    placeholder="Detalii suplimentare despre nevoile tale..."
                   />
                 </div>
 
-                {errors.submit && (
-                  <p className="text-red-400 text-center">{errors.submit}</p>
-                )}
+                {errors.submit && <p className="text-red-400 text-center">{errors.submit}</p>}
 
                 <button
                   type="submit"
                   disabled={loading}
                   className="w-full bg-yp-yellow text-yp-black font-heading font-bold py-4 rounded-xl text-lg hover:bg-yp-yellow/90 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Se trimite...' : 'Trimite Cererea'}
+                  {loading
+                    ? 'Se trimite...'
+                    : intent === 'book_call'
+                      ? 'Trimite cererea de call'
+                      : 'Trimite cererea de testare'}
                 </button>
               </form>
             </>

@@ -18,10 +18,6 @@ const pageDescription =
   product?.shortDescription ||
   'Detalii produs You Protect: beneficii, conformitate si proces de testare fara risc.';
 
-const requestTestUrl = product
-  ? `mailto:office@youprotect.ro?subject=${encodeURIComponent(`Vreau sa testez - ${product.name}`)}`
-  : 'mailto:office@youprotect.ro';
-
 const updatedLabel = product
   ? new Date(product.updatedAt).toLocaleDateString('ro-RO', {
       year: 'numeric',
@@ -76,19 +72,39 @@ const updatedLabel = product
           </p>
 
           <div class="mt-8 flex flex-wrap gap-3">
-            <a
-              href={requestTestUrl}
+            <button
+              type="button"
+              id="product-open-test"
+              data-product-id={product.id}
+              data-product-name={product.name}
+              data-product-slug={product.slug}
+              data-product-category={product.categoryName}
               class="inline-flex items-center justify-center px-5 py-3 rounded-md bg-yp-yellow text-yp-black font-semibold hover:bg-yp-white transition-colors"
             >
               Vreau sa testez
-            </a>
-            <a
-              href="mailto:office@youprotect.ro?subject=Book%20a%20call%20You%20Protect"
+            </button>
+            <button
+              type="button"
+              id="product-toggle-shortlist"
+              data-product-id={product.id}
+              data-product-name={product.name}
+              data-product-slug={product.slug}
+              data-product-category={product.categoryName}
+              class="inline-flex items-center justify-center px-5 py-3 rounded-md border border-yp-yellow/40 text-yp-yellow hover:border-yp-white/40 hover:text-yp-white transition-colors"
+            >
+              Adauga in selectie
+            </button>
+            <button
+              type="button"
+              id="product-open-booking"
               class="inline-flex items-center justify-center px-5 py-3 rounded-md border border-yp-white/25 text-yp-white hover:border-yp-yellow/40 hover:text-yp-yellow transition-colors"
             >
               Book a call
-            </a>
+            </button>
           </div>
+
+          <p id="product-shortlist-state" class="mt-4 text-sm text-yp-yellow"></p>
+          <p id="product-shortlist-warning" class="mt-2 text-sm text-amber-200 hidden"></p>
 
           <p class="mt-4 text-sm text-yp-white/70 max-w-3xl leading-relaxed">
             Testare fara risc: echipam 3-5 membri ai echipei tale, cadem de acord pe produsele testate, platesti produsele, iar ai 90 de zile garantie money-back daca nu esti multumit.
@@ -142,4 +158,93 @@ const updatedLabel = product
       </article>
     )}
   </section>
+
+  {product && (
+    <script is:inline>
+      (() => {
+        const shortlist = window.YouProtectShortlist;
+        if (!shortlist) return;
+
+        const openTestBtn = document.getElementById('product-open-test');
+        const toggleBtn = document.getElementById('product-toggle-shortlist');
+        const openBookingBtn = document.getElementById('product-open-booking');
+        const stateEl = document.getElementById('product-shortlist-state');
+        const warningEl = document.getElementById('product-shortlist-warning');
+
+        if (!openTestBtn || !toggleBtn) return;
+
+        const getProduct = () => ({
+          id: openTestBtn.getAttribute('data-product-id') || '',
+          name: openTestBtn.getAttribute('data-product-name') || '',
+          slug: openTestBtn.getAttribute('data-product-slug') || '',
+          categoryName: openTestBtn.getAttribute('data-product-category') || '',
+        });
+
+        const showWarning = (message) => {
+          if (!warningEl) return;
+          warningEl.textContent = message;
+          warningEl.classList.remove('hidden');
+        };
+
+        const clearWarning = () => {
+          if (!warningEl) return;
+          warningEl.textContent = '';
+          warningEl.classList.add('hidden');
+        };
+
+        const refreshState = () => {
+          const product = getProduct();
+          const selected = shortlist.isSelected(product.id);
+          const total = shortlist.count();
+
+          toggleBtn.textContent = selected ? 'In selectie' : 'Adauga in selectie';
+          toggleBtn.classList.toggle('border-yp-yellow/40', !selected);
+          toggleBtn.classList.toggle('text-yp-yellow', !selected);
+          toggleBtn.classList.toggle('border-yp-white/30', selected);
+          toggleBtn.classList.toggle('text-yp-white', selected);
+
+          if (stateEl) {
+            if (selected) {
+              const label = total === 1 ? 'produs' : 'produse';
+              stateEl.textContent = `Produs in selectie (${total} ${label} total).`;
+            } else {
+              stateEl.textContent = 'Adauga produsul in selectie pentru a continua fluxul de testare.';
+            }
+          }
+        };
+
+        toggleBtn.addEventListener('click', () => {
+          const result = shortlist.toggle(getProduct());
+          if (!result.ok && result.error === 'max_reached') {
+            showWarning('Ai ajuns la limita de 12 produse in selectie.');
+            return;
+          }
+          clearWarning();
+          refreshState();
+        });
+
+        openTestBtn.addEventListener('click', () => {
+          const product = getProduct();
+          if (!shortlist.isSelected(product.id)) {
+            const result = shortlist.add(product);
+            if (!result.ok && result.error === 'max_reached') {
+              showWarning('Ai ajuns la limita de 12 produse in selectie.');
+              return;
+            }
+          }
+          clearWarning();
+          refreshState();
+          shortlist.openLeadModal({ intent: 'view_samples', source: 'product_detail', product });
+        });
+
+        openBookingBtn?.addEventListener('click', () => {
+          clearWarning();
+          shortlist.openLeadModal({ intent: 'book_call', source: 'product_detail' });
+        });
+
+        window.addEventListener('yp:shortlist-changed', refreshState);
+        refreshState();
+      })();
+    </script>
+  )}
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
+import LeadModal from '../components/forms/LeadModal';
 import '../styles/global.css';
 
 interface Props {
@@ -26,6 +27,7 @@ const { title, description = 'Echipamente de protecție și uniforme personaliza
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+    <script src="/js/shortlist.js" defer></script>
   </head>
   <body class="bg-yp-black text-yp-white font-body">
     <Header />
@@ -35,5 +37,6 @@ const { title, description = 'Echipamente de protecție și uniforme personaliza
     </main>
     
     <Footer />
+    <LeadModal client:load />
   </body>
 </html>

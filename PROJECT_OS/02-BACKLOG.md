@@ -30,7 +30,7 @@ Format task:
 - Next action: Start WP-002 (shortlist UI + persistență în `lead_request_products`).
 
 ### WP-002
-- Status: `TODO`
+- Status: `IN_PROGRESS`
 - Owner: `Codex`
 - Scope: Shortlist UI + persistență în `lead_request_products` (max 12).
 - Acceptance: Add/remove produse, validare limită, persistare corectă.

@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LeadModal from '../components/forms/LeadModal';
 ---
 
 <BaseLayout 
@@ -43,7 +42,7 @@ import LeadModal from '../components/forms/LeadModal';
       <div class="flex flex-col sm:flex-row gap-4 mb-16">
         <button 
           class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
-          onclick="document.getElementById('leadModal')?.classList.remove('hidden')"
+          onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'view_samples', source: 'homepage_hero' })"
         >
           Cere Consultanță Gratuită
           <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +111,5 @@ import LeadModal from '../components/forms/LeadModal';
     <div class="hidden lg:block lg:col-span-5 h-full"></div>
   </div>
 </main>
-
-<LeadModal client:load />
 
 </BaseLayout>

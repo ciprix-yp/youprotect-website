@@ -55,12 +55,17 @@ const {
         <span aria-hidden="true">→</span>
       </a>
 
-      <a
-        href={`/produse/${slug}`}
+      <button
+        type="button"
+        data-shortlist-toggle
+        data-product-id={id}
+        data-product-name={name}
+        data-product-slug={slug}
+        data-product-category={categoryName}
         class="inline-flex items-center justify-center rounded-md bg-yp-yellow text-yp-black text-sm font-semibold px-3 py-2 hover:bg-yp-white transition-colors"
       >
-        Vreau sa testez
-      </a>
+        Adauga in selectie
+      </button>
     </div>
   </div>
 </article>
