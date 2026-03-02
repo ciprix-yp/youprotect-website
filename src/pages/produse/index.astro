@@ -137,9 +137,35 @@ const hasProducts = products.length > 0;
 
     <div class="flex flex-col lg:flex-row gap-10">
       <!-- Sidebar Filters (Desktop) & Collapsible (Mobile) -->
-      <aside class="w-full lg:w-64 shrink-0 lg:sticky lg:top-28 h-fit">
+      <aside class="w-full lg:w-64 shrink-0 lg:sticky lg:top-28 h-fit z-30">
+        <div class="lg:hidden mb-4">
+          <button
+            id="mobile-filter-toggle"
+            type="button"
+            class="w-full bg-yp-black/80 border border-yp-white/20 text-yp-white py-3 px-4 flex justify-between items-center rounded-lg backdrop-blur-sm"
+          >
+            <span
+              class="text-sm font-medium uppercase tracking-widest text-yp-yellow"
+              >Filtrează Catalogul</span
+            >
+            <svg
+              id="mobile-filter-icon"
+              class="w-5 h-5 text-yp-white/50 transition-transform duration-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path></svg
+            >
+          </button>
+        </div>
+
         <div
-          class="bg-yp-black/40 border border-yp-white/10 rounded-2xl p-6 backdrop-blur-sm"
+          id="filter-wrapper"
+          class="hidden lg:block bg-yp-black/40 border border-yp-white/10 rounded-2xl p-6 backdrop-blur-sm"
         >
           <div class="mb-6 pb-6 border-b border-yp-white/10">
             <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
@@ -348,6 +374,17 @@ const hasProducts = products.length > 0;
       const emptyFilterEl = document.getElementById("catalog-empty-filter");
       const searchInput = document.getElementById("catalog-search");
 
+      const filterToggleBtn = document.getElementById("mobile-filter-toggle");
+      const filterWrapper = document.getElementById("filter-wrapper");
+      const filterIcon = document.getElementById("mobile-filter-icon");
+
+      if (filterToggleBtn && filterWrapper && filterIcon) {
+        filterToggleBtn.addEventListener("click", () => {
+          filterWrapper.classList.toggle("hidden");
+          filterIcon.classList.toggle("rotate-180");
+        });
+      }
+
       let activeCategory = "all";
       let activeTag = "all";
       let activeSort = "relevance";
@@ -504,6 +541,39 @@ const hasProducts = products.length > 0;
       });
 
       refreshFilters();
+
+      // Mobile Scroll Highlight for Cards
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (window.innerWidth >= 1024) return; // Only apply on mobile/tablet
+          entries.forEach((entry) => {
+            const card = entry.target.querySelector("article");
+            if (!card) return;
+
+            if (entry.isIntersecting) {
+              card.classList.add(
+                "border-yp-yellow",
+                "bg-yp-black/60",
+                "mobile-active",
+              );
+              card.classList.remove("border-yp-white/10", "bg-yp-black/20");
+            } else {
+              card.classList.remove(
+                "border-yp-yellow",
+                "bg-yp-black/60",
+                "mobile-active",
+              );
+              card.classList.add("border-yp-white/10", "bg-yp-black/20");
+            }
+          });
+        },
+        {
+          rootMargin: "-30% 0px -30% 0px", // Trigger when card is in the middle 40% of the screen
+          threshold: 0,
+        },
+      );
+
+      catalogItems.forEach((item) => observer.observe(item));
     })();
   </script>
 </BaseLayout>

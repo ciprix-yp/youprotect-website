@@ -83,11 +83,12 @@ const updatedLabel = product
   : null;
 
 const galleryPrimaryImage = product?.images?.[0] ?? null;
-const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
+const galleryExtraImages = product?.images?.slice(1, 10) ?? [];
+const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boolean);
 ---
 
 <BaseLayout title={productName} description={pageDescription}>
-  <section class="max-w-7xl mx-auto px-4 py-10 md:py-14">
+  <section class="max-w-4xl mx-auto px-4 py-8 md:py-12">
     {mode === 'degraded' && (
       <div class="mb-8 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
         Detaliul produsului nu a putut fi sincronizat din DB in acest build. Motiv: {warning ?? 'necunoscut'}
@@ -108,179 +109,166 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
         </a>
       </div>
     ) : (
-      <article class="space-y-8">
-        <nav class="text-sm text-yp-white/60">
-          <a href="/" class="hover:text-yp-white transition-colors">Acasa</a>
+      <article class="flex flex-col gap-8 md:gap-12">
+        <nav class="text-[10px] uppercase tracking-widest text-yp-white/50">
+          <a href="/" class="hover:text-yp-yellow transition-colors">Acasă</a>
           <span class="mx-2">/</span>
-          <a href="/produse" class="hover:text-yp-white transition-colors">Catalog</a>
+          <a href="/produse" class="hover:text-yp-yellow transition-colors">Catalog</a>
           <span class="mx-2">/</span>
           <span class="text-yp-white">{product.slug}</span>
         </nav>
 
-        <header class="relative pt-10 pb-6 md:pt-14 md:pb-10 border-b border-yp-white/10">
-          <p class="text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow/90">{product.categoryName}</p>
-          <h1 class="mt-4 text-5xl md:text-6xl lg:text-7xl font-light text-yp-white leading-[1.1] tracking-tight">{product.name}</h1>
-          <p class="mt-4 text-xs tracking-widest uppercase text-yp-white/50">By {product.producatorName}</p>
-
-          {product.merchandisingTags.length > 0 && (
-            <div class="mt-6 flex flex-wrap gap-2">
-              {product.merchandisingTags.map((tag: string) => (
-                <span class="inline-flex items-center px-3 py-1 bg-yp-white/5 rounded-full text-[11px] uppercase tracking-wider text-yp-white/80">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <p class="mt-8 text-lg font-light text-yp-white/80 leading-relaxed max-w-4xl">
-            {product.description || 'Descrierea curată așteaptă introducerea în Directus.'}
+        <!-- 1. HEADER / TITLU -->
+        <header>
+          <p class="text-[10px] md:text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow mb-3">{product.categoryName}</p>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-light text-yp-white leading-[1.1] tracking-tight mb-4">{product.name}</h1>
+          <p class="text-sm font-light text-yp-white/60 leading-relaxed">
+            {product.shortDescription || product.description || 'Echipament de protecție avansată din portofoliul You Protect.'}
           </p>
-
-          <div class="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onclick="window.location.href='/contact?ref=' + encodeURIComponent(window.location.pathname)"
-              class="group relative inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-medium overflow-hidden rounded-sm transition-all hover:bg-white"
-            >
-              <span class="relative z-10">Consultă un Expert & Cere Ofertă</span>
-            </button>
-          </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 pt-10">
-          <section class="lg:col-span-8">
-            <h2 class="text-sm font-medium uppercase tracking-[0.2em] text-yp-white/50 mb-8">Lookbook / Imagini Produs</h2>
-
-            {galleryPrimaryImage ? (
-              <div class="flex flex-col gap-6">
-                <figure class="w-full bg-yp-black/50">
+        <!-- 2. GALERIE FOTO (CAROUSEL) -->
+        {carouselImages.length > 0 ? (
+          <div class="relative w-full -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 hide-scrollbar">
+              {carouselImages.map((img: any, i: number) => (
+                <figure class="w-[85%] sm:w-[60%] md:w-full shrink-0 snap-center bg-yp-black/40 border border-yp-white/10 overflow-hidden">
                   <img
-                    src={galleryPrimaryImage.url}
-                    alt={galleryPrimaryImage.alt}
-                    loading="eager"
-                    class="w-full object-cover transition-opacity duration-500 ease-in-out"
+                    src={img.url}
+                    alt={img.alt || product.name}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    class="w-full aspect-[4/5] md:aspect-video object-cover mix-blend-luminosity hover:mix-blend-normal transition-all duration-500"
                   />
                 </figure>
+              ))}
+            </div>
+            {carouselImages.length > 1 && (
+              <div class="absolute bottom-6 right-8 sm:right-4 bg-yp-black/80 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-widest text-yp-white/80 border border-yp-white/20">
+                Glisează pt. mai multe vizualuri
+              </div>
+            )}
+          </div>
+        ) : (
+          <div class="w-full aspect-video bg-yp-black/30 border border-yp-white/10 flex items-center justify-center">
+             <p class="text-yp-white/30 text-sm font-light uppercase tracking-widest">Imagini în pregătire</p>
+          </div>
+        )}
 
-                {galleryExtraImages.length > 0 && (
-                  <div class="columns-2 gap-6 space-y-6">
-                    {galleryExtraImages.map((image: any) => (
-                      <figure class="w-full break-inside-avoid bg-yp-black/30">
-                        <img
-                          src={image.url}
-                          alt={image.alt}
-                          loading="lazy"
-                          class="w-full object-cover hover:opacity-95 transition-opacity duration-300"
-                        />
-                      </figure>
-                    ))}
+        <!-- 3. CTA #1 -->
+        <div class="pt-2">
+          <button
+            type="button"
+            onclick="window.location.href='/contact?ref=' + encodeURIComponent(window.location.pathname)"
+            class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-semibold text-sm uppercase tracking-widest hover:bg-yp-white transition-colors border border-transparent hover:border-yp-black"
+          >
+            Cere Ofertă / Mostre
+          </button>
+        </div>
+
+        <div class="w-full h-px bg-yp-white/10"></div>
+
+        <!-- 4. VARIANTE (CULORI / MĂRIMI) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Nuanțe Disponibile</h3>
+            {product.colorSwatches.length > 0 ? (
+              <div class="flex flex-wrap gap-3">
+                {product.colorSwatches.map((swatch: any) => (
+                  <div class="flex items-center gap-2" title={swatch.name}>
+                    <span
+                      class="w-6 h-6 rounded-full shadow-inner border border-white/20"
+                      style={swatch.hex ? `background-color: ${swatch.hex};` : 'background-color: transparent'}
+                    ></span>
                   </div>
-                )}
+                ))}
               </div>
             ) : (
-              <p class="text-yp-white/40 italic font-light">Echipa va încărca curând un set de imagini tehnice.</p>
+              <p class="text-sm font-light text-yp-white/40">Conform fișei tehnice.</p>
             )}
+          </div>
 
-            <div class="mt-12">
-              <h2 class="text-sm font-medium uppercase tracking-[0.2em] text-yp-white/50 mb-6">Specificații Cheie</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {product.certificationTags?.length > 0 && (
-                  <div>
-                    <h3 class="text-lg font-light text-yp-white mb-3 border-b border-yp-white/10 pb-2">Certificări Standard</h3>
-                    <ul class="space-y-2">
-                      {product.certificationTags.map((cert: string) => (
-                        <li class="text-yp-white/70 text-sm font-light leading-relaxed flex items-center gap-2">
-                          <span class="w-1.5 h-1.5 bg-yp-yellow rounded-full inline-block"></span>
-                          {cert}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {product.materialTags?.length > 0 && (
-                  <div>
-                    <h3 class="text-lg font-light text-yp-white mb-3 border-b border-yp-white/10 pb-2">Materiale Noi</h3>
-                    <ul class="space-y-2">
-                      {product.materialTags.map((mat: string) => (
-                        <li class="text-yp-white/70 text-sm font-light leading-relaxed flex items-center gap-2">
-                          <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full inline-block"></span>
-                          {mat}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-
-          </section>
-
-          <aside class="lg:col-span-4 space-y-12">
-            
-            <div>
-              <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Cromatică Tehnică</h3>
-              {product.colorSwatches.length > 0 ? (
-                <div class="flex flex-wrap gap-2">
-                  {product.colorSwatches.map((swatch: any) => (
-                    <div class="group relative flex items-center gap-2 px-3 py-1.5 border border-yp-white/10 bg-yp-white/5 cursor-default hover:bg-yp-white/10 transition-colors">
-                      <span
-                        class="w-3 h-3 rounded-full shadow-inner border border-white/20"
-                        style={swatch.hex ? `background-color: ${swatch.hex};` : 'background-color: transparent'}
-                      ></span>
-                      <span class="text-xs text-yp-white/80 font-light tracking-wide">{swatch.name}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p class="text-sm font-light text-yp-white/40">Nuanțe nespecificate.</p>
-              )}
-            </div>
-
-            <div>
-              <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Plajă de Mărimi</h3>
-              {product.sizeValues.length > 0 ? (
-                <div class="flex flex-wrap gap-1.5">
-                  {product.sizeValues.map((size: string) => (
-                    <span class="inline-flex items-center justify-center min-w-9 px-2 py-1.5 text-xs text-yp-white/90 border border-yp-white/20 hover:border-yp-yellow transition-colors cursor-default font-medium">
-                      {size}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p class="text-sm font-light text-yp-white/40">Fără mărimi discrete.</p>
-              )}
-            </div>
-
-            {product.seasonality && (
-              <div>
-                <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-2">Sezonalitate</h3>
-                <p class="text-sm text-yp-white/90 uppercase tracking-widest">{product.seasonality}</p>
-              </div>
-            )}
-
-            {product.benefits?.length > 0 && (
-              <div>
-                <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Avantaje Majore</h3>
-                <ul class="space-y-3">
-                  {product.benefits.map((benefit: string) => (
-                    <li class="text-sm text-yp-white/80 font-light flex items-start gap-3">
-                      <svg class="w-4 h-4 text-yp-yellow mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div class="p-6 bg-yp-yellow/5 border border-yp-yellow/20 rounded-sm">
-              <h3 class="text-sm font-medium text-yp-yellow mb-2">Garanție Extinsă B2B</h3>
-              <p class="text-sm text-yp-white/70 font-light leading-relaxed">
-                Asigurăm eșantionarea înainte de producție masivă și o garanție fermă „money-back” extinsă pentru comenzile echipate de specialiștii noștri de teren.
+          <div>
+            <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Plajă de Mărimi</h3>
+            {product.sizeValues.length > 0 ? (
+              <p class="text-lg text-yp-white font-light tracking-wide">
+                {product.sizeAvailabilityLabel}
               </p>
-            </div>
-            
-          </aside>
+            ) : (
+              <p class="text-sm font-light text-yp-white/40">Fără mărimi discrete.</p>
+            )}
+          </div>
+        </div>
+
+        <div class="w-full h-px bg-yp-white/10"></div>
+
+        <!-- 5. RECOMANDAT PENTRU -->
+        {product.merchandisingTags.length > 0 && (
+          <div>
+             <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Recomandat pentru Industriile</h3>
+             <div class="flex flex-wrap gap-2">
+               {product.merchandisingTags.map((tag: string) => (
+                 <span class="inline-flex items-center px-4 py-2 border border-yp-white/20 bg-yp-black/40 text-xs text-yp-white/80 transition-colors cursor-default">
+                   {tag}
+                 </span>
+               ))}
+               <span class="inline-flex items-center px-4 py-2 border border-yp-white/20 bg-yp-black/40 text-xs text-yp-white/80 transition-colors cursor-default">
+                 {product.categoryName}
+               </span>
+             </div>
+          </div>
+        )}
+
+        <!-- 6. BENEFICII -->
+        {product.benefits && product.benefits.length > 0 && (
+          <div>
+            <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Avantaje Majore</h3>
+            <ul class="space-y-4">
+              {product.benefits.map((benefit: string) => (
+                <li class="pl-4 border-l border-yp-yellow text-yp-white/90 font-light text-sm md:text-base leading-relaxed">
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- 7. GARANȚIE -->
+        <div class="p-6 bg-yp-black/40 border border-yp-white/10 flex flex-col gap-2">
+           <div class="flex items-center gap-3 mb-2">
+              <svg class="w-5 h-5 text-yp-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              <h3 class="text-sm font-medium uppercase tracking-widest text-yp-white">Garanție Extinsă B2B</h3>
+           </div>
+           <p class="text-sm text-yp-white/60 font-light leading-relaxed">
+             {product.guarantee} Echipăm echipe complet, iar selecția include testare pre-achiziție pentru a vă asigura de confortul sporit din teren.
+           </p>
+        </div>
+
+        <!-- 8. CERTIFICĂRI -->
+        {product.certificationTags?.length > 0 && (
+          <div>
+             <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Standarde & Conformitate</h3>
+             <div class="flex flex-wrap gap-4">
+                {product.certificationTags.map((cert: string) => (
+                  <div class="flex items-center gap-2">
+                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                     <span class="text-sm font-light text-yp-white/80">{cert}</span>
+                  </div>
+                ))}
+             </div>
+          </div>
+        )}
+
+        <!-- 9. CTA #2 -->
+        <div class="pt-8 pb-12">
+          <button
+            type="button"
+            onclick="window.location.href='/contact?ref=' + encodeURIComponent(window.location.pathname)"
+            class="w-full sm:w-auto inline-flex items-center justify-center px-12 py-5 bg-yp-yellow text-yp-black font-bold text-sm uppercase tracking-[0.15em] hover:bg-white transition-colors shadow-lg"
+          >
+            Cere Ofertă
+          </button>
+        </div>
+
       </article>
     )}
   </section>
