@@ -286,7 +286,7 @@ const hasProducts = products.length > 0;
             <div>
               <div
                 id="catalog-grid"
-                class="columns-1 sm:columns-2 gap-8 space-y-8"
+                class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
               >
                 {products.map((product, index) => (
                   <div
@@ -302,7 +302,7 @@ const hasProducts = products.length > 0;
                     data-sort-name={product.name.toLocaleLowerCase("ro-RO")}
                     data-sort-created={product.createdAt}
                     data-sort-featured={product.featured ? "1" : "0"}
-                    class="break-inside-avoid"
+                    class=""
                   >
                     <ProductCard
                       id={product.id}
