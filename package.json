@@ -17,10 +17,24 @@
   "dependencies": {
     "@astrojs/react": "^4.4.2",
     "@astrojs/tailwind": "^5.1.2",
+    "@directus/sdk": "^21.1.0",
     "astro": "^4.16.18",
     "pg": "^8.18.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^3.4.17"
-  }
+  },
+  "description": "Project OS: - `/Users/homefolder/youprotect-website/PROJECT_OS/README.md` - `/Users/homefolder/youprotect-website/PROJECT_OS/06-DEPLOY_FLOW.md`",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ciprix-yp/youprotect-website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ciprix-yp/youprotect-website/issues"
+  },
+  "homepage": "https://github.com/ciprix-yp/youprotect-website#readme"
 }

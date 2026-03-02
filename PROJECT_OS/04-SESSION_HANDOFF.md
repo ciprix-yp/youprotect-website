@@ -2,8 +2,8 @@
 
 ## Ultimul update
 
-- Data: `2026-02-25`
-- Status global: `WP-005_IN_PROGRESS`
+- Data: `2026-03-02`
+- Status global: Pivot structural către Directus pentru catalog (`WP-006_PLANNED`) / `WP-005_IN_PROGRESS`.
 
 ## Ce este finalizat
 
@@ -20,8 +20,8 @@
 
 ## Ce urmează imediat
 
-1. WP-005: finalizare pass content premium pe homepage (`/`) + CTA blocks globale.
-2. Rulează `pm review WP-005` după ultimul pass de copy și aliniere CTA.
+1. **WP-006**: Setup MVP Directus (`accomplished-forgiveness`) + Postgres + Astro pentru un catalog pro (max 100-2000 produse active). Trebuie creat stratul curat din DB ținând cont de vasta rețea de prețuri/poze a furnizorilor.
+2. **WP-005**: Finalizare pass content premium (adaptat la direcția noului catalog administrat din CMS).
 3. Pregătire S2: automatizare ofertare + follow-up (n8n).
 
 ## Blocaje active

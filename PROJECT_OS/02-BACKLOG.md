@@ -54,12 +54,20 @@ Format task:
 - Next action: Start WP-005 (content premium + CTA copy pass).
 
 ### WP-005
-- Status: `IN_PROGRESS`
+- Status: `TODO`
 - Owner: `Codex`
 - Scope: Content premium pentru paginile cheie (`/`, `/produse`, CTA blocks).
 - Acceptance: Copy final MVP + tone consistent + CTA clar.
 - Dependencies: none.
 - Next action: Finalizare pass content premium pe `/` + CTA blocks globale, apoi `pm review WP-005`.
+
+### WP-006
+- Status: `DONE`
+- Owner: `Codex` / `Antigravity`
+- Scope: Transition catalog to Directus + Astro. Implement a "Clean View" for products in Directus mapped over Postgres, then consume in Astro.
+- Acceptance: Directus setup pe Railway. Colectie `website_products` definita. Endpointuri Astro citind din Directus via API cu fallback la `vw`.
+- Dependencies: WP-003.
+- Next action: P1 Deploy.
 
 ### OPS-001
 - Status: `DONE`

@@ -1,17 +1,73 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCatalogProducts, getCatalogProductDetailBySlug } from '../../lib/catalog';
+import { getDirectusProducts, getDirectusProductBySlug } from '../../lib/directus';
 
 export async function getStaticPaths() {
+  const directusProducts = await getDirectusProducts();
+  if (directusProducts && directusProducts.length > 0) {
+    return directusProducts.map((p: any) => ({
+      params: { slug: p.slug }
+    }));
+  }
+  
   const { products } = await getCatalogProducts();
-
   return products.map((product) => ({
     params: { slug: product.slug },
   }));
 }
 
 const slug = Astro.params.slug ?? '';
-const { product, mode, warning } = await getCatalogProductDetailBySlug(slug);
+
+let product: any = null;
+let mode = 'live';
+let warning: string | null = null;
+
+try {
+  const directusProduct = await getDirectusProductBySlug(slug);
+  if (directusProduct) {
+     product = {
+        id: directusProduct.id,
+        slug: directusProduct.slug,
+        name: directusProduct.name,
+        description: directusProduct.description || '',
+        shortDescription: directusProduct.description || '',
+        thumbnailUrl: directusProduct.cover_image_url || null,
+        topCategory: directusProduct.category_name || 'Generala',
+        professionTags: [],
+        featured: directusProduct.is_featured || false,
+        categoryName: directusProduct.category_name || 'Catalog general',
+        categorySlug: (directusProduct.category_name || 'general').toLowerCase().replace(/\s+/g, '-'),
+        producatorName: 'You Protect',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        merchandisingTags: directusProduct.is_featured ? ['Bestseller'] : [],
+        benefits: directusProduct.key_benefits || [],
+        conformity: directusProduct.certifications || [],
+        images: directusProduct.cover_image_url ? [{ url: directusProduct.cover_image_url, alt: directusProduct.name, type: 'primary' }] : [],
+        sizeAvailabilityLabel: directusProduct.size_range ? (directusProduct.size_range.length > 2 ? `${directusProduct.size_range[0]} - ${directusProduct.size_range[directusProduct.size_range.length-1]}` : directusProduct.size_range.join(', ')) : 'La cerere',
+        sizeValues: directusProduct.size_range || [],
+        colorSwatches: directusProduct.color_options || [],
+        countryOfOrigin: null,
+        productCodes: directusProduct.supplier_sku ? [directusProduct.supplier_sku] : [],
+        targetGenders: [],
+        materialTags: directusProduct.materials || [],
+        certificationTags: directusProduct.certifications || [],
+        seasonality: directusProduct.seasonality || null,
+        guarantee: '90 de zile garantie money-back pentru testare fara risc.'
+      };
+  } else {
+      const dbResult = await getCatalogProductDetailBySlug(slug);
+      product = dbResult.product;
+      mode = dbResult.mode;
+      warning = dbResult.warning;
+  }
+} catch (e) {
+  const dbResult = await getCatalogProductDetailBySlug(slug);
+  product = dbResult.product;
+  mode = dbResult.mode;
+  warning = dbResult.warning;
+}
 
 const productName = product?.name ?? 'Produs indisponibil';
 const pageDescription =
@@ -61,30 +117,26 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
           <span class="text-yp-white">{product.slug}</span>
         </nav>
 
-        <header class="rounded-2xl border border-yp-white/15 bg-gradient-to-r from-yp-gray to-yp-black p-6 md:p-8">
-          <p class="text-xs uppercase tracking-[0.2em] text-yp-yellow/80">{product.categoryName}</p>
-          <h1 class="mt-2 text-4xl md:text-5xl text-yp-white leading-tight">{product.name}</h1>
-          <p class="mt-3 text-yp-white/70">Producator: {product.producatorName}</p>
+        <header class="relative pt-10 pb-6 md:pt-14 md:pb-10 border-b border-yp-white/10">
+          <p class="text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow/90">{product.categoryName}</p>
+          <h1 class="mt-4 text-5xl md:text-6xl lg:text-7xl font-light text-yp-white leading-[1.1] tracking-tight">{product.name}</h1>
+          <p class="mt-4 text-xs tracking-widest uppercase text-yp-white/50">By {product.producatorName}</p>
 
           {product.merchandisingTags.length > 0 && (
-            <div class="mt-4 flex flex-wrap gap-2">
-              {product.merchandisingTags.map((tag) => (
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80">
+            <div class="mt-6 flex flex-wrap gap-2">
+              {product.merchandisingTags.map((tag: string) => (
+                <span class="inline-flex items-center px-3 py-1 bg-yp-white/5 rounded-full text-[11px] uppercase tracking-wider text-yp-white/80">
                   {tag}
                 </span>
               ))}
             </div>
           )}
 
-          {updatedLabel && (
-            <p class="mt-3 text-xs text-yp-white/50">Actualizat in catalog la: {updatedLabel}</p>
-          )}
-
-          <p class="mt-6 text-yp-white/80 leading-relaxed max-w-3xl">
-            {product.description || 'Descrierea completa este in curs de actualizare.'}
+          <p class="mt-8 text-lg font-light text-yp-white/80 leading-relaxed max-w-4xl">
+            {product.description || 'Descrierea curată așteaptă introducerea în Directus.'}
           </p>
 
-          <div class="mt-8 flex flex-wrap gap-3">
+          <div class="mt-10 flex flex-wrap items-center gap-4">
             <button
               type="button"
               id="product-open-test"
@@ -92,165 +144,157 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
               data-product-name={product.name}
               data-product-slug={product.slug}
               data-product-category={product.categoryName}
-              class="inline-flex items-center justify-center px-5 py-3 rounded-md bg-yp-yellow text-yp-black font-semibold hover:bg-yp-white transition-colors"
+              class="group relative inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-medium overflow-hidden rounded-sm transition-all hover:bg-white"
             >
-              Cere oferta
+              <span class="relative z-10">Adaugă în Selecție pentru Echipă</span>
             </button>
             <button
               type="button"
               id="product-open-booking"
-              class="inline-flex items-center justify-center px-5 py-3 rounded-md border border-yp-white/25 text-yp-white hover:border-yp-yellow/40 hover:text-yp-yellow transition-colors"
+              class="inline-flex items-center justify-center px-8 py-4 border border-yp-white/20 text-yp-white hover:border-yp-yellow/40 hover:text-yp-yellow transition-colors rounded-sm"
             >
-              Discuta cu noi
+              Discută cu Consultant
             </button>
           </div>
 
           <p id="product-shortlist-state" class="mt-4 text-sm text-yp-yellow"></p>
           <p id="product-shortlist-warning" class="mt-2 text-sm text-amber-200 hidden"></p>
-
-          <p class="mt-4 text-sm text-yp-white/70 max-w-3xl leading-relaxed">
-            Testare fara risc: echipam 3-5 membri ai echipei tale, cadem de acord pe produsele testate, platesti produsele, iar ai 90 de zile garantie money-back daca nu esti multumit.
-          </p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          <section class="lg:col-span-3 rounded-xl border border-yp-white/10 bg-yp-gray/20 p-6">
-            <h2 class="text-2xl text-yp-white">Galerie produs</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 pt-10">
+          <section class="lg:col-span-8">
+            <h2 class="text-sm font-medium uppercase tracking-[0.2em] text-yp-white/50 mb-8">Lookbook / Imagini Produs</h2>
 
             {galleryPrimaryImage ? (
-              <>
-                <figure class="mt-4 overflow-hidden rounded-xl border border-yp-white/10 bg-yp-black/40">
+              <div class="flex flex-col gap-6">
+                <figure class="w-full bg-yp-black/50">
                   <img
                     src={galleryPrimaryImage.url}
                     alt={galleryPrimaryImage.alt}
                     loading="eager"
-                    class="w-full aspect-[4/3] object-cover"
+                    class="w-full object-cover transition-opacity duration-500 ease-in-out"
                   />
                 </figure>
 
                 {galleryExtraImages.length > 0 && (
-                  <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {galleryExtraImages.map((image) => (
-                      <figure class="overflow-hidden rounded-lg border border-yp-white/10 bg-yp-black/30">
+                  <div class="columns-2 gap-6 space-y-6">
+                    {galleryExtraImages.map((image: any) => (
+                      <figure class="w-full break-inside-avoid bg-yp-black/30">
                         <img
                           src={image.url}
                           alt={image.alt}
                           loading="lazy"
-                          class="w-full aspect-[4/3] object-cover"
+                          class="w-full object-cover hover:opacity-95 transition-opacity duration-300"
                         />
                       </figure>
                     ))}
                   </div>
                 )}
-              </>
+              </div>
             ) : (
-              <p class="mt-4 text-yp-white/70">
-                Nu avem inca imagini publicate pentru acest produs.
-              </p>
+              <p class="text-yp-white/40 italic font-light">Echipa va încărca curând un set de imagini tehnice.</p>
             )}
 
-            <section class="mt-6 rounded-lg border border-yp-white/10 bg-yp-black/20 p-4">
-              <h3 class="text-sm uppercase tracking-[0.16em] text-yp-white/70">Culori disponibile</h3>
-              {product.colorSwatches.length > 0 ? (
-                <>
-                  <div class="mt-3 flex flex-wrap gap-2">
-                    {product.colorSwatches.map((swatch) => (
-                      <span class="inline-flex items-center gap-2 rounded-full border border-yp-white/20 bg-yp-black/40 px-3 py-1 text-xs text-yp-white/85">
-                        <span
-                          class="inline-block h-3 w-3 rounded-full border border-yp-white/30"
-                          style={
-                            swatch.hex
-                              ? `background-color: ${swatch.hex};`
-                              : 'background-image: linear-gradient(135deg, #111827 0%, #6B7280 100%);'
-                          }
-                          aria-hidden="true"
-                        ></span>
-                        <span>{swatch.name}</span>
-                      </span>
-                    ))}
+            <div class="mt-12">
+              <h2 class="text-sm font-medium uppercase tracking-[0.2em] text-yp-white/50 mb-6">Specificații Cheie</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {product.certificationTags?.length > 0 && (
+                  <div>
+                    <h3 class="text-lg font-light text-yp-white mb-3 border-b border-yp-white/10 pb-2">Certificări Standard</h3>
+                    <ul class="space-y-2">
+                      {product.certificationTags.map((cert: string) => (
+                        <li class="text-yp-white/70 text-sm font-light leading-relaxed flex items-center gap-2">
+                          <span class="w-1.5 h-1.5 bg-yp-yellow rounded-full inline-block"></span>
+                          {cert}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p class="mt-3 text-xs text-yp-white/60">
-                    Nuantele sunt preluate direct din catalogul producatorului.
-                  </p>
-                </>
-              ) : (
-                <p class="mt-3 text-sm text-yp-white/70">
-                  Culorile sunt in curs de sincronizare din variantele furnizorului.
-                </p>
-              )}
-            </section>
+                )}
+                
+                {product.materialTags?.length > 0 && (
+                  <div>
+                    <h3 class="text-lg font-light text-yp-white mb-3 border-b border-yp-white/10 pb-2">Materiale Noi</h3>
+                    <ul class="space-y-2">
+                      {product.materialTags.map((mat: string) => (
+                        <li class="text-yp-white/70 text-sm font-light leading-relaxed flex items-center gap-2">
+                          <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full inline-block"></span>
+                          {mat}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
           </section>
 
-          <aside class="lg:col-span-2 space-y-6">
-            <section class="rounded-xl border border-yp-white/10 bg-yp-gray/20 p-6">
-              <h2 class="text-xl text-yp-white">Marimi disponibile</h2>
-              {product.sizeAvailabilityLabel ? (
-                <p class="mt-3 text-yp-white/80">
-                  <span class="font-semibold text-yp-white">Disponibilitate:</span> {product.sizeAvailabilityLabel}
-                </p>
+          <aside class="lg:col-span-4 space-y-12">
+            
+            <div>
+              <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Cromatică Tehnică</h3>
+              {product.colorSwatches.length > 0 ? (
+                <div class="flex flex-wrap gap-2">
+                  {product.colorSwatches.map((swatch: any) => (
+                    <div class="group relative flex items-center gap-2 px-3 py-1.5 border border-yp-white/10 bg-yp-white/5 cursor-default hover:bg-yp-white/10 transition-colors">
+                      <span
+                        class="w-3 h-3 rounded-full shadow-inner border border-white/20"
+                        style={swatch.hex ? `background-color: ${swatch.hex};` : 'background-color: transparent'}
+                      ></span>
+                      <span class="text-xs text-yp-white/80 font-light tracking-wide">{swatch.name}</span>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <p class="mt-3 text-yp-white/70 text-sm">
-                  Marimile sunt in curs de sincronizare din feed-ul tehnic.
-                </p>
+                <p class="text-sm font-light text-yp-white/40">Nuanțe nespecificate.</p>
               )}
+            </div>
 
-              {product.sizeValues.length > 0 && (
-                <div class="mt-4 flex flex-wrap gap-2">
-                  {product.sizeValues.map((size) => (
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs border border-yp-white/20 text-yp-white/80">
+            <div>
+              <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Plajă de Mărimi</h3>
+              {product.sizeValues.length > 0 ? (
+                <div class="flex flex-wrap gap-1.5">
+                  {product.sizeValues.map((size: string) => (
+                    <span class="inline-flex items-center justify-center min-w-9 px-2 py-1.5 text-xs text-yp-white/90 border border-yp-white/20 hover:border-yp-yellow transition-colors cursor-default font-medium">
                       {size}
                     </span>
                   ))}
                 </div>
+              ) : (
+                <p class="text-sm font-light text-yp-white/40">Fără mărimi discrete.</p>
               )}
+            </div>
 
-              <p class="mt-4 text-xs text-yp-white/55 leading-relaxed">
-                Marimile sunt afisate informativ. Confirmarea finala se face in oferta personalizata.
-              </p>
-            </section>
+            {product.seasonality && (
+              <div>
+                <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-2">Sezonalitate</h3>
+                <p class="text-sm text-yp-white/90 uppercase tracking-widest">{product.seasonality}</p>
+              </div>
+            )}
 
-            <section class="rounded-xl border border-yp-white/10 bg-yp-gray/20 p-6">
-              <h2 class="text-xl text-yp-white">Garantie</h2>
-              <p class="mt-3 text-yp-white/75 leading-relaxed">{product.guarantee}</p>
-            </section>
-
-            <section class="rounded-xl border border-yp-white/10 bg-yp-gray/20 p-6">
-              <h2 class="text-xl text-yp-white">Conformitate</h2>
-              {product.conformity.length > 0 ? (
-                <ul class="mt-3 space-y-2 text-yp-white/80 text-sm">
-                  {product.conformity.map((item) => (
-                    <li class="flex gap-2">
-                      <span class="text-yp-yellow">•</span>
-                      <span>{item}</span>
+            {product.benefits?.length > 0 && (
+              <div>
+                <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Avantaje Majore</h3>
+                <ul class="space-y-3">
+                  {product.benefits.map((benefit: string) => (
+                    <li class="text-sm text-yp-white/80 font-light flex items-start gap-3">
+                      <svg class="w-4 h-4 text-yp-yellow mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                      {benefit}
                     </li>
                   ))}
                 </ul>
-              ) : (
-                <p class="mt-3 text-yp-white/70 text-sm">
-                  Informatiile de conformitate sunt in curs de sincronizare din tabelele tehnice.
-                </p>
-              )}
-            </section>
-          </aside>
-        </div>
+              </div>
+            )}
 
-        <section class="rounded-xl border border-yp-white/10 bg-yp-gray/20 p-6">
-          <h2 class="text-2xl text-yp-white">Beneficii</h2>
-          {product.benefits.length > 0 ? (
-            <ul class="mt-4 space-y-2 text-yp-white/80">
-              {product.benefits.map((benefit) => (
-                <li class="flex gap-2">
-                  <span class="text-yp-yellow">•</span>
-                  <span>{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p class="mt-4 text-yp-white/70">
-              Beneficiile detaliate urmeaza sa fie completate in baza de date pentru acest produs.
-            </p>
-          )}
-        </section>
+            <div class="p-6 bg-yp-yellow/5 border border-yp-yellow/20 rounded-sm">
+              <h3 class="text-sm font-medium text-yp-yellow mb-2">Garanție Extinsă B2B</h3>
+              <p class="text-sm text-yp-white/70 font-light leading-relaxed">
+                Asigurăm eșantionarea înainte de producție masivă și o garanție fermă „money-back” extinsă pentru comenzile echipate de specialiștii noștri de teren.
+              </p>
+            </div>
+            
+          </aside>
       </article>
     )}
   </section>
