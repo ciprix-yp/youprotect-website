@@ -4,6 +4,7 @@ interface Props {
   name: string;
   slug: string;
   categoryName: string;
+  industry?: string | null;
   shortDescription: string;
   producatorName?: string;
   featured?: boolean;
@@ -16,6 +17,7 @@ const {
   name,
   slug,
   categoryName,
+  industry = null,
   shortDescription,
   producatorName = "You Protect",
   featured = false,
@@ -97,7 +99,7 @@ const primaryTag = featured ? "Bestseller" : (normalizedTags[0] ?? null);
       <p
         class="text-[9px] font-medium uppercase tracking-[0.2em] text-yp-white/60 group-hover:text-yp-white transition-colors"
       >
-        {categoryName}
+        {industry ? `${industry} • ` : ""}{categoryName}
       </p>
       <p
         class="text-[9px] font-medium uppercase tracking-[0.2em] text-yp-white/30"

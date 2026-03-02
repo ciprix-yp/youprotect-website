@@ -17,6 +17,7 @@ export interface WebsiteProduct {
     certifications: string[] | null;
     seasonality: string | null;
     key_benefits: string[] | null;
+    industry: string | null;
 }
 
 interface CustomSchema {

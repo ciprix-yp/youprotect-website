@@ -22,6 +22,7 @@ try {
       professionTags: [],
       featured: dp.is_featured || false,
       categoryName: dp.category_name || "Catalog general",
+      industry: dp.industry || null,
       categorySlug: (dp.category_name || "general")
         .toLowerCase()
         .replace(/\s+/g, "-"),
@@ -51,6 +52,18 @@ for (const product of products) {
 }
 
 const categorySummary = [...categoryCountMap.entries()]
+  .map(([name, count]) => ({ name, count }))
+  .sort((left, right) => left.name.localeCompare(right.name, "ro-RO"));
+
+const industryCountMap = new Map<string, number>();
+for (const product of products) {
+  if (product.industry) {
+    const currentCount = industryCountMap.get(product.industry) ?? 0;
+    industryCountMap.set(product.industry, currentCount + 1);
+  }
+}
+
+const industrySummary = [...industryCountMap.entries()]
   .map(([name, count]) => ({ name, count }))
   .sort((left, right) => left.name.localeCompare(right.name, "ro-RO"));
 
@@ -196,7 +209,7 @@ const hasProducts = products.length > 0;
             hasProducts && categorySummary.length > 0 && (
               <div class="mb-6">
                 <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-                  Industrie / Rol
+                  Categorie Produs
                 </h3>
                 <div class="flex flex-col gap-2" id="catalog-category-filters">
                   <button
@@ -204,7 +217,7 @@ const hasProducts = products.length > 0;
                     data-category-filter="all"
                     class="text-left text-sm font-medium text-yp-white py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
                   >
-                    Toată Selecția
+                    Toate Categoriile
                     <span class="text-xs text-yp-white/30">
                       {products.length}
                     </span>
@@ -218,6 +231,37 @@ const hasProducts = products.length > 0;
                       {category.name}
                       <span class="text-xs text-yp-white/30">
                         {category.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          {
+            hasProducts && industrySummary.length > 0 && (
+              <div class="mb-6 pb-6 border-b border-yp-white/10">
+                <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
+                  Industrie / Utilizare
+                </h3>
+                <div class="flex flex-col gap-2" id="catalog-industry-filters">
+                  <button
+                    type="button"
+                    data-industry-filter="all"
+                    class="text-left text-sm font-medium text-yp-white py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
+                  >
+                    Toate Industriile
+                  </button>
+                  {industrySummary.map((industry) => (
+                    <button
+                      type="button"
+                      data-industry-filter={industry.name}
+                      class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
+                    >
+                      {industry.name}
+                      <span class="text-xs text-yp-white/30">
+                        {industry.count}
                       </span>
                     </button>
                   ))}
@@ -315,9 +359,10 @@ const hasProducts = products.length > 0;
                 {products.map((product, index) => (
                   <div
                     data-catalog-item
-                    data-search-text={`${product.name} ${product.categoryName} ${product.shortDescription}`.toLowerCase()}
+                    data-search-text={`${product.name} ${product.categoryName} ${product.industry || ""} ${product.shortDescription}`.toLowerCase()}
                     data-original-index={index}
                     data-category={product.categoryName}
+                    data-industry={product.industry || ""}
                     data-is-bestseller={
                       hasExactTag(product, "bestseller") ? "1" : "0"
                     }
@@ -333,6 +378,7 @@ const hasProducts = products.length > 0;
                       slug={product.slug}
                       name={product.name}
                       categoryName={product.categoryName}
+                      industry={product.industry}
                       shortDescription={product.shortDescription}
                       producatorName={product.producatorName}
                       featured={product.featured}
@@ -361,6 +407,9 @@ const hasProducts = products.length > 0;
       const categoryButtons = Array.from(
         document.querySelectorAll("[data-category-filter]"),
       );
+      const industryButtons = Array.from(
+        document.querySelectorAll("[data-industry-filter]"),
+      );
       const tagButtons = Array.from(
         document.querySelectorAll("[data-tag-filter]"),
       );
@@ -386,6 +435,7 @@ const hasProducts = products.length > 0;
       }
 
       let activeCategory = "all";
+      let activeIndustry = "all";
       let activeTag = "all";
       let activeSort = "relevance";
       let searchQuery = "";
@@ -454,15 +504,22 @@ const hasProducts = products.length > 0;
 
         catalogItems.forEach((item) => {
           const category = item.getAttribute("data-category") || "";
+          const industry = item.getAttribute("data-industry") || "";
+
           const categoryMatch =
             activeCategory === "all" || category === activeCategory;
+
+          const industryMatch =
+            activeIndustry === "all" || industry === activeIndustry;
+
           const tagMatch = matchesTag(item);
 
           const textContent = item.getAttribute("data-search-text") || "";
           const searchMatch =
             !searchQuery || textContent.includes(searchQuery.toLowerCase());
 
-          const isVisible = categoryMatch && tagMatch && searchMatch;
+          const isVisible =
+            categoryMatch && industryMatch && tagMatch && searchMatch;
 
           item.classList.toggle("hidden", !isVisible);
           if (isVisible) {
@@ -486,6 +543,16 @@ const hasProducts = products.length > 0;
           const filterValue =
             button.getAttribute("data-category-filter") || "all";
           const isActive = filterValue === activeCategory;
+          button.classList.toggle("text-yp-yellow", isActive);
+          button.classList.toggle("font-medium", isActive);
+          button.classList.toggle("text-yp-white/60", !isActive);
+          button.classList.toggle("font-light", !isActive);
+        });
+
+        industryButtons.forEach((button) => {
+          const filterValue =
+            button.getAttribute("data-industry-filter") || "all";
+          const isActive = filterValue === activeIndustry;
           button.classList.toggle("text-yp-yellow", isActive);
           button.classList.toggle("font-medium", isActive);
           button.classList.toggle("text-yp-white/60", !isActive);
@@ -522,6 +589,13 @@ const hasProducts = products.length > 0;
       categoryButtons.forEach((button) => {
         button.addEventListener("click", () => {
           activeCategory = button.getAttribute("data-category-filter") || "all";
+          refreshFilters();
+        });
+      });
+
+      industryButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeIndustry = button.getAttribute("data-industry-filter") || "all";
           refreshFilters();
         });
       });
