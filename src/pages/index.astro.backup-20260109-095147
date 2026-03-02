@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LeadModal from '../components/forms/LeadModal';
+---
+
+<BaseLayout 
+  title="Acasă - You Protect" 
+  description="Echipament de protecție premium pentru companii care respectă echipa și imaginea. Consultanță gratuită în selecția pe roluri."
+>
+
+<section class="relative min-h-screen flex items-center overflow-hidden">
+  <div 
+    class="absolute inset-0 z-0"
+    style="background-image: url('/hero-youprotect-highvis.jpg'); background-size: cover; background-position: 95% center;"
+  >
+    <div class="absolute inset-0 bg-gradient-to-r from-yp-black via-yp-black/80 to-yp-black/20"></div>
+  </div>
+  
+  <div class="relative z-10 w-full">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-20">
+      <div class="max-w-xl md:max-w-2xl lg:max-w-5xl">
+        
+        <h1 class="font-heading text-5xl md:text-6xl lg:text-7xl mb-10 leading-[1.15]">
+          Echipamentul de protecție care <span class="text-yp-yellow">respectă echipa</span> și<br class="hidden md:block"/>
+          imaginea firmei
+        </h1>
+        
+        <p class="text-lg md:text-xl lg:text-2xl text-yp-white/85 mb-12 leading-relaxed font-light max-w-3xl">
+          Te consiliem gratuit în selecția pe roluri, astfel <strong class="text-yp-white font-normal">elimini disconfortul</strong>, <strong class="text-yp-white font-normal">scazi costul real</strong> al înlocuirilor și <strong class="text-yp-white font-normal">crești rata de purtare</strong> în teren.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-5">
+          <button 
+            class="group bg-yp-yellow text-yp-black font-heading font-bold px-10 py-5 rounded-lg text-lg hover:bg-yp-yellow/90 hover:shadow-2xl hover:shadow-yp-yellow/20 transition-all duration-300"
+            onclick="document.getElementById('leadModal')?.classList.remove('hidden')"
+          >
+            <span class="flex items-center justify-center gap-2">
+              Cere Consultanță Gratuită
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </button>
+          
+          <a 
+            href="#categorii"
+            class="group bg-transparent border-2 border-yp-white/30 text-yp-white font-heading font-bold px-10 py-5 rounded-lg text-lg hover:bg-yp-white/5 hover:border-yp-white/50 transition-all duration-300"
+          >
+            <span class="flex items-center justify-center gap-2">
+              Vezi Produsele
+              <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+    <svg class="w-6 h-6 text-yp-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
+  </div>
+</section>
+
+<section class="relative border-y border-yp-white/10 py-16 md:py-20 bg-yp-black">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    
+    <div class="max-w-xl md:max-w-2xl lg:max-w-5xl mb-12 md:mb-16">
+      <h2 class="text-yp-white/60 font-heading text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">
+        Echipamente Certificate și Confortabile
+      </h2>
+    </div>
+
+    <div class="w-[80%] mx-0">
+      <div class="flex items-center justify-between gap-8">
+        
+        <div class="group hover:scale-110 transition-all duration-300 ease-out cursor-pointer">
+          <div class="bg-white rounded-lg p-8 md:p-10 shadow-lg group-hover:shadow-2xl group-hover:shadow-yp-yellow/10 transition-all duration-300">
+            <img 
+              src="/logos/logo-1.png" 
+              alt="Mascot - Brand Partner" 
+              class="h-20 md:h-24 w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <div class="group hover:scale-110 transition-all duration-300 ease-out cursor-pointer">
+          <div class="bg-white rounded-lg p-8 md:p-10 shadow-lg group-hover:shadow-2xl group-hover:shadow-yp-yellow/10 transition-all duration-300">
+            <img 
+              src="/logos/logo-2.png" 
+              alt="Sir Safety - Brand Partner" 
+              class="h-20 md:h-24 w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <div class="group hover:scale-110 transition-all duration-300 ease-out cursor-pointer">
+          <div class="bg-white rounded-lg p-8 md:p-10 shadow-lg group-hover:shadow-2xl group-hover:shadow-yp-yellow/10 transition-all duration-300">
+            <img 
+              src="/logos/logo-3.png" 
+              alt="Certificare EN" 
+              class="h-20 md:h-24 w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <div class="group hover:scale-110 transition-all duration-300 ease-out cursor-pointer">
+          <div class="bg-white rounded-lg p-8 md:p-10 shadow-lg group-hover:shadow-2xl group-hover:shadow-yp-yellow/10 transition-all duration-300">
+            <img 
+              src="/logos/logo-4.png" 
+              alt="Certificare ISO" 
+              class="h-20 md:h-24 w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<LeadModal client:load />
+
+</BaseLayout>

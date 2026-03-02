@@ -58,6 +58,28 @@ interface SupplierMetaRow {
   is_new_text: string | null;
 }
 
+interface SupplierCatalogContextRow {
+  showroom_product_id: string | null;
+  supplier_sku: string | null;
+  internal_sku: string | null;
+  country_of_origin: string | null;
+  supplier_category: string | null;
+  supplier_subcategory: string | null;
+  product_type: string | null;
+  certifications: unknown;
+  supplier_metadata: unknown;
+}
+
+interface SupplierCertificationRow {
+  cert_code: string | null;
+  cert_name: string | null;
+}
+
+interface ProductIndustryRow {
+  product_id: string | null;
+  industry_label: string | null;
+}
+
 interface CatalogProductImageMapRow {
   product_id: string | null;
   url: string | null;
@@ -90,6 +112,8 @@ export interface CatalogProduct {
   description: string;
   shortDescription: string;
   thumbnailUrl: string | null;
+  topCategory: string;
+  professionTags: string[];
   featured: boolean;
   categoryName: string;
   categorySlug: string;
@@ -106,6 +130,11 @@ export interface CatalogProductDetail extends CatalogProduct {
   sizeAvailabilityLabel: string | null;
   sizeValues: string[];
   colorSwatches: CatalogColorSwatch[];
+  countryOfOrigin: string | null;
+  productCodes: string[];
+  targetGenders: string[];
+  materialTags: string[];
+  certificationTags: string[];
   guarantee: string;
 }
 

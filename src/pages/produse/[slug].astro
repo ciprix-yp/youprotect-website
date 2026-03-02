@@ -139,26 +139,12 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
           <div class="mt-10 flex flex-wrap items-center gap-4">
             <button
               type="button"
-              id="product-open-test"
-              data-product-id={product.id}
-              data-product-name={product.name}
-              data-product-slug={product.slug}
-              data-product-category={product.categoryName}
+              onclick="window.location.href='/contact?ref=' + encodeURIComponent(window.location.pathname)"
               class="group relative inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-medium overflow-hidden rounded-sm transition-all hover:bg-white"
             >
-              <span class="relative z-10">Adaugă în Selecție pentru Echipă</span>
-            </button>
-            <button
-              type="button"
-              id="product-open-booking"
-              class="inline-flex items-center justify-center px-8 py-4 border border-yp-white/20 text-yp-white hover:border-yp-yellow/40 hover:text-yp-yellow transition-colors rounded-sm"
-            >
-              Discută cu Consultant
+              <span class="relative z-10">Consultă un Expert & Cere Ofertă</span>
             </button>
           </div>
-
-          <p id="product-shortlist-state" class="mt-4 text-sm text-yp-yellow"></p>
-          <p id="product-shortlist-warning" class="mt-2 text-sm text-amber-200 hidden"></p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 pt-10">
@@ -299,101 +285,5 @@ const galleryExtraImages = product?.images?.slice(1, 5) ?? [];
     )}
   </section>
 
-  {product && (
-    <script is:inline>
-      (() => {
-        let initialized = false;
 
-        const initProductBindings = () => {
-          if (initialized) {
-            return true;
-          }
-
-          const shortlist = window.YouProtectShortlist;
-          if (!shortlist) {
-            return false;
-          }
-
-          const openTestBtn = document.getElementById('product-open-test');
-          const openBookingBtn = document.getElementById('product-open-booking');
-          const stateEl = document.getElementById('product-shortlist-state');
-          const warningEl = document.getElementById('product-shortlist-warning');
-
-          if (!openTestBtn) {
-            return false;
-          }
-
-          const getProduct = () => ({
-            id: openTestBtn.getAttribute('data-product-id') || '',
-            name: openTestBtn.getAttribute('data-product-name') || '',
-            slug: openTestBtn.getAttribute('data-product-slug') || '',
-            categoryName: openTestBtn.getAttribute('data-product-category') || '',
-          });
-
-          const showWarning = (message) => {
-            if (!warningEl) return;
-            warningEl.textContent = message;
-            warningEl.classList.remove('hidden');
-          };
-
-          const clearWarning = () => {
-            if (!warningEl) return;
-            warningEl.textContent = '';
-            warningEl.classList.add('hidden');
-          };
-
-          const refreshState = () => {
-            const product = getProduct();
-            const selected = shortlist.isSelected(product.id);
-            const total = shortlist.count();
-
-            if (stateEl) {
-              if (selected) {
-                const label = total === 1 ? 'produs' : 'produse';
-                stateEl.textContent = `Produs inclus in selectie (${total} ${label} total).`;
-              } else {
-                stateEl.textContent =
-                  'Cand apesi \"Cere oferta\", produsul este adaugat automat in selectie.';
-              }
-            }
-          };
-
-          openTestBtn.addEventListener('click', () => {
-            const product = getProduct();
-            if (!shortlist.isSelected(product.id)) {
-              const result = shortlist.add(product);
-              if (!result.ok && result.error === 'max_reached') {
-                showWarning('Ai ajuns la limita de 12 produse in selectie.');
-                return;
-              }
-            }
-            clearWarning();
-            refreshState();
-            shortlist.openLeadModal({ intent: 'view_samples', source: 'product_detail', product });
-          });
-
-          openBookingBtn?.addEventListener('click', () => {
-            clearWarning();
-            shortlist.openLeadModal({ intent: 'book_call', source: 'product_detail' });
-          });
-
-          window.addEventListener('yp:shortlist-changed', refreshState);
-          refreshState();
-          initialized = true;
-          return true;
-        };
-
-        if (initProductBindings()) {
-          return;
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-          initProductBindings();
-        });
-        window.addEventListener('yp:shortlist-ready', () => {
-          initProductBindings();
-        });
-      })();
-    </script>
-  )}
 </BaseLayout>

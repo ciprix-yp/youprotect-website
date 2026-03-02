@@ -1,0 +1,273 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout 
+  title="Cum Lucrăm" 
+  description="Procesul nostru în 3 pași: consultanță, testare, achiziție. Pentru companii care investesc în echipele lor."
+>
+  <!-- Hero Section -->
+  <section class="py-20 bg-yp-black">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h1 class="font-heading text-5xl md:text-6xl mb-6">
+        Partenerul de încredere<br/>pentru echipe care construiesc viitorul
+      </h1>
+      <p class="text-xl text-yp-white/80 max-w-3xl mx-auto">
+        Nu oferim doar echipamente de protecție — creăm soluții complete pentru companii care își respectă angajații și înțeleg că siguranța și imaginea sunt investiții, nu cheltuieli.
+      </p>
+    </div>
+  </section>
+
+  <!-- Client Profile Section (Filter Logic) -->
+  <section class="py-20 bg-yp-gray">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-4">
+        Cu cine lucrăm cel mai bine
+      </h2>
+      <p class="text-center text-yp-white/70 mb-16 text-lg">
+        Suntem parteneri pentru companii care se recunosc în aceste caracteristici:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 1: Company Size & Culture -->
+        <div class="bg-yp-black p-8 rounded-xl">
+          <div class="text-5xl mb-4">🏢</div>
+          <h3 class="font-heading text-2xl mb-4">Companii cu viziune</h3>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>15–40+ angajați (echipe stabile, decizii rapide)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Caută sistem și predictibilitate, nu improvizație</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Văd echipamentele ca investiție pe termen lung</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 2: Industries -->
+        <div class="bg-yp-black p-8 rounded-xl">
+          <div class="text-5xl mb-4">⚙️</div>
+          <h3 class="font-heading text-2xl mb-4">Industrii tehnice</h3>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Construcții și lucrări de instalații</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Producție, ateliere și fabrici</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Service auto, agricultură, transport</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 3: Leadership Values -->
+        <div class="bg-yp-black p-8 rounded-xl">
+          <div class="text-5xl mb-4">👥</div>
+          <h3 class="font-heading text-2xl mb-4">Lideri care respectă echipa</h3>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Calitatea = investiție, nu cheltuială</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Imagine profesională = prioritate strategică</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">•</span>
+              <span>Apreciază consultanță, nu doar cele mai ieftine oferte</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-12 p-6 bg-yp-black/50 border border-yp-yellow/30 rounded-xl max-w-3xl mx-auto">
+        <p class="text-yp-white/80 text-center">
+          <strong class="text-yp-yellow">Important:</strong> Dacă echipa ta are sub 15 angajați sau cauți doar cele mai ieftine prețuri fără consultanță, e posibil ca noi să nu fim partenerul potrivit pentru tine — și asta e OK. Preferăm să lucrăm cu clienți unde putem aduce cu adevărat valoare.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3-Step Process -->
+  <section class="py-20 bg-yp-black">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-16">
+        Cum decurge procesul (în 3 pași simpli)
+      </h2>
+
+      <!-- Step 1 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div>
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-16 h-16 bg-yp-yellow text-yp-black rounded-full flex items-center justify-center font-heading text-2xl font-bold">
+              1
+            </div>
+            <h3 class="font-heading text-3xl">Consultanță & Audit (Gratuit)</h3>
+          </div>
+          <p class="text-yp-white/80 mb-6 text-lg">
+            Analizăm împreună nevoile echipei tale: ce riscuri există, ce bugete ai, ce imagine vrei să transmiți. Te ajutăm să identifici ce echipamente îți trebuie conform normelor SSM și specificului activității.
+          </p>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Discutăm cu tine sau cu responsabilul SSM (30-45 min)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Identificăm produsele potrivite pentru fiecare rol din echipă</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Propunem branding/personalizare dacă este necesar</span>
+            </li>
+          </ul>
+        </div>
+        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800" 
+            alt="Consultanță" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div class="order-2 lg:order-1 aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800" 
+            alt="Testare" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="order-1 lg:order-2">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-16 h-16 bg-yp-yellow text-yp-black rounded-full flex items-center justify-center font-heading text-2xl font-bold">
+              2
+            </div>
+            <h3 class="font-heading text-3xl">Testare & Mostre</h3>
+          </div>
+          <p class="text-yp-white/80 mb-6 text-lg">
+            Înainte să comanzi pentru toată echipa, îți oferim mostre pentru testare în condiții reale. Verifici confortul, mărimile, rezistența — pentru ca decizia finală să fie informată, nu la ghici.
+          </p>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Livrăm mostre pentru fiecare tip de echipament</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Echipa ta le testează direct pe teren</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Ajustăm mărimi sau alternative dacă este necesar</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-16 h-16 bg-yp-yellow text-yp-black rounded-full flex items-center justify-center font-heading text-2xl font-bold">
+              3
+            </div>
+            <h3 class="font-heading text-3xl">Achiziție & Recurență</h3>
+          </div>
+          <p class="text-yp-white/80 mb-6 text-lg">
+            Plasezi comanda finală, livrăm rapid, și păstrăm istoricul comenzilor tale pentru reordonări viitoare ușoare. Nu mai cauți furnizori de fiecare dată — noi ținem evidența și îți trimitem reminder-e când se apropie sezonul sau când echipamentele au nevoie de înlocuire.
+          </p>
+          <ul class="space-y-3 text-yp-white/70">
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Livrare rapidă (3-7 zile lucrătoare în funcție de stoc)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Salvăm preferințele echipei tale (mărimi, produse, personalizări)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yp-yellow mt-1">✓</span>
+              <span>Comenzi viitoare în max 10 minute (fără refacerea selecției)</span>
+            </li>
+          </ul>
+        </div>
+        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800" 
+            alt="Achiziție" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us (Differentiators) -->
+  <section class="py-20 bg-yp-gray">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="font-heading text-4xl md:text-5xl text-center mb-16">
+        De ce ne aleg clienții noștri
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Differentiator 1 -->
+        <div class="bg-yp-black p-8 rounded-xl text-center">
+          <div class="text-5xl mb-4">🤝</div>
+          <h3 class="font-heading text-2xl mb-4">Partner, nu doar furnizor</h3>
+          <p class="text-yp-white/70">
+            Nu vindem produse la catalog. Înțelegem afacerea ta și îți oferim consultanță pe măsură pentru echipa ta.
+          </p>
+        </div>
+
+        <!-- Differentiator 2 -->
+        <div class="bg-yp-black p-8 rounded-xl text-center">
+          <div class="text-5xl mb-4">✨</div>
+          <h3 class="font-heading text-2xl mb-4">Identitate vizuală</h3>
+          <p class="text-yp-white/70">
+            Echipa ta arată profesional, unitar, ca o companie serioasă — nu ca o echipă improvizată.
+          </p>
+        </div>
+
+        <!-- Differentiator 3 -->
+        <div class="bg-yp-black p-8 rounded-xl text-center">
+          <div class="text-5xl mb-4">📋</div>
+          <h3 class="font-heading text-2xl mb-4">Predictibilitate</h3>
+          <p class="text-yp-white/70">
+            Istoric salvat, reordonare rapidă, reminder-e la timp — niciodată nu rămâi fără echipamente.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 bg-yp-yellow">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="font-heading text-4xl md:text-5xl text-yp-black mb-6">
+        Pregătit să ridici standardul echipei tale?
+      </h2>
+      <p class="text-yp-black/80 text-xl mb-10">
+        Consultanță gratuită. Răspuns în maximum 24 de ore. Zero presiune.
+      </p>
+      <button 
+        class="bg-yp-black text-yp-yellow font-heading font-bold px-10 py-5 rounded-lg text-lg hover:bg-yp-black/90 hover:shadow-xl transition-all"
+        onclick="alert('TODO: Open Lead Modal')"
+      >
+        Hai Să Vorbim
+      </button>
+    </div>
+  </section>
+</BaseLayout>

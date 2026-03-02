@@ -60,14 +60,9 @@ const primaryTag = featured ? "Bestseller" : (normalizedTags[0] ?? null);
     <div
       class="absolute inset-0 bg-yp-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-end p-6"
     >
-      <button
-        type="button"
-        title="Adaugă în Selecție"
-        data-shortlist-toggle
-        data-product-id={id}
-        data-product-name={name}
-        data-product-slug={slug}
-        data-product-category={categoryName}
+      <a
+        href={`/produse/${slug}`}
+        title="Vezi Detalii Tehnice"
         class="pointer-events-auto ml-auto flex items-center justify-center w-12 h-12 bg-yp-yellow text-yp-black rounded-full shadow-lg hover:scale-110 transition-transform duration-300"
       >
         <svg
@@ -81,9 +76,9 @@ const primaryTag = featured ? "Bestseller" : (normalizedTags[0] ?? null);
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M12 4v16m8-8H4"></path>
+            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
         </svg>
-      </button>
+      </a>
     </div>
   </div>
 
