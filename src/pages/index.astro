@@ -163,13 +163,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <section class="py-24 bg-yp-black border-b border-white/5 relative">
     <div class="max-w-7xl mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
-        <div>
+        <div class="flex flex-col">
           <h2
             class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight"
           >
             Care din aceste obstacole stau în calea creșterii profitului?
           </h2>
           <div class="w-12 h-1 bg-yp-yellow mb-8"></div>
+
+          <!-- Image Container Placeholder -->
+          <div
+            class="relative flex-grow rounded-sm overflow-hidden bg-[#0a0a0a] border border-white/5 mt-auto hidden md:block min-h-[300px]"
+          >
+            <!-- Placeholder border & text -->
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-6"
+            >
+              <span
+                class="text-neutral-500 font-mono text-xs leading-relaxed uppercase tracking-widest"
+              >
+                [ Spațiu Rezervat Imagine ]<br />
+                Format: Portret (Standard 4:5 sau 3:4)<br />
+                Stil: Dark / Cinematic
+              </span>
+            </div>
+            <!-- The actual <img> tag will be placed here -->
+            <!-- <img src="..." alt="..." class="absolute inset-0 w-full h-full object-cover opacity-80" /> -->
+          </div>
         </div>
 
         <div class="flex flex-col gap-8">
