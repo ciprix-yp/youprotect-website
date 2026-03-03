@@ -333,24 +333,68 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div
         class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center"
       >
+        <!-- Image Container (Colaj) -->
+        <div
+          class="order-1 grid grid-cols-2 gap-4 hidden md:grid h-full min-h-[400px]"
+        >
+          <!-- Imagine principala verticala -->
+          <div
+            class="relative rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 row-span-2 shadow-2xl"
+          >
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-4 bg-yp-black/50 hover:bg-white/5 transition-colors"
+            >
+              <span
+                class="text-neutral-500 font-mono text-xs uppercase tracking-widest z-10"
+                >[ Imagine 1 ]<br />Verticală</span
+              >
+            </div>
+          </div>
+          <!-- Imagini secundare -->
+          <div
+            class="relative rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 shadow-lg"
+          >
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-4 bg-yp-black/50 hover:bg-white/5 transition-colors"
+            >
+              <span
+                class="text-neutral-500 font-mono text-[10px] uppercase tracking-widest z-10"
+                >[ Imagine 2 ]<br />Orizontală</span
+              >
+            </div>
+          </div>
+          <div
+            class="relative rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 shadow-lg"
+          >
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-4 bg-yp-black/50 hover:bg-white/5 transition-colors"
+            >
+              <span
+                class="text-neutral-500 font-mono text-[10px] uppercase tracking-widest z-10"
+                >[ Imagine 3 ]<br />Orizontală</span
+              >
+            </div>
+          </div>
+        </div>
+
         <!-- Text Container -->
-        <div>
+        <div class="order-2">
           <h2
-            class="text-4xl lg:text-5xl font-light text-white mb-6 tracking-tight leading-tight"
+            class="text-3xl lg:text-4xl font-light text-white mb-6 tracking-tight leading-tight"
           >
             Dăm Echipei Tale Imaginea și Siguranța pe Care le Merită
           </h2>
           <div class="w-12 h-1 bg-yp-yellow mb-10"></div>
 
           <div class="space-y-6">
-            <p class="text-lg text-neutral-400 leading-relaxed">
+            <p class="text-base text-neutral-400 leading-relaxed">
               Ajutăm companii din nord-vestul României — construcții, producție,
               logistică, industrie — să reducă costurile și să crească
               profitabilitatea prin echipamente individuale de protecție (EIP)
               și haine de lucru premium, conforme cu standardele europene
               EN/ISO.
             </p>
-            <p class="text-lg text-neutral-300 leading-relaxed font-medium">
+            <p class="text-base text-neutral-300 leading-relaxed font-medium">
               Nu suntem un simplu furnizor. Intrăm în fabrica ta, înțelegem
               riscurile reale ale angajaților tăi și construim împreună un
               sistem de achiziție care funcționează fără supraveghere constantă.
@@ -377,25 +421,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
               </svg>
             </button>
           </div>
-        </div>
-
-        <!-- Image Container -->
-        <div
-          class="relative w-full aspect-square lg:aspect-[4/3] rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 hidden md:block"
-        >
-          <!-- Placeholder border & text -->
-          <div
-            class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-6 bg-yp-black/50"
-          >
-            <span
-              class="text-neutral-500 font-mono text-xs leading-relaxed uppercase tracking-widest z-10"
-            >
-              [ Spațiu Rezervat Imagine "Soluție" ]<br />
-              Format: Wide (4:3) sau Pătrat<br />
-              Subiect: Echipă îmbrăcată premium, focus pe detalii / branding
-            </span>
-          </div>
-          <!-- <img src="..." alt="Echipa You Protect" class="absolute inset-0 w-full h-full object-cover opacity-80" /> -->
         </div>
       </div>
     </div>
