@@ -11,23 +11,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <img
         src="/hero-youprotect-highvis.jpg"
         alt="Echipamente de Protecție You Protect"
-        class="w-full h-full object-cover object-[70%_center] opacity-70"
+        class="w-full h-full object-cover object-[70%_center] opacity-80"
       />
       <div
-        class="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/30"
+        class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent"
       >
       </div>
       <div
-        class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40"
+        class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20"
       >
       </div>
-      <div class="absolute inset-0 bg-blue-950/20 mix-blend-overlay"></div>
+      <div class="absolute inset-0 bg-blue-950/10 mix-blend-overlay"></div>
     </div>
 
     <div
-      class="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full py-32"
+      class="relative z-10 max-w-7xl mx-auto px-6 w-full flex items-center h-full py-20 md:py-24"
     >
-      <div class="lg:col-span-7 flex flex-col justify-center">
+      <div class="w-full lg:w-[75%] flex flex-col justify-center">
         <div
           class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm w-fit mb-8"
         >
@@ -44,21 +44,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
 
         <h1
-          class="text-5xl lg:text-[4.5rem] font-semibold tracking-tight leading-[1.05] text-white mb-6"
+          class="text-4xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.1] text-white mb-6 max-w-[90%]"
         >
-          Echipamente de Protecție și Haine de Lucru care <span
-            class="text-yp-yellow">Cresc Profitabilitatea</span
-          > Afacerii Tale
+          Echipamente de Protecție și Haine<br class="hidden lg:block" /> de Lucru
+          care <span class="text-yp-yellow">Cresc Profitabilitatea</span><br
+            class="hidden lg:block"
+          /> Afacerii Tale
         </h1>
 
         <p
-          class="text-lg lg:text-xl text-neutral-400 font-normal leading-relaxed mb-10 max-w-xl"
+          class="text-base lg:text-lg text-neutral-400 font-normal leading-relaxed mb-8 max-w-2xl"
         >
           Știm că echipa ta nu arată întâmplător. Știm că o salopetă prost
           aleasă costă mai mult decât prețul ei — în accidente evitate, în
           angajați care pleacă, în clienți care nu mai revin. De aceea, la You
           Protect nu vindem echipamente de protecție. Construim sisteme de
-          achiziție care reduc bătaia de cap și cresc imaginea companiei tale.
+          achiziție care reduc bătaia de cap și cresc imaginea companiei.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 mb-16">
@@ -101,7 +102,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </a>
         </div>
 
-        <div class="border-t border-white/10 pt-8 w-full max-w-2xl">
+        <div class="border-t border-white/10 pt-6 w-full max-w-2xl">
           <p
             class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-6"
           >
