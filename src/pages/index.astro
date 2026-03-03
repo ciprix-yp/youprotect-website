@@ -173,22 +173,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
           <!-- Image Container Placeholder -->
           <div
-            class="relative flex-grow rounded-sm overflow-hidden bg-[#0a0a0a] border border-white/5 mt-auto hidden md:block min-h-[300px]"
+            class="relative flex-grow rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 mt-auto hidden md:block min-h-[300px]"
           >
-            <!-- Placeholder border & text -->
+            <img
+              src="/obstacole-bg.jpg"
+              alt="Provocările unui antreprenor"
+              class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity grayscale-[30%] hover:grayscale-0 hover:opacity-100 transition-all duration-700"
+            />
             <div
-              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-6"
+              class="absolute inset-0 bg-gradient-to-t from-yp-black/80 via-yp-black/20 to-transparent pointer-events-none"
             >
-              <span
-                class="text-neutral-500 font-mono text-xs leading-relaxed uppercase tracking-widest"
-              >
-                [ Spațiu Rezervat Imagine ]<br />
-                Format: Portret (Standard 4:5 sau 3:4)<br />
-                Stil: Dark / Cinematic
-              </span>
             </div>
-            <!-- The actual <img> tag will be placed here -->
-            <!-- <img src="..." alt="..." class="absolute inset-0 w-full h-full object-cover opacity-80" /> -->
           </div>
         </div>
 
