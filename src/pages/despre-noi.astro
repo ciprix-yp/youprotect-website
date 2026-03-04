@@ -1,81 +1,148 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout 
-  title="Despre Noi" 
+<BaseLayout
+  title="Despre Noi"
   description="Echipa You Protect - furnizor de echipamente de protecție pentru companii din România."
 >
   <!-- Hero Section -->
-  <section class="py-20 bg-yp-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <h1 class="font-heading text-5xl md:text-6xl mb-6">Cine Suntem</h1>
-          <p class="text-xl text-yp-white/80 mb-8">
-            [COMPLETEAZĂ: Scurtă introducere - ex: Echipa You Protect este alături de companiile românești pentru a le oferi soluții complete de echipamente de protecție și uniforme personalizate.]
+  <section
+    class="py-24 bg-yp-black border-b border-white/5 relative overflow-hidden"
+  >
+    <div
+      class="absolute top-0 right-0 w-[600px] h-[600px] bg-yp-yellow/5 rounded-full blur-[120px] pointer-events-none"
+    >
+    </div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center"
+      >
+        <div class="order-2 lg:order-1">
+          <h1
+            class="text-4xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.1] text-white mb-6"
+          >
+            Cine Suntem
+          </h1>
+          <div class="w-12 h-1 bg-yp-yellow mb-10"></div>
+          <p
+            class="text-base lg:text-lg text-neutral-300 font-medium leading-relaxed mb-8"
+          >
+            [COMPLETEAZĂ: Scurtă introducere - ex: Echipa You Protect este
+            alături de companiile românești pentru a le oferi soluții complete
+            de echipamente de protecție și uniforme personalizate.]
           </p>
         </div>
-        <div class="aspect-[4/3] bg-yp-gray rounded-xl overflow-hidden">
-          <img 
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800" 
-            alt="Echipa You Protect" 
-            class="w-full h-full object-cover"
-          />
+        <div
+          class="order-1 lg:order-2 w-full aspect-square md:aspect-[4/3] rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 relative"
+        >
+          <div
+            class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-6 bg-yp-black/50"
+          >
+            <span
+              class="text-neutral-500 font-mono text-xs leading-relaxed uppercase tracking-widest z-10"
+            >
+              [ Spațiu Rezervat Imagine Echipa ]
+            </span>
+          </div>
+          <!-- <img src="..." alt="Echipa You Protect" class="absolute inset-0 w-full h-full object-cover opacity-80" /> -->
         </div>
       </div>
     </div>
   </section>
 
   <!-- Story Section -->
-  <section class="py-20 bg-yp-gray">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="font-heading text-4xl mb-12 text-center">Povestea Noastră</h2>
-      
-      <div class="space-y-6 text-lg text-yp-white/80">
+  <section class="py-24 bg-[#0a0a0a] border-b border-white/5">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight">
+        Povestea Noastră
+      </h2>
+      <div class="w-12 h-1 bg-yp-yellow mb-10 mx-auto"></div>
+
+      <div
+        class="space-y-6 text-base text-neutral-400 leading-relaxed text-left lg:text-center"
+      >
         <p>
-          [COMPLETEAZĂ: Paragraf 1 - Origine - ex: You Protect a fost înființată în [an] din dorința de a aduce pe piața românească echipamente de protecție de calitate, accesibile companiilor care își respectă angajații.]
+          [COMPLETEAZĂ: Paragraf 1 - Origine - ex: You Protect a fost înființată
+          în [an] din dorința de a aduce pe piața românească echipamente de
+          protecție de calitate, accesibile companiilor care își respectă
+          angajații.]
         </p>
-        
+
         <p>
-          [COMPLETEAZĂ: Paragraf 2 - Diferențiere - ex: Ne diferențiem prin abordarea consultativă - nu vindem doar produse, ci oferim soluții complete adaptate fiecărei industrii.]
+          [COMPLETEAZĂ: Paragraf 2 - Diferențiere - ex: Ne diferențiem prin
+          abordarea consultativă - nu vindem doar produse, ci oferim soluții
+          complete adaptate fiecărei industrii.]
         </p>
-        
+
         <p>
-          [COMPLETEAZĂ: Paragraf 3 - Viziune - ex: Astăzi lucrăm cu peste [XX] companii din construcții, instalații, producție și servicii tehnice, iar obiectivul nostru este să devenim partenerul de încredere pentru fiecare companie care pune pe primul loc siguranța și imaginea profesională.]
+          [COMPLETEAZĂ: Paragraf 3 - Viziune - ex: Astăzi lucrăm cu peste [XX]
+          companii din construcții, instalații, producție și servicii tehnice,
+          iar obiectivul nostru este să devenim partenerul de încredere pentru
+          fiecare companie care pune pe primul loc siguranța și imaginea
+          profesională.]
         </p>
       </div>
     </div>
   </section>
 
   <!-- Mission, Vision, Values -->
-  <section class="py-20 bg-yp-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+  <section class="py-24 bg-yp-black border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
         <!-- Mission -->
-        <div class="text-center">
-          <div class="text-6xl mb-6">🎯</div>
-          <h3 class="font-heading text-2xl mb-4 text-yp-yellow">Misiunea Noastră</h3>
-          <p class="text-yp-white/70">
-            [COMPLETEAZĂ: Misiune - ex: Să oferim companiilor românești echipamente de protecție de calitate și consultanță profesională pentru siguranța angajaților.]
+        <div
+          class="bg-[#0a0a0a] border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group"
+        >
+          <div
+            class="text-yp-yellow font-mono text-sm tracking-widest block mb-4"
+          >
+            01 //
+          </div>
+          <h3 class="text-2xl font-light text-white mb-4">Misiunea Noastră</h3>
+          <p
+            class="text-neutral-400 text-sm leading-relaxed group-hover:text-neutral-300 transition-colors"
+          >
+            [COMPLETEAZĂ: Misiune - ex: Să oferim companiilor românești
+            echipamente de protecție de calitate și consultanță profesională
+            pentru siguranța angajaților.]
           </p>
         </div>
 
         <!-- Vision -->
-        <div class="text-center">
-          <div class="text-6xl mb-6">🔭</div>
-          <h3 class="font-heading text-2xl mb-4 text-yp-yellow">Viziunea Noastră</h3>
-          <p class="text-yp-white/70">
-            [COMPLETEAZĂ: Viziune - ex: Să devenim partenerul principal pentru echipamente de protecție în România, recunoscut pentru calitate și servicii.]
+        <div
+          class="bg-[#0a0a0a] border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group"
+        >
+          <div
+            class="text-yp-yellow font-mono text-sm tracking-widest block mb-4"
+          >
+            02 //
+          </div>
+          <h3 class="text-2xl font-light text-white mb-4">Viziunea Noastră</h3>
+          <p
+            class="text-neutral-400 text-sm leading-relaxed group-hover:text-neutral-300 transition-colors"
+          >
+            [COMPLETEAZĂ: Viziune - ex: Să devenim partenerul principal pentru
+            echipamente de protecție în România, recunoscut pentru calitate și
+            servicii.]
           </p>
         </div>
 
         <!-- Values -->
-        <div class="text-center">
-          <div class="text-6xl mb-6">⭐</div>
-          <h3 class="font-heading text-2xl mb-4 text-yp-yellow">Valorile Noastre</h3>
-          <p class="text-yp-white/70">
-            [COMPLETEAZĂ: Valori - ex: Calitate, Transparență, Responsabilitate, Respect pentru oameni.]
+        <div
+          class="bg-[#0a0a0a] border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group"
+        >
+          <div
+            class="text-yp-yellow font-mono text-sm tracking-widest block mb-4"
+          >
+            03 //
+          </div>
+          <h3 class="text-2xl font-light text-white mb-4">Valorile Noastre</h3>
+          <p
+            class="text-neutral-400 text-sm leading-relaxed group-hover:text-neutral-300 transition-colors"
+          >
+            [COMPLETEAZĂ: Valori - ex: Calitate, Transparență, Responsabilitate,
+            Respect pentru oameni.]
           </p>
         </div>
       </div>
@@ -83,60 +150,98 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <!-- Team Section (Optional) -->
-  <section class="py-20 bg-yp-gray">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-heading text-4xl mb-16 text-center">Echipa Noastră</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+  <section class="py-24 bg-[#0a0a0a] border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2
+        class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight text-center"
+      >
+        Echipa Noastră
+      </h2>
+      <div class="w-12 h-1 bg-yp-yellow mb-16 mx-auto"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
         <!-- Team Member 1 -->
-        <div class="bg-yp-black rounded-xl overflow-hidden">
-          <div class="aspect-[3/4] bg-yp-gray">
-            <img 
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" 
-              alt="[Nume]" 
-              class="w-full h-full object-cover"
-            />
+        <div
+          class="bg-yp-black border border-white/10 rounded-[4px] overflow-hidden group"
+        >
+          <div class="aspect-[3/4] bg-[#0a0a0a] relative">
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-4 bg-yp-black/50 z-0"
+            >
+              <span
+                class="text-neutral-500 font-mono text-xs uppercase tracking-widest"
+                >[ Foto Echipa ]</span
+              >
+            </div>
           </div>
-          <div class="p-6 text-center">
-            <h3 class="font-heading text-xl mb-1">[Nume Prenume]</h3>
-            <p class="text-yp-yellow text-sm mb-3">[Funcție]</p>
-            <p class="text-yp-white/70 text-sm">
+          <div class="p-8 text-center border-t border-white/5">
+            <h3 class="text-xl font-medium text-white mb-1">[Nume Prenume]</h3>
+            <p
+              class="text-yp-yellow text-sm font-mono tracking-widest uppercase items-center mb-4"
+            >
+              [Funcție]
+            </p>
+            <p
+              class="text-neutral-400 text-sm leading-relaxed group-hover:text-neutral-300 transition-colors"
+            >
               [COMPLETEAZĂ: Scurtă descriere rol]
             </p>
           </div>
         </div>
 
         <!-- Team Member 2 -->
-        <div class="bg-yp-black rounded-xl overflow-hidden">
-          <div class="aspect-[3/4] bg-yp-gray">
-            <img 
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" 
-              alt="[Nume]" 
-              class="w-full h-full object-cover"
-            />
+        <div
+          class="bg-yp-black border border-white/10 rounded-[4px] overflow-hidden group"
+        >
+          <div class="aspect-[3/4] bg-[#0a0a0a] relative">
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-4 bg-yp-black/50 z-0"
+            >
+              <span
+                class="text-neutral-500 font-mono text-xs uppercase tracking-widest"
+                >[ Foto Echipa ]</span
+              >
+            </div>
           </div>
-          <div class="p-6 text-center">
-            <h3 class="font-heading text-xl mb-1">[Nume Prenume]</h3>
-            <p class="text-yp-yellow text-sm mb-3">[Funcție]</p>
-            <p class="text-yp-white/70 text-sm">
+          <div class="p-8 text-center border-t border-white/5">
+            <h3 class="text-xl font-medium text-white mb-1">[Nume Prenume]</h3>
+            <p
+              class="text-yp-yellow text-sm font-mono tracking-widest uppercase items-center mb-4"
+            >
+              [Funcție]
+            </p>
+            <p
+              class="text-neutral-400 text-sm leading-relaxed group-hover:text-neutral-300 transition-colors"
+            >
               [COMPLETEAZĂ: Scurtă descriere rol]
             </p>
           </div>
         </div>
 
         <!-- Team Member 3 -->
-        <div class="bg-yp-black rounded-xl overflow-hidden">
-          <div class="aspect-[3/4] bg-yp-gray">
-            <img 
-              src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400" 
-              alt="[Nume]" 
-              class="w-full h-full object-cover"
-            />
+        <div
+          class="bg-yp-black border border-white/10 rounded-[4px] overflow-hidden group"
+        >
+          <div class="aspect-[3/4] bg-[#0a0a0a] relative">
+            <div
+              class="absolute inset-4 border border-dashed border-white/10 flex items-center justify-center text-center p-4 bg-yp-black/50 z-0"
+            >
+              <span
+                class="text-neutral-500 font-mono text-xs uppercase tracking-widest"
+                >[ Foto Echipa ]</span
+              >
+            </div>
           </div>
-          <div class="p-6 text-center">
-            <h3 class="font-heading text-xl mb-1">[Nume Prenume]</h3>
-            <p class="text-yp-yellow text-sm mb-3">[Funcție]</p>
-            <p class="text-yp-white/70 text-sm">
+          <div class="p-8 text-center border-t border-white/5">
+            <h3 class="text-xl font-medium text-white mb-1">[Nume Prenume]</h3>
+            <p
+              class="text-yp-yellow text-sm font-mono tracking-widest uppercase items-center mb-4"
+            >
+              [Funcție]
+            </p>
+            <p
+              class="text-neutral-400 text-sm leading-relaxed group-hover:text-neutral-300 transition-colors"
+            >
               [COMPLETEAZĂ: Scurtă descriere rol]
             </p>
           </div>
@@ -146,20 +251,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <!-- Final CTA -->
-  <section class="py-20 bg-yp-yellow">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="font-heading text-4xl md:text-5xl text-yp-black mb-6">
-        Hai Să Colaborăm
-      </h2>
-      <p class="text-yp-black/80 text-xl mb-10">
-        Suntem aici pentru echipa ta. Contactează-ne pentru o consultanță gratuită.
-      </p>
-      <button 
-        class="bg-yp-black text-yp-yellow font-heading font-bold px-10 py-5 rounded-lg text-lg hover:bg-yp-black/90 hover:shadow-xl transition-all"
-        onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'view_samples', source: 'despre_noi_cta' })"
+  <section class="py-24 bg-yp-yellow relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <button
+        class="bg-yp-black text-white hover:bg-[#1a1a1a] transition-colors py-6 px-8 lg:px-12 rounded-[4px] shadow-2xl group flex flex-col md:flex-row items-center justify-center gap-4 mx-auto w-full md:w-auto"
+        onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'free_consultation', source: 'despre_noi_cta' })"
       >
-        Cere Ofertă
+        <span class="text-lg lg:text-xl font-medium tracking-wide"
+          >Contactează-ne pentru o consultanță gratuită</span
+        >
+        <svg
+          class="w-6 h-6 shrink-0 group-hover:translate-x-2 transition-transform text-yp-yellow"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
+        >
       </button>
+
+      <p
+        class="mt-8 text-yp-black/80 font-medium max-w-2xl mx-auto leading-relaxed"
+      >
+        Suntem aici pentru echipa ta. Dacă vrei să discutăm cum arată sistemul
+        de protecție potrivit nevoilor tale, apasă butonul de mai sus.
+      </p>
     </div>
   </section>
 </BaseLayout>
