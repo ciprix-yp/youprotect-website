@@ -18,6 +18,7 @@
     "@astrojs/react": "^4.4.2",
     "@astrojs/tailwind": "^5.1.2",
     "@directus/sdk": "^21.1.0",
+    "aos": "^2.3.4",
     "astro": "^4.16.18",
     "pg": "^8.18.0",
     "react": "^19.2.3",
@@ -36,5 +37,8 @@
   "bugs": {
     "url": "https://github.com/ciprix-yp/youprotect-website/issues"
   },
-  "homepage": "https://github.com/ciprix-yp/youprotect-website#readme"
+  "homepage": "https://github.com/ciprix-yp/youprotect-website#readme",
+  "devDependencies": {
+    "@types/aos": "^3.0.7"
+  }
 }

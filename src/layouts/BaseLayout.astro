@@ -37,7 +37,12 @@ const bookingsUrl =
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400&family=Playfair+Display:ital@1&display=swap"
       rel="stylesheet"
+      <!--
+      AOS
+      CSS
+      --
     />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
   <body class="bg-yp-black text-yp-white font-body">
     <Header />
@@ -47,5 +52,19 @@ const bookingsUrl =
     </main>
 
     <Footer />
+
+    <!-- AOS Initialization -->
+    <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script is:inline>
+      document.addEventListener("DOMContentLoaded", () => {
+        AOS.init({
+          once: true, // whether animation should happen only once - while scrolling down
+          offset: 100, // offset (in px) from the original trigger point
+          duration: 800, // values from 0 to 3000, with step 50ms
+          easing: "ease-out-cubic", // default easing for AOS animations
+          delay: 50, // values from 0 to 3000, with step 50ms
+        });
+      });
+    </script>
   </body>
 </html>
