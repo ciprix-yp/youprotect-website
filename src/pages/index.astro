@@ -884,302 +884,303 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
     </div>
   </section>
-</BaseLayout>
 
-<!-- BLOC 7: CE FACI ACUM -->
-<section class="py-24 bg-yp-black border-b border-white/5 relative">
-  <div class="max-w-4xl mx-auto px-6 text-center">
-    <h2 class="text-3xl lg:text-4xl font-light text-white mb-6">
-      Ești la un pas de o echipă mai bine echipată
-    </h2>
-    <div class="w-12 h-1 bg-yp-yellow mx-auto mb-10"></div>
+  <!-- BLOC 7: CE FACI ACUM -->
+  <section class="py-24 bg-yp-black border-b border-white/5 relative">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-3xl lg:text-4xl font-light text-white mb-6">
+        Ești la un pas de o echipă mai bine echipată
+      </h2>
+      <div class="w-12 h-1 bg-yp-yellow mx-auto mb-10"></div>
 
-    <p class="text-lg text-neutral-400 mb-6 leading-relaxed">
-      Nu trebuie să știi exact ce echipamente vrei. Nu trebuie să ai un buget
-      clar sau un caiet de sarcini pregătit. Trebuie doar să ne spui cu ce te
-      confrunți — restul e treaba noastră.
-    </p>
-    <p class="text-lg text-neutral-400 mb-16 leading-relaxed">
-      Durează 15 minute să înțelegem dacă putem fi furnizorul potrivit pentru
-      tine. Dacă nu suntem, îți spunem sincer și te ajutăm să găsești pe cineva
-      care e.
-    </p>
+      <p class="text-lg text-neutral-400 mb-6 leading-relaxed">
+        Nu trebuie să știi exact ce echipamente vrei. Nu trebuie să ai un buget
+        clar sau un caiet de sarcini pregătit. Trebuie doar să ne spui cu ce te
+        confrunți — restul e treaba noastră.
+      </p>
+      <p class="text-lg text-neutral-400 mb-16 leading-relaxed">
+        Durează 15 minute să înțelegem dacă putem fi furnizorul potrivit pentru
+        tine. Dacă nu suntem, îți spunem sincer și te ajutăm să găsești pe
+        cineva care e.
+      </p>
 
-    <h3 class="text-xl text-white font-medium mb-8">
-      Ai trei variante să pornești:
-    </h3>
+      <h3 class="text-xl text-white font-medium mb-8">
+        Ai trei variante să pornești:
+      </h3>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Variant 1 -->
-      <div
-        class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all cursor-pointer group"
-        onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'contact_form', source: 'homepage_bloc7_form' })"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Variant 1 -->
         <div
-          class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
+          class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all cursor-pointer group"
+          onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'contact_form', source: 'homepage_bloc7_form' })"
         >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            ></path></svg
+          <div
+            class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
           >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path></svg
+            >
+          </div>
+          <p class="text-white text-sm leading-relaxed">
+            Completezi formularul de contact și te sunăm noi în maxim 24 de ore
+          </p>
         </div>
-        <p class="text-white text-sm leading-relaxed">
-          Completezi formularul de contact și te sunăm noi în maxim 24 de ore
-        </p>
+
+        <!-- Variant 2 -->
+        <a
+          href="tel:+40742226127"
+          class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all group block"
+        >
+          <div
+            class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+              ></path></svg
+            >
+          </div>
+          <p class="text-white text-sm leading-relaxed">
+            Ne suni direct la<br /><span
+              class="text-yp-yellow font-medium mt-2 block"
+              >+40 742 226 127</span
+            >
+          </p>
+        </a>
+
+        <!-- Variant 3 -->
+        <a
+          href="mailto:office@youprotect.ro"
+          class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all group block"
+        >
+          <div
+            class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path></svg
+            >
+          </div>
+          <p class="text-white text-sm leading-relaxed">
+            Ne scrii la <span class="text-yp-yellow font-medium"
+              >office@youprotect.ro</span
+            > cu o scurtă descriere a nevoii
+          </p>
+        </a>
       </div>
-
-      <!-- Variant 2 -->
-      <a
-        href="tel:+40742226127"
-        class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all group block"
-      >
-        <div
-          class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-            ></path></svg
-          >
-        </div>
-        <p class="text-white text-sm leading-relaxed">
-          Ne suni direct la<br /><span
-            class="text-yp-yellow font-medium mt-2 block">+40 742 226 127</span
-          >
-        </p>
-      </a>
-
-      <!-- Variant 3 -->
-      <a
-        href="mailto:office@youprotect.ro"
-        class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all group block"
-      >
-        <div
-          class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            ></path></svg
-          >
-        </div>
-        <p class="text-white text-sm leading-relaxed">
-          Ne scrii la <span class="text-yp-yellow font-medium"
-            >office@youprotect.ro</span
-          > cu o scurtă descriere a nevoii
-        </p>
-      </a>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- BLOC 8: CTA FINAL -->
-<section class="py-24 bg-yp-yellow relative overflow-hidden">
-  <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
-    <button
-      class="bg-yp-black text-white hover:bg-[#1a1a1a] transition-colors py-6 px-8 lg:px-12 rounded-[4px] shadow-2xl group flex flex-col md:flex-row items-center justify-center gap-4 mx-auto w-full md:w-auto"
-      onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'free_consultation', source: 'homepage_final_cta' })"
-    >
-      <span class="text-lg lg:text-xl font-medium tracking-wide"
-        >Vreau consultanță gratuită pentru echipamentele de protecție ale firmei
-        mele</span
+  <!-- BLOC 8: CTA FINAL -->
+  <section class="py-24 bg-yp-yellow relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <button
+        class="bg-yp-black text-white hover:bg-[#1a1a1a] transition-colors py-6 px-8 lg:px-12 rounded-[4px] shadow-2xl group flex flex-col md:flex-row items-center justify-center gap-4 mx-auto w-full md:w-auto"
+        onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'free_consultation', source: 'homepage_final_cta' })"
       >
-      <svg
-        class="w-6 h-6 shrink-0 group-hover:translate-x-2 transition-transform text-yp-yellow"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        ><path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
+        <span class="text-lg lg:text-xl font-medium tracking-wide"
+          >Vreau consultanță gratuită pentru echipamentele de protecție ale
+          firmei mele</span
+        >
+        <svg
+          class="w-6 h-6 shrink-0 group-hover:translate-x-2 transition-transform text-yp-yellow"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
+        >
+      </button>
+
+      <p
+        class="mt-8 text-yp-black/80 font-medium max-w-2xl mx-auto leading-relaxed"
       >
-    </button>
+        Zero angajament. Zero risc. Dacă soluțiile noastre nu se potrivesc
+        nevoilor tale, nu pierzi nimic — în afară de 15 minute și o conversație
+        sinceră.
+      </p>
+    </div>
+  </section>
 
-    <p
-      class="mt-8 text-yp-black/80 font-medium max-w-2xl mx-auto leading-relaxed"
-    >
-      Zero angajament. Zero risc. Dacă soluțiile noastre nu se potrivesc
-      nevoilor tale, nu pierzi nimic — în afară de 15 minute și o conversație
-      sinceră.
-    </p>
-  </div>
-</section>
-
-<!-- BLOC 9: FAQ -->
-<section
-  class="py-24 bg-yp-black border-b border-white/5 relative overflow-hidden"
->
-  <div
-    class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"
+  <!-- BLOC 9: FAQ -->
+  <section
+    class="py-24 bg-yp-black border-b border-white/5 relative overflow-hidden"
   >
-  </div>
-
-  <div class="max-w-3xl mx-auto px-6 relative z-10">
-    <h2 class="text-3xl lg:text-4xl font-light text-white mb-16 text-center">
-      Întrebări frecvente despre echipamentele de protecție
-    </h2>
-
-    <div class="flex flex-col gap-4">
-      <!-- Intrebare 1 -->
-      <details
-        class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-      >
-        <summary
-          class="flex items-center justify-between text-lg font-medium text-white"
-        >
-          Ce echipamente de protecție sunt obligatorii pentru angajatori în
-          România?
-          <span class="transition group-open:rotate-180">
-            <svg
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              viewBox="0 0 24 24"
-              width="24"><path d="M6 9l6 6 6-6"></path></svg
-            >
-          </span>
-        </summary>
-        <div
-          class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-        >
-          Conform Legii nr. 319/2006 privind securitatea și sănătatea în muncă
-          și HG nr. 1048/2006, angajatorul este obligat să furnizeze gratuit
-          echipamente individuale de protecție (EIP) adecvate riscurilor
-          identificate la evaluarea locului de muncă. Minimul obligatoriu pe un
-          șantier de construcții include: căști de protecție, bocanci de
-          protecție cu bombeu (S1P sau S3), veste reflectorizante și ochelari de
-          protecție. Sancțiunile ITM pentru neconformare pot ajunge la 10.000
-          RON per angajat neechipat.
-        </div>
-      </details>
-
-      <!-- Intrebare 2 -->
-      <details
-        class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-      >
-        <summary
-          class="flex items-center justify-between text-lg font-medium text-white"
-        >
-          Care este diferența dintre S1P și S3 la bocancii de protecție?
-          <span class="transition group-open:rotate-180">
-            <svg
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              viewBox="0 0 24 24"
-              width="24"><path d="M6 9l6 6 6-6"></path></svg
-            >
-          </span>
-        </summary>
-        <div
-          class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-        >
-          Bocancii S1P oferă protecție la impact (bombeu rezistent la 200J
-          conform EN ISO 20345), rezistență la penetrarea tălpii și sunt
-          destinați mediilor uscate. Bocancii S3 adaugă rezistență la apă a
-          feței exterioare și o talpă antiperforație, fiind recomandați pentru
-          șantiere de construcții, medii umede sau activități în exterior.
-          Ambele categorii trebuie să dețină marcajul CE și să fie conforme cu
-          standardul EN ISO 20345:2022.
-        </div>
-      </details>
-
-      <!-- Intrebare 3 -->
-      <details
-        class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-      >
-        <summary
-          class="flex items-center justify-between text-lg font-medium text-white"
-        >
-          Livrați echipamente de protecție în toată România?
-          <span class="transition group-open:rotate-180">
-            <svg
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              viewBox="0 0 24 24"
-              width="24"><path d="M6 9l6 6 6-6"></path></svg
-            >
-          </span>
-        </summary>
-        <div
-          class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-        >
-          Da. You Protect livrează echipamente de protecție și haine de lucru în
-          toată România. Avem sediul în Vetiș, județul Satu Mare, dar lucrăm cu
-          companii din București, Cluj, Timișoara, Oradea și din toate județele
-          țării. Oferim livrare gratuită și, pentru clienții din nord-vestul
-          României, și posibilitatea de consultanță față în față sau direct la
-          sediul firmei tale.
-        </div>
-      </details>
+    <div
+      class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"
+    >
     </div>
-  </div>
-</section>
 
-<!-- JSON-LD FAQ Schema -->
-<script type="application/ld+json" is:inline>
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Ce echipamente de protecție sunt obligatorii pentru angajatori în România?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Conform Legii nr. 319/2006 privind securitatea și sănătatea în muncă și HG nr. 1048/2006, angajatorul este obligat să furnizeze gratuit echipamente individuale de protecție (EIP) adecvate riscurilor identificate la evaluarea locului de muncă. Minimul obligatoriu pe un șantier de construcții include: căști de protecție, bocanci de protecție cu bombeu (S1P sau S3), veste reflectorizante și ochelari de protecție. Sancțiunile ITM pentru neconformare pot ajunge la 10.000 RON per angajat neechipat."
+    <div class="max-w-3xl mx-auto px-6 relative z-10">
+      <h2 class="text-3xl lg:text-4xl font-light text-white mb-16 text-center">
+        Întrebări frecvente despre echipamentele de protecție
+      </h2>
+
+      <div class="flex flex-col gap-4">
+        <!-- Intrebare 1 -->
+        <details
+          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
+        >
+          <summary
+            class="flex items-center justify-between text-lg font-medium text-white"
+          >
+            Ce echipamente de protecție sunt obligatorii pentru angajatori în
+            România?
+            <span class="transition group-open:rotate-180">
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                width="24"><path d="M6 9l6 6 6-6"></path></svg
+              >
+            </span>
+          </summary>
+          <div
+            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
+          >
+            Conform Legii nr. 319/2006 privind securitatea și sănătatea în muncă
+            și HG nr. 1048/2006, angajatorul este obligat să furnizeze gratuit
+            echipamente individuale de protecție (EIP) adecvate riscurilor
+            identificate la evaluarea locului de muncă. Minimul obligatoriu pe
+            un șantier de construcții include: căști de protecție, bocanci de
+            protecție cu bombeu (S1P sau S3), veste reflectorizante și ochelari
+            de protecție. Sancțiunile ITM pentru neconformare pot ajunge la
+            10.000 RON per angajat neechipat.
+          </div>
+        </details>
+
+        <!-- Intrebare 2 -->
+        <details
+          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
+        >
+          <summary
+            class="flex items-center justify-between text-lg font-medium text-white"
+          >
+            Care este diferența dintre S1P și S3 la bocancii de protecție?
+            <span class="transition group-open:rotate-180">
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                width="24"><path d="M6 9l6 6 6-6"></path></svg
+              >
+            </span>
+          </summary>
+          <div
+            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
+          >
+            Bocancii S1P oferă protecție la impact (bombeu rezistent la 200J
+            conform EN ISO 20345), rezistență la penetrarea tălpii și sunt
+            destinați mediilor uscate. Bocancii S3 adaugă rezistență la apă a
+            feței exterioare și o talpă antiperforație, fiind recomandați pentru
+            șantiere de construcții, medii umede sau activități în exterior.
+            Ambele categorii trebuie să dețină marcajul CE și să fie conforme cu
+            standardul EN ISO 20345:2022.
+          </div>
+        </details>
+
+        <!-- Intrebare 3 -->
+        <details
+          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
+        >
+          <summary
+            class="flex items-center justify-between text-lg font-medium text-white"
+          >
+            Livrați echipamente de protecție în toată România?
+            <span class="transition group-open:rotate-180">
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                width="24"><path d="M6 9l6 6 6-6"></path></svg
+              >
+            </span>
+          </summary>
+          <div
+            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
+          >
+            Da. You Protect livrează echipamente de protecție și haine de lucru
+            în toată România. Avem sediul în Vetiș, județul Satu Mare, dar
+            lucrăm cu companii din București, Cluj, Timișoara, Oradea și din
+            toate județele țării. Oferim livrare gratuită și, pentru clienții
+            din nord-vestul României, și posibilitatea de consultanță față în
+            față sau direct la sediul firmei tale.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- JSON-LD FAQ Schema -->
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Ce echipamente de protecție sunt obligatorii pentru angajatori în România?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Conform Legii nr. 319/2006 privind securitatea și sănătatea în muncă și HG nr. 1048/2006, angajatorul este obligat să furnizeze gratuit echipamente individuale de protecție (EIP) adecvate riscurilor identificate la evaluarea locului de muncă. Minimul obligatoriu pe un șantier de construcții include: căști de protecție, bocanci de protecție cu bombeu (S1P sau S3), veste reflectorizante și ochelari de protecție. Sancțiunile ITM pentru neconformare pot ajunge la 10.000 RON per angajat neechipat."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Care este diferența dintre S1P și S3 la bocancii de protecție?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bocancii S1P oferă protecție la impact (bombeu rezistent la 200J conform EN ISO 20345), rezistență la penetrarea tălpii și sunt destinați mediilor uscate. Bocancii S3 adaugă rezistență la apă a feței exterioare și o talpă antiperforație, fiind recomandați pentru șantiere de construcții, medii umede sau activități în exterior. Ambele categorii trebuie să dețină marcajul CE și să fie conforme cu standardul EN ISO 20345:2022."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Livrați echipamente de protecție în toată România?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Da. You Protect livrează echipamente de protecție și haine de lucru în toată România. Avem sediul în Vetiș, județul Satu Mare, dar lucrăm cu companii din București, Cluj, Timișoara, Oradea și din toate județele țării. Oferim livrare gratuită și, pentru clienții din nord-vestul României, și posibilitatea de consultanță față în față sau direct la sediul firmei tale."
+          }
         }
-      },
-      {
-        "@type": "Question",
-        "name": "Care este diferența dintre S1P și S3 la bocancii de protecție?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bocancii S1P oferă protecție la impact (bombeu rezistent la 200J conform EN ISO 20345), rezistență la penetrarea tălpii și sunt destinați mediilor uscate. Bocancii S3 adaugă rezistență la apă a feței exterioare și o talpă antiperforație, fiind recomandați pentru șantiere de construcții, medii umede sau activități în exterior. Ambele categorii trebuie să dețină marcajul CE și să fie conforme cu standardul EN ISO 20345:2022."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Livrați echipamente de protecție în toată România?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Da. You Protect livrează echipamente de protecție și haine de lucru în toată România. Avem sediul în Vetiș, județul Satu Mare, dar lucrăm cu companii din București, Cluj, Timișoara, Oradea și din toate județele țării. Oferim livrare gratuită și, pentru clienții din nord-vestul României, și posibilitatea de consultanță față în față sau direct la sediul firmei tale."
-        }
-      }
-    ]
-  }
-</script>
+      ]
+    }
+  </script>
+</BaseLayout>
