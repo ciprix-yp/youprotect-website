@@ -37,11 +37,8 @@ const bookingsUrl =
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400&family=Playfair+Display:ital@1&display=swap"
       rel="stylesheet"
-      <!--
-      AOS
-      CSS
-      --
     />
+    <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
   <body class="bg-yp-black text-yp-white font-body">
@@ -56,15 +53,29 @@ const bookingsUrl =
     <!-- AOS Initialization -->
     <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script is:inline>
-      document.addEventListener("DOMContentLoaded", () => {
-        AOS.init({
-          once: true, // whether animation should happen only once - while scrolling down
-          offset: 100, // offset (in px) from the original trigger point
-          duration: 800, // values from 0 to 3000, with step 50ms
-          easing: "ease-out-cubic", // default easing for AOS animations
-          delay: 50, // values from 0 to 3000, with step 50ms
-        });
-      });
+      const initAOS = () => {
+        // Only init if AOS is defined
+        if (typeof AOS !== "undefined") {
+          AOS.init({
+            once: false, // whether animation should happen only once - while scrolling down
+            mirror: true, // whether elements should animate out while scrolling past them
+            offset: 100, // offset (in px) from the original trigger point
+            duration: 800, // values from 0 to 3000, with step 50ms
+            easing: "ease-out-cubic", // default easing for AOS animations
+            delay: 50, // values from 0 to 3000, with step 50ms
+          });
+        }
+      };
+
+      // Run on DOM loaded
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initAOS);
+      } else {
+        initAOS();
+      }
+
+      // If Astro ViewTransitions are ever added, this ensures AOS re-initializes on page swap:
+      document.addEventListener("astro:after-swap", initAOS);
     </script>
   </body>
 </html>

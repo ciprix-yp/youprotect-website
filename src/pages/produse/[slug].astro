@@ -120,16 +120,16 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
 
         <!-- 1. HEADER / TITLU -->
         <header>
-          <p class="text-[10px] md:text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow mb-3">{product.categoryName}</p>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-light text-yp-white leading-[1.1] tracking-tight mb-4">{product.name}</h1>
-          <p class="text-sm font-light text-yp-white/60 leading-relaxed">
+          <p class="text-[10px] md:text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow mb-3" data-aos="fade-down">{product.categoryName}</p>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-light text-yp-white leading-[1.1] tracking-tight mb-4" data-aos="fade-up">{product.name}</h1>
+          <p class="text-sm font-light text-yp-white/60 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
             {product.shortDescription || product.description || 'Echipament de protecție avansată din portofoliul You Protect.'}
           </p>
         </header>
 
         <!-- 2. GALERIE FOTO (CAROUSEL) -->
         {carouselImages.length > 0 ? (
-          <div class="relative w-full -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div class="relative w-full -mx-4 px-4 sm:mx-0 sm:px-0" data-aos="fade-up" data-aos-delay="200">
             <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 hide-scrollbar">
               {carouselImages.map((img: any, i: number) => (
                 <figure class="w-[85%] sm:w-[60%] md:w-full shrink-0 snap-center bg-yp-black/40 border border-yp-white/10 overflow-hidden">
@@ -149,13 +149,13 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
             )}
           </div>
         ) : (
-          <div class="w-full aspect-video bg-yp-black/30 border border-yp-white/10 flex items-center justify-center">
+          <div class="w-full aspect-video bg-yp-black/30 border border-yp-white/10 flex items-center justify-center" data-aos="fade-up" data-aos-delay="200">
              <p class="text-yp-white/30 text-sm font-light uppercase tracking-widest">Imagini în pregătire</p>
           </div>
         )}
 
         <!-- 3. CTA #1 -->
-        <div class="pt-2">
+        <div class="pt-2" data-aos="zoom-in" data-aos-delay="300">
           <button
             type="button"
             onclick="window.location.href='/contact?ref=' + encodeURIComponent(window.location.pathname)"
@@ -169,7 +169,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
 
         <!-- 4. VARIANTE (CULORI / MĂRIMI) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          <div>
+          <div data-aos="fade-right">
             <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Nuanțe Disponibile</h3>
             {product.colorSwatches.length > 0 ? (
               <div class="flex flex-wrap gap-3">
@@ -187,7 +187,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
             )}
           </div>
 
-          <div>
+          <div data-aos="fade-left">
             <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Plajă de Mărimi</h3>
             {product.sizeValues.length > 0 ? (
               <p class="text-lg text-yp-white font-light tracking-wide">
@@ -203,15 +203,15 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
 
         <!-- 5. RECOMANDAT PENTRU -->
         {product.merchandisingTags.length > 0 && (
-          <div>
+          <div data-aos="fade-up">
              <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Recomandat pentru Industriile</h3>
              <div class="flex flex-wrap gap-2">
                {product.merchandisingTags.map((tag: string) => (
-                 <span class="inline-flex items-center px-4 py-2 border border-yp-white/20 bg-yp-black/40 text-xs text-yp-white/80 transition-colors cursor-default">
+                 <span class="inline-flex items-center px-4 py-2 border border-yp-white/20 bg-yp-black/40 text-xs text-yp-white/80 transition-colors cursor-default hover:border-yp-yellow/50">
                    {tag}
                  </span>
                ))}
-               <span class="inline-flex items-center px-4 py-2 border border-yp-white/20 bg-yp-black/40 text-xs text-yp-white/80 transition-colors cursor-default">
+               <span class="inline-flex items-center px-4 py-2 border border-yp-white/20 bg-yp-black/40 text-xs text-yp-white/80 transition-colors cursor-default hover:border-yp-yellow/50">
                  {product.categoryName}
                </span>
              </div>
@@ -220,7 +220,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
 
         <!-- 6. BENEFICII -->
         {product.benefits && product.benefits.length > 0 && (
-          <div>
+          <div data-aos="fade-up">
             <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Avantaje Majore</h3>
             <ul class="space-y-4">
               {product.benefits.map((benefit: string) => (
@@ -233,7 +233,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
         )}
 
         <!-- 7. GARANȚIE -->
-        <div class="p-6 bg-yp-black/40 border border-yp-white/10 flex flex-col gap-2">
+        <div class="p-6 bg-yp-black/40 border border-yp-white/10 flex flex-col gap-2 hover:border-yp-yellow/30 transition-colors" data-aos="fade-up">
            <div class="flex items-center gap-3 mb-2">
               <svg class="w-5 h-5 text-yp-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
               <h3 class="text-sm font-medium uppercase tracking-widest text-yp-white">Garanție Extinsă B2B</h3>
@@ -245,7 +245,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
 
         <!-- 8. CERTIFICĂRI -->
         {product.certificationTags?.length > 0 && (
-          <div>
+          <div data-aos="fade-up">
              <h3 class="text-[11px] uppercase tracking-[0.16em] text-yp-white/40 mb-4">Standarde & Conformitate</h3>
              <div class="flex flex-wrap gap-4">
                 {product.certificationTags.map((cert: string) => (
@@ -259,7 +259,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
         )}
 
         <!-- 9. CTA #2 -->
-        <div class="pt-8 pb-12">
+        <div class="pt-8 pb-12" data-aos="zoom-in">
           <button
             type="button"
             onclick="window.location.href='/contact?ref=' + encodeURIComponent(window.location.pathname)"
