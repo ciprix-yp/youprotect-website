@@ -20,8 +20,20 @@ export interface WebsiteProduct {
     industry: string | null;
 }
 
+export interface Testimonial {
+    id: string;
+    google_review_id: string | null;
+    author_name: string;
+    author_photo_url: string | null;
+    review_text: string;
+    rating: number;
+    date_posted: string | null;
+    status: 'draft' | 'published';
+}
+
 interface CustomSchema {
     website_products: WebsiteProduct[];
+    testimoniale: Testimonial[];
 }
 
 const directusUrl = import.meta.env.DIRECTUS_URL || 'https://directus-production-711b.up.railway.app';
@@ -41,6 +53,24 @@ export async function getDirectusProducts() {
         return products;
     } catch (error) {
         console.error('Error fetching products from Directus:', error);
+        return [];
+    }
+}
+
+export async function getPublishedTestimonials(): Promise<Testimonial[]> {
+    try {
+        const testimoniale = await directus.request(
+            readItems('testimoniale', {
+                filter: {
+                    status: { _eq: 'published' }
+                },
+                sort: ['-date_posted'],
+                limit: 12,
+            })
+        );
+        return testimoniale as Testimonial[];
+    } catch (error) {
+        console.error('Error fetching testimonials from Directus:', error);
         return [];
     }
 }
