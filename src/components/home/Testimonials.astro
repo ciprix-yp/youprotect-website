@@ -8,12 +8,7 @@ interface Props {
 const { testimonials } = Astro.props;
 
 function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+  return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
 function formatDate(dateStr: string | null): string {
@@ -23,54 +18,228 @@ function formatDate(dateStr: string | null): string {
 }
 ---
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-  {testimonials.map((t) => (
-    <article class="flex flex-col bg-yp-black border border-white/10 rounded-[4px] p-8 lg:p-10 gap-6 hover:border-yp-yellow/30 transition-colors group">
-      <!-- Stars -->
-      <div class="flex gap-1" aria-label="5 stele din 5">
-        {[1,2,3,4,5].map(() => (
-          <svg class="w-5 h-5 text-yp-yellow fill-current" viewBox="0 0 20 20" aria-hidden="true">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-          </svg>
-        ))}
-      </div>
+<div class="testimonials-carousel relative opacity-0">
+  <!-- Nav buttons (desktop only) -->
+  <button
+    class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 bg-yp-black border border-white/20 rounded-[4px] hidden md:flex items-center justify-center text-white hover:border-yp-yellow hover:text-yp-yellow transition-all"
+    aria-label="Anterior"
+  >
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+    </svg>
+  </button>
+  <button
+    class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 bg-yp-black border border-white/20 rounded-[4px] hidden md:flex items-center justify-center text-white hover:border-yp-yellow hover:text-yp-yellow transition-all"
+    aria-label="Următor"
+  >
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+  </button>
 
-      <!-- Quote text -->
-      <blockquote class="flex-1 text-neutral-300 text-sm lg:text-base leading-relaxed group-hover:text-white transition-colors">
-        <span class="text-yp-yellow text-3xl font-serif leading-none select-none mr-1" aria-hidden="true">"</span>
-        {t.review_text}
-      </blockquote>
-
-      <!-- Author -->
-      <div class="flex items-center gap-4 pt-6 border-t border-white/5">
-        {t.author_photo_url ? (
-          <img
-            src={t.author_photo_url}
-            alt={t.author_name}
-            class="w-12 h-12 rounded-[4px] object-cover border border-white/10 group-hover:border-yp-yellow/30 transition-colors"
-            loading="lazy"
-          />
-        ) : (
-          <div class="w-12 h-12 rounded-[4px] bg-yp-yellow/10 border border-yp-yellow/20 flex items-center justify-center flex-shrink-0 group-hover:bg-yp-yellow/20 transition-colors">
-            <span class="text-yp-yellow text-sm font-medium tracking-wide">{getInitials(t.author_name)}</span>
+  <!-- Viewport -->
+  <div class="carousel-outer overflow-hidden">
+    <div class="carousel-track flex gap-6 lg:gap-8">
+      {testimonials.map((t) => (
+        <article class="carousel-card flex-none flex flex-col bg-yp-black border border-white/10 rounded-[4px] p-8 gap-6 hover:border-yp-yellow/30 transition-colors group">
+          <!-- Stars -->
+          <div class="flex gap-1" aria-label={`${t.rating} stele din 5`}>
+            {Array.from({ length: t.rating }).map(() => (
+              <svg class="w-5 h-5 text-yp-yellow fill-current" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            ))}
           </div>
-        )}
-        <div>
-          <p class="text-white font-medium text-sm lg:text-base">{t.author_name}</p>
-          {t.date_posted && (
-             <p class="text-neutral-500 text-xs mt-0.5">{formatDate(t.date_posted)}</p>
-          )}
-        </div>
-        <!-- Google logo badge -->
-        <div class="ml-auto opacity-80 group-hover:opacity-100 transition-opacity" title="Recenzie Google">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-label="Google" fill="none">
-             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-        </div>
-      </div>
-    </article>
-  ))}
+
+          <!-- Review text -->
+          <blockquote class="flex-1 text-neutral-300 text-sm leading-relaxed group-hover:text-white transition-colors">
+            <span class="text-yp-yellow text-3xl font-serif leading-none select-none mr-1" aria-hidden="true">"</span>
+            {t.review_text}
+          </blockquote>
+
+          <!-- Author -->
+          <div class="flex items-center gap-4 pt-6 border-t border-white/5">
+            <!-- Avatar: initials as base, photo overlaid on top -->
+            <div class="relative w-12 h-12 flex-shrink-0">
+              <div class="w-12 h-12 rounded-[4px] bg-yp-yellow/10 border border-yp-yellow/20 flex items-center justify-center">
+                <span class="text-yp-yellow text-sm font-medium tracking-wide">{getInitials(t.author_name)}</span>
+              </div>
+              {t.author_photo_url && (
+                <img
+                  src={t.author_photo_url}
+                  alt={t.author_name}
+                  class="absolute inset-0 w-12 h-12 rounded-[4px] object-cover border border-white/10"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                  onerror="this.remove()"
+                />
+              )}
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-medium text-sm truncate">{t.author_name}</p>
+              {t.date_posted && (
+                <p class="text-neutral-500 text-xs mt-0.5">{formatDate(t.date_posted)}</p>
+              )}
+            </div>
+
+            <!-- Google badge -->
+            <div class="flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" title="Recenzie Google">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-label="Google">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="flex justify-center gap-2 mt-8" role="tablist" aria-label="Navigare testimoniale">
+    {testimonials.map((_, i) => (
+      <button
+        class={`carousel-dot h-2 rounded-full transition-all duration-300 ${i === 0 ? 'w-6 bg-yp-yellow' : 'w-2 bg-white/20 hover:bg-white/40'}`}
+        role="tab"
+        aria-label={`Testimonial ${i + 1}`}
+        data-index={String(i)}
+      />
+    ))}
+  </div>
 </div>
+
+<script>
+  const container = document.querySelector<HTMLElement>('.testimonials-carousel');
+  if (!container) throw new Error('No carousel');
+
+  const outer   = container.querySelector<HTMLElement>('.carousel-outer')!;
+  const track   = container.querySelector<HTMLElement>('.carousel-track')!;
+  const prevBtn = container.querySelector<HTMLButtonElement>('.carousel-prev');
+  const nextBtn = container.querySelector<HTMLButtonElement>('.carousel-next');
+  const dots    = Array.from(container.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
+
+  const originals = Array.from(track.querySelectorAll<HTMLElement>('.carousel-card'));
+  const N = originals.length;
+
+  // Prepend N leading clones + append N trailing clones for infinite loop
+  for (let i = N - 1; i >= 0; i--) {
+    const c = originals[i].cloneNode(true) as HTMLElement;
+    c.setAttribute('aria-hidden', 'true');
+    track.prepend(c);
+  }
+  originals.forEach(card => {
+    const c = card.cloneNode(true) as HTMLElement;
+    c.setAttribute('aria-hidden', 'true');
+    track.append(c);
+  });
+
+  // DOM order: [lc0..lc(N-1)] [orig0..orig(N-1)] [tc0..tc(N-1)]
+  // indices:    0 .. N-1        N .. 2N-1           2N .. 3N-1
+
+  let idx = N; // start at first original
+  let busy = false;
+  let timer: ReturnType<typeof setInterval> | null = null;
+
+  function ipv(): number {
+    return window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+  }
+
+  function gap(): number {
+    return parseFloat(getComputedStyle(track).columnGap) || 24;
+  }
+
+  function cardWidth(): number {
+    const cards = track.querySelectorAll<HTMLElement>('.carousel-card');
+    return cards.length ? cards[0].offsetWidth + gap() : 0;
+  }
+
+  function setWidths() {
+    if (!outer.offsetWidth) return;
+    const w = (outer.offsetWidth - gap() * (ipv() - 1)) / ipv();
+    track.querySelectorAll<HTMLElement>('.carousel-card').forEach(c => (c.style.width = w + 'px'));
+  }
+
+  function render(animated: boolean) {
+    track.style.transition = animated
+      ? 'transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      : 'none';
+    track.style.transform = `translateX(-${idx * cardWidth()}px)`;
+  }
+
+  function syncDots() {
+    const active = ((idx % N) + N) % N;
+    dots.forEach((d, i) => {
+      d.classList.toggle('w-6',       i === active);
+      d.classList.toggle('bg-yp-yellow', i === active);
+      d.classList.toggle('w-2',       i !== active);
+      d.classList.toggle('bg-white/20',  i !== active);
+    });
+  }
+
+  function step(dir: 1 | -1) {
+    if (busy) return;
+    busy = true;
+    idx += dir;
+    render(true);
+    syncDots();
+  }
+
+  // Teleport after animation completes
+  track.addEventListener('transitionend', () => {
+    busy = false;
+    const v = ipv();
+    if (idx >= 2 * N) {
+      idx -= N; render(false);
+    } else if (idx <= N - v) {
+      idx += N; render(false);
+    }
+  });
+
+  // Init
+  setWidths();
+  render(false);
+  syncDots();
+  requestAnimationFrame(() => {
+    container.style.transition = 'opacity 0.4s';
+    container.style.opacity = '1';
+  });
+
+  // Controls
+  prevBtn?.addEventListener('click', () => step(-1));
+  nextBtn?.addEventListener('click', () => step(1));
+
+  dots.forEach((d, i) => {
+    d.addEventListener('click', () => {
+      if (busy) return;
+      busy = true;
+      idx = N + i;
+      render(true);
+      syncDots();
+    });
+  });
+
+  // Resize
+  let resizeT: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { setWidths(); render(false); }, 100);
+  });
+
+  // Autoplay — pause on hover
+  const start = () => { timer = setInterval(() => step(1), 5000); };
+  const stop  = () => { if (timer) clearInterval(timer); };
+  container.addEventListener('mouseenter', stop);
+  container.addEventListener('mouseleave', start);
+  start();
+
+  // Touch swipe
+  let tx = 0;
+  outer.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  outer.addEventListener('touchend',   e => {
+    const d = tx - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 50) step(d > 0 ? 1 : -1);
+  }, { passive: true });
+</script>
