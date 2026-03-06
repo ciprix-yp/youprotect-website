@@ -13,13 +13,13 @@ const testimonials = await getPublishedTestimonials();
   <!-- Mobile Sticky CTA: Dispare la scroll jos, apare la scroll sus -->
   <div
     id="mobile-sticky-catalog"
-    class="md:hidden fixed z-40 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out top-20 -translate-y-[150%]"
+    class="md:hidden fixed z-40 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out top-20 translate-y-[10px]"
   >
     <a
-      href="/produse"
+      href="/contact"
       class="bg-yp-yellow text-yp-black font-medium px-5 py-2 rounded-full shadow-lg border border-yp-black/10 flex items-center justify-center gap-2 text-sm whitespace-nowrap"
     >
-      Catalog Produse
+      Hai să Discutăm
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
         ><path
           stroke-linecap="round"
@@ -34,7 +34,7 @@ const testimonials = await getPublishedTestimonials();
     let lastScrollY = window.scrollY;
     const stickyBtn = document.getElementById("mobile-sticky-catalog");
 
-    // We only want this active after user has scrolled past hero a bit
+    // It should be visible initially. Hide when scrolling down, show when scrolling up
     window.addEventListener(
       "scroll",
       () => {
@@ -42,14 +42,11 @@ const testimonials = await getPublishedTestimonials();
 
         const currentScrollY = window.scrollY;
 
-        if (currentScrollY < 200) {
-          // Hide if too close to top
-          stickyBtn.style.transform = "translate(-50%, -150%)";
-        } else if (currentScrollY > lastScrollY) {
+        if (currentScrollY > lastScrollY && currentScrollY > 50) {
           // Scrolling DOWN -> hide
           stickyBtn.style.transform = "translate(-50%, -150%)";
         } else {
-          // Scrolling UP -> show
+          // Scrolling UP or at the top -> show
           stickyBtn.style.transform = "translate(-50%, 10px)";
         }
 
@@ -97,7 +94,7 @@ const testimonials = await getPublishedTestimonials();
         </div>
 
         <h1
-          class="text-4xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.1] text-white mb-6 max-w-[90%]"
+          class="text-3xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.15] text-white mb-6 max-w-[95%] md:max-w-[90%]"
         >
           Echipamente de Protecție,<br /> Haine de Lucru care<br />
           <span class="text-yp-yellow">Cresc Profitabilitatea</span>
@@ -176,11 +173,11 @@ const testimonials = await getPublishedTestimonials();
       </p>
 
       <div
-        class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 md:gap-16 w-full"
+        class="grid grid-cols-2 lg:flex lg:flex-wrap items-center justify-items-center justify-center gap-4 sm:gap-10 md:gap-16 w-full"
       >
         <!-- Logo 1: Mascot -->
         <div
-          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-6 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center flex-1 min-w-[200px] max-w-[280px]"
+          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
           data-aos="fade-up"
           data-aos-delay="100"
         >
@@ -194,7 +191,7 @@ const testimonials = await getPublishedTestimonials();
 
         <!-- Logo 2: Sir Safety -->
         <div
-          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-6 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center flex-1 min-w-[200px] max-w-[280px]"
+          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
           data-aos="fade-up"
           data-aos-delay="200"
         >
@@ -208,7 +205,7 @@ const testimonials = await getPublishedTestimonials();
 
         <!-- Logo 3: Certificare EN -->
         <div
-          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-6 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center flex-1 min-w-[200px] max-w-[280px]"
+          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
           data-aos="fade-up"
           data-aos-delay="300"
         >
@@ -222,7 +219,7 @@ const testimonials = await getPublishedTestimonials();
 
         <!-- Logo 4: Certificare ISO -->
         <div
-          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-6 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center flex-1 min-w-[200px] max-w-[280px]"
+          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
           data-aos="fade-up"
           data-aos-delay="400"
         >
