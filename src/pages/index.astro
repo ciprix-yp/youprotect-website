@@ -10,12 +10,61 @@ const testimonials = await getPublishedTestimonials();
   title="Echipamente de Protecție și Haine de Lucru Premium | You Protect Satu Mare"
   description="You Protect furnizează echipamente individuale de protecție (EIP) și haine de lucru premium pentru companii din nord-vestul României. Consultanță gratuită, testare fără riscuri, livrare rapidă. Soluții conforme EN/ISO."
 >
+  <!-- Mobile Sticky CTA: Dispare la scroll jos, apare la scroll sus -->
+  <div
+    id="mobile-sticky-catalog"
+    class="md:hidden fixed z-40 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out top-20 -translate-y-[150%]"
+  >
+    <a
+      href="/produse"
+      class="bg-yp-yellow text-yp-black font-medium px-5 py-2 rounded-full shadow-lg border border-yp-black/10 flex items-center justify-center gap-2 text-sm whitespace-nowrap"
+    >
+      Catalog Produse
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
+      >
+    </a>
+  </div>
+
+  <script>
+    let lastScrollY = window.scrollY;
+    const stickyBtn = document.getElementById("mobile-sticky-catalog");
+
+    // We only want this active after user has scrolled past hero a bit
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!stickyBtn) return;
+
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY < 200) {
+          // Hide if too close to top
+          stickyBtn.style.transform = "translate(-50%, -150%)";
+        } else if (currentScrollY > lastScrollY) {
+          // Scrolling DOWN -> hide
+          stickyBtn.style.transform = "translate(-50%, -150%)";
+        } else {
+          // Scrolling UP -> show
+          stickyBtn.style.transform = "translate(-50%, 10px)";
+        }
+
+        lastScrollY = currentScrollY;
+      },
+      { passive: true },
+    );
+  </script>
+
   <main class="relative min-h-screen flex items-center overflow-hidden">
     <div class="absolute inset-0 z-0">
       <img
         src="/hero-youprotect-highvis.jpg"
         alt="Echipamente de Protecție You Protect"
-        class="w-full h-full object-cover object-[70%_center] opacity-80"
+        class="w-full h-full object-cover object-[85%_center] md:object-[70%_center] opacity-80"
       />
       <div
         class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent"
@@ -364,7 +413,7 @@ const testimonials = await getPublishedTestimonials();
       >
         <!-- Image Container (Colaj) -->
         <div
-          class="order-1 grid grid-cols-2 gap-4 hidden md:grid h-full min-h-[400px]"
+          class="order-1 grid grid-cols-2 gap-2 md:gap-4 h-full min-h-[300px] md:min-h-[400px] mb-8 md:mb-0"
           data-aos="fade-up"
         >
           <!-- Imagine principala verticala -->
