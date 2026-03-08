@@ -1,0 +1,49 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import GlobalInnerHero from "../components/global/GlobalInnerHero.astro";
+import GlobalPreFooterCTA from "../components/global/GlobalPreFooterCTA.astro";
+
+interface Props {
+    title: string;
+    description?: string;
+    heroTitle: string;
+    heroSubtitle?: string;
+    breadcrumb?: string;
+    heroImage?: string;
+    ctaHeading?: string;
+    ctaSubheading?: string;
+    ctaButtonText?: string;
+}
+
+const {
+    title,
+    description,
+    heroTitle,
+    heroSubtitle,
+    breadcrumb,
+    heroImage,
+    ctaHeading,
+    ctaSubheading,
+    ctaButtonText,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+    <!-- Consistent Inner Page Header -->
+    <GlobalInnerHero
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        breadcrumb={breadcrumb}
+        imagePath={heroImage}
+    />
+
+    <!-- Content Block injected by concrete pages -->
+    <slot />
+
+    <!-- Consistent Pre-Footer CTA -->
+    <GlobalPreFooterCTA
+        heading={ctaHeading}
+        subheading={ctaSubheading}
+        buttonText={ctaButtonText}
+    />
+</BaseLayout>

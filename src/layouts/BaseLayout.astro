@@ -40,6 +40,42 @@ const bookingsUrl =
     />
     <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- SEO & OG Tags -->
+    <meta property="og:title" content={`${title} | You Protect`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url.href} />
+    <link rel="canonical" href={Astro.url.href} />
+
+    <!-- JSON-LD LocalBusiness Schema -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "B2BBusiness",
+        name: "You Protect",
+        image: "https://youprotect.ro/favicon.svg",
+        description:
+          "Furnizor premium de echipamente de protecție (SSM) și haine de lucru personalizate pentru companii din România.",
+        url: "https://youprotect.ro",
+        telephone: "+40742226127",
+        email: "office@youprotect.ro",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Strada Careiului nr 11",
+          addressLocality: "Vetiș",
+          addressRegion: "Satu Mare",
+          addressCountry: "RO",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: 47.7602,
+          longitude: 22.8447,
+        },
+        priceRange: "$$",
+      })}
+    />
   </head>
   <body class="bg-yp-black text-yp-white font-body">
     <Header />

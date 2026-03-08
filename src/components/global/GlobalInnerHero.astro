@@ -1,0 +1,80 @@
+---
+export interface Props {
+    title: string;
+    subtitle?: string;
+    breadcrumb?: string;
+    imagePath?: string;
+}
+
+const {
+    title,
+    subtitle,
+    breadcrumb = "Pagina curentă",
+    imagePath = "/hero-youprotect-highvis.jpg",
+} = Astro.props;
+---
+
+<section
+    class="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-yp-black border-b border-white/5"
+>
+    <div class="absolute inset-0 z-0">
+        <!-- Subdued, elegant background image specific to inner pages -->
+        <img
+            src={imagePath}
+            alt={title}
+            class="w-full h-full object-cover object-center opacity-30 grayscale-[50%]"
+            loading="eager"
+        />
+        <div
+            class="absolute inset-0 bg-gradient-to-t from-yp-black via-yp-black/80 to-yp-black/40"
+        >
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div
+            class="flex flex-col items-center md:items-start text-center md:text-left max-w-3xl"
+        >
+            <!-- Breadcrumb / Kicker -->
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] border border-white/10 bg-white/5 backdrop-blur-sm mb-6"
+                data-aos="fade-up"
+            >
+                <span
+                    class="text-[10px] md:text-xs font-mono tracking-widest text-yp-yellow uppercase"
+                >
+                    {breadcrumb}
+                </span>
+            </div>
+
+            <!-- Main Title (Calmed down from 8xl/7xl to 4xl/5xl) -->
+            <h1
+                class="text-4xl md:text-5xl font-light tracking-tight leading-tight text-white mb-6"
+                data-aos="fade-up"
+                data-aos-delay="100"
+            >
+                {title}
+            </h1>
+
+            <div
+                class="w-12 h-1 bg-yp-yellow mb-6 mx-auto md:mx-0"
+                data-aos="fade-right"
+                data-aos-delay="200"
+            >
+            </div>
+
+            <!-- Subtitle (Optional) -->
+            {
+                subtitle && (
+                    <p
+                        class="text-base md:text-lg text-neutral-400 font-light leading-relaxed max-w-2xl"
+                        data-aos="fade-up"
+                        data-aos-delay="300"
+                    >
+                        {subtitle}
+                    </p>
+                )
+            }
+        </div>
+    </div>
+</section>
