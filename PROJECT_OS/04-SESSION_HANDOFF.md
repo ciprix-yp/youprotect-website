@@ -73,10 +73,19 @@
   - `book_call` pending -> `pipeline_stage=intake_new`, `booking_reference=pending_lead_16`
   - `book_call` cu `booking_reference` + `booking_slot_at` -> `pipeline_stage=book_call_scheduled`
 
+## Rezolvat în sesiunea de Design/Audit Vizual (Mar 2026)
+
+- Validare direcție premium B2B UI/UX pe paginile `/despre-noi` și `/cum-lucram` prin eliminarea cardurilor statice închise (`design fără cutii`).
+- Generare și implementare active (imagini AI la comandă) integrate cu designul natural pentru procesul de Vânzări / Consultanță / Stoc.
+- Integrare portret oficial Founder pe `despre-noi`.
+- Înlocuire componentelor placeholder text cu logo-ul grafic oficial YP editat la pixel-perfect transparent (cu script Python `Pillow`), inclusiv Favicon activat pe tab.
+- Unificare componentă Hero pe paginile interioare (`GlobalInnerHero.astro`) - ajustare brightness și opacități fără filtre `grayscale` agresive (pentru păstrarea impactului high-vis orange & graphite).
+- Pregătire teren tehnic de performanță: build-uri compilate (`npm run build`) fără erori pe Cloudflare.
+- PM orchestration: Suntem poziționați conform backlog-ului pentru `WP-005`.
+
 ## Checklist start sesiune viitoare
 
 - Citește `PROJECT_OS/README.md`.
-- Verifică `02-BACKLOG.md` și marchează taskul curent `IN_PROGRESS`.
-- Verifică `07-IDEA_INBOX.md` și mapează ideile `TRIAGED/PLANNED` la taskul activ.
-- Lucrează pe un singur obiectiv clar.
+- Verifică `02-BACKLOG.md` și marchează taskul curent (`WP-005`) status `IN_PROGRESS`.
+- Lucrează pe un singur obiectiv clar: Content premium + CTA clarity pe frontend.
 - La final, actualizează acest fișier.

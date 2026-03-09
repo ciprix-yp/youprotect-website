@@ -54,8 +54,8 @@ Format task:
 - Next action: Start WP-005 (content premium + CTA copy pass).
 
 ### WP-005
-- Status: `TODO`
-- Owner: `Codex`
+- Status: `IN_PROGRESS`
+- Owner: `Codex` / `Antigravity`
 - Scope: Content premium pentru paginile cheie (`/`, `/produse`, CTA blocks).
 - Acceptance: Copy final MVP + tone consistent + CTA clar.
 - Dependencies: none.
