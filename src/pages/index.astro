@@ -8,7 +8,7 @@ const testimonials = await getPublishedTestimonials();
 
 <BaseLayout
   title="Echipamente de Protecție și Haine de Lucru Premium | You Protect Satu Mare"
-  description="You Protect furnizează echipamente individuale de protecție (EIP) și haine de lucru premium pentru companii din nord-vestul României. Consultanță gratuită, testare fără riscuri, livrare rapidă. Soluții conforme EN/ISO."
+  description="You Protect furnizează echipamente individuale de protecție și haine de lucru premium pentru companii din nord-vestul României. Consultanță gratuită, testare fără risc, livrare rapidă."
 >
   <!-- Mobile Sticky CTA: Dispare la scroll jos, apare la scroll sus -->
   <div
@@ -84,25 +84,27 @@ const testimonials = await getPublishedTestimonials();
             ></span>
           </span>
           <span class="text-xs font-medium text-neutral-300 tracking-wide"
-            >Consultanță Gratuită 24/7</span
+            >Consultanță gratuită</span
           >
         </div>
 
         <h1
           class="text-3xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.15] text-white mb-6 max-w-[95%] md:max-w-[90%]"
         >
-          Echipamente de Protecție,<br /> Haine de Lucru care<br />
-          <span class="text-yp-yellow">Cresc Profitabilitatea</span>
+          Echipamente de protecție și haine de lucru care îți protejează echipa și susțin <br class="hidden md:block"/>
+          <span class="text-yp-yellow">imaginea firmei</span>
         </h1>
 
         <p
           class="text-base lg:text-lg text-neutral-400 font-normal leading-relaxed mb-8 max-w-2xl"
         >
-          Știm că echipa ta nu arată întâmplător. Știm că o salopetă prost
-          aleasă costă mai mult decât prețul ei — în accidente evitate, în
-          angajați care pleacă, în clienți care nu mai revin. De aceea, la You
-          Protect nu vindem echipamente de protecție. Construim sisteme de
-          achiziție care reduc bătaia de cap și cresc imaginea companiei tale.
+          Știm că echipa ta nu arată întâmplător. Știm și că o salopetă aleasă
+          greșit costă mai mult decât prețul de pe factură — în disconfort, în
+          timp pierdut, în oameni nemulțumiți și în imagine slabă în fața
+          clienților. La You Protect, nu ne limităm la a livra produse. Te ajutăm
+          să alegi echipamente de protecție și haine de lucru potrivite activității
+          tale, astfel încât să ai mai multă claritate, mai puțin haos și o echipă
+          care arată și lucrează profesionist.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 mb-16">
@@ -110,7 +112,7 @@ const testimonials = await getPublishedTestimonials();
             class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
             onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'view_samples', source: 'homepage_hero' })"
           >
-            Cere Consultanță Gratuită
+            Cere consultanță gratuită
             <svg
               class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
               fill="none"
@@ -129,7 +131,7 @@ const testimonials = await getPublishedTestimonials();
             href="/produse"
             class="border border-white/15 text-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 transition-all duration-200"
           >
-            Vezi Produsele
+            Vezi produsele
             <svg
               class="w-4 h-4 text-neutral-500"
               fill="none"
@@ -238,7 +240,7 @@ const testimonials = await getPublishedTestimonials();
             class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight"
             data-aos="fade-up"
           >
-            Care din aceste probleme îți sună cunoscut?
+            Care dintre aceste probleme îți sună cunoscut?
           </h2>
           <div
             class="w-12 h-1 bg-yp-yellow mb-8"
@@ -273,9 +275,7 @@ const testimonials = await getPublishedTestimonials();
               Achiziții dezorganizate
             </h3>
             <p class="text-neutral-400 text-sm leading-relaxed">
-              Fără un furnizor dedicat de echipamente de protecție a muncii,
-              cheltuielile cresc și produsele nu se potrivesc niciodată perfect
-              cu nevoile reale.
+              Fără un furnizor dedicat de echipamente de protecție, ajungi să cumperi din mai multe locuri, la momente diferite, fără coerență și fără control real asupra costurilor.
             </p>
           </div>
 
@@ -286,9 +286,7 @@ const testimonials = await getPublishedTestimonials();
               Fluctuație de personal
             </h3>
             <p class="text-neutral-400 text-sm leading-relaxed">
-              Angajații talentați aleg locuri de muncă unde se simt în siguranță
-              și apreciați. Echipamentul individual de protecție (EIP) de
-              calitate este parte din această ecuație.
+              Oamenii buni observă rapid când firma investește în condițiile lor de lucru și când nu. Echiparea slabă transmite dezinteres.
             </p>
           </div>
 
@@ -299,8 +297,7 @@ const testimonials = await getPublishedTestimonials();
               Moral scăzut
             </h3>
             <p class="text-neutral-400 text-sm leading-relaxed">
-              Lipsa investiției în haine de lucru și echipament de protecție
-              adecvat transmite un mesaj clar: că angajatul nu contează.
+              Hainele de lucru incomode, uzate sau nepotrivite afectează confortul, atitudinea și felul în care angajații se raportează la companie.
             </p>
           </div>
 
@@ -311,9 +308,7 @@ const testimonials = await getPublishedTestimonials();
               Productivitate redusă
             </h3>
             <p class="text-neutral-400 text-sm leading-relaxed">
-              Echipamentul nepotrivit sau uzat consumă energie și timp.
-              Salopetele, bocancii de protecție și mănușile greșite afectează
-              direct randamentul.
+              Când echipamentul nu este potrivit pentru activitatea reală din teren, apar întreruperi, improvizații și timp pierdut.
             </p>
           </div>
 
@@ -324,9 +319,7 @@ const testimonials = await getPublishedTestimonials();
               Imagine neprofesionistă
             </h3>
             <p class="text-neutral-400 text-sm leading-relaxed">
-              O echipă fără uniforme coerente și echipament de protecție
-              personalizat pierde din credibilitate în fața clienților și
-              partenerilor.
+              O echipă echipată incoerent transmite lipsă de organizare, atât în fața clienților, cât și în fața propriilor angajați.
             </p>
           </div>
         </div>
@@ -345,32 +338,29 @@ const testimonials = await getPublishedTestimonials();
           <h2
             class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight"
           >
-            Ce se întâmplă dacă nu<br class="hidden lg:block" /> rezolvi asta acum?
+            Ce se întâmplă dacă nu rezolvi asta acum?
           </h2>
           <div class="w-12 h-1 bg-yp-yellow mb-8"></div>
 
           <div class="space-y-6 text-neutral-400 text-base leading-relaxed">
             <p>
-              Cele mai multe firme amână schimbarea furnizorului de <strong
-                class="text-white font-medium">echipamente de protecție</strong
-              > până când se întâmplă ceva. Până primesc o amendă de la ITM. Până
-              un angajat se accidentează cu echipament uzat. Până pierd un contract
-              pentru că echipa a arătat neprofesionist la o inspecție de șantier.
+              Cele mai multe firme amână schimbarea furnizorului de echipamente
+              de protecție până când apare o problemă reală. O comandă urgentă. O
+              echipă nemulțumită. Un control. O situație în care devine clar că
+              improvizația costă mai mult decât părea la început.
             </p>
             <p>
-              Conform <strong class="text-white font-medium"
-                >Legii nr. 319/2006</strong
-              >, angajatorul răspunde penal și financiar pentru orice accident
-              cauzat de lipsa sau inadecvarea echipamentelor individuale de
-              protecție. Amenzile ITM pornesc de la 3.000 RON și pot ajunge la <strong
-                class="text-white font-medium">10.000 RON per angajat</strong
-              > neechipat corespunzător. Și asta e varianta optimistă — cea în care
-              nu se întâmplă nimic grav.
+              Când echipamentele individuale de protecție nu sunt alese corect
+              sau nu sunt gestionate bine, efectele apar în lanț: produse
+              nepotrivite, înlocuiri dese, pierderi de timp, disconfort în teren
+              și costuri mai mari pe termen lung.
             </p>
             <p>
-              Dincolo de risc legal, există un cost mai greu de cuantificat:
-              echipa ta vede zilnic dacă investești sau nu în siguranța lor. Cei
-              mai buni angajați observă primul. Și de obicei pleacă primul.
+              Dincolo de partea operațională, există și partea de responsabilitate.
+              Protecția muncii nu este o zonă în care merită să mergi pe ghicite.
+              Angajatorul are obligația să asigure echipamente adecvate riscurilor
+              și activităților desfășurate, iar lipsa clarității în achiziție se poate
+              transforma rapid într-o problemă mai mare decât o simplă comandă făcută greșit.
             </p>
           </div>
         </div>
@@ -459,22 +449,16 @@ const testimonials = await getPublishedTestimonials();
           <h2
             class="text-3xl lg:text-4xl font-light text-white mb-6 tracking-tight leading-tight"
           >
-            Dăm Echipei Tale Imaginea și Siguranța pe Care le Merită
+            Dăm echipei tale siguranța, imaginea și claritatea de care are nevoie
           </h2>
           <div class="w-12 h-1 bg-yp-yellow mb-10"></div>
 
           <div class="space-y-6">
             <p class="text-base text-neutral-400 leading-relaxed">
-              Ajutăm companii din Satu Mare, Cluj, Bihor și tot nord-vestul
-              României — construcții, producție, logistică, industrie — să
-              reducă costurile și să crească profitabilitatea prin echipamente
-              individuale de protecție (EIP) și haine de lucru premium, conforme
-              cu standardele europene EN/ISO.
+              Ajutăm companii din Satu Mare, din nord-vestul României și din toată țara să aleagă echipamente individuale de protecție, haine de lucru și soluții personalizate potrivite activității lor. Lucrăm în special cu firme din construcții, producție, logistică, industrie și servicii tehnice care vor mai mult decât produse puse într-o cutie: vor consultanță, coerență și un partener pe care se pot baza.
             </p>
             <p class="text-base text-neutral-300 leading-relaxed font-medium">
-              Nu suntem un simplu furnizor. Intrăm în fabrica ta, înțelegem
-              riscurile reale ale angajaților tăi și construim împreună un
-              sistem de achiziție care funcționează fără supraveghere constantă.
+              Nu suntem un simplu furnizor de echipamente de protecție. Înțelegem contextul din teren, ritmul din companie și presiunea care cade pe decident atunci când trebuie să cumpere repede, bine și fără greșeli costisitoare. De aceea, construim propuneri clare, adaptate și ușor de implementat.
             </p>
           </div>
 
@@ -483,7 +467,7 @@ const testimonials = await getPublishedTestimonials();
               class="bg-yp-yellow text-yp-black h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
               onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'view_samples', source: 'homepage_main_cta' })"
             >
-              Programează o Discuție
+              Programează o discuție
               <svg
                 class="w-5 h-5 group-hover:translate-x-1 transition-transform"
                 fill="none"
@@ -520,17 +504,7 @@ const testimonials = await getPublishedTestimonials();
             Achiziții organizate
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            Fără un furnizor dedicat de echipamente de protecție, ajungi să
-            cumperi în grabă, de la furnizori diferiți, la prețuri
-            inconsistente. Pierzi discounturi de volum, pierzi timp și, cel mai
-            grav, pierzi coerența echipamentului.
-          </p>
-          <p
-            class="text-neutral-300 text-sm leading-relaxed group-hover:text-white transition-colors"
-          >
-            La You Protect, configurăm împreună un plan anual de achiziții — cu
-            stocuri rezervate, livrări programate și un singur interlocutor care
-            știe ce poartă echipa ta pe șantier sau în fabrică.
+            Centralizezi comenzile mai ușor, reduci improvizațiile și ai mai mult control asupra produselor, costurilor și termenelor.
           </p>
         </div>
 
@@ -548,18 +522,7 @@ const testimonials = await getPublishedTestimonials();
             Imagine impecabilă
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            O echipă care arată profesionist vinde mai bine — indiferent de
-            domeniu. Salopetele de lucru personalizate, hainele de lucru cu
-            logo-ul firmei și echipamentul de protecție în culorile brandului
-            tău transmit un mesaj clar clienților: seriozitate și investiție în
-            calitate.
-          </p>
-          <p
-            class="text-neutral-300 text-sm leading-relaxed group-hover:text-white transition-colors"
-          >
-            Oferim haine de lucru și echipamente de protecție din branduri
-            premium (SIR Safety, Mascot Workwear) cu opțiuni complete de
-            personalizare — brodat, serigrafie, transfer termic.
+            Echipa ta arată unitar, curat și profesionist, iar asta se vede în relația cu clienții, partenerii și oamenii din companie.
           </p>
         </div>
 
@@ -573,19 +536,9 @@ const testimonials = await getPublishedTestimonials();
             class="text-yp-yellow font-mono text-sm tracking-widest block mb-6"
             >03 //</span
           >
-          <h3 class="text-2xl font-light text-white mb-4">Zero riscuri</h3>
+          <h3 class="text-2xl font-light text-white mb-4">Risc redus</h3>
           <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            Nu știi dacă un produs funcționează pentru echipa ta până nu îl
-            testezi. De aceea oferim posibilitatea de testare a echipamentelor
-            individuale de protecție (EIP) înainte de comandă. Dacă produsul nu
-            face față condițiilor din firma ta — nu îl plătești.
-          </p>
-          <p
-            class="text-neutral-300 text-sm leading-relaxed group-hover:text-white transition-colors"
-          >
-            În plus, toate produsele din portofoliu sunt conforme cu
-            reglementările europene și dețin marcajul CE, conform Regulamentului
-            (UE) 2016/425 privind echipamentele individuale de protecție.
+            Alegi echipamente de protecție și haine de lucru potrivite activității, cu mai puține erori, mai puține înlocuiri și mai puține compromisuri.
           </p>
         </div>
 
@@ -600,13 +553,10 @@ const testimonials = await getPublishedTestimonials();
             >04 //</span
           >
           <h3 class="text-2xl font-light text-white mb-4">
-            Liniște și siguranță
+            Liniște și predictibilitate
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            Garanția de producător, serviciile post-vânzare și monitorizarea
-            uzurii echipamentului sunt incluse în relația cu You Protect. Nu
-            suntem furnizori de produs — suntem parteneri pe termen lung care se
-            asigură că angajații tăi sunt protejați azi, mâine și peste un an.
+            Ai un partener care te ajută să planifici mai bine, să comanzi mai simplu și să eviți deciziile făcute în grabă.
           </p>
         </div>
       </div>
@@ -644,10 +594,7 @@ const testimonials = await getPublishedTestimonials();
             Haine de lucru
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Salopete, jachete, pantaloni și uniforme de lucru care reflectă
-            identitatea vizuală a firmei și cresc sentimentul de apartenență al
-            angajaților. Disponibile cu opțiuni de personalizare (brodat,
-            serigrafie).
+            Salopete, jachete, pantaloni și uniforme de lucru pentru confort, durabilitate și imagine coerentă în teren, atelier sau spații industriale.
           </p>
         </a>
 
@@ -664,10 +611,7 @@ const testimonials = await getPublishedTestimonials();
             Mănuși de protecție
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            De la mănuși anti-tăiere conform EN 388 pentru industria
-            metalurgică, la mănuși chimice și termoizolante. Alegerea greșită a
-            mănușii costă mai mult decât prețul ei — în accidente și în
-            productivitate pierdută.
+            Soluții pentru aderență, dexteritate și protecție, în funcție de activitate, risc și mediu de lucru.
           </p>
         </a>
 
@@ -684,9 +628,7 @@ const testimonials = await getPublishedTestimonials();
             Căști de protecție
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Obligatorii pe șantierele de construcții conform Legii 319/2006
-            privind securitatea și sănătatea în muncă. Modele conforme EN 397
-            pentru protecție la impact și penetrare.
+            Protecție pentru cap adaptată șantierelor, zonelor industriale și activităților unde siguranța nu lasă loc de compromis.
           </p>
         </a>
 
@@ -703,9 +645,7 @@ const testimonials = await getPublishedTestimonials();
             Ochelari de protecție
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Protejează vederea angajaților față de particule, stropi chimici și
-            radiații. Modele cu lentile policarbonat conform EN 166, cu opțiuni
-            anti-aburire și anti-zgâriere.
+            Modele concepute pentru vizibilitate bună, confort și protecție reală în medii cu risc mecanic sau chimic.
           </p>
         </a>
 
@@ -722,9 +662,7 @@ const testimonials = await getPublishedTestimonials();
             Lucru la înălțime
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Hamuri, centuri și sisteme anticădere conforme EN 358 și EN 12277,
-            esențiale pentru activitățile pe schele, nacele sau acoperișuri.
-            Echipamentele pentru lucrul la înălțime nu admit compromisuri.
+            Hamuri, centuri și sisteme anticădere alese pentru siguranță, conformitate și utilizare corectă.
           </p>
         </a>
 
@@ -751,7 +689,7 @@ const testimonials = await getPublishedTestimonials();
             >
           </span>
           <span class="text-yp-black font-semibold text-lg"
-            >Vezi tot Catalogul</span
+            >Vezi tot catalogul</span
           >
         </a>
       </div>
@@ -790,11 +728,7 @@ const testimonials = await getPublishedTestimonials();
             Consultanță gratuită
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Sunăm, ne scriem sau venim la tine. Primul pas e simplu: să
-            înțelegem cu ce te confrunți zilnic — ce industrie, câți angajați,
-            ce riscuri, ce bugete. Și da, îți spunem sincer dacă avem soluția
-            potrivită pentru tine. Nu avem soluții pentru toată lumea și nici nu
-            pretindem că am fi.
+            Începem cu o discuție despre activitatea ta, echipă, riscurile din teren și ce vrei să îmbunătățești în procesul de achiziție. Îți spunem sincer dacă suntem sau nu partenerul potrivit pentru tine.
           </p>
         </div>
 
@@ -813,10 +747,7 @@ const testimonials = await getPublishedTestimonials();
             Prezentare și ofertă personalizată
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Odată ce știm ce ai nevoie, restrângem împreună lista de echipamente
-            individuale de protecție și haine de lucru relevante. Îți facem o
-            prezentare — la noi sau la tine — și primești o ofertă
-            personalizată, fără produse inutile la pachet.
+            Selectăm variante relevante pentru firma ta și construim o propunere clară, adaptată bugetului, nivelului de utilizare și imaginii pe care vrei să o transmiți.
           </p>
         </div>
 
@@ -835,10 +766,7 @@ const testimonials = await getPublishedTestimonials();
             Testare și decizie fără risc
           </h3>
           <p class="text-neutral-400 text-sm leading-relaxed">
-            Înainte să comanzi, poți testa. Primești produsele în condiții reale
-            de lucru — dacă nu funcționează, nu plătești. Simplu. Când ești
-            convins că ai alegerea corectă, facem comanda și stabilim un
-            calendar de livrări care funcționează pentru tine, nu pentru noi.
+            Poți evalua soluțiile propuse în condiții reale de lucru, astfel încât să alegi informat, nu din grabă sau doar din catalog.
           </p>
         </div>
       </div>
@@ -851,7 +779,7 @@ const testimonials = await getPublishedTestimonials();
   >
     <div class="max-w-4xl mx-auto px-6">
       <h2 class="text-3xl lg:text-4xl font-light text-white mb-12 text-center">
-        Ce include relația cu You Protect?
+        Ce câștigi când lucrezi cu You Protect
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
@@ -868,8 +796,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Livrări programate — știi exact când ajunge echipamentul, fără să
-            suni după el
+            Livrări programate pentru mai multă predictibilitate
           </p>
         </div>
 
@@ -886,7 +813,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Livrare gratuită în toată România pentru comenzi eligibile
+            Livrare în toată România
           </p>
         </div>
 
@@ -903,7 +830,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Garanție de producător și servicii post-vânzare incluse
+            Garanție de producător pentru produsele eligibile
           </p>
         </div>
 
@@ -920,8 +847,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Personalizare articole — broderie, serigrafie, transfer termic cu
-            logo-ul firmei
+            Personalizare articole prin broderie, serigrafie sau transfer termic
           </p>
         </div>
 
@@ -938,8 +864,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Monitorizare uzură și consum — știm când e timpul să reînnoiești
-            echipamentul înainte ca el să cedeze
+            Consultanță pentru alegerea echipamentelor potrivite
           </p>
         </div>
 
@@ -956,7 +881,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Consultanță gratuită pe tot parcursul procesului de achiziție
+            Colaborare orientată spre claritate, nu spre presiune comercială
           </p>
         </div>
 
@@ -973,7 +898,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Testare produse fără risc financiar înainte de comanda finală
+            Testare produse înainte de decizia finală
           </p>
         </div>
 
@@ -990,7 +915,7 @@ const testimonials = await getPublishedTestimonials();
               d="M5 13l4 4L19 7"></path></svg
           >
           <p class="text-neutral-300">
-            Comenzi anuale cu stocuri rezervate pentru firma ta
+            Sprijin pentru comenzi recurente sau anuale
           </p>
         </div>
       </div>
@@ -1014,22 +939,11 @@ const testimonials = await getPublishedTestimonials();
       </div>
 
       <p
-        class="text-lg text-neutral-400 mb-6 leading-relaxed"
-        data-aos="fade-up"
-        data-aos-delay="200"
-      >
-        Nu trebuie să știi exact ce echipamente vrei. Nu trebuie să ai un buget
-        clar sau un caiet de sarcini pregătit. Trebuie doar să ne spui cu ce te
-        confrunți — restul e treaba noastră.
-      </p>
-      <p
         class="text-lg text-neutral-400 mb-16 leading-relaxed"
         data-aos="fade-up"
         data-aos-delay="200"
       >
-        Durează 15 minute să înțelegem dacă putem fi furnizorul potrivit pentru
-        tine. Dacă nu suntem, îți spunem sincer și te ajutăm să găsești pe
-        cineva care e.
+        Nu trebuie să știi exact ce produse ai nevoie înainte să ne contactezi. Nu trebuie să ai lista completă pregătită. Este suficient să ne spui cu ce provocări te confrunți, iar noi te ajutăm să alegi o variantă potrivită pentru echipa ta, bugetul tău și modul tău de lucru.
       </p>
 
       <h3
@@ -1037,7 +951,7 @@ const testimonials = await getPublishedTestimonials();
         data-aos="fade-up"
         data-aos-delay="300"
       >
-        Ai trei variante să pornești:
+        Ai trei variante simple să pornești:
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1065,7 +979,7 @@ const testimonials = await getPublishedTestimonials();
             >
           </div>
           <p class="text-white text-sm leading-relaxed">
-            Completezi formularul de contact și te sunăm noi în maxim 24 de ore
+            Ne lași câteva detalii, iar noi revenim cu pașii următori.
           </p>
         </div>
 
@@ -1096,7 +1010,7 @@ const testimonials = await getPublishedTestimonials();
             Ne suni direct la<br /><span
               class="text-yp-yellow font-medium mt-2 block"
               >+40 742 226 127</span
-            >
+            ><br/><span class="text-neutral-400 text-sm font-normal">Discutăm rapid și vedem ce ți se potrivește.</span>
           </p>
         </a>
 
@@ -1126,7 +1040,7 @@ const testimonials = await getPublishedTestimonials();
           <p class="text-white text-sm leading-relaxed">
             Ne scrii la <span class="text-yp-yellow font-medium"
               >office@youprotect.ro</span
-            > cu o scurtă descriere a nevoii
+            >.<br/><br/><span class="text-neutral-400 text-sm font-normal">Ne trimiți contextul, iar noi revenim cu o recomandare clară.</span>
           </p>
         </a>
       </div>
@@ -1185,9 +1099,7 @@ const testimonials = await getPublishedTestimonials();
       <p
         class="mt-8 text-yp-black/80 font-medium max-w-2xl mx-auto leading-relaxed"
       >
-        Zero angajament. Zero risc. Dacă soluțiile noastre nu se potrivesc
-        nevoilor tale, nu pierzi nimic — în afară de 15 minute și o conversație
-        sinceră.
+        Zero angajament. Zero presiune. Doar o discuție clară despre ce se potrivește firmei tale.
       </p>
     </div>
   </section>
@@ -1237,14 +1149,7 @@ const testimonials = await getPublishedTestimonials();
           <div
             class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
           >
-            Conform Legii nr. 319/2006 privind securitatea și sănătatea în muncă
-            și HG nr. 1048/2006, angajatorul este obligat să furnizeze gratuit
-            echipamente individuale de protecție (EIP) adecvate riscurilor
-            identificate la evaluarea locului de muncă. Minimul obligatoriu pe
-            un șantier de construcții include: căști de protecție, bocanci de
-            protecție cu bombeu (S1P sau S3), veste reflectorizante și ochelari
-            de protecție. Sancțiunile ITM pentru neconformare pot ajunge la
-            10.000 RON per angajat neechipat.
+            Obligațiile diferă în funcție de riscurile prezente la locul de muncă și de activitatea desfășurată. În practică, angajatorul trebuie să asigure echipamente individuale de protecție adecvate riscurilor identificate, conforme și potrivite pentru utilizarea reală din teren. De aceea, alegerea nu ar trebui făcută generic, ci în funcție de activitate, mediu de lucru și nevoile echipei.
           </div>
         </details>
 
@@ -1274,13 +1179,7 @@ const testimonials = await getPublishedTestimonials();
           <div
             class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
           >
-            Bocancii S1P oferă protecție la impact (bombeu rezistent la 200J
-            conform EN ISO 20345), rezistență la penetrarea tălpii și sunt
-            destinați mediilor uscate. Bocancii S3 adaugă rezistență la apă a
-            feței exterioare și o talpă antiperforație, fiind recomandați pentru
-            șantiere de construcții, medii umede sau activități în exterior.
-            Ambele categorii trebuie să dețină marcajul CE și să fie conforme cu
-            standardul EN ISO 20345:2022.
+            Ambele categorii includ protecție de bază pentru medii de lucru tehnice, însă S3 oferă în general un nivel mai mare de protecție pentru condiții dificile, inclusiv rezistență mai bună la umezeală și cerințe suplimentare legate de talpă și construcție. Alegerea corectă depinde de mediul de lucru, nu doar de preț sau de popularitatea modelului.
           </div>
         </details>
 
@@ -1310,12 +1209,7 @@ const testimonials = await getPublishedTestimonials();
           <div
             class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
           >
-            Da. You Protect livrează echipamente de protecție și haine de lucru
-            în toată România. Avem sediul în Vetiș, județul Satu Mare, dar
-            lucrăm cu companii din București, Cluj, Timișoara, Oradea și din
-            toate județele țării. Oferim livrare gratuită și, pentru clienții
-            din nord-vestul României, și posibilitatea de consultanță față în
-            față sau direct la sediul firmei tale.
+            Da. You Protect livrează echipamente de protecție, haine de lucru și articole personalizate pentru companii din toată România. În funcție de proiect și de volum, colaborarea poate include consultanță, selecție de produse, personalizare și planificarea comenzilor recurente.
           </div>
         </details>
       </div>
