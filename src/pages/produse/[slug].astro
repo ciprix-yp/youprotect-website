@@ -4,17 +4,30 @@ import { getCatalogProducts, getCatalogProductDetailBySlug } from '../../lib/cat
 import { getDirectusProducts, getDirectusProductBySlug } from '../../lib/directus';
 
 export async function getStaticPaths() {
-  const directusProducts = await getDirectusProducts();
-  if (directusProducts && directusProducts.length > 0) {
-    return directusProducts.map((p: any) => ({
-      params: { slug: p.slug }
-    }));
+  const paths: any[] = [];
+  try {
+    const directusProducts = await getDirectusProducts();
+    if (directusProducts && directusProducts.length > 0) {
+      paths.push(...directusProducts.map((p: any) => ({
+        params: { slug: p.slug }
+      })));
+    }
+  } catch (e) {
+    console.error("Directus paths error:", e);
   }
   
-  const { products } = await getCatalogProducts();
-  return products.map((product) => ({
-    params: { slug: product.slug },
-  }));
+  try {
+    const { products } = await getCatalogProducts();
+    if (products && products.length > 0) {
+      paths.push(...products.map((product) => ({
+        params: { slug: product.slug },
+      })));
+    }
+  } catch (e) {
+    console.error("DB paths error:", e);
+  }
+
+  return paths;
 }
 
 const slug = Astro.params.slug ?? '';

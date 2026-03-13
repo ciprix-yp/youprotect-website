@@ -9,9 +9,15 @@ let mode = "live";
 let warning: string | null = null;
 
 try {
+  let dbProducts: any[] = [];
+  const dbResult = await getCatalogProducts();
+  dbProducts = dbResult.products;
+  mode = dbResult.mode;
+  warning = dbResult.warning;
+
   const directusData = await getDirectusProducts();
   if (directusData && directusData.length > 0) {
-    products = directusData.map((dp: any) => ({
+    const directusMapped = directusData.map((dp: any) => ({
       id: dp.id,
       slug: dp.slug,
       name: dp.name,
@@ -32,11 +38,9 @@ try {
       merchandisingTags: dp.is_featured ? ["Bestseller"] : [],
       supplierSku: dp.supplier_sku || null,
     }));
+    products = [...directusMapped, ...dbProducts];
   } else {
-    const dbResult = await getCatalogProducts();
-    products = dbResult.products;
-    mode = dbResult.mode;
-    warning = dbResult.warning;
+    products = dbProducts;
   }
 } catch (e) {
   const dbResult = await getCatalogProducts();

@@ -1,5 +1,14 @@
 import { createDirectus, rest, readItems, readItem } from '@directus/sdk';
 
+function transformDriveUrl(url: string | null): string | null {
+    if (!url) return null;
+    const match = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+        return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000-h1000`;
+    }
+    return url;
+}
+
 export interface WebsiteProduct {
     id: string;
     name: string;
@@ -50,7 +59,10 @@ export async function getDirectusProducts() {
                 limit: -1
             })
         );
-        return products;
+        return products.map(p => ({
+            ...p,
+            cover_image_url: transformDriveUrl(p.cover_image_url)
+        }));
     } catch (error) {
         console.error('Error fetching products from Directus:', error);
         return [];
@@ -86,7 +98,14 @@ export async function getDirectusProductBySlug(slug: string) {
                 limit: 1
             })
         );
-        return products.length > 0 ? products[0] : null;
+        if (products.length > 0) {
+            const p = products[0];
+            return {
+                ...p,
+                cover_image_url: transformDriveUrl(p.cover_image_url)
+            };
+        }
+        return null;
     } catch (error) {
         console.error(`Error fetching product by slug ${slug} from Directus:`, error);
         return null;
