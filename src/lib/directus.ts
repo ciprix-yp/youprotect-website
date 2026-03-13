@@ -56,7 +56,8 @@ export async function getDirectusProducts() {
                 filter: {
                     status: { _eq: 'published' }
                 },
-                limit: -1
+                limit: -1,
+                fields: ['*', '*.*'] as any
             })
         );
         return products.map(p => ({
@@ -95,7 +96,8 @@ export async function getDirectusProductBySlug(slug: string) {
                     slug: { _eq: slug },
                     status: { _eq: 'published' }
                 },
-                limit: 1
+                limit: 1,
+                fields: ['*', '*.*'] as any
             })
         );
         if (products.length > 0) {

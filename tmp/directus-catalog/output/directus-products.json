@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Bocanci S3 TechShield",
+    "slug": "bocanci-s3-techshield",
+    "description": "Bocanci de protectie pentru santier, confort extins si aderenta ridicata.",
+    "base_price": 349.99,
+    "category_name": "Incaltaminte",
+    "is_featured": true,
+    "supplier_sku": "TS-S3-001",
+    "cover_image_url": "https://example.com/images/bocanci-s3-techshield.jpg",
+    "status": "draft",
+    "size_range": [
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "color_options": [
+      {
+        "name": "Galben HV",
+        "hex": "#E4FF00"
+      },
+      {
+        "name": "Negru",
+        "hex": "#111111"
+      }
+    ],
+    "materials": [
+      "piele naturala",
+      "textil tehnic"
+    ],
+    "certifications": [
+      "EN ISO 20345",
+      "CE"
+    ],
+    "seasonality": "all-season",
+    "key_benefits": [
+      "Rezistenta la apa",
+      "Confort la purtare",
+      "Talpa antiderapanta"
+    ]
+  }
+]

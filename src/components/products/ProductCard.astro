@@ -47,14 +47,14 @@ const primaryTag = featured ? "Bestseller" : (normalizedTags[0] ?? null);
   </div>
 
   <div
-    class="relative w-full overflow-hidden bg-yp-black/60 border-b border-yp-white/10 aspect-[4/5] object-cover"
+    class="relative w-full overflow-hidden bg-yp-black/60 border-b border-yp-white/10 aspect-[4/5] object-contain"
   >
     <a href={`/produse/${slug}`} class="block w-full h-full">
       <img
         src={imageUrl}
         alt={imageAlt}
         loading="lazy"
-        class="w-full h-full object-cover mix-blend-luminosity hover:mix-blend-normal transition-all duration-700 ease-out group-hover:scale-105 opacity-80 group-hover:opacity-100"
+        class="w-full h-full object-contain p-4 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700 ease-out group-hover:scale-105 opacity-80 group-hover:opacity-100"
       />
     </a>
 

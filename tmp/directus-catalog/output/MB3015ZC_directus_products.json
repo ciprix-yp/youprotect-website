@@ -1,0 +1,62 @@
+[
+  {
+    "id": "4e0c7ece-eced-47ec-bca6-a96be2218c61",
+    "name": "Bocanc de protectie MANHATTAN S3 WR SRC",
+    "slug": "bocanc-protectie-manhattan-s3-wr-src-mb3015zc",
+    "description": "Bocanc de protectie inalt din seria SIR FUTURE cu tehnologie RESPONDER, bombeu aluminiu, lamela antiperforatie compozit 4 mm, membrana impermeabila WR si talpa antiderapanta SRC pentru confort si siguranta in utilizare intensa.",
+    "base_price": null,
+    "category_name": "Incaltaminte de protectie",
+    "is_featured": false,
+    "supplier_sku": "MB3015ZC",
+    "cover_image_url": null,
+    "status": "draft",
+    "size_range": [
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48"
+    ],
+    "color_options": [
+      {
+        "name": "Negru/Gri",
+        "hex": null
+      }
+    ],
+    "materials": [
+      "Piele Nubuck",
+      "Membrana impermeabila",
+      "Bombeu aluminiu",
+      "Lamela compozit",
+      "Talpa E-TPU Responder",
+      "Talpa exterioara cauciuc",
+      "Captuseala mesh poliester"
+    ],
+    "certifications": [
+      "EN ISO 20345",
+      "S3",
+      "WR",
+      "SRC",
+      "Regulamentul (UE) 2016/425",
+      "Categoria II"
+    ],
+    "seasonality": "all-season",
+    "key_benefits": [
+      "Amortizare reactiva RESPONDER",
+      "Protectie completa S3 cu bombeu aluminiu si lamela compozit",
+      "Impermeabilitate WR pentru conditii umede",
+      "Aderenta ridicata SRC si flexibilitate excelenta",
+      "Inchidere rapida Faster pentru fixare uniforma",
+      "Insertii reflectorizante pentru vizibilitate sporita"
+    ]
+  }
+]

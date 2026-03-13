@@ -1,0 +1,2 @@
+id,name,slug,description,base_price,category_name,is_featured,supplier_sku,cover_image_url,status,size_range,color_options,materials,certifications,seasonality,key_benefits
+,"Bocanci S3 TechShield",bocanci-s3-techshield,"Bocanci de protectie pentru santier, confort extins si aderenta ridicata.",349.99,Incaltaminte,true,TS-S3-001,https://example.com/images/bocanci-s3-techshield.jpg,draft,"39|40|41|42|43|44","Galben HV:#E4FF00|Negru:#111111","piele naturala|textil tehnic","EN ISO 20345|CE",all-season,"Rezistenta la apa|Confort la purtare|Talpa antiderapanta"
