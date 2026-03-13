@@ -150,7 +150,7 @@ const carouselImages = [galleryPrimaryImage, ...galleryExtraImages].filter(Boole
                     src={img.url}
                     alt={img.alt || product.name}
                     loading={i === 0 ? "eager" : "lazy"}
-                    class="w-full h-full object-contain p-4 md:p-8 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500"
+                    class="w-full aspect-[4/3] md:aspect-video h-auto max-h-[600px] object-contain p-4 md:p-8 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500 bg-black/20"
                   />
                 </figure>
               ))}
