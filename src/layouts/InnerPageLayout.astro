@@ -16,6 +16,7 @@ interface Props {
     ctaButtonText?: string;
     ctaSecondaryButtonText?: string;
     ctaSecondaryButtonLink?: string;
+    ctaMicrocopy?: string;
 }
 
 const {
@@ -30,6 +31,7 @@ const {
     ctaButtonText,
     ctaSecondaryButtonText,
     ctaSecondaryButtonLink,
+    ctaMicrocopy,
 } = Astro.props;
 ---
 
@@ -43,6 +45,7 @@ const {
         ctaButtonText={ctaButtonText}
         ctaSecondaryButtonText={ctaSecondaryButtonText}
         ctaSecondaryButtonLink={ctaSecondaryButtonLink}
+        ctaMicrocopy={ctaMicrocopy}
     />
 
     <!-- Content Block injected by concrete pages -->

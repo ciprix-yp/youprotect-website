@@ -7,6 +7,7 @@ export interface Props {
     ctaButtonText?: string;
     ctaSecondaryButtonText?: string;
     ctaSecondaryButtonLink?: string;
+    ctaMicrocopy?: string;
 }
 
 const {
@@ -17,6 +18,7 @@ const {
     ctaButtonText,
     ctaSecondaryButtonText,
     ctaSecondaryButtonLink,
+    ctaMicrocopy,
 } = Astro.props;
 ---
 
@@ -132,6 +134,14 @@ const {
                             </a>
                         )}
                     </div>
+                )
+            }
+            
+            {
+                ctaMicrocopy && (
+                    <p class="text-xs md:text-sm text-neutral-500 font-light max-w-lg mt-4" data-aos="fade-up" data-aos-delay="500">
+                        {ctaMicrocopy}
+                    </p>
                 )
             }
         </div>
