@@ -17,6 +17,7 @@ interface Props {
     ctaSecondaryButtonText?: string;
     ctaSecondaryButtonLink?: string;
     ctaMicrocopy?: string;
+    hidePreFooterCTA?: boolean;
 }
 
 const {
@@ -32,6 +33,7 @@ const {
     ctaSecondaryButtonText,
     ctaSecondaryButtonLink,
     ctaMicrocopy,
+    hidePreFooterCTA = false,
 } = Astro.props;
 ---
 
@@ -52,9 +54,11 @@ const {
     <slot />
 
     <!-- Consistent Pre-Footer CTA -->
-    <GlobalPreFooterCTA
-        heading={ctaHeading}
-        subheading={ctaSubheading}
-        buttonText={ctaButtonText}
-    />
+    {!hidePreFooterCTA && (
+        <GlobalPreFooterCTA
+            heading={ctaHeading}
+            subheading={ctaSubheading}
+            buttonText={ctaButtonText}
+        />
+    )}
 </BaseLayout>
