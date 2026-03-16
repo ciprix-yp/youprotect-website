@@ -146,6 +146,24 @@ const hasProducts = products.length > 0;
           Selecție B2B privată
         </span>
       </div>
+
+      <div class="mt-10 flex flex-col sm:flex-row gap-4" data-aos="fade-up" data-aos-delay="300">
+        <button
+            class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent w-fit"
+            onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'request_quote', source: 'catalog_hero' })"
+        >
+            Cere ofertă
+            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </button>
+        <button
+            class="border border-yp-white/20 text-yp-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-yp-white/5 hover:border-yp-white/40 transition-all duration-200 w-fit"
+            onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'free_consultation', source: 'catalog_hero_consultation' })"
+        >
+            Programează o discuție
+            <svg class="w-4 h-4 text-yp-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+
     </div>
   </section>
 
@@ -403,12 +421,18 @@ const hasProducts = products.length > 0;
                   </div>
                 ))}
               </div>
-              <p
-                id="catalog-empty-filter"
-                class="hidden mt-10 text-center text-yp-white/50 font-light py-20 border border-yp-white/10 rounded-sm"
-              >
-                Nu a fost găsit niciun echipament conform criteriilor selectate.
-              </p>
+              <div id="catalog-empty-filter" class="hidden mt-10 text-center text-yp-white/50 font-light py-20 border border-yp-white/10 rounded-sm">
+                <p class="mb-6">Nu a fost găsit niciun echipament conform criteriilor selectate.</p>
+                <div class="flex flex-col items-center justify-center">
+                  <p class="text-sm text-yp-white mb-4">Nu ești sigur ce se potrivește echipei tale? Te ajutăm să alegi mai clar.</p>
+                  <button
+                    class="bg-yp-yellow text-yp-black h-10 px-6 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200"
+                    onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'free_consultation', source: 'catalog_empty_state' })"
+                  >
+                    Programează o discuție
+                  </button>
+                </div>
+              </div>
             </div>
           )
         }
@@ -665,4 +689,36 @@ const hasProducts = products.length > 0;
       catalogItems.forEach((item) => observer.observe(item));
     })();
   </script>
+
+  <!-- CTA Sticky Footer Block for Catalog -->
+  <section class="py-20 lg:py-28 bg-[#050505] border-t border-yp-white/10 mt-12 relative overflow-hidden">
+     <!-- Decorative Background Element -->
+    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-screen bg-[url('/grain.png')]"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-yp-white">
+      <h2 class="text-3xl md:text-4xl font-light mb-6">Descoperi opțiunile,<br/><span class="font-medium text-yp-yellow">dar alegerea bună o facem împreună.</span></h2>
+      <p class="text-yp-white/60 mb-10 max-w-xl mx-auto font-light leading-relaxed">
+        Suntem aici să te ajutăm să prioritizezi bugetul și să alegi soluția tehnică potrivită pentru angajații tăi, bazată pe cerințe practice reale, nu pe noroc.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <button
+            class="bg-yp-yellow text-yp-black h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
+            onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'request_quote', source: 'catalog_footer_primary' })"
+        >
+            Cere ofertă
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </button>
+
+        <button
+            class="border border-yp-white/20 text-yp-white h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-yp-white/5 hover:border-yp-white/40 transition-all duration-200"
+            onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'free_consultation', source: 'catalog_footer_secondary' })"
+        >
+            Programează o discuție
+            <svg class="w-5 h-5 text-yp-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>

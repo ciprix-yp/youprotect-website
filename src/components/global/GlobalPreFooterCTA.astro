@@ -3,12 +3,18 @@ export interface Props {
     heading?: string;
     subheading?: string;
     buttonText?: string;
+    buttonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
 }
 
 const {
     heading = "Ești gata să discuți aplicat despre echipa ta?",
     subheading = "Lasă-ne datele mai jos sau programează o scurtă discuție. Trecem direct la subiect, fără promisiuni goale.",
-    buttonText = "Contactează-ne Acum",
+    buttonText = "Programează o discuție",
+    buttonLink = "",
+    secondaryButtonText = "",
+    secondaryButtonLink = "",
 } = Astro.props;
 ---
 
@@ -41,13 +47,13 @@ const {
             </p>
 
             <div
-                class="flex flex-col sm:flex-row gap-4"
+                class="flex flex-col sm:flex-row gap-4 items-center justify-center"
                 data-aos="fade-up"
                 data-aos-delay="200"
             >
                 <button
                     class="bg-yp-black text-white h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-neutral-800 transition-all duration-200 group border border-transparent"
-                    onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'general_contact', source: 'global_cta' })"
+                    onclick={buttonLink ? `window.location.href='${buttonLink}'` : "window.YouProtectShortlist?.openLeadModal({ intent: 'general_contact', source: 'global_cta' })"}
                 >
                     {buttonText}
                     <svg
@@ -63,6 +69,27 @@ const {
                             d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                     </svg>
                 </button>
+
+                {secondaryButtonText && (
+                    <a
+                        href={secondaryButtonLink || "/produse"}
+                        class="border border-yp-black text-yp-black h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-black/5 hover:border-yp-black/80 transition-all duration-200"
+                    >
+                        {secondaryButtonText}
+                        <svg
+                          class="w-4 h-4 text-yp-black/70"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                )}
             </div>
         </div>
     </div>

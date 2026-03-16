@@ -12,6 +12,8 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
   ctaHeading="Gata să crești standardul?"
   ctaSubheading="Mai puțin haos, mai multă claritate și o echipă care arată profesionist."
   ctaButtonText="Programează o discuție"
+  ctaSecondaryButtonText="Vezi catalogul"
+  ctaSecondaryButtonLink="/produse"
 >
   <!-- Story Typography Section -->
   <section class="py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
@@ -318,9 +320,26 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
           </p>
 
           <div class="border-l border-white/10 pl-8 pt-2">
-            <p class="text-neutral-500 italic text-lg leading-relaxed max-w-lg">
+            <p class="text-neutral-500 italic text-lg leading-relaxed max-w-lg mb-8">
               "Am construit You Protect în jurul unei idei simple: când oamenii se simt bine în ceea ce poartă, se vede în felul în care lucrează, în felul în care se poartă și în felul în care compania este percepută."
             </p>
+          </div>
+          
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <button
+                class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent w-fit"
+                onclick="window.YouProtectShortlist?.openLeadModal({ intent: 'general_contact', source: 'despre_noi_content' })"
+            >
+                Programează o discuție
+                <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </button>
+            <a
+                href="/cum-lucram"
+                class="border border-white/15 text-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 transition-all duration-200 w-fit"
+            >
+                Vezi cum lucrăm
+                <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
           </div>
         </div>
       </div>

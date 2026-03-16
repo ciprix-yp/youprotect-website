@@ -12,7 +12,10 @@ interface Props {
     heroImage?: string;
     ctaHeading?: string;
     ctaSubheading?: string;
+    ctaSubtitle?: string;
     ctaButtonText?: string;
+    ctaSecondaryButtonText?: string;
+    ctaSecondaryButtonLink?: string;
 }
 
 const {
@@ -25,6 +28,8 @@ const {
     ctaHeading,
     ctaSubheading,
     ctaButtonText,
+    ctaSecondaryButtonText,
+    ctaSecondaryButtonLink,
 } = Astro.props;
 ---
 
@@ -35,6 +40,9 @@ const {
         subtitle={heroSubtitle}
         breadcrumb={breadcrumb}
         imagePath={heroImage}
+        ctaButtonText={ctaButtonText}
+        ctaSecondaryButtonText={ctaSecondaryButtonText}
+        ctaSecondaryButtonLink={ctaSecondaryButtonLink}
     />
 
     <!-- Content Block injected by concrete pages -->
