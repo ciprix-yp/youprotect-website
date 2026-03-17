@@ -28,8 +28,8 @@ function resolveSourcePageId(sourceUrl) {
     if (pathname.startsWith('/despre-noi')) return 2;
     if (pathname.startsWith('/cum-lucram')) return 3;
     if (pathname.startsWith('/contact')) return 4;
-    if (pathname.startsWith('/cere-oferta')) return 7;
-    if (pathname.startsWith('/programeaza-discutie')) return 8;
+    if (pathname.startsWith('/cere-oferta')) return 4;
+    if (pathname.startsWith('/programeaza-discutie')) return 4;
   } catch (_e) {}
   return 1;
 }
@@ -57,6 +57,9 @@ export const onRequestPost = async (context) => {
   }
 
   const { intent, data } = payload;
+  
+  // Map our UI intents to the DB's strict ENUM
+  const dbIntent = intent === 'quote' ? 'view_samples' : 'book_call';
   const contactName = normalizeString(data?.name, 255);
   const contactEmail = normalizeString(data?.email, 255);
   const contactPhone = normalizeString(data?.phone, 50);
@@ -124,7 +127,7 @@ export const onRequestPost = async (context) => {
         conversion_intent = EXCLUDED.conversion_intent,
         answers_json = EXCLUDED.answers_json
       `,
-      [leadRequestId, intent, JSON.stringify(answersJson)]
+      [leadRequestId, dbIntent, JSON.stringify(answersJson)]
     );
 
     await client.query('COMMIT');
@@ -136,7 +139,7 @@ export const onRequestPost = async (context) => {
   } catch (error) {
     try { await client.query('ROLLBACK'); } catch (_e) {}
     console.error('Submit lead failed:', error);
-    return jsonResponse({ success: false, error: 'DB Insert Error' }, 500);
+    return jsonResponse({ success: false, error: error.message || String(error) }, 500);
   } finally {
     await client.end();
   }
