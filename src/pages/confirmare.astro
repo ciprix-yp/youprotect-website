@@ -34,15 +34,40 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </div>
 
-      <div id="booking-section" class="hidden mt-12 animate-in fade-in duration-700 delay-300" data-aos="fade-up" data-aos-delay="200">
+      <div id="booking-section" class="hidden mt-12 animate-in fade-in duration-700 delay-300 w-full" data-aos="fade-up" data-aos-delay="200">
         <h2 class="text-2xl text-white font-medium mb-6">Programează data și ora dorită direct în calendarul nostru:</h2>
-        <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
-          <iframe 
-            src="https://outlook.office365.com/owa/calendar/Booking@youprotect.ro/bookings/" 
-            width="100%" 
-            height="800" 
-            style="border: 0;"
-          ></iframe>
+        <div class="w-full bg-yp-black border border-white/5 rounded-xl overflow-hidden shadow-2xl">
+          <!-- Cal inline embed code begins -->
+          <div style="width:100%;height:100%;overflow:scroll" id="my-cal-inline"></div>
+          <script type="text/javascript">
+            (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+            
+            Cal("init", "30min", {origin:"https://cal.eu"});
+
+            // Pre-fill cu datele din URL (trimise din formular)
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('nume') || '';
+            const email = urlParams.get('email') || '';
+            const telefon = urlParams.get('telefon') || '';
+            const company = urlParams.get('companie') || '';
+
+            Cal.ns["30min"]("inline", {
+              elementOrSelector:"#my-cal-inline",
+              config: {
+                "layout": "month_view",
+                "theme": "dark"
+              },
+              calLink: "you-protect-wwd6jy/30min",
+              uiDebug: false,
+              prefill: {
+                name: name,
+                email: email,
+                notes: `Companie: ${company} \nTelefon: ${telefon}`
+              }
+            });
+            Cal.ns["30min"]("ui", {"theme":"dark", "hideEventTypeDetails":false, "layout":"month_view"});
+          </script>
+          <!-- Cal inline embed code ends -->
         </div>
       </div>
 

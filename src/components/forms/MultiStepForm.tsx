@@ -104,7 +104,19 @@ export default function MultiStepForm({ intent }: MultiStepFormProps) {
       });
       
       if (response.ok) {
-        window.location.href = `/confirmare?intent=${intent}`;
+        // Adaugă parametri URL pentru confirmare ca să umplem calendarul
+        const queryParams = new URLSearchParams({
+          intent: intent,
+        });
+
+        if (intent === 'consultation' && formData.name) {
+          queryParams.set('nume', formData.name);
+          queryParams.set('email', formData.email);
+          if (formData.phone) queryParams.set('telefon', formData.phone);
+          if (formData.company) queryParams.set('companie', formData.company);
+        }
+
+        window.location.href = `/confirmare?${queryParams.toString()}`;
       } else {
         alert('A apărut o eroare. Te rugăm să încerci din nou.');
       }
