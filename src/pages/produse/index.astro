@@ -118,7 +118,7 @@ const hasProducts = products.length > 0;
         data-aos="fade-up"
       >
         Echipamente de protecție și haine de lucru <span class="text-yp-white/50"
-          >pentru echipe care vor să arate și să lucreze profesionist</span
+          >pentru companii care vor claritate și imagine profesională</span
         >
       </h1>
       <p
@@ -126,7 +126,7 @@ const hasProducts = products.length > 0;
         data-aos="fade-up"
         data-aos-delay="100"
       >
-        Alege mai ușor dintr-un catalog construit pentru companii care caută claritate, imagine profesională și echipamente potrivite activității lor. Explorează categoriile, filtrează rapid și cere o ofertă pentru selecția care se potrivește echipei tale.
+        Explorează rapid categoriile potrivite echipei tale și cere o ofertă pentru selecția care se potrivește activității tale.
       </p>
 
       <div
@@ -162,7 +162,7 @@ const hasProducts = products.length > 0;
         </button>
       </div>
       <p class="text-xs text-yp-white/40 max-w-xl font-light" data-aos="fade-up" data-aos-delay="400">
-        Nu știi exact ce se potrivește activității tale? Te ajutăm să alegi clar, fără haos și fără compromisuri inutile.
+        Pentru construcții, producție, logistică, energie și servicii tehnice.
       </p>
 
     </div>
@@ -237,70 +237,95 @@ const hasProducts = products.length > 0;
             </div>
           </div>
 
-          {
-            hasProducts && categorySummary.length > 0 && (
-              <div class="mb-6">
-                <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-                  Categorie Produs
-                </h3>
-                <div class="flex flex-col gap-2" id="catalog-category-filters">
-                  <button
-                    type="button"
-                    data-category-filter="all"
-                    class="text-left text-sm font-medium text-yp-white py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
-                  >
-                    Toate Categoriile
-                    <span class="text-xs text-yp-white/30">
-                      {products.length}
-                    </span>
-                  </button>
-                  {categorySummary.map((category) => (
-                    <button
-                      type="button"
-                      data-category-filter={category.name}
-                      class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
-                    >
-                      {category.name}
-                      <span class="text-xs text-yp-white/30">
-                        {category.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )
-          }
+          <div class="mb-6">
+            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
+              Categorie Produs
+            </h3>
+            <div class="flex flex-col gap-2" id="catalog-category-filters">
+              <button
+                type="button"
+                data-category-filter="all"
+                class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
+              >
+                Toate Categoriile
+              </button>
+              {[
+                "Îmbrăcăminte de lucru",
+                "Încălțăminte de protecție",
+                "Mănuși de protecție",
+                "Protecție cap, față și auz",
+                "Protecție respiratorie",
+                "Lucru la înălțime"
+              ].map((catName) => (
+                <button
+                  type="button"
+                  data-category-filter={catName}
+                  class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
+                >
+                  {catName}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {
-            hasProducts && industrySummary.length > 0 && (
-              <div class="mb-6 pb-6 border-b border-yp-white/10">
-                <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-                  Industrie / Utilizare
-                </h3>
-                <div class="flex flex-col gap-2" id="catalog-industry-filters">
-                  <button
-                    type="button"
-                    data-industry-filter="all"
-                    class="text-left text-sm font-medium text-yp-white py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
-                  >
-                    Toate Industriile
-                  </button>
-                  {industrySummary.map((industry) => (
-                    <button
-                      type="button"
-                      data-industry-filter={industry.name}
-                      class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
-                    >
-                      {industry.name}
-                      <span class="text-xs text-yp-white/30">
-                        {industry.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )
-          }
+          <div class="mb-6 pb-6 border-b border-yp-white/10">
+            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
+              Industrie / Utilizare
+            </h3>
+            <div class="flex flex-col gap-2" id="catalog-industry-filters">
+              <button
+                type="button"
+                data-industry-filter="all"
+                class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
+              >
+                Toate Industriile
+              </button>
+              {[
+                "Construcții și instalații",
+                "Logistică și depozitare",
+                "Producție și manufactură",
+                "Energie și utilități",
+                "Servicii tehnice"
+              ].map((indName) => (
+                <button
+                  type="button"
+                  data-industry-filter={indName}
+                  class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
+                >
+                  {indName}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div class="mb-6 pb-6 border-b border-yp-white/10">
+            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
+              Recomandare Rapidă
+            </h3>
+            <div class="flex flex-col gap-2" id="catalog-recommend-filters">
+              <button
+                type="button"
+                data-recommend-filter="all"
+                class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
+              >
+                Fără recomandare specifică
+              </button>
+              {[
+                "Pentru șantier",
+                "Pentru producție",
+                "Pentru logistică",
+                "Pentru lucru la înălțime"
+              ].map((recName) => (
+                <button
+                  type="button"
+                  data-recommend-filter={recName}
+                  class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
+                >
+                  {recName}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div class="mb-6 pb-6 border-b border-yp-white/10">
             <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
@@ -468,6 +493,9 @@ const hasProducts = products.length > 0;
       const industryButtons = Array.from(
         document.querySelectorAll("[data-industry-filter]"),
       );
+      const recommendButtons = Array.from(
+        document.querySelectorAll("[data-recommend-filter]"),
+      );
       const tagButtons = Array.from(
         document.querySelectorAll("[data-tag-filter]"),
       );
@@ -494,9 +522,18 @@ const hasProducts = products.length > 0;
 
       let activeCategory = "all";
       let activeIndustry = "all";
+      let activeRecommend = "all";
       let activeTag = "all";
       let activeSort = "relevance";
       let searchQuery = "";
+
+      // Quick Reccomendation Mappings
+      const recommendMapping = {
+        "Pentru șantier": ["Construcții și instalații"],
+        "Pentru producție": ["Producție și manufactură"],
+        "Pentru logistică": ["Logistică și depozitare"],
+        "Pentru lucru la înălțime": ["Servicii tehnice", "Construcții și instalații"]
+      };
 
       const matchesTag = (item) => {
         if (activeTag === "all") return true;
@@ -570,14 +607,21 @@ const hasProducts = products.length > 0;
           const industryMatch =
             activeIndustry === "all" || industry === activeIndustry;
 
+          let recommendMatch = true;
+          if (activeRecommend !== "all") {
+             const allowedIndustries = recommendMapping[activeRecommend] || [];
+             recommendMatch = allowedIndustries.includes(industry);
+          }
+
           const tagMatch = matchesTag(item);
 
           const textContent = item.getAttribute("data-search-text") || "";
           const searchMatch =
             !searchQuery || textContent.includes(searchQuery.toLowerCase());
 
+          // To display, must match Category AND (Industry OR Recommend) AND Tag AND Search
           const isVisible =
-            categoryMatch && industryMatch && tagMatch && searchMatch;
+            categoryMatch && industryMatch && recommendMatch && tagMatch && searchMatch;
 
           item.classList.toggle("hidden", !isVisible);
           if (isVisible) {
@@ -613,6 +657,17 @@ const hasProducts = products.length > 0;
           const isActive = filterValue === activeIndustry;
           button.classList.toggle("text-yp-yellow", isActive);
           button.classList.toggle("font-medium", isActive);
+          button.classList.toggle("text-yp-white/60", !isActive);
+          button.classList.toggle("font-light", !isActive);
+        });
+
+        recommendButtons.forEach((button) => {
+          const filterValue =
+            button.getAttribute("data-recommend-filter") || "all";
+          const isActive = filterValue === activeRecommend;
+          button.classList.toggle("text-yp-yellow", isActive);
+          button.classList.toggle("font-medium", isActive);
+          button.classList.toggle("text-yp-white", isActive);
           button.classList.toggle("text-yp-white/60", !isActive);
           button.classList.toggle("font-light", !isActive);
         });
@@ -654,6 +709,17 @@ const hasProducts = products.length > 0;
       industryButtons.forEach((button) => {
         button.addEventListener("click", () => {
           activeIndustry = button.getAttribute("data-industry-filter") || "all";
+          // reset recommend filter when industry is explicitly chosen
+          activeRecommend = "all";
+          refreshFilters();
+        });
+      });
+
+      recommendButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeRecommend = button.getAttribute("data-recommend-filter") || "all";
+          // reset industry filter when recommend is chosen
+          activeIndustry = "all";
           refreshFilters();
         });
       });
