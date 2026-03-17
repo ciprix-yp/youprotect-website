@@ -93,8 +93,8 @@ const hasProducts = products.length > 0;
 ---
 
 <BaseLayout
-  title="Catalog"
-  description="Catalog You Protect conectat la baza de date: produse premium, selectie rapida si flux de cerere oferta."
+  title="Catalog echipamente de protecție și haine de lucru | You Protect"
+  description="Explorează catalogul You Protect: echipamente de protecție, haine de lucru și selecții pentru companii din construcții, producție, logistică și servicii tehnice. Cere ofertă sau programează o discuție."
 >
   <section
     class="relative pt-12 pb-16 md:pt-24 md:pb-24 border-b border-yp-white/10"
@@ -111,14 +111,14 @@ const hasProducts = products.length > 0;
         class="text-[11px] font-medium uppercase tracking-[0.2em] text-yp-white/50 mb-4"
         data-aos="fade-down"
       >
-        Digital Lookbook
+        Catalog produse
       </p>
       <h1
         class="text-5xl md:text-6xl lg:text-7xl font-light text-yp-white max-w-4xl leading-[1.1] tracking-tight"
         data-aos="fade-up"
       >
-        Echipamente tehnice. <br /><span class="text-yp-white/50"
-          >Curație pentru profesioniști.</span
+        Echipamente de protecție și haine de lucru <span class="text-yp-white/50"
+          >pentru echipe care vor să arate și să lucreze profesionist</span
         >
       </h1>
       <p
@@ -126,9 +126,7 @@ const hasProducts = products.length > 0;
         data-aos="fade-up"
         data-aos-delay="100"
       >
-        Renunțăm la coșul de cumpărături clasi. Explorează selecția noastră,
-        construiește un "moodboard" tehnic pentru echipa ta, iar noi trimitem
-        mostre pentru testare gratuită.
+        Alege mai ușor dintr-un catalog construit pentru companii care caută claritate, imagine profesională și echipamente potrivite activității lor. Explorează categoriile, filtrează rapid și cere o ofertă pentru selecția care se potrivește echipei tale.
       </p>
 
       <div
@@ -139,15 +137,15 @@ const hasProducts = products.length > 0;
         <span class="flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-yp-yellow animate-pulse"
           ></span>
-          {products.length} concepte live
+          Selecție B2B pentru companii
         </span>
         <span class="flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-yp-white/40"></span>
-          Selecție B2B privată
+          Consultanță și ofertă personalizată
         </span>
       </div>
 
-      <div class="mt-10 flex flex-col sm:flex-row gap-4" data-aos="fade-up" data-aos-delay="300">
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 mb-4" data-aos="fade-up" data-aos-delay="300">
         <button
             class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent w-fit"
             onclick="window.location.href='/cere-oferta'"
@@ -163,6 +161,9 @@ const hasProducts = products.length > 0;
             <svg class="w-4 h-4 text-yp-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
       </div>
+      <p class="text-xs text-yp-white/40 max-w-xl font-light" data-aos="fade-up" data-aos-delay="400">
+        Nu știi exact ce se potrivește activității tale? Te ajutăm să alegi clar, fără haos și fără compromisuri inutile.
+      </p>
 
     </div>
   </section>
@@ -374,15 +375,33 @@ const hasProducts = products.length > 0;
           !hasProducts ? (
             <div class="py-20 text-center">
               <h2 class="text-3xl font-light text-yp-white">
-                Lookbook în pregătire.
+                Catalogul este în curs de actualizare.
               </h2>
-              <p class="mt-4 text-yp-white/50 font-light max-w-xl mx-auto">
-                Echipa actualizeză conceptele vizuale din Directus. Catalogul
-                curent se va regenera curând.
+              <p class="mt-4 text-yp-white/50 font-light max-w-xl mx-auto mb-8">
+                Dacă ai nevoie de o recomandare rapidă sau de o ofertă pentru echipa ta, ne poți contacta direct.
               </p>
+              <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button
+                    class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
+                    onclick="window.location.href='/cere-oferta'"
+                >
+                    Cere ofertă
+                </button>
+                <button
+                    class="border border-yp-white/20 text-yp-white h-12 px-8 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-yp-white/5 hover:border-yp-white/40 transition-all duration-200"
+                    onclick="window.location.href='/programeaza-discutie'"
+                >
+                    Programează o discuție
+                </button>
+              </div>
             </div>
           ) : (
             <div>
+              <!-- Pre-grid orientational message -->
+              <div class="mb-8 p-6 bg-yp-black/40 border border-yp-white/10 rounded-2xl flex items-center text-sm font-light text-yp-white/80 leading-relaxed shadow-lg backdrop-blur-sm">
+                <p>Descoperi opțiunile, <strong class="text-yp-white font-medium">iar alegerea bună o facem împreună.</strong> Dacă ai deja o direcție clară, <a href="/cere-oferta" class="text-yp-yellow hover:underline">cere o ofertă</a>. Dacă încă compari variante, <a href="/programeaza-discutie" class="text-yp-yellow hover:underline">programează o discuție</a> și te ajutăm să filtrezi rapid ce merită.</p>
+              </div>
+
               <div
                 id="catalog-grid"
                 class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
@@ -422,9 +441,9 @@ const hasProducts = products.length > 0;
                 ))}
               </div>
               <div id="catalog-empty-filter" class="hidden mt-10 text-center text-yp-white/50 font-light py-20 border border-yp-white/10 rounded-sm">
-                <p class="mb-6">Nu a fost găsit niciun echipament conform criteriilor selectate.</p>
+                <p class="mb-6">Nu ai găsit încă selecția potrivită?</p>
                 <div class="flex flex-col items-center justify-center">
-                  <p class="text-sm text-yp-white mb-4">Nu ești sigur ce se potrivește echipei tale? Te ajutăm să alegi mai clar.</p>
+                  <p class="text-sm text-yp-white mb-6">Te ajutăm să alegi în funcție de activitate, echipă și nivelul de protecție necesar.</p>
                   <button
                     class="bg-yp-yellow text-yp-black h-10 px-6 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200"
                     onclick="window.location.href='/programeaza-discutie'"
@@ -696,9 +715,9 @@ const hasProducts = products.length > 0;
     <div class="absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-screen bg-[url('/grain.png')]"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"></div>
     <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-yp-white">
-      <h2 class="text-3xl md:text-4xl font-light mb-6">Descoperi opțiunile,<br/><span class="font-medium text-yp-yellow">dar alegerea bună o facem împreună.</span></h2>
-      <p class="text-yp-white/60 mb-10 max-w-xl mx-auto font-light leading-relaxed">
-        Suntem aici să te ajutăm să prioritizezi bugetul și să alegi soluția tehnică potrivită pentru angajații tăi, bazată pe cerințe practice reale, nu pe noroc.
+      <h2 class="text-3xl md:text-4xl font-light mb-6">Nu trebuie să alegi singur <span class="font-medium text-yp-yellow">dintre zeci de variante</span></h2>
+      <p class="text-yp-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+        Alege mai simplu cu ajutorul unei recomandări clare. Spune-ne ce tip de activitate ai, în ce condiții lucrează echipa și ce standard vrei să atingi, iar noi îți propunem o selecție potrivită.
       </p>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -718,6 +737,9 @@ const hasProducts = products.length > 0;
             <svg class="w-5 h-5 text-yp-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
       </div>
+      <p class="mt-8 text-sm text-yp-white/40 max-w-xl mx-auto font-light">
+        Pentru companii care vor mai mult decât produse: vor claritate, coerență și o imagine profesională mai puternică.
+      </p>
     </div>
   </section>
 
