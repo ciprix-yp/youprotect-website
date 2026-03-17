@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Preiau parametrii din URL (dacă e posibil pe client-side)
+// Din cauza că e "static", vom face logica cu un script in-browser.
+---
+
+<BaseLayout 
+  title="Confirmare" 
+  description="Îți mulțumim pentru mesaj! Echipa You Protect va reveni în cel mai scurt timp."
+>
+  <div class="h-24 md:h-32"></div>
+  
+  <section class="py-12 md:py-20 relative overflow-hidden min-h-[70vh] flex flex-col justify-center">
+    <!-- Backgound Elements -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yp-yellow/10 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-4 w-full text-center">
+      <div data-aos="fade-up">
+        <div class="w-20 h-20 bg-yp-yellow/10 text-yp-yellow rounded-full flex items-center justify-center mx-auto mb-8 border border-yp-yellow/20">
+          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl font-heading font-semibold text-white mb-6">
+          Mesajul a fost <span class="text-yp-yellow">trimis cu succes!</span>
+        </h1>
+        
+        <div id="confirmation-message" class="text-lg text-neutral-400 max-w-2xl mx-auto mb-12">
+          <!-- Textul completat prin script -> Vezi mai jos -->
+          Mulțumim! Vom reveni în curând cu informațiile solicitate.
+        </div>
+      </div>
+
+      <div id="booking-section" class="hidden mt-12 animate-in fade-in duration-700 delay-300" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-2xl text-white font-medium mb-6">Programează data și ora dorită direct în calendarul nostru:</h2>
+        <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
+          <iframe 
+            src="https://outlook.office365.com/owa/calendar/Booking@youprotect.ro/bookings/" 
+            width="100%" 
+            height="800" 
+            style="border: 0;"
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="mt-12 flex justify-center gap-4">
+        <a href="/" class="px-8 py-3 bg-white/5 border border-white/10 text-white rounded font-medium hover:bg-white/10 transition-colors">
+          Înapoi acasă
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Logică pentru a afișa mesajele specifice pe baza "intent"
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const intent = urlParams.get('intent');
+      
+      const msgBox = document.getElementById('confirmation-message');
+      const bookingSection = document.getElementById('booking-section');
+
+      if (intent === 'consultation') {
+        if (msgBox) {
+          msgBox.innerHTML = `Vom reveni în maximum 24 de ore cu o propunere pentru discuție. Între timp, pregătim câteva recomandări personalizate.<br/><br/><strong>De asemenea, poți alege direct o fereastră disponibilă în calendarul de mai jos:</strong>`;
+        }
+        if (bookingSection) {
+          bookingSection.classList.remove('hidden');
+        }
+      } else if (intent === 'quote') {
+        if (msgBox) {
+          msgBox.innerHTML = `Pregătim oferta personalizată pentru compania dumneavoastră și o trimitem în maximum 48 de ore. Pentru a vă face o recomandare cât mai precisă, este posibil să vă contactăm pentru câteva clarificări rapide.`;
+        }
+      }
+    });
+  </script>
+</BaseLayout>
