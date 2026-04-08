@@ -1,0 +1,36 @@
+---
+import LandingLayout from "../../layouts/LandingLayout.astro";
+import TCOCalculator from "../../components/calculator/TCOCalculator.tsx";
+---
+
+<LandingLayout
+  title="Calculator Independent TCO - Analizează Costul Real al Echipamentelor"
+  description="Calculează adevăratul cost de proprietate (TCO). Află diferența între echipamentele ieftine cu rotație mare și soluțiile premium cu garanție extinsă și rată de retur sub 1%."
+  noindex={true}
+>
+  <section class="relative min-h-screen py-12 md:py-20 lg:py-24 flex items-center justify-center">
+    {/* Minimalist Background Gradients */}
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-yp-yellow/5 blur-[120px]"></div>
+      <div class="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] rounded-full bg-yp-yellow/10 blur-[150px]"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+      <div class="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
+        <div class="inline-block px-3 py-1 bg-yp-yellow/10 border border-yp-yellow/20 rounded-full text-yp-yellow text-xs font-bold uppercase tracking-widest mb-4">
+          Calculator Independent de TCO
+        </div>
+        <h1 class="text-3xl md:text-5xl font-serif text-white font-bold leading-tight mb-4">
+          Adevăratul Cost al Echipamentelor <span class="text-yp-yellow">Slab Calitative</span>
+        </h1>
+        <p class="text-neutral-400 text-lg">
+          Achiziția inițială reprezintă doar o fracțiune din costul real. Calculează Total Cost of Ownership (TCO) și compară rentabilitatea sistemului actual cu un benchmark premium, folosind date statistice din industrie.
+        </p>
+      </div>
+
+      <div data-aos="fade-up" data-aos-delay="100">
+        <TCOCalculator client:load />
+      </div>
+    </div>
+  </section>
+</LandingLayout>
