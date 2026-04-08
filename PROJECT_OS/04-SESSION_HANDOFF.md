@@ -83,6 +83,14 @@
 - Pregătire teren tehnic de performanță: build-uri compilate (`npm run build`) fără erori pe Cloudflare.
 - PM orchestration: Suntem poziționați conform backlog-ului pentru `WP-005`.
 
+## Rezolvat în sesiunea de Dezvoltare Marketing / Lead Gen (Apr 2026)
+
+- S-a creat Landing Page-ul independent **TCO Calculator** (`/lp/tco-calculator`), izolat the structura de bază și exclusiv accesibil prin link direct (`noindex` activ).
+- S-a conceput `LandingLayout.astro` special pentru eficiență Lead Generation, fiind lăsat complet fără `<Header>` și `<Footer>`.
+- S-a dezvoltat un instrument matematic complex în `TCOCalculator.tsx` (calculând *Basic TCO*, *Premium Benchmark ROI 3 Ani*, și *Cost Per Wear/zi* derivat direct din frecvențele de rotație).
+- Sistemul React este complet intergrat într-un webhook pregătit pentru n8n, care grupează datele și clasifică pain point-urile de HR și de Uzură.
+- S-a implementat și ajustat graficul vizual diferențial în CSS (`BarChart.tsx`), iar stilul este complet aliniat grilei principale ale site-ului (AOS animations, max-w-7xl, typography branding).
+
 ## Checklist start sesiune viitoare
 
 - Citește `PROJECT_OS/README.md`.

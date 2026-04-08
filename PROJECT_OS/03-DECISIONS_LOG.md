@@ -81,3 +81,9 @@
 - Decizie: Introducem filtre comerciale combinate cu sortare client-side (`Relevanta`, `Noutati`, `A-Z`) peste dataset-ul existent.
 - De ce: Găsirea produselor potrivite devine mai rapidă, fără cost de integrare DB suplimentară pentru MVP.
 - Impact: Catalogul devine mai navigabil; păstrăm SSG simplu și logică UI în frontend.
+
+## D-2026-04-08-01
+- Context: Nevoia unui Lead Magnet educațional (TCO Calculator) promovat exclusiv din campanii Social Media pentru a capta date de contact.
+- Decizie: Implementarea unui Landing Page "ascuns" la ruta `/lp/tco-calculator` cu meta eticheta `noindex`, plus o componentă React care calculează 3-Year ROI și CPW și le trimite prin webhook către n8n (`TCOCalculator.tsx`).
+- De ce: Paginile lead gen funcționează cel mai bine fără Header/Footer și vizibilitate generală care induce distrageri.
+- Impact: Un flux vizual independent dar aliniat CSS-ului nativ care scurge date brute automat către prospectare.

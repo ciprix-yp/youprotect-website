@@ -1,434 +1,608 @@
-import React, { useState, useMemo } from 'react';
-import BarChart from './BarChart';
+import React, { useState, useMemo, useEffect } from "react";
 
-const INDUSTRY_RISK: Record<string, number> = {
-  'Construcții': 150,
-  'Producție': 100,
-  'Logistică': 80,
-  'Mentenanță': 50,
-  'Altele': 30
-};
+// ─── CONFIG ───
+const INDUSTRIES = [
+  { id: "constructii", label: "Construcții", riskMultiplier: 1.35, description: "Uzură mecanică intensă, expunere intemperii" },
+  { id: "productie", label: "Producție", riskMultiplier: 1.2, description: "Uzură moderată, mediu controlat" },
+  { id: "logistica", label: "Logistică & Depozitare", riskMultiplier: 1.15, description: "Uzură variabilă, manipulare frecventă" },
+  { id: "mentenanta", label: "Mentenanță & Service", riskMultiplier: 1.25, description: "Substanțe chimice, uzură localizată" },
+  { id: "curatenie", label: "Curățenie industrială", riskMultiplier: 1.1, description: "Uzură chimică, înlocuire frecventă" },
+  { id: "altele", label: "Alt domeniu", riskMultiplier: 1.15, description: "Estimare medie cross-industry" },
+];
+
+const FREQ_OPTIONS = [
+  { value: 3, label: "La 3 luni", tag: "Foarte frecvent" },
+  { value: 4, label: "La 4 luni", tag: "Frecvent" },
+  { value: 6, label: "La 6 luni", tag: "Standard" },
+  { value: 9, label: "La 9 luni", tag: "Rar" },
+  { value: 12, label: "La 12 luni", tag: "Foarte rar" },
+];
+
+const EIP_CATEGORIES = [
+  { id: "incaltaminte", label: "Încălțăminte de protecție", avgPrice: 180, premiumPrice: 350, premiumLifeMultiplier: 2.5 },
+  { id: "imbracaminte", label: "Îmbrăcăminte de lucru", avgPrice: 120, premiumPrice: 220, premiumLifeMultiplier: 2.2 },
+  { id: "manusi", label: "Mănuși de protecție", avgPrice: 25, premiumPrice: 45, premiumLifeMultiplier: 2.0 },
+  { id: "casca", label: "Căști & protecție cap", avgPrice: 80, premiumPrice: 160, premiumLifeMultiplier: 3.0 },
+  { id: "ochelari", label: "Ochelari de protecție", avgPrice: 35, premiumPrice: 70, premiumLifeMultiplier: 2.5 },
+];
+
+const fmt = (v: number) => new Intl.NumberFormat("ro-RO", { style: "currency", currency: "RON", maximumFractionDigits: 0 }).format(v);
+
+// ─── COMPONENTS ───
+
+function ProgressBar({ step, total }: { step: number; total: number }) {
+  return (
+    <div className="flex gap-2 mb-8">
+      {Array.from({ length: total }, (_, i) => (
+        <div key={i} className={`flex-1 h-1 rounded-full transition-colors duration-400 ${i < step ? "bg-yp-yellow" : "bg-white/10"}`} />
+      ))}
+    </div>
+  );
+}
+
+function RadioCards({ options, value, onChange, columns = 2 }: any) {
+  const gridCols = columns === 3 ? "md:grid-cols-3" : "md:grid-cols-2";
+  return (
+    <div className={`grid grid-cols-1 ${gridCols} gap-3`}>
+      {options.map((opt: any) => {
+        const selected = value === opt.value;
+        return (
+          <button 
+            key={opt.value} 
+            onClick={() => onChange(opt.value)} 
+            className={`text-left p-4 rounded-lg transition-all duration-200 border ${selected ? "bg-yp-yellow/10 border-yp-yellow scale-[1.01]" : "bg-white/5 border-white/10 hover:border-white/30"}`}
+          >
+            <div className={`font-semibold text-sm ${selected ? "text-yp-yellow" : "text-neutral-300"}`}>{opt.label}</div>
+            {opt.sub && <div className="text-xs text-neutral-500 mt-1">{opt.sub}</div>}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function NumberInput({ label, value, onChange, min, max, step = 1, suffix, hint }: any) {
+  return (
+    <div className="mb-6">
+      <div className="flex justify-between items-baseline mb-2">
+        <label className="text-sm font-medium text-neutral-300">{label}</label>
+        <span className="text-yp-yellow font-bold text-lg font-mono">
+          {value}{suffix && <span className="text-xs font-normal text-neutral-500 ml-1">{suffix}</span>}
+        </span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full accent-yp-yellow h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+      />
+      {hint && <div className="text-xs text-neutral-500 mt-2">{hint}</div>}
+    </div>
+  );
+}
+
+function MetricCard({ label, value, highlight, small }: any) {
+  return (
+    <div className={`rounded-xl border ${highlight ? "bg-yp-yellow/10 border-yp-yellow/30" : "bg-white/5 border-white/10"} ${small ? "p-4" : "p-6"}`}>
+      <div className={`text-[11px] uppercase tracking-wider mb-2 font-mono ${highlight ? "text-yp-yellow/80" : "text-neutral-500"}`}>{label}</div>
+      <div className={`font-bold font-mono ${small ? "text-xl" : "text-3xl"} ${highlight ? "text-yp-yellow" : "text-white"}`}>{value}</div>
+    </div>
+  );
+}
+
+function CostBreakdownBar({ label, directCost, hiddenCost, total, maxTotal }: any) {
+  const w = (total / maxTotal) * 100;
+  const directW = (directCost / total) * 100;
+  return (
+    <div className="mb-5">
+      <div className="flex justify-between mb-2">
+        <span className="text-sm font-medium text-neutral-300">{label}</span>
+        <span className="text-sm font-bold text-white font-mono">{fmt(total)}</span>
+      </div>
+      <div className="h-7 bg-white/5 rounded overflow-hidden relative">
+        <div className="h-full flex rounded transition-all duration-700 ease-out" style={{ width: `${w}%` }}>
+          <div className="h-full bg-white/20" style={{ width: `${directW}%` }} />
+          <div className="flex-1 h-full bg-red-500/40" />
+        </div>
+      </div>
+      <div className="flex gap-4 mt-2">
+        <span className="text-[11px] text-neutral-400">■ Achiziție directă: {fmt(directCost)}</span>
+        <span className="text-[11px] text-red-500/80">■ Costuri ascunse: {fmt(hiddenCost)}</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN CALCULATOR ───
 
 export default function TCOCalculator() {
   const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<any>({});
 
-  const [formData, setFormData] = useState({
-    // Step 1
-    industry: '',
-    employee_count: 50,
-    current_unit_price: 150,
-    replacement_frequency: '6', // months
-    // Step 2
-    complaint_frequency: '',
-    admin_time: 5,
-    // Step 3
-    name: '',
-    company: '',
-    email: '',
-    phone: ''
-  });
+  // Step 1 - Companie
+  const [industry, setIndustry] = useState("");
+  const [employees, setEmployees] = useState(20);
 
-  const updateField = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: '' }));
-  };
+  // Step 2 - EIP config
+  const [selectedCategories, setSelectedCategories] = useState(["incaltaminte", "imbracaminte"]);
+  const [replacementFreq, setReplacementFreq] = useState(6);
+  const [customPrices, setCustomPrices] = useState<any>({});
 
-  // --- Calculations ---
+  // Step 3 - Costuri operaționale
+  const [adminHours, setAdminHours] = useState(4);
+  const [hourlyCost, setHourlyCost] = useState(45);
+  const [hasComplaints, setHasComplaints] = useState("");
+  const [stockIssues, setStockIssues] = useState("");
+
+  // Step 5 - Lead capture
+  const [lead, setLead] = useState({ name: "", company: "", email: "", phone: "" });
+
+  useEffect(() => {
+    window.scrollTo({ top: 30, behavior: "smooth" });
+  }, [step]);
+
+  // ─── REAL CALCULATIONS ───
   const results = useMemo(() => {
-    const empCount = formData.employee_count;
-    const price = formData.current_unit_price;
-    const freqMonths = parseInt(formData.replacement_frequency, 10);
-    
-    // 1. Current System Basic TCO (12 months)
-    const annualReplacements = 12 / freqMonths;
-    const currentAcqCost = empCount * price * annualReplacements;
-    
-    // Hidden Logistic Multiplier (1.6x for cheap equipment if freq <= 6 months)
-    const logisticMultiplier = freqMonths <= 6 ? 1.6 : 1.1; 
-    const currentRealTco = currentAcqCost * logisticMultiplier;
+    const ind = INDUSTRIES.find((i) => i.id === industry) || INDUSTRIES[5];
+    const cats = EIP_CATEGORIES.filter((c) => selectedCategories.includes(c.id));
+    const replacementsPerYear = 12 / replacementFreq;
 
-    // 2. Premium Benchmark System TCO
-    // Assume double the price, but only 1 replacement per year (12 months)
-    const ypPrice = price * 2;
-    const ypAcqCost = empCount * ypPrice * 1;
-    const ypRealTco = ypAcqCost * 1.0; // No huge hidden penalties
+    // Current system
+    let directCostPerYear = 0;
+    let premiumCostPerYear = 0;
+    const breakdown: any = [];
 
-    // 3. Risk Factor
-    const riskConst = INDUSTRY_RISK[formData.industry] || INDUSTRY_RISK['Altele'];
-    const assumedRiskLoss = riskConst * empCount;
+    cats.forEach((cat) => {
+      const price = customPrices[cat.id] || cat.avgPrice;
+      const annualDirect = employees * price * replacementsPerYear;
 
-    // 4. Metrics
-    const cpwCurrent = currentRealTco / (empCount * 220); // 220 working days/year
-    const cpwYp = ypRealTco / (empCount * 220);
-    const savings3Years = (currentRealTco * 3) - (ypRealTco * 3);
+      const logisticsPct = replacementFreq <= 4 ? 0.28 : replacementFreq <= 6 ? 0.22 : 0.15;
+      const logisticsCost = annualDirect * logisticsPct;
+
+      const wastePct = replacementFreq <= 4 ? 0.12 : 0.06;
+      const wasteCost = annualDirect * wastePct;
+
+      const totalCurrent = annualDirect + logisticsCost + wasteCost;
+
+      const premiumReplacementsPerYear = 12 / (replacementFreq * cat.premiumLifeMultiplier);
+      const premiumDirect = employees * cat.premiumPrice * premiumReplacementsPerYear;
+      const premiumLogistics = premiumDirect * 0.12; 
+      const totalPremium = premiumDirect + premiumLogistics;
+
+      directCostPerYear += annualDirect;
+      premiumCostPerYear += totalPremium;
+
+      breakdown.push({
+        category: cat.label,
+        currentDirect: annualDirect,
+        currentHidden: logisticsCost + wasteCost,
+        currentTotal: totalCurrent,
+        premiumTotal: totalPremium,
+        saving: totalCurrent - totalPremium,
+      });
+    });
+
+    const adminCostPerYear = adminHours * 12 * hourlyCost;
+    const premiumAdminCost = adminCostPerYear * 0.4; 
+
+    const riskCostCurrent = directCostPerYear * (ind.riskMultiplier - 1);
+
+    const currentTotal = breakdown.reduce((s: number, b: any) => s + b.currentTotal, 0) + adminCostPerYear + riskCostCurrent;
+    const premiumTotal = breakdown.reduce((s: number, b: any) => s + b.premiumTotal, 0) + premiumAdminCost;
+
+    const savings1y = currentTotal - premiumTotal;
+    const savings3y = savings1y * 3;
+    const savingsPct = currentTotal > 0 ? ((savings1y / currentTotal) * 100).toFixed(0) : 0;
+
+    const cpwCurrent = employees > 0 ? (currentTotal / (employees * 220)) : 0;
+    const cpwPremium = employees > 0 ? (premiumTotal / (employees * 220)) : 0;
 
     return {
-      currentAcqCost,
-      currentRealTco,
-      ypRealTco,
-      assumedRiskLoss,
+      breakdown,
+      directCostPerYear,
+      adminCostPerYear,
+      premiumAdminCost,
+      riskCostCurrent,
+      currentTotal,
+      premiumTotal,
+      savings1y,
+      savings3y,
+      savingsPct,
       cpwCurrent,
-      cpwYp,
-      savings3Years
+      cpwPremium,
+      industry: ind,
+      replacementsPerYear,
     };
-  }, [formData]);
+  }, [industry, employees, selectedCategories, replacementFreq, customPrices, adminHours, hourlyCost]);
 
-  // --- Validation & Actions ---
-  const handleNextStep1 = () => {
+  // ─── NAVIGATION ───
+  const goNext = () => {
     const err: any = {};
-    if (!formData.industry) err.industry = 'Te rugăm să alegi o industrie pentru a calibra riscul.';
-    if (!formData.replacement_frequency) err.replacement_frequency = 'Obligatoriu.';
-    
-    if (Object.keys(err).length > 0) {
-      setErrors(err);
-      return;
-    }
-    setStep(2);
-    // Scroll top
-    window.scrollTo({ top: 30, behavior: 'smooth' });
+    if (step === 1 && !industry) err.industry = "Selectează industria";
+    if (step === 2 && selectedCategories.length === 0) err.categories = "Selectează cel puțin o categorie";
+    if (step === 3 && !hasComplaints) err.complaints = "Selectează o opțiune";
+    if (Object.keys(err).length) { setErrors(err); return; }
+    setErrors({});
+    setStep((s) => s + 1);
   };
+  const goBack = () => { setErrors({}); setStep((s) => s - 1); };
 
-  const handleNextStep2 = () => {
-    const err: any = {};
-    if (!formData.complaint_frequency) err.complaint_frequency = 'Bifează o opțiune.';
-    
-    if (Object.keys(err).length > 0) {
-      setErrors(err);
-      return;
-    }
-    setStep(3);
-    window.scrollTo({ top: 30, behavior: 'smooth' });
+  const toggleCategory = (id: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+    );
   };
 
   const handleSubmit = async () => {
     const err: any = {};
-    if (!formData.name) err.name = 'Necesar';
-    if (!formData.email || !formData.email.includes('@')) err.email = 'Email valid necesar';
-    if (!formData.company) err.company = 'Necesar';
+    if (!lead.name.trim()) err.name = true;
+    if (!lead.company.trim()) err.company = true;
+    if (!lead.email.includes("@") || !lead.email.includes(".")) err.email = true;
+    if (Object.keys(err).length) { setErrors(err); return; }
 
-    if (Object.keys(err).length > 0) {
-      setErrors(err);
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    // WEBHOOK POST
+    setSubmitting(true);
     try {
       const payload = {
-        lead: {
-          nume: formData.name,
-          email: formData.email,
-          companie: formData.company,
-          telefon: formData.phone
-        },
-        calculator_data: {
-          industry: formData.industry,
-          employee_count: formData.employee_count,
-          current_unit_price: formData.current_unit_price,
-          replacement_frequency: formData.replacement_frequency + ' luni',
-          complaint_frequency: formData.complaint_frequency,
-          admin_time: formData.admin_time
-        },
-        segments: {
-          employee_retention_pain: formData.complaint_frequency === 'Constant',
-          operational_efficiency_pain: formData.admin_time > 5
+        lead,
+        inputs: {
+          industry,
+          employees,
+          categories: selectedCategories,
+          replacementFreq,
+          customPrices,
+          adminHours,
+          hourlyCost,
+          complaints: hasComplaints,
+          stockIssues,
         },
         results: {
-          current_tco_1_year: results.currentRealTco,
-          yp_tco_1_year: results.ypRealTco,
-          savings_3_years: results.savings3Years,
-          cpw_current: results.cpwCurrent,
-          cpw_yp: results.cpwYp,
-          risk_loss: results.assumedRiskLoss
-        }
+          currentTotal: results.currentTotal,
+          premiumTotal: results.premiumTotal,
+          savings1y: results.savings1y,
+          savings3y: results.savings3y,
+          savingsPct: results.savingsPct,
+          cpwCurrent: results.cpwCurrent,
+          cpwPremium: results.cpwPremium,
+          breakdown: results.breakdown,
+        },
       };
 
-      // TODO: Replace with the actual n8n webhook URL when provided.
-      // E.g., const webhookUrl = 'https://n8n.yourdomain.com/webhook/tco-lead';
-      const webhookUrl = 'https://example-n8n-webhook.com/tco'; 
+      const WEBHOOK = "https://youprotect.app.n8n.cloud/webhook/tco-lead";
+      await fetch(WEBHOOK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
       
-      await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-        // We ignore the actual response for now to ensure a smooth transition locally.
-        // In a real scenario, we'll check `response.ok`
-      }).catch(e => console.warn('Webhook err, proceeding anyway', e));
-
-      // Go to success
-      setStep(4);
-      window.scrollTo({ top: 30, behavior: 'smooth' });
-    } catch (e) {
-      alert('A apărut o eroare la trimiterea datelor. Vă rugăm să încercați din nou.');
+      setStep(6);
+    } catch {
+      alert("Eroare la trimitere. Încearcă din nou.");
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
-  const formatMoney = (val: number) => {
-    return new Intl.NumberFormat('ro-RO', { style: 'currency', currency: 'RON', maximumFractionDigits: 0 }).format(val);
-  };
+  // ─── UTILS BUTTONS ───
+  const ButtonPrimary = ({ onClick, children, disabled }: any) => (
+    <button 
+      onClick={onClick} 
+      disabled={disabled}
+      className="w-full bg-yp-yellow text-yp-black font-bold py-4 px-6 rounded-lg hover:bg-white transition-colors duration-200 mt-6 shadow-lg shadow-yp-yellow/10"
+    >
+      {children}
+    </button>
+  );
 
-  // --- Render Steps ---
+  const ButtonBack = ({ onClick, children }: any) => (
+    <button 
+      onClick={onClick} 
+      className="text-neutral-400 hover:text-white transition-colors text-sm py-4 px-2"
+    >
+      {children}
+    </button>
+  );
+
   return (
-    <div className="max-w-2xl mx-auto w-full bg-[#111] rounded-[8px] border border-white/5 p-6 md:p-10 shadow-2xl relative overflow-hidden font-body">
-      
-      {/* Progress */}
-      {step < 4 && (
-        <div className="mb-8">
-          <div className="flex justify-between items-end mb-2">
-            <span className="text-xs font-medium text-yp-yellow font-mono uppercase tracking-wider">
-              Pasul {step} / 3
-            </span>
-            <span className="text-xs text-neutral-500 font-medium">
-              {Math.round((step / 3) * 100)}% completat
-            </span>
-          </div>
-          <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-yp-yellow rounded-full transition-all duration-500 ease-out" 
-              style={{ width: `${(step / 3) * 100}%` }} 
-            />
-          </div>
-        </div>
-      )}
+    <div className="max-w-2xl mx-auto w-full bg-[#111] rounded-xl border border-white/5 p-6 md:p-10 shadow-2xl relative overflow-hidden font-body text-white">
+      <ProgressBar step={step} total={5} />
 
-      {/* --- STEP 1: VALUE FIRST --- */}
+      {/* ═══ STEP 1: INDUSTRIE & DIMENSIUNE ═══ */}
       {step === 1 && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-medium text-white mb-2">Calculator TCO Echipamente</h2>
-            <p className="text-neutral-400 text-sm">Introduceți parametrii actuali pentru a vizualiza costul real.</p>
-          </div>
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight">Calculează Costul Real al Echipamentelor de Protecție</h2>
+          <p className="text-neutral-400 text-sm mb-8 leading-relaxed">
+            Nu doar prețul de achiziție — ci tot ce plătești: înlocuiri, timp administrativ, riscuri de non-conformitate. Rezultatele sunt ale tale, instant.
+          </p>
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">Industrie</label>
-            <select 
-              value={formData.industry} 
-              onChange={e => updateField('industry', e.target.value)}
-              className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-yp-yellow transition-colors"
-            >
-              <option value="">Alegeți industria...</option>
-              {Object.keys(INDUSTRY_RISK).map(ind => (
-                <option key={ind} value={ind}>{ind}</option>
-              ))}
-            </select>
-            {errors.industry && <p className="text-red-400 text-xs mt-1">{errors.industry}</p>}
-          </div>
+          <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3 font-semibold">Industria principală</div>
+          <RadioCards
+            columns={2}
+            options={INDUSTRIES.map((i) => ({ value: i.id, label: i.label, sub: i.description }))}
+            value={industry}
+            onChange={setIndustry}
+          />
+          {errors.industry && <div className="text-red-500 text-xs mt-2">{errors.industry}</div>}
 
-          <div className="pt-2">
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium text-neutral-300">Număr Angajați Curent (Echipați)</label>
-              <span className="text-yp-yellow font-bold bg-yp-yellow/10 px-2 py-1 rounded">{formData.employee_count}</span>
-            </div>
-            <input 
-              type="range" 
-              min="5" 
-              max="500" 
-              step="5"
-              value={formData.employee_count} 
-              onChange={e => updateField('employee_count', Number(e.target.value))}
-              className="w-full accent-yp-yellow"
+          <div className="mt-8">
+            <NumberInput
+              label="Angajați care poartă EIP"
+              value={employees} onChange={setEmployees}
+              min={5} max={200} step={1} suffix="persoane"
+              hint="Include toți angajații care primesc echipament de protecție"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Preț Achiziție / Set (RON)</label>
-              <input 
-                type="number" 
-                value={formData.current_unit_price} 
-                onChange={e => updateField('current_unit_price', Number(e.target.value))}
-                className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-yp-yellow transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Frecvență Înlocuire</label>
-              <select 
-                value={formData.replacement_frequency} 
-                onChange={e => updateField('replacement_frequency', e.target.value)}
-                className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-yp-yellow transition-colors"
-              >
-                <option value="3">La 3 luni</option>
-                <option value="6">La 6 luni</option>
-                <option value="12">La 12 luni</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            onClick={handleNextStep1}
-            className="mt-8 w-full bg-yp-yellow text-yp-black py-4 rounded font-medium text-sm hover:bg-white transition-all shadow-lg shadow-yp-yellow/20"
-          >
-            Vezi Eficiența
-          </button>
+          <ButtonPrimary onClick={goNext}>Continuă →</ButtonPrimary>
         </div>
       )}
 
-      {/* --- STEP 2: THE HOOK --- */}
+      {/* ═══ STEP 2: CATEGORII EIP ═══ */}
       {step === 2 && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-          <div className="bg-neutral-800/50 border border-yp-yellow/30 p-5 rounded-md mb-8">
-            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-              Alergă TCO Ascuns
-            </h3>
-            <p className="text-neutral-300 text-sm leading-relaxed">
-              Achiziția inițială de <span className="font-bold text-white">{formatMoney(results.currentAcqCost)}</span> pe an este doar {formData.replacement_frequency <= '6' ? 'vârful aisbergului. Echipamentele cu rotație mare generează costuri invizibile majore administrativ.' : 'o parte a bugetului. Costurile administrative adaugă surplus la pierderile anuale.'}
-            </p>
-          </div>
+        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+          <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Ce echipamente achiziționezi?</h2>
+          <p className="text-neutral-400 text-sm mb-8">Selectează categoriile relevante și ajustează prețul mediu pe care îl plătești acum per bucată.</p>
 
-          <div className="text-center mb-6">
-            <h2 className="text-xl md:text-2xl font-medium text-white mb-1">Rafinează Analiza de Risc</h2>
-            <p className="text-neutral-400 text-sm">Aduceți un strat de fidelitate la calculul final prin definirea fricțiunilor interne.</p>
+          <div className="flex flex-col gap-3">
+            {EIP_CATEGORIES.map((cat) => {
+              const selected = selectedCategories.includes(cat.id);
+              return (
+                <div key={cat.id} className={`rounded-lg overflow-hidden transition-all duration-200 border ${selected ? "border-yp-yellow bg-yp-yellow/5" : "border-white/10 bg-white/5"}`}>
+                  <button onClick={() => toggleCategory(cat.id)} className="w-full text-left p-4 flex justify-between items-center transition-colors hover:bg-white/5">
+                    <span className={`text-sm font-semibold ${selected ? "text-yp-yellow" : "text-neutral-300"}`}>{cat.label}</span>
+                    <span className="text-xs text-neutral-500">
+                      {selected ? "✓ Selectat" : `~${cat.avgPrice} RON`}
+                    </span>
+                  </button>
+                  {selected && (
+                    <div className="px-4 pb-4 pt-1 flex items-center justify-between border-t border-white/5 mt-1 bg-white/5">
+                      <span className="text-xs text-neutral-400">Preț mediu/buc:</span>
+                      <div className="flex items-center gap-2">
+                        <input type="number" min={5} max={2000}
+                          value={customPrices[cat.id] || cat.avgPrice}
+                          onChange={(e) => setCustomPrices((p: any) => ({ ...p, [cat.id]: Number(e.target.value) }))}
+                          className="w-24 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-yp-yellow text-sm font-mono font-bold text-right focus:border-yp-yellow focus:outline-none"
+                        />
+                        <span className="text-xs text-neutral-500 font-medium">RON</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
+          {errors.categories && <div className="text-red-500 text-xs mt-2">{errors.categories}</div>}
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-3">Feedback Angajați (Plângeri legate de uzură/confort)</label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {['Rareori', 'Des', 'Constant'].map(freq => (
-                <button
-                  key={freq}
-                  onClick={() => updateField('complaint_frequency', freq)}
-                  className={`border p-3 rounded text-sm transition-all ${formData.complaint_frequency === freq ? 'bg-yp-yellow/10 border-yp-yellow text-yp-yellow' : 'bg-[#0a0a0a] border-white/10 text-neutral-400 hover:border-white/30'}`}
-                >
-                  {freq}
-                </button>
-              ))}
-            </div>
-            {errors.complaint_frequency && <p className="text-red-400 text-xs mt-2">{errors.complaint_frequency}</p>}
-          </div>
-
-          <div className="pt-4">
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium text-neutral-300">Ore/Lunare Alocate de HR/Achiziții - Management Stoc</label>
-              <span className="text-yp-yellow font-bold bg-yp-yellow/10 px-2 py-1 rounded">{formData.admin_time} H</span>
-            </div>
-            <input 
-              type="range" min="1" max="40" step="1"
-              value={formData.admin_time} 
-              onChange={e => updateField('admin_time', Number(e.target.value))}
-              className="w-full accent-yp-yellow"
+          <div className="mt-8">
+            <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3 font-semibold">Frecvență de înlocuire (medie)</div>
+            <RadioCards
+              columns={3}
+              options={FREQ_OPTIONS.map((f) => ({ value: f.value, label: f.label, sub: f.tag }))}
+              value={replacementFreq}
+              onChange={setReplacementFreq}
             />
           </div>
 
-          <div className="flex gap-4 mt-8">
-            <button onClick={() => setStep(1)} className="px-6 py-3 rounded text-sm text-neutral-400 hover:bg-white/5">Înapoi</button>
-            <button onClick={handleNextStep2} className="flex-1 bg-yp-yellow text-yp-black py-4 rounded font-medium text-sm hover:bg-white transition-all shadow-lg shadow-yp-yellow/20">Afișează Analiza Completă TCO</button>
+          <div className="flex gap-4 mt-8 items-center">
+            <ButtonBack onClick={goBack}>← Înapoi</ButtonBack>
+            <div className="flex-1"><ButtonPrimary onClick={goNext}>Continuă →</ButtonPrimary></div>
           </div>
         </div>
       )}
 
-      {/* --- STEP 3: LEAD CAPTURE --- */}
+      {/* ═══ STEP 3: COSTURI OPERAȚIONALE ═══ */}
       {step === 3 && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-          
-          <BarChart currentTco={results.currentRealTco} ypTco={results.ypRealTco} />
+          <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Costurile invizibile pe factură</h2>
+          <p className="text-neutral-400 text-sm mb-8 leading-relaxed">Timpul echipei, plângerile, și rupturile de stoc — toate au un cost financiar real.</p>
 
-          <div className="mt-8 mb-6 text-center">
-            <h2 className="text-xl md:text-2xl font-medium text-white mb-2">Suntem Gata de Analiză</h2>
-            <p className="text-neutral-400 text-sm px-4">
-              Graficul compară sistemul actual (inclusiv costurile logistice ascunse pentru echipamentele slabe) cu un sistem de echipamente Premium (sub 1% garanții retur). Pentru cifrele complete (ROI 3-Ani, Cost Per Wear) și raportul detaliat PDF, lăsați-ne datele mai jos.
+          <NumberInput
+            label="Ore / lună dedicate achiziției EIP"
+            value={adminHours} onChange={setAdminHours}
+            min={1} max={40} suffix="ore"
+            hint="Comandă, recepție, distribuire, evidență măsuri, retururi"
+          />
+          <NumberInput
+            label="Cost mediu oră (angajat responsabil)"
+            value={hourlyCost} onChange={setHourlyCost}
+            min={20} max={150} suffix="RON/oră"
+            hint="Include salariul brut + contribuții"
+          />
+
+          <div className="text-xs text-neutral-500 uppercase tracking-widest mt-8 mb-3 font-semibold">Plângeri privind uzura echipamentului</div>
+          <RadioCards
+            columns={3}
+            options={[
+              { value: "rareori", label: "Rareori", sub: "Sub 10% din echipă" },
+              { value: "des", label: "Des", sub: "10-30% din echipă" },
+              { value: "constant", label: "Constant", sub: "Peste 30%" },
+            ]}
+            value={hasComplaints}
+            onChange={setHasComplaints}
+          />
+          {errors.complaints && <div className="text-red-500 text-xs mt-2">{errors.complaints}</div>}
+
+          <div className="text-xs text-neutral-500 uppercase tracking-widest mt-8 mb-3 font-semibold">Ai avut lipsuri de stoc EIP în ultimul an?</div>
+          <RadioCards
+            columns={2}
+            options={[
+              { value: "da", label: "Da", sub: "Am improvizat sau am așteptat" },
+              { value: "nu", label: "Nu", sub: "Stoc mereu suficient" },
+            ]}
+            value={stockIssues}
+            onChange={setStockIssues}
+          />
+
+          <div className="flex gap-4 mt-8 items-center">
+            <ButtonBack onClick={goBack}>← Înapoi</ButtonBack>
+            <div className="flex-1"><ButtonPrimary onClick={goNext}>Vezi Rezultatele →</ButtonPrimary></div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ STEP 4: REZULTATE — QUICK WIN ═══ */}
+      {step === 4 && (
+        <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+          <div className="text-center mb-10">
+            <div className="text-xs text-yp-yellow font-bold uppercase tracking-widest mb-3">Analiza ta TCO</div>
+            <div className="text-3xl md:text-4xl font-bold text-white mb-2">
+              Costul tău real: <span className="font-mono">{fmt(results.currentTotal)}</span><span className="text-neutral-500 text-lg font-normal">/an</span>
+            </div>
+            <p className="text-neutral-400 text-sm max-w-lg mx-auto">
+              Din care <strong>{fmt(results.currentTotal - results.directCostPerYear)}</strong> reprezintă costuri ascunse pe care nu le vezi pe factura directă de achiziție.
             </p>
+          </div>
+
+          <div className="text-xs text-neutral-500 uppercase tracking-widest mb-4 font-semibold">Defalcare pe categorii</div>
+          <div className="mb-8 p-6 bg-white/5 rounded-xl border border-white/10">
+            {results.breakdown.map((b: any) => (
+              <CostBreakdownBar
+                key={b.category}
+                label={b.category}
+                directCost={b.currentDirect}
+                hiddenCost={b.currentHidden}
+                total={b.currentTotal}
+                maxTotal={Math.max(...results.breakdown.map((x: any) => x.currentTotal))}
+              />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <MetricCard label="Cost administrativ/an" value={fmt(results.adminCostPerYear)} small />
+            <MetricCard label={`Risc expunere (${results.industry.label})`} value={fmt(results.riskCostCurrent)} small />
+          </div>
+
+          {/* Quick-win metric */}
+          <div className="mb-6 p-8 rounded-xl bg-gradient-to-br from-yp-yellow/10 to-transparent border border-yp-yellow/20 text-center relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-yp-yellow/5 rounded-full blur-2xl pointer-events-none"></div>
+            <div className="text-[11px] text-yp-yellow/70 uppercase tracking-widest mb-2 font-semibold">Cost per zi de purtare / angajat</div>
+            <div className="text-4xl md:text-5xl font-bold text-white font-mono mb-2">
+              {results.cpwCurrent.toFixed(2)} <span className="text-xl text-neutral-400 font-normal">RON/zi</span>
+            </div>
+            <p className="text-sm text-neutral-400">Acesta e indicatorul de eficiență care contează cu adevărat (CPW).</p>
+          </div>
+
+          {/* Comparison preview */}
+          <div className="p-6 rounded-xl bg-[#0a0a0a] border border-white/10 mb-8 flex flex-col sm:flex-row justify-between items-center sm:items-start gap-4">
+            <div>
+              <div className="text-[11px] text-neutral-500 uppercase tracking-widest mb-1">Potențial Economie / An</div>
+              <div className="text-3xl font-bold text-green-400 font-mono">
+                {fmt(results.savings1y)}
+              </div>
+              <div className="text-xs text-neutral-500 mt-2 max-w-xs">Prin trecerea la echipamente premium cu durabilitate extinsă.</div>
+            </div>
+            <div className="bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm font-bold border border-green-500/20">
+              -{results.savingsPct}% Costuri
+            </div>
+          </div>
+
+          <details className="mt-6 mb-8 group">
+            <summary className="text-xs text-neutral-400 cursor-pointer py-2 hover:text-white transition-colors outline-none font-medium flex items-center gap-2">
+              ℹ️ Cum am calculat aceste cifre?
+            </summary>
+            <div className="text-xs text-neutral-500 mt-2 p-4 bg-white/5 rounded-md leading-relaxed">
+              <strong className="text-neutral-300">Costuri ascunse:</strong> Logistică internă estimată la 15-28% din costul de achiziție, proporțional cu frecvența. 
+              Risipă din înlocuire prematură: 6-12%. Risc de non-conformitate: coeficient {results.industry.riskMultiplier}x specific industriei.
+              Scenariul optimizat presupune echipamente cu durabilitate mărită de cel puțin 2-3x și logistică redusă cu 60%.
+            </div>
+          </details>
+
+          <div className="flex gap-4 items-center">
+            <ButtonBack onClick={goBack}>← Modifică</ButtonBack>
+            <div className="flex-1"><ButtonPrimary onClick={goNext}>Vreau Ghidul de Optimizare →</ButtonPrimary></div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ STEP 5: LEAD CAPTURE ═══ */}
+      {step === 5 && (
+        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Ghidul Tău de Optimizare EIP</h2>
+            <p className="text-neutral-400 text-sm">
+              Primești un document personalizat cu pași concreți. Îl poți folosi direct sau îl dai unui asistent AI care te ghidează.
+            </p>
+          </div>
+
+          <div className="bg-yp-yellow/5 border border-yp-yellow/20 rounded-xl p-5 mb-8">
+            <div className="text-sm text-yp-yellow font-bold mb-3">Ce conține pachetul complet:</div>
+            <ul className="space-y-2 text-sm text-neutral-300">
+              <li className="flex gap-2"><span className="text-yp-yellow">✓</span> Analiza TCO PDF detaliată cu grafice</li>
+              <li className="flex gap-2"><span className="text-yp-yellow">✓</span> Checklist evaluare furnizori EIP</li>
+              <li className="flex gap-2"><span className="text-yp-yellow">✓</span> Template de negociere (ce să ceri)</li>
+              <li className="flex gap-2"><span className="text-yp-yellow">✓</span> Prompt structurat pentru ChatGPT/Claude</li>
+            </ul>
           </div>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <input 
-                  type="text" placeholder="Numele tău"
-                  value={formData.name} onChange={e => updateField('name', e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:border-yp-yellow text-sm"
-                />
-                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-              </div>
-              <div>
-                <input 
-                  type="text" placeholder="Compania"
-                  value={formData.company} onChange={e => updateField('company', e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:border-yp-yellow text-sm"
-                />
-                {errors.company && <p className="text-red-400 text-xs mt-1">{errors.company}</p>}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <input 
-                  type="email" placeholder="E-mail de business"
-                  value={formData.email} onChange={e => updateField('email', e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:border-yp-yellow text-sm"
-                />
-                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
-              </div>
-              <div>
-                <input 
-                  type="tel" placeholder="Telefon (Opțional)"
-                  value={formData.phone} onChange={e => updateField('phone', e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-md px-4 py-3 text-white focus:border-yp-yellow text-sm"
-                />
-              </div>
-            </div>
+            <input
+              type="text" placeholder="Numele tău"
+              value={lead.name} onChange={(e) => { setLead((p) => ({ ...p, name: e.target.value })); setErrors((p: any) => ({ ...p, name: false })); }}
+              className={`w-full bg-[#0a0a0a] border rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-yp-yellow transition-colors ${errors.name ? "border-red-500" : "border-white/10"}`}
+            />
+            <input
+              type="text" placeholder="Compania"
+              value={lead.company} onChange={(e) => { setLead((p) => ({ ...p, company: e.target.value })); setErrors((p: any) => ({ ...p, company: false })); }}
+              className={`w-full bg-[#0a0a0a] border rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-yp-yellow transition-colors ${errors.company ? "border-red-500" : "border-white/10"}`}
+            />
+            <input
+              type="email" placeholder="E-mail de business"
+              value={lead.email} onChange={(e) => { setLead((p) => ({ ...p, email: e.target.value })); setErrors((p: any) => ({ ...p, email: false })); }}
+              className={`w-full bg-[#0a0a0a] border rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-yp-yellow transition-colors ${errors.email ? "border-red-500" : "border-white/10"}`}
+            />
+            <input
+              type="tel" placeholder="Telefon (Opțional)"
+              value={lead.phone} onChange={(e) => setLead((p) => ({ ...p, phone: e.target.value }))}
+              className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-yp-yellow transition-colors"
+            />
           </div>
 
-          <div className="flex gap-4 mt-8">
-            <button onClick={() => setStep(2)} disabled={isSubmitting} className="px-6 py-3 rounded text-sm text-neutral-400 hover:bg-white/5">Înapoi</button>
-            <button 
-              onClick={handleSubmit} 
-              disabled={isSubmitting}
-              className="flex-1 bg-yp-yellow text-yp-black py-4 rounded font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all shadow-lg shadow-yp-yellow/20"
-            >
-              {isSubmitting ? 'Se generează auditul...' : 'Vezi Cifrele & Confirmă'}
-            </button>
+          <div className="text-[11px] text-neutral-500 mt-4 leading-relaxed text-center px-4">
+            Folosim datele exclusiv pentru generarea și trimiterea calculului. Fără spam.
+          </div>
+
+          <div className="flex gap-4 mt-6 items-center">
+            <ButtonBack onClick={goBack}>← Analiză</ButtonBack>
+            <div className="flex-1">
+              <ButtonPrimary onClick={handleSubmit} disabled={submitting}>
+                {submitting ? "Se generează..." : "Trimite-mi Ghidul Gratuit"}
+              </ButtonPrimary>
+            </div>
           </div>
         </div>
       )}
 
-      {/* --- STEP 4: INSTANT GRATIFICATION --- */}
-      {step === 4 && (
+      {/* ═══ STEP 6: CONFIRMARE ═══ */}
+      {step === 6 && (
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 text-center py-6">
-          <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-green-500/10 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl md:text-3xl font-medium text-white mb-4">Raportul este procesat!</h2>
-          <p className="text-neutral-400 mb-8 max-w-lg mx-auto">
-            Utilizarea echipamentelor Premium cu garanție extinsă reduce drastic costul pe zi de purtare și minimizează logistica repetitivă pe parcursul unui an de zile. Vei primi raportul complet pe email imediat.
+          
+          <h2 className="text-3xl font-bold text-white mb-2">Ghidul este pe drum!</h2>
+          <p className="text-neutral-400 text-sm mb-8">
+            Verifică inbox-ul ({lead.email}). Vei primi raportul complet în câteva minute.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div className="bg-[#050505] border border-white/5 p-6 rounded-md">
-              <div className="text-xs text-neutral-500 mb-1 uppercase tracking-widest font-mono">Cost Per Wear (Curent)</div>
-              <div className="text-2xl text-white font-serif">{results.cpwCurrent.toFixed(2)} RON/Zi</div>
-            </div>
-            <div className="bg-yp-yellow/10 border border-yp-yellow/20 p-6 rounded-md">
-              <div className="text-xs text-yp-yellow/80 mb-1 uppercase tracking-widest font-mono">CPW (Sistem Premium)</div>
-              <div className="text-2xl text-yp-yellow font-bold font-serif">{results.cpwYp.toFixed(2)} RON/Zi</div>
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl p-6 text-left mb-8 shadow-inner">
+            <div className="text-yp-yellow font-bold text-sm mb-3">💡 Cum să folosești ghidul cu AI:</div>
+            <div className="text-sm text-neutral-400 leading-relaxed space-y-2">
+              <p>1. Deschide ghidul PDF primit</p>
+              <p>2. Încarcă-l în ChatGPT sau Claude</p>
+              <p>3. Folosește comanda: <span className="text-neutral-300 italic">„Ghidează-mă pas cu pas prin reducerea CPW-ului pentru echipa mea conform acestui plan.”</span></p>
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-yp-black to-[#111] border border-white/10 p-8 rounded-lg shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-5">
-              <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>
-            </div>
-            
-            <h3 className="text-lg text-neutral-400 mb-2">Economia Generată pe 3 Ani</h3>
-            <div className="text-4xl md:text-5xl font-bold text-white mb-2">{formatMoney(results.savings3Years)}</div>
-            <p className="text-sm text-neutral-500 max-w-sm mx-auto mt-4 leading-relaxed">
-              *Având în vedere industria `{formData.industry}`, am identificat că poți evita pierderi colaterale de până la <span className="text-white font-medium">{formatMoney(results.assumedRiskLoss)}</span> anual prin utilizarea de echipamente durabile.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">
+            <MetricCard label="Economie potențială / an" value={fmt(results.savings1y)} highlight small />
+            <MetricCard label="Economie pe 3 ani" value={fmt(results.savings3y)} highlight small />
           </div>
 
-          <a href="/produse" className="inline-block mt-8 text-yp-yellow hover:text-white transition-colors underline underline-offset-4 text-sm font-medium">
-            Explorează Catalogul Până Sosește Raportul
+          <a href="/produse" className="inline-block text-yp-yellow hover:text-white transition-colors underline underline-offset-4 font-medium text-sm">
+            Explorează magazinul până ajunge emailul →
           </a>
         </div>
       )}
-
     </div>
   );
 }
