@@ -1,4 +1,4 @@
-import { createDirectus, rest, readItems, readItem } from '@directus/sdk';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 function transformDriveUrl(url: string | null): string | null {
     if (!url) return null;
