@@ -101,13 +101,37 @@ Format task:
 - Dependencies: none.
 - Next action: pași manuali Cloudflare custom domain + Google Search Console (vezi `04-SESSION_HANDOFF`).
 
+### SEO-002
+- Status: `DONE`
+- Owner: `Claude`
+- Scope: Audit SEO/GEO — fix title duplicat, `og:type`/`og:image`+Twitter, `LocalBusiness` corect (`src/lib/site.ts`), `Product`+`BreadcrumbList` JSON-LD pe produse, mențiuni GEO homepage, pagini noi `/echipamente-protectie-satu-mare` + `/industrii/*`.
+- Acceptance: build PASS (14 pagini); 0 title-dup; og:image absolut; Product/Breadcrumb prezente; pagini noi în sitemap și live.
+- Dependencies: SEO-001.
+- Next action: handoff CMS/Cloudflare/GBP (vezi `04-SESSION_HANDOFF`) + GSC Request Indexing.
+
 ### UX-001
 - Status: `TODO`
 - Owner: `-`
-- Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer.
+- Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer. + social links footer + `sameAs` (cod pregătit în `src/lib/site.ts`, doar URL-uri lipsă).
 - Acceptance: CTA-urile navigaționale sunt `<a>`; paleta folosește tokeni `yp-*`; build PASS + verificare vizuală în browser.
 - Dependencies: none.
 - Next action: PR separat (necesită verificare vizuală, de aceea a fost amânat de la fix-ul SEO).
+
+### CMS-001
+- Status: `TODO`
+- Owner: `User` (Directus/Postgres — nu se poate din repo)
+- Scope: Corecții conținut produs: slug typo `pantof-protecie` -> `pantof-protectie` (+301); descrieri trunchiate; înlocuire imagini Unsplash/Drive cu poze reale; specs/mărimi/standarde EN pentru produsele demo.
+- Acceptance: produse cu slug corect, descriere completă, imagini reale.
+- Dependencies: none.
+- Next action: editare în Directus `website_products`.
+
+### OPS-004
+- Status: `TODO`
+- Owner: `User` (Cloudflare/Google — dashboard)
+- Scope: Redirect 301 `www -> non-www` (Cloudflare Redirect Rule); optimizare Google Business Profile (categorie/descriere/poze/Q&A); campanie recenzii Google.
+- Acceptance: `www.youprotect.ro` redirect 301 la apex; GBP optimizat pentru Maps Pack.
+- Dependencies: none.
+- Next action: Cloudflare Rules + GBP.
 
 ---
 
