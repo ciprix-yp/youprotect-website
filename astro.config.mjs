@@ -7,7 +7,10 @@ export default defineConfig({
   integrations: [
     tailwind(),
     react(),
-    sitemap()
+    sitemap({
+      // Nu lista paginile noindex (LP-uri) sau de confirmare în sitemap
+      filter: (page) => !page.includes('/lp/') && !page.includes('/confirmare'),
+    })
   ],
   output: 'static',
   site: 'https://youprotect.ro'
