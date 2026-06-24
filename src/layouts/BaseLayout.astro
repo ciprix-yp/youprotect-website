@@ -35,7 +35,7 @@ const bookingsUrl =
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400&family=Playfair+Display:ital@1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
     <!-- AOS CSS -->
@@ -93,8 +93,8 @@ const bookingsUrl =
         // Only init if AOS is defined
         if (typeof AOS !== "undefined") {
           AOS.init({
-            once: false, // whether animation should happen only once - while scrolling down
-            mirror: true, // whether elements should animate out while scrolling past them
+            once: true, // animăm o singură dată, la prima apariție (mai puțin „template-y")
+            mirror: false, // nu reluăm animația la scroll înapoi
             offset: 100, // offset (in px) from the original trigger point
             duration: 800, // values from 0 to 3000, with step 50ms
             easing: "ease-out-cubic", // default easing for AOS animations

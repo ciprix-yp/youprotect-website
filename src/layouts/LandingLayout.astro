@@ -30,7 +30,7 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400&family=Playfair+Display:ital@1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
     <!-- AOS CSS -->
@@ -68,8 +68,8 @@ const {
       const initAOS = () => {
         if (typeof AOS !== "undefined") {
           AOS.init({
-            once: false,
-            mirror: true,
+            once: true,
+            mirror: false,
             offset: 100,
             duration: 800,
             easing: "ease-out-cubic",
