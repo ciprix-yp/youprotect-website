@@ -108,3 +108,12 @@
   - **GEO + pagini noi**: mențiuni „Satu Mare/nord-vest" pe homepage (descriere/intro/FAQ + JSON-LD sincronizat); pagini noi `/echipamente-protectie-satu-mare`, `/industrii` + `constructii`/`logistica`/`productie` (InnerPageLayout, copy RO, BreadcrumbList); linkuri footer.
 - De ce: `B2BBusiness` nu e tip valid schema.org; product/breadcrumb schema = rich snippets; pagini GEO/industrie = long-tail unde concurența locală e absentă.
 - Impact: 14 pagini (de la 9), toate în sitemap, live prin auto-deploy. Excluse (decizie user): social/`sameAs` (doar WhatsApp) și schema de recenzii (politică Google self-reviews). Date produs (slug/descrieri/imagini) se corectează în Directus, NU în cod.
+
+## D-2026-06-24-04
+- Context: `www.youprotect.ro` dădea 404 și paginile vechi Wix (`/cine-suntem`, `/blog`, `/contact`) erau indexate dar moarte. Zona youprotect.ro e în contul Gmail (`251beb`), care NU are scope „Dynamic Redirect" (deci fără Redirect Rule clasică).
+- Decizie: redirect prin **două mecanisme** (single-hop pe ambele intrări):
+  - **Worker `www-redirect`** (rută `www.youprotect.ro/*`, zona youprotect.ro): 301 www->apex + mapping legacy.
+  - **`public/_redirects`** în Pages (apex): 301 pentru URL-urile vechi -> pagini noi.
+- Mapări: `/cine-suntem->/despre-noi`, `/despre->/despre-noi`, `/servicii->/cum-lucram`, `/contact->/programeaza-discutie`, `/blog(/*)->/`, `/magazin|/shop|/produsele-noastre->/produse`.
+- De ce: cont fără Dynamic Redirect; Worker route + _redirects acoperă www și apex fără WAF; single-hop e mai bun SEO decât lanț de redirecturi sau 404.
+- Impact: backlink-urile vechi nu mai cad în 404; autoritatea se consolidează pe apex. Verificat live. Cod fără referințe Wix/Shopify.
