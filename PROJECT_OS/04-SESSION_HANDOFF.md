@@ -2,8 +2,8 @@
 
 ## Ultimul update
 
-- Data: `2026-03-02`
-- Status global: Pivot structural către Directus pentru catalog (`WP-006_PLANNED`) / `WP-005_IN_PROGRESS`.
+- Data: `2026-06-24`
+- Status global: Fix SEO/domeniu canonic livrat (PR #1 merged în `main`). `WP-005_IN_PROGRESS` rămâne deschis.
 
 ## Ce este finalizat
 
@@ -90,6 +90,19 @@
 - S-a dezvoltat un instrument matematic complex în `TCOCalculator.tsx` (calculând *Basic TCO*, *Premium Benchmark ROI 3 Ani*, și *Cost Per Wear/zi* derivat direct din frecvențele de rotație).
 - Sistemul React este complet intergrat într-un webhook pregătit pentru n8n, care grupează datele și clasifică pain point-urile de HR și de Uzură.
 - S-a implementat și ajustat graficul vizual diferențial în CSS (`BarChart.tsx`), iar stilul este complet aliniat grilei principale ale site-ului (AOS animations, max-w-7xl, typography branding).
+
+## Rezolvat în sesiunea SEO / Domeniu canonic (Iun 2026)
+
+- Diagnosticat de ce Google indexa `youprotect-website.pages.dev` în loc de `youprotect.ro`: `site` din `astro.config.mjs` era setat pe pages.dev, iar canonical/og derivă din `site`.
+- `site` -> `https://youprotect.ro`; adăugat `@astrojs/sitemap` (pin `3.2.1` pentru Astro 4) cu filter pe `/lp/` + `/confirmare`; adăugat `public/robots.txt`; corectat `favicon.svg` -> `favicon.png` în JSON-LD. (vezi `D-2026-06-24-01`)
+- Aplicat fix-uri frontend din audit: fonturi cu weight-urile reale (fără Playfair), CTA-uri reparate (`/contact` mort -> `/programeaza-discutie` și `/cere-oferta`), AOS `once:true/mirror:false`, contrast microcopy, link Maps real. (vezi `D-2026-06-24-02`)
+- Quality gate: `npm run build` = PASS; canonical/og/sitemap verificate în `dist` (toate `youprotect.ro`).
+- Livrare: PR #1 squash-merged în `main` (Cloudflare auto-deploy din Git).
+
+### ⚠️ Pași manuali rămași (gate pentru propagarea în Google — nu se pot face din repo)
+
+1. **Cloudflare Pages -> proiect `youprotect-website` -> Custom domains**: atașează `youprotect.ro` (și `www`) și confirmă că dă **200**, nu 403. Cât timp e 403, Google nu indexează nimic.
+2. **Google Search Console**: adaugă proprietatea `youprotect.ro` -> trimite `sitemap-index.xml` -> *Request Indexing* pe paginile cheie. Opțional: redirect 301 pages.dev -> youprotect.ro.
 
 ## Checklist start sesiune viitoare
 

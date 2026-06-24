@@ -93,6 +93,22 @@ Format task:
 - Dependencies: OPS-001.
 - Next action: Toate sugestiile noi intră în `07-IDEA_INBOX.md` înainte de implementare.
 
+### SEO-001
+- Status: `DONE`
+- Owner: `Claude`
+- Scope: Fix domeniu canonic (`site` -> youprotect.ro) + sitemap + robots.txt + JSON-LD favicon.
+- Acceptance: canonical/og/sitemap arată spre youprotect.ro; build PASS.
+- Dependencies: none.
+- Next action: pași manuali Cloudflare custom domain + Google Search Console (vezi `04-SESSION_HANDOFF`).
+
+### UX-001
+- Status: `TODO`
+- Owner: `-`
+- Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer.
+- Acceptance: CTA-urile navigaționale sunt `<a>`; paleta folosește tokeni `yp-*`; build PASS + verificare vizuală în browser.
+- Dependencies: none.
+- Next action: PR separat (necesită verificare vizuală, de aceea a fost amânat de la fix-ul SEO).
+
 ---
 
 ## Next Sprint (S2)
