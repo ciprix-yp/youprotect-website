@@ -1,0 +1,13 @@
+# Redirect-uri 301 pentru URL-urile vechi (site Wix) -> pagini noi.
+# Cloudflare Pages aplică acest fișier pe domeniul apex (youprotect.ro).
+# Format: <from> <to> <status>
+
+/cine-suntem        /despre-noi            301
+/despre             /despre-noi            301
+/servicii           /cum-lucram            301
+/contact            /programeaza-discutie  301
+/blog               /                      301
+/blog/*             /                      301
+/magazin            /produse               301
+/shop               /produse               301
+/produsele-noastre  /produse               301
