@@ -126,12 +126,20 @@ Format task:
 - Next action: editare în Directus `website_products`.
 
 ### OPS-004
+- Status: `DONE`
+- Owner: `Claude`
+- Scope: Redirect 301 `www -> non-www` + maparea URL-urilor vechi (Wix) către paginile noi.
+- Implementare: contul de Gmail (`251beb`) NU are scope „Dynamic Redirect", deci NU s-a folosit o Redirect Rule clasică. În schimb: (1) Worker `www-redirect` cu rută `www.youprotect.ro/*` (zona youprotect.ro `34fc48…`) — 301 către apex cu mapping legacy single-hop; (2) `public/_redirects` în Pages — 301 pe apex pentru `/cine-suntem->/despre-noi`, `/blog->/`, `/contact->/programeaza-discutie`, `/servicii->/cum-lucram`, `/magazin|/shop->/produse`.
+- Acceptance: `www.*` -> 301 apex; URL-uri vechi -> pagini noi (nu 404). VERIFICAT live.
+- Note: codul site-ului nu are referințe Wix/Shopify (verificat prin grep).
+
+### OPS-005
 - Status: `TODO`
-- Owner: `User` (Cloudflare/Google — dashboard)
-- Scope: Redirect 301 `www -> non-www` (Cloudflare Redirect Rule); optimizare Google Business Profile (categorie/descriere/poze/Q&A); campanie recenzii Google.
-- Acceptance: `www.youprotect.ro` redirect 301 la apex; GBP optimizat pentru Maps Pack.
+- Owner: `User` (Google — dashboard)
+- Scope: Optimizare Google Business Profile (categorie primară, descriere cu „echipamente de protecție" + „Satu Mare", poze, Q&A, postări); campanie recenzii Google prin WhatsApp.
+- Acceptance: GBP optimizat pentru Maps Pack; recenzii noi.
 - Dependencies: none.
-- Next action: Cloudflare Rules + GBP.
+- Next action: GBP dashboard + secvență WhatsApp.
 
 ---
 
