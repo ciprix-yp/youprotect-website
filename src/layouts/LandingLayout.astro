@@ -1,17 +1,24 @@
 ---
+import { SITE } from "../lib/site";
 import "../styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  ogType?: string;
+  ogImage?: string;
 }
 
 const {
   title,
   description = "Echipamente de protecție și uniforme personalizate pentru companii.",
   noindex = true, // By default landing pages are hidden from SEO
+  ogType = "website",
+  ogImage = SITE.defaultOgImage,
 } = Astro.props;
+
+const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
 ---
 
 <!doctype html>
@@ -39,9 +46,16 @@ const {
     <!-- SEO & OG Tags -->
     <meta property="og:title" content={`${title} | You Protect`} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:image" content={ogImageUrl} />
     <link rel="canonical" href={Astro.url.href} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | You Protect`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
   </head>
   <body class="bg-yp-black text-yp-white font-body min-h-screen flex flex-col">
     <header class="py-6 px-4 md:px-8 bg-yp-black border-b border-white/5 flex justify-center">
