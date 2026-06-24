@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^5.1.2",
     "@directus/sdk": "^21.1.0",
     "aos": "^2.3.4",
