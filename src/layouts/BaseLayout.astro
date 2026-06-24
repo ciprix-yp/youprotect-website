@@ -1,17 +1,25 @@
 ---
 import Header from "../components/global/Header.astro";
 import Footer from "../components/global/Footer.astro";
+import { SITE, sameAs } from "../lib/site";
 import "../styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
+  ogType?: string;
+  ogImage?: string;
 }
 
 const {
   title,
   description = "Echipamente de protecție și uniforme personalizate pentru companii.",
+  ogType = "website",
+  ogImage = SITE.defaultOgImage,
 } = Astro.props;
+
+// OG/Twitter cer URL-uri absolute. `new URL` ignoră baza dacă input-ul e deja absolut.
+const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
 const defaultBookingsUrl =
   "https://outlook.office.com/book/Booking@youprotect.ro/?ismsaljsauthenabled";
 const bookingsUrl =
@@ -44,36 +52,55 @@ const bookingsUrl =
     <!-- SEO & OG Tags -->
     <meta property="og:title" content={`${title} | You Protect`} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:image" content={ogImageUrl} />
     <link rel="canonical" href={Astro.url.href} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | You Protect`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- JSON-LD LocalBusiness Schema -->
     <script
       type="application/ld+json"
       set:html={JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "B2BBusiness",
-        name: "You Protect",
-        image: "https://youprotect.ro/favicon.png",
+        "@type": "LocalBusiness",
+        "@id": `${SITE.url}/#localbusiness`,
+        name: SITE.name,
+        image: new URL(SITE.defaultOgImage, SITE.url).href,
         description:
           "Furnizor premium de echipamente de protecție (SSM) și haine de lucru personalizate pentru companii din România.",
-        url: "https://youprotect.ro",
-        telephone: "+40742226127",
-        email: "office@youprotect.ro",
+        url: SITE.url,
+        telephone: SITE.telephone,
+        email: SITE.email,
         address: {
           "@type": "PostalAddress",
-          streetAddress: "Strada Careiului nr 11",
-          addressLocality: "Vetiș",
-          addressRegion: "Satu Mare",
-          addressCountry: "RO",
+          streetAddress: SITE.address.streetAddress,
+          addressLocality: SITE.address.addressLocality,
+          addressRegion: SITE.address.addressRegion,
+          postalCode: SITE.address.postalCode,
+          addressCountry: SITE.address.addressCountry,
         },
         geo: {
           "@type": "GeoCoordinates",
-          latitude: 47.7602,
-          longitude: 22.8447,
+          latitude: SITE.geo.latitude,
+          longitude: SITE.geo.longitude,
         },
+        areaServed: SITE.areaServed,
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: SITE.openingHours.days,
+            opens: SITE.openingHours.opens,
+            closes: SITE.openingHours.closes,
+          },
+        ],
         priceRange: "$$",
+        ...(sameAs.length ? { sameAs } : {}),
       })}
     />
   </head>
