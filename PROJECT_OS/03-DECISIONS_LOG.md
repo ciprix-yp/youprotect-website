@@ -99,3 +99,12 @@
 - Decizie: Încărcăm weight-urile reale (`Montserrat 300-700`, `Lato 300/400/700`) și scoatem Playfair; reparăm CTA-urile (`/programeaza-discutie`, `/cere-oferta`); AOS `once:true/mirror:false`; bump `neutral-500 -> neutral-400` pe microcopy; link Maps real în footer.
 - De ce: ierarhia tipografică premium nu se randa (browserul falsifica weight-urile); `/contact` era rută moartă.
 - Impact: UI corect randat + zero linkuri rupte. Amânat: conversia `<button onclick=location>` -> `<a href>` (~18 instanțe) și consolidarea tokenilor de culoare (vezi BACKLOG UX-001).
+
+## D-2026-06-24-03
+- Context: Audit SEO/GEO. Verificarea codului real a infirmat parțial auditul (LocalBusiness, FAQPage și sitemap existau deja), dar a confirmat: title duplicat, `og:type` hardcodat "website", lipsă `og:image`, lipsă Product/BreadcrumbList schema, breadcrumb cu slug brut, zero semnal GEO în body/headings.
+- Decizie: 3 PR-uri (toate code-fixable din repo):
+  - **Head plumbing**: scos `| You Protect` din titluri (layout-ul adaugă suffix o dată); `ogType`/`ogImage` ca props pe BaseLayout/InnerPageLayout/LandingLayout; `og:image` absolut + Twitter card; `@type B2BBusiness` -> `LocalBusiness` (+`@id`/`openingHours`/`areaServed`); nou `src/lib/site.ts` (NAP/areaServed/social, `sameAs` gated).
+  - **Date produs**: `Product` + `BreadcrumbList` JSON-LD în `produse/[slug].astro` (fără `offers` — preț la cerere); breadcrumb afișează `product.name`.
+  - **GEO + pagini noi**: mențiuni „Satu Mare/nord-vest" pe homepage (descriere/intro/FAQ + JSON-LD sincronizat); pagini noi `/echipamente-protectie-satu-mare`, `/industrii` + `constructii`/`logistica`/`productie` (InnerPageLayout, copy RO, BreadcrumbList); linkuri footer.
+- De ce: `B2BBusiness` nu e tip valid schema.org; product/breadcrumb schema = rich snippets; pagini GEO/industrie = long-tail unde concurența locală e absentă.
+- Impact: 14 pagini (de la 9), toate în sitemap, live prin auto-deploy. Excluse (decizie user): social/`sameAs` (doar WhatsApp) și schema de recenzii (politică Google self-reviews). Date produs (slug/descrieri/imagini) se corectează în Directus, NU în cod.

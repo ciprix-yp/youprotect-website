@@ -3,7 +3,7 @@
 ## Ultimul update
 
 - Data: `2026-06-24`
-- Status global: Fix SEO/domeniu canonic livrat (PR #1 merged în `main`). `WP-005_IN_PROGRESS` rămâne deschis.
+- Status global: SEO/domeniu canonic + audit SEO/GEO livrate (4 PR-uri merged, live). Git→Cloudflare auto-deploy confirmat funcțional. `WP-005_IN_PROGRESS` rămâne deschis.
 
 ## Ce este finalizat
 
@@ -103,6 +103,22 @@
 
 1. **Cloudflare Pages -> proiect `youprotect-website` -> Custom domains**: atașează `youprotect.ro` (și `www`) și confirmă că dă **200**, nu 403. Cât timp e 403, Google nu indexează nimic.
 2. **Google Search Console**: adaugă proprietatea `youprotect.ro` -> trimite `sitemap-index.xml` -> *Request Indexing* pe paginile cheie. Opțional: redirect 301 pages.dev -> youprotect.ro.
+
+## Rezolvat în sesiunea SEO/GEO — structured data + pagini (Iun 2026)
+
+- Confirmat că **Git→Cloudflare auto-deploy funcționează** (push pe `main` declanșează build). Fallback manual: `wrangler pages deploy dist --project-name=youprotect-website --branch=main`.
+- 3 PR-uri code-fixable (vezi `D-2026-06-24-03`), toate live:
+  - Head plumbing: title dedup, `og:type`/`og:image`+Twitter, `LocalBusiness` corect, nou `src/lib/site.ts`.
+  - `Product` + `BreadcrumbList` JSON-LD pe produse; breadcrumb cu nume real.
+  - GEO pe homepage + 5 pagini noi (`/echipamente-protectie-satu-mare`, `/industrii` + 3 industrii). 14 pagini total în sitemap.
+- `npm run build` = PASS la fiecare PR; verificat în `dist` (0 title-dup, og:image absolut, 0 B2BBusiness, Product/Breadcrumb prezente).
+
+### De făcut (handoff — NU se poate din cod)
+1. **CMS (Directus/Postgres):** slug typo `pantof-protecie` -> `pantof-protectie` (+301); descrieri trunchiate; imagini Unsplash/Drive -> poze reale; specs/standarde EN pentru produsele demo.
+2. **Cloudflare:** Redirect Rule 301 `www.youprotect.ro/*` -> `https://youprotect.ro/$1`.
+3. **Google Business Profile:** categorie + descriere (Satu Mare) + poze + Q&A; campanie recenzii prin WhatsApp.
+4. **GSC:** Request Indexing pe paginile noi.
+5. **Cod amânat (UX-001):** `<button onclick>` -> `<a href>`; tokeni culoare; social links + `sameAs` când există URL-uri.
 
 ## Checklist start sesiune viitoare
 
