@@ -87,3 +87,15 @@
 - Decizie: Implementarea unui Landing Page "ascuns" la ruta `/lp/tco-calculator` cu meta eticheta `noindex`, plus o componentă React care calculează 3-Year ROI și CPW și le trimite prin webhook către n8n (`TCOCalculator.tsx`).
 - De ce: Paginile lead gen funcționează cel mai bine fără Header/Footer și vizibilitate generală care induce distrageri.
 - Impact: Un flux vizual independent dar aliniat CSS-ului nativ care scurge date brute automat către prospectare.
+
+## D-2026-06-24-01
+- Context: Google indexa `youprotect-website.pages.dev` în loc de `youprotect.ro` (canonical/og/sitemap derivau din domeniul pages.dev).
+- Decizie: `site` în `astro.config.mjs` = `https://youprotect.ro`. Adăugat `@astrojs/sitemap` (fixat la `3.2.1` pentru Astro 4) cu `filter` pe `/lp/` (noindex) și `/confirmare`, plus `public/robots.txt`. Corectat `image` din JSON-LD (`favicon.svg` -> `favicon.png`).
+- De ce: la build static, `<link rel=canonical>` și `og:url` (din `BaseLayout.astro`) derivă din `site`; versiunile `@astrojs/sitemap` 3.3+ cer `routes` din hook-ul `astro:build:done`, disponibil abia în Astro 5.
+- Impact: toate semnalele SEO arată unitar spre `youprotect.ro`. Rămân 2 pași manuali (în afara repo): atașarea `youprotect.ro` ca custom domain în Cloudflare Pages (200, nu 403) + submit sitemap în Google Search Console.
+
+## D-2026-06-24-02
+- Context: Audit frontend a găsit fonturi încărcate greșit (doar 400/700, dar UI folosește 300/500/600), Playfair nefolosit, CTA-uri spre `/contact` inexistent și microcopy sub contrast AA.
+- Decizie: Încărcăm weight-urile reale (`Montserrat 300-700`, `Lato 300/400/700`) și scoatem Playfair; reparăm CTA-urile (`/programeaza-discutie`, `/cere-oferta`); AOS `once:true/mirror:false`; bump `neutral-500 -> neutral-400` pe microcopy; link Maps real în footer.
+- De ce: ierarhia tipografică premium nu se randa (browserul falsifica weight-urile); `/contact` era rută moartă.
+- Impact: UI corect randat + zero linkuri rupte. Amânat: conversia `<button onclick=location>` -> `<a href>` (~18 instanțe) și consolidarea tokenilor de culoare (vezi BACKLOG UX-001).
