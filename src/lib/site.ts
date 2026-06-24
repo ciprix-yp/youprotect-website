@@ -9,13 +9,13 @@ export const SITE = {
   telephone: "+40742226127",
   email: "office@youprotect.ro",
   address: {
-    streetAddress: "Strada Careiului nr 11",
+    streetAddress: "Strada Careiului nr. 45, Parc Industrial Areli",
     addressLocality: "Vetiș",
     addressRegion: "Satu Mare",
     postalCode: "447355",
     addressCountry: "RO",
   },
-  geo: { latitude: 47.7602, longitude: 22.8447 },
+  geo: { latitude: 47.7848561, longitude: 22.8030222 },
   // Zonele deservite — semnal GEO pentru local search.
   areaServed: ["Satu Mare", "Regiunea Nord-Vest", "România"],
   // Program (din Footer): L-V 09:00-17:00, weekend închis.
