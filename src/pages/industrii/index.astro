@@ -1,0 +1,67 @@
+---
+import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
+
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Acasă", item: siteOrigin.href },
+    { "@type": "ListItem", position: 2, name: "Industrii", item: Astro.url.href },
+  ],
+};
+
+const industries = [
+  {
+    href: "/industrii/constructii",
+    name: "Construcții",
+    desc: "Bocanci S3, căști, hi-vis și protecție pentru șantier — rezistente la condiții dificile.",
+  },
+  {
+    href: "/industrii/logistica",
+    name: "Logistică & depozite",
+    desc: "Încălțăminte confortabilă pentru ture lungi, hi-vis pentru trafic intern și mănuși pentru manipulare.",
+  },
+  {
+    href: "/industrii/productie",
+    name: "Producție & industrie",
+    desc: "Salopete rezistente, protecția auzului și a ochilor, echipament potrivit liniei de producție.",
+  },
+];
+---
+
+<InnerPageLayout
+  title="Echipamente de protecție pe industrii"
+  description="Echipamente de protecție și haine de lucru selectate pe industrie: construcții, logistică și producție. You Protect recomandă soluții potrivite activității reale, cu livrare în toată România."
+  heroTitle="Soluții pe industria ta"
+  heroSubtitle="Fiecare activitate are riscuri și cerințe diferite. Am grupat recomandările pe industrii ca să ajungi mai repede la echipamentele de protecție și hainele de lucru potrivite echipei tale."
+  breadcrumb="Industrii"
+  heroImage="/hero-youprotect-highvis.jpg"
+  ctaHeading="Nu ești sigur ce se potrivește?"
+  ctaSubheading="Spune-ne activitatea echipei tale și îți recomandăm setul potrivit."
+  ctaButtonText="Programează o discuție"
+  ctaSecondaryButtonText="Vezi catalogul"
+  ctaSecondaryButtonLink="/produse"
+  ctaMicrocopy="Consultanță gratuită, fără obligații."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <section class="py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-3 gap-8">
+        {industries.map((ind, i) => (
+          <a
+            href={ind.href}
+            class="group border border-white/10 rounded-[4px] p-8 bg-white/5 hover:border-yp-yellow/40 hover:bg-white/10 transition-all"
+            data-aos="fade-up"
+            data-aos-delay={100 * (i + 1)}
+          >
+            <h2 class="text-2xl font-medium text-white mb-3 group-hover:text-yp-yellow transition-colors">{ind.name}</h2>
+            <p class="text-neutral-400 font-light mb-6">{ind.desc}</p>
+            <span class="text-yp-yellow font-medium">Vezi soluțiile →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</InnerPageLayout>

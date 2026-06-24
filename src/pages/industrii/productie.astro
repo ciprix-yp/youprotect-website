@@ -1,0 +1,60 @@
+---
+import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
+
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Acasă", item: siteOrigin.href },
+    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii", siteOrigin).href },
+    { "@type": "ListItem", position: 3, name: "Producție", item: Astro.url.href },
+  ],
+};
+---
+
+<InnerPageLayout
+  title="Echipamente de protecție pentru producție și industrie"
+  description="Echipamente de protecție și haine de lucru pentru producție și industrie: salopete rezistente, protecția auzului și a ochilor, mănuși tehnice. You Protect livrează în toată România."
+  heroTitle="Echipare pentru producție"
+  heroSubtitle="Pe linia de producție, echipamentul trebuie să reziste la uzură, să protejeze constant și să nu încetinească ritmul. Selectăm soluții potrivite mediului tău industrial, de la cap până la încălțăminte."
+  breadcrumb="Producție"
+  heroImage="/hero-youprotect-highvis.jpg"
+  ctaHeading="Echipezi o echipă de producție?"
+  ctaSubheading="Îți recomandăm echipamentul potrivit liniei și riscurilor tale."
+  ctaButtonText="Programează o discuție"
+  ctaSecondaryButtonText="Vezi catalogul"
+  ctaSecondaryButtonLink="/produse"
+  ctaMicrocopy="Consultanță gratuită, fără obligații."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <section class="py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row gap-16 md:gap-24">
+        <div class="md:w-1/3 shrink-0">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32" data-aos="fade-up">
+            Rezistență <br /><span class="font-semibold text-yp-yellow">la uzură.</span>
+          </h2>
+        </div>
+        <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 font-light leading-relaxed">
+          <p data-aos="fade-up" data-aos-delay="100">
+            În producție, echipamentul e supus zilnic frecării, prafului, zgomotului și manipulării. Alegerea corectă reduce costul real pe termen lung și ține echipa protejată constant, nu doar la început.
+          </p>
+          <ul class="space-y-3 text-neutral-300" data-aos="fade-up" data-aos-delay="150">
+            <li>• Salopete și haine de lucru rezistente la uzură</li>
+            <li>• Protecția auzului (antifoane) și a ochilor</li>
+            <li>• Mănuși tehnice pentru manipulare și impact</li>
+            <li>• Încălțăminte de protecție pentru mediu industrial</li>
+            <li>• Personalizare cu identitatea companiei</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12" data-aos="fade-up">
+        <a href="/produse" class="inline-flex items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
+          Vezi catalogul complet →
+        </a>
+      </div>
+    </div>
+  </section>
+</InnerPageLayout>
