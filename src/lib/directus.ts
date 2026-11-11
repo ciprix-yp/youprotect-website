@@ -109,7 +109,7 @@ export async function getDirectusProductBySlug(slug: string) {
         }
         return null;
     } catch (error) {
-        console.error(`Error fetching product by slug ${slug} from Directus:`, error);
+        console.error('Error fetching product by slug from Directus:', slug, error);
         return null;
     }
 }
