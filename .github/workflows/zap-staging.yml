@@ -1,0 +1,52 @@
+# Shift-left Stage 4 — staging gate (DAST with OWASP ZAP).
+# Set the repository variable STAGING_URL. Only scan hosts you own — never prod.
+#
+# baseline: passive scan (spider + read-only checks). Safe; runs nightly, on demand,
+#           and after a "deploy-staging" workflow if the project has one.
+# full:     active scan — sends attack payloads, submits forms, writes data and can
+#           trigger paid APIs (AI, email) on staging. Manual only: Actions → zap-staging
+#           → Run workflow → scan: full.
+name: zap-staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      scan:
+        description: "baseline (passive) or full (active, writes data on staging)"
+        type: choice
+        options: [baseline, full]
+        default: baseline
+  # Projects that deploy staging from GitHub Actions: scan right after the deploy.
+  # Projects that deploy from a laptop: the nightly run covers them.
+  workflow_run:
+    workflows: ["deploy-staging"]
+    types: [completed]
+  schedule:
+    - cron: "41 2 * * *" # nightly baseline
+
+permissions:
+  contents: read
+  issues: write # ZAP opens/updates an issue with the report
+
+jobs:
+  baseline:
+    if: github.event_name != 'workflow_dispatch' || inputs.scan == 'baseline'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with:
+          target: ${{ vars.STAGING_URL }}
+          rules_file_name: .zap/rules.tsv # tune false positives here
+          fail_action: true
+
+  full:
+    if: github.event_name == 'workflow_dispatch' && inputs.scan == 'full'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
+        with:
+          target: ${{ vars.STAGING_URL }}
+          rules_file_name: .zap/rules.tsv
+          fail_action: false

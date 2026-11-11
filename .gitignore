@@ -137,3 +137,24 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Catalog pipeline: raw supplier extracts (local only, never commit supplier bulk data or prices)
+.catalog-work/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# shift-left:begin — never commit secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+credentials.json
+service-account*.json
+# shift-left:end

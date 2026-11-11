@@ -1,0 +1,79 @@
+# Shift-left house rules — run next to the Semgrep registry rules, in the commit hook,
+# in CI and in the VS Code extension. When a bug slips through to staging/prod, add
+# the rule that would have caught it here, with test cases in .semgrep/shift-left.js.
+# Test: semgrep --test --config .semgrep/shift-left.yml .semgrep/shift-left.js
+rules:
+  - id: sql-injection-from-request
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: >-
+      User input from the request reaches a SQL query string (SQL injection).
+      Use a parameterized query: db.query("... WHERE id = $1", [id]).
+    metadata:
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A03:2021 - Injection"
+    mode: taint
+    pattern-sources:
+      # Express / Fastify
+      - pattern: $REQ.query
+      - pattern: $REQ.params
+      - pattern: $REQ.body
+      - pattern: $REQ.cookies
+      - pattern: $REQ.headers
+      # Hono
+      - pattern: $C.req.param(...)
+      - pattern: $C.req.query(...)
+      - pattern: $C.req.queries(...)
+      - pattern: $C.req.header(...)
+      - pattern: $C.req.json()
+      - pattern: $C.req.text()
+      - pattern: $C.req.parseBody(...)
+      - pattern: $C.req.formData()
+    pattern-sinks:
+      - patterns:
+          - pattern-inside: $DB.$METHOD($SQL, ...)
+          - metavariable-regex:
+              metavariable: $METHOD
+              regex: ^(query|execute|raw|unsafe|\$queryRawUnsafe|\$executeRawUnsafe)$
+          # Hono's c.req.query() reads input; it is not a database call.
+          - metavariable-regex:
+              metavariable: $DB
+              regex: ^(?!(.*\.)?req$)
+          - focus-metavariable: $SQL
+    pattern-sanitizers:
+      - pattern: parseInt(...)
+      - pattern: Number(...)
+      - pattern: Number.parseInt(...)
+
+  - id: command-injection-from-request
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: >-
+      User input from the request reaches a shell command (command injection).
+      Use execFile/spawn with an argument array and no shell.
+    metadata:
+      cwe: "CWE-78: OS Command Injection"
+    mode: taint
+    pattern-sources:
+      # Same request sources as sql-injection-from-request.
+      - pattern: $REQ.query
+      - pattern: $REQ.params
+      - pattern: $REQ.body
+      - pattern: $REQ.cookies
+      - pattern: $REQ.headers
+      - pattern: $C.req.param(...)
+      - pattern: $C.req.query(...)
+      - pattern: $C.req.queries(...)
+      - pattern: $C.req.header(...)
+      - pattern: $C.req.json()
+      - pattern: $C.req.text()
+      - pattern: $C.req.parseBody(...)
+      - pattern: $C.req.formData()
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern-inside: $CP.exec($CMD, ...)
+              - pattern-inside: $CP.execSync($CMD, ...)
+              - pattern-inside: exec($CMD, ...)
+              - pattern-inside: execSync($CMD, ...)
+          - focus-metavariable: $CMD

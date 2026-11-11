@@ -1,0 +1,76 @@
+# Shift-left Stage 3 — CI gate.
+# Set the CodeQL languages below. Make the jobs required checks in branch protection.
+# Actions are pinned to commit SHAs (supply-chain safety); Dependabot keeps them current.
+name: security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1" # weekly, catches newly published CVEs
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read # gitleaks-action lists the PR's commits (403 without it)
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  semgrep:
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - run: semgrep scan --config p/default --config p/owasp-top-ten --config .semgrep/ --exclude .semgrep --error
+
+  # CodeQL and dependency review need GitHub Advanced Security on private repos.
+  # Public repos run them always; private repos when the variable GHAS_ENABLED=true.
+  # Without GHAS, Semgrep (SAST) and osv-scanner (dependencies) remain the gates.
+  codeql:
+    if: ${{ !github.event.repository.private || vars.GHAS_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read # required by CodeQL on private repos
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # javascript-typescript, python, java-kotlin, go, csharp, ruby, c-cpp, swift, actions
+        language: [javascript-typescript, python, actions]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+      - uses: github/codeql-action/autobuild@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+      - uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Dependency review (PRs)
+        if: ${{ github.event_name == 'pull_request' && (!github.event.repository.private || vars.GHAS_ENABLED == 'true') }}
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: high
+      - name: OSV scan (all lockfiles)
+        uses: google/osv-scanner-action/osv-scanner-action@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+        with:
+          scan-args: |-
+            --recursive
+            ./
