@@ -132,9 +132,17 @@
               "swatch": {
                 "anyOf": [
                   {
-                    "type": "string",
-                    "format": "uri",
-                    "pattern": "^https\\:\\/\\/"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^\\/images\\/products\\/[a-z0-9-]+\\/[A-Za-z0-9_-]+\\.webp$"
+                      },
+                      {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^https\\:\\/\\/"
+                      }
+                    ]
                   },
                   {
                     "type": "null"
@@ -144,9 +152,33 @@
               "images": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                  "type": "object",
+                  "properties": {
+                    "src": {
+                      "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                    },
+                    "thumb": {
+                      "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                    },
+                    "view": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "src",
+                    "thumb",
+                    "view"
+                  ],
+                  "additionalProperties": false
                 },
                 "minItems": 1
+              },
+              "spin": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                },
+                "default": []
               }
             },
             "required": [
@@ -284,7 +316,7 @@
                 "type": "string"
               },
               "url": {
-                "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0/anyOf/1"
               },
               "language": {
                 "type": "string"
@@ -366,7 +398,7 @@
             "productUrl": {
               "anyOf": [
                 {
-                  "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                  "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0/anyOf/1"
                 },
                 {
                   "type": "null"

@@ -2,6 +2,9 @@
 
 Usage:
   python -I scripts/catalog/assemble_mascot.py <source_dir> <texts_dir> <maps.json> <out_dir> [--no-network]
+         [--public-dir public/images/products]
+
+- Images: self-hosted files from fetch_images_mascot.py are used when present; otherwise the feed CDN.
 
 - <source_dir>: JSON files produced by extract_mascot.py (one per model, local only).
 - <texts_dir>:  catalog/texts/mascot/<model>.json, Romanian copy written and reviewed by people.
@@ -135,27 +138,48 @@ def sizes(source, text):
     return {"summary": summary, "values": values, "table": table, "note": text.get("sizeNote")}
 
 
-def colours(source, text, maps, network):
+# Same view names as fetch_images_mascot.py (gallery order: pack shot first, then around the product).
+GALLERY_VIEWS = ["PS", "P01", "P04", "P07", "P13", "P19"]
+SPIN_VIEWS = [f"P{i:02d}" for i in range(1, 25)]
+PUBLIC_PREFIX = "/images/products"
+
+
+def local_media(public_dir, slug, colour):
+    """Self-hosted images produced by fetch_images_mascot.py, if present."""
+    folder = public_dir / slug
+    web = f"{PUBLIC_PREFIX}/{slug}"
+    gallery = [{"src": f"{web}/{colour}-{v}.webp", "thumb": f"{web}/{colour}-{v}-thumb.webp", "view": v}
+               for v in GALLERY_VIEWS if (folder / f"{colour}-{v}.webp").exists()]
+    spin = [f"{web}/{colour}-spin-{v}.webp" for v in SPIN_VIEWS if (folder / f"{colour}-spin-{v}.webp").exists()]
+    swatch = f"{web}/{colour}-swatch.webp" if (folder / f"{colour}-swatch.webp").exists() else None
+    return gallery, spin, swatch
+
+
+def feed_media(c, is_primary, network):
+    """Fallback before images are fetched: hotlink the feed CDN (1000 px)."""
+    feed_images = c["images_1000"]
+    candidates = list(feed_images)
+    if is_primary and feed_images:
+        for view in ("P01", "P02", "P03", "P04", "P05", "P06"):
+            candidates.append(re.sub(r"_(P\d\d|PS)_1000pxweb", f"_{view}_1000pxweb", feed_images[0]))
+    images = []
+    for url in dict.fromkeys(candidates):
+        if url in feed_images or url_exists(url, network):
+            images.append({"src": url, "thumb": url, "view": "feed"})
+    return images, [], c["swatch"]
+
+
+def colours(source, text, maps, network, public_dir):
     ordered = [c for c in source["colours"] if c["ordered"]] or source["colours"][:1]
     primary = text.get("primaryColour") or ordered[0]["number"]
     ordered.sort(key=lambda c: c["number"] != primary)
     out = []
     for i, c in enumerate(ordered):
-        feed_images = c["images_1000"]
-        candidates = list(feed_images)
-        if i == 0 and feed_images:
-            base = feed_images[0]
-            for view in ("P01", "P02", "P03", "P04", "P05", "P06"):
-                candidates.append(re.sub(r"_(P\d\d|PS)_1000pxweb", f"_{view}_1000pxweb", base))
-        seen, images = set(), []
-        for url in candidates:
-            if url in seen:
-                continue
-            seen.add(url)
-            if url in feed_images or url_exists(url, network):
-                images.append(url)
+        images, spin, swatch = local_media(public_dir, text["slug"], c["number"])
+        if not images:
+            images, spin, swatch = feed_media(c, i == 0, network)
         out.append({"code": c["number"], "name": tr(maps["colours"], c["name"], "culoare"),
-                    "swatch": c["swatch"], "images": images})
+                    "swatch": swatch, "images": images, "spin": spin})
     other = len(source["colours"]) - len(ordered)
     return out, other
 
@@ -220,11 +244,11 @@ def documents(source, colour_list, model_quality):
     return docs
 
 
-def assemble(source, text, maps, network):
+def assemble(source, text, maps, network, public_dir):
     fields = source["fields"]
     quality = source["qualities"][0] if source["qualities"] else ""
     model_quality = f"{source['model']}-{quality}" if quality else source["model"]
-    colour_list, other_colours = colours(source, text, maps, network)
+    colour_list, other_colours = colours(source, text, maps, network, public_dir)
 
     specs = []
     mat = material(fields, maps)
@@ -286,6 +310,11 @@ def assemble(source, text, maps, network):
 def main(argv):
     network = "--no-network" not in argv
     argv = [a for a in argv if a != "--no-network"]
+    public_dir = Path("public/images/products")
+    if "--public-dir" in argv:
+        i = argv.index("--public-dir")
+        public_dir = Path(argv[i + 1])
+        argv = argv[:i] + argv[i + 2:]
     source_dir, texts_dir, maps_path, out_dir = map(Path, argv[:4])
     maps = json.loads(maps_path.read_text(encoding="utf-8"))
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -308,7 +337,7 @@ def main(argv):
             failed = True
             continue
         try:
-            entry = assemble(json.loads(source_path.read_text(encoding="utf-8")), text, maps, network)
+            entry = assemble(json.loads(source_path.read_text(encoding="utf-8")), text, maps, network, public_dir)
         except MissingTranslation as exc:
             print(f"!! {text['model']}: {exc}", file=sys.stderr)
             failed = True

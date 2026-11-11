@@ -148,15 +148,16 @@ Format task:
 - Scope: Pilot catalog din fișiere de date: 5 produse MASCOT (19035, 51587, 20254, 20739, F0114), flux extract → texte RO → asamblare, ghid de conținut + verificare automată, previzualizare `/preview/produse/` (noindex).
 - Acceptance: format aprobat de user (11.11.2026); build PASS; lint texte 0 erori; ui-verify fără erori în paginile noi.
 - Dependencies: D-2026-11-11-01, D-2026-11-11-02.
-- Next action: CAT-002 (imagini), apoi mutarea paginilor `/produse` pe colecția nouă.
+- Next action: mutarea paginilor `/produse` pe colecția nouă (CAT-002 imagini: DONE).
 
 ### CAT-002
-- Status: `TODO`
+- Status: `DONE`
 - Owner: `Claude`
-- Scope: Imagini găzduite de noi din MASCOT Picturepark (sesiune de oaspete, fără cont): căutare pe `model-calitate-culoare`, 24 de cadre P01–P24 pe culoare (serie 360°), optimizare web. Înlocuiește hotlink-ul la CDN-ul din feed.
-- Acceptance: pozele servite de pe youprotect.ro; build PASS; fără regresii vizuale.
-- Dependencies: CAT-001.
-- Next action: script de descărcare + optimizare pe cele 5 produse pilot. După: viewer 360° (I-2026-11-11-01).
+- Scope: Imagini găzduite de noi din MASCOT Picturepark (sesiune de oaspete, fără cont), prin `scripts/catalog/fetch_images_mascot.py`.
+- Rezultat (11.11.2026): 253 de fișiere WebP, 3,6 MB, în `public/images/products/<slug>/`. Culoarea principală: galerie (PS, P01, P04, P07, P13, P19) + 24 de cadre 360° (`-spin-`); celelalte culori: P01, P07, P13. Fără hotlink la pozele Mascot (documentele PDF rămân pe CDN-ul Mascot).
+- Note: denumirile din Picturepark variază (`_P01.jpg` și `" P01"`); mostrele de culoare SVG nu se găzduiesc (risc XSS), butonul afișează doar numele (ex. 51587 bleumarin 01).
+- Acceptance: build PASS; ui-verify fără cereri eșuate; test în browser pentru schimbarea culorii și a miniaturilor: 7/7 PASS.
+- Next action: viewer 360° (I-2026-11-11-01), apoi mutarea `/produse` pe colecția nouă.
 
 ### CAT-003
 - Status: `BLOCKED`

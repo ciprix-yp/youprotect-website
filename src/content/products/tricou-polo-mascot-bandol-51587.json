@@ -71,87 +71,267 @@
     {
       "code": "010",
       "name": "bleumarin închis",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/71D0312B40404C96AB166252A10A34FB-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/010-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-010_P01_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/51587-969-010_P02_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/51587-969-010_P03_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/51587-969-010_P04_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/51587-969-010_P05_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/51587-969-010_P06_1000pxweb.jpg"
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/010-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/010-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/010-P04.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/010-P04-thumb.webp",
+          "view": "P04"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/010-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/010-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/010-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/010-P13-thumb.webp",
+          "view": "P13"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/010-P19.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/010-P19-thumb.webp",
+          "view": "P19"
+        }
+      ],
+      "spin": [
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P01.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P02.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P03.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P04.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P05.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P06.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P07.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P08.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P09.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P10.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P11.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P12.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P13.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P14.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P15.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P16.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P17.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P18.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P19.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P20.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P21.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P22.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P23.webp",
+        "/images/products/tricou-polo-mascot-bandol-51587/010-spin-P24.webp"
       ]
     },
     {
       "code": "01",
       "name": "bleumarin",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/C56CA7DA8DD04AE2BD0307D012D4DE66-en.svg",
+      "swatch": null,
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-01_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/01-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/01-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/01-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/01-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/01-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/01-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "02",
       "name": "roșu",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/5FB099575DA54E649E632035345D6472-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/02-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-02_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/02-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/02-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/02-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/02-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/02-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/02-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "06",
       "name": "alb",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4FE90A8F2F8448289C6BC8CED54296F2-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/06-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-06_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/06-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/06-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/06-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/06-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/06-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/06-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "09",
       "name": "negru",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4070E2287DC344C6991C3DDF654884A6-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/09-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-09_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/09-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/09-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/09-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/09-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/09-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/09-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "18",
       "name": "antracit închis",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/E66DD1B6E93044429C7DB8D47D500801-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/18-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-18_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/18-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/18-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/18-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/18-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/18-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/18-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "333",
       "name": "verde iarbă",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/30C507F3729D4F7C94FE2D9B986658DF-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/333-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-333_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/333-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/333-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/333-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/333-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/333-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/333-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "71",
       "name": "albastru deschis",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/34EBA58B922C4D58B5C687385C15A89B-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/71-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-71_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/71-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/71-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/71-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/71-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/71-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/71-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "888",
       "name": "antracit",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/E832A57358EF4A3F8E06A8140D880C04-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/888-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-888_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/888-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/888-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/888-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/888-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/888-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/888-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     },
     {
       "code": "90",
       "name": "negru intens",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/1E93BE5668784671B21C4839D9F01120-en.jpg",
+      "swatch": "/images/products/tricou-polo-mascot-bandol-51587/90-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/51587-969-90_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/90-P01.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/90-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/90-P07.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/90-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/tricou-polo-mascot-bandol-51587/90-P13.webp",
+          "thumb": "/images/products/tricou-polo-mascot-bandol-51587/90-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     }
   ],
   "otherColoursCount": 9,

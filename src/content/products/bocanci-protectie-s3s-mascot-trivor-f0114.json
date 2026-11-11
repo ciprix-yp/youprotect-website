@@ -91,15 +91,64 @@
     {
       "code": "09",
       "name": "negru",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4070E2287DC344C6991C3DDF654884A6-en.jpg",
+      "swatch": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/F0114-937-09_PS_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/F0114-937-09_P01_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/F0114-937-09_P02_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/F0114-937-09_P03_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/F0114-937-09_P04_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/F0114-937-09_P05_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/F0114-937-09_P06_1000pxweb.jpg"
+        {
+          "src": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-PS.webp",
+          "thumb": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-PS-thumb.webp",
+          "view": "PS"
+        },
+        {
+          "src": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P01.webp",
+          "thumb": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P04.webp",
+          "thumb": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P04-thumb.webp",
+          "view": "P04"
+        },
+        {
+          "src": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P07.webp",
+          "thumb": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P13.webp",
+          "thumb": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P13-thumb.webp",
+          "view": "P13"
+        },
+        {
+          "src": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P19.webp",
+          "thumb": "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-P19-thumb.webp",
+          "view": "P19"
+        }
+      ],
+      "spin": [
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P01.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P02.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P03.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P04.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P05.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P06.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P07.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P08.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P09.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P10.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P11.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P12.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P13.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P14.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P15.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P16.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P17.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P18.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P19.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P20.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P21.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P22.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P23.webp",
+        "/images/products/bocanci-protectie-s3s-mascot-trivor-f0114/09-spin-P24.webp"
       ]
     }
   ],

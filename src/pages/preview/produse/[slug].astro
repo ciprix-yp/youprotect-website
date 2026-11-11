@@ -20,7 +20,7 @@ const p = entry.data;
 const slug = entry.id;
 const categoryLabel = CATEGORIES[p.category];
 const primary = p.colours[0];
-const mainImage = primary.images[0];
+const mainImage = primary.images[0].src;
 const offerHref = `/cere-oferta/?ref=${encodeURIComponent(`/produse/${slug}/`)}`;
 const hasMeasures = p.sizes.table.some((row) => row.measure);
 const hasLeg = p.sizes.table.some((row) => row.leg);
@@ -37,7 +37,7 @@ const productSchema = {
   '@type': 'Product',
   name: p.name,
   description: p.summary,
-  image: p.colours.flatMap((c) => c.images).slice(0, 10),
+  image: p.colours.flatMap((c) => c.images.map((img) => new URL(img.src, siteOrigin).href)).slice(0, 10),
   brand: { '@type': 'Brand', name: p.supplier.name },
   mpn: p.supplier.model,
   category: categoryLabel,
@@ -105,15 +105,15 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
           />
         </div>
         <div id="gallery-thumbs" class="mt-3 flex gap-2 overflow-x-auto pb-2" aria-label="Alte imagini">
-          {primary.images.map((src, i) => (
+          {primary.images.map((img, i) => (
             <button
               type="button"
               class="thumb shrink-0 w-20 h-20 bg-white border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
-              data-src={src}
+              data-src={img.src}
               aria-label={`Imaginea ${i + 1}`}
               aria-current={i === 0 ? 'true' : 'false'}
             >
-              <img src={src} alt="" width="80" height="80" loading="lazy" class="w-full h-full object-contain p-1" />
+              <img src={img.thumb} alt="" width="80" height="80" loading="lazy" class="w-full h-full object-contain p-1" />
             </button>
           ))}
         </div>
@@ -355,19 +355,24 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
 </BaseLayout>
 
 <script>
+  type GalleryImage = { src: string; thumb: string };
   const main = document.getElementById('gallery-main') as HTMLImageElement | null;
   const thumbs = document.getElementById('gallery-thumbs');
 
+  // Apărare suplimentară: acceptăm doar imagini găzduite de noi sau https.
+  const isSafeSrc = (src: unknown): src is string =>
+    typeof src === 'string' && (src.startsWith('/images/products/') || src.startsWith('https://'));
+
   function selectThumb(button: HTMLElement) {
     if (!main) return;
-    main.src = button.dataset.src ?? main.src;
+    if (isSafeSrc(button.dataset.src)) main.src = button.dataset.src;
     thumbs?.querySelectorAll('.thumb').forEach((t) => t.setAttribute('aria-current', String(t === button)));
   }
 
-  function renderThumbs(images: string[]) {
+  function renderThumbs(images: GalleryImage[]) {
     if (!thumbs) return;
     thumbs.replaceChildren(
-      ...images.map((src, i) => {
+      ...images.map(({ src, thumb }, i) => {
         const b = document.createElement('button');
         b.type = 'button';
         b.className = (thumbs.querySelector('.thumb') as HTMLElement | null)?.className ?? 'thumb';
@@ -375,7 +380,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         b.setAttribute('aria-label', `Imaginea ${i + 1}`);
         b.setAttribute('aria-current', String(i === 0));
         const img = document.createElement('img');
-        img.src = src;
+        img.src = thumb;
         img.alt = '';
         img.loading = 'lazy';
         img.className = 'w-full h-full object-contain p-1';
@@ -392,15 +397,16 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
 
   document.querySelectorAll<HTMLButtonElement>('.swatch').forEach((swatch) => {
     swatch.addEventListener('click', () => {
-      let images: string[] = [];
+      let images: GalleryImage[] = [];
       try {
-        images = JSON.parse(swatch.dataset.images ?? '[]');
+        const parsed: unknown = JSON.parse(swatch.dataset.images ?? '[]');
+        if (Array.isArray(parsed)) images = parsed.filter((i) => isSafeSrc(i?.src) && isSafeSrc(i?.thumb));
       } catch {
         return;
       }
       if (!images.length || !main) return;
       document.querySelectorAll('.swatch').forEach((s) => s.setAttribute('aria-pressed', String(s === swatch)));
-      main.src = images[0];
+      main.src = images[0].src;
       main.alt = `${document.querySelector('h1')?.textContent ?? ''}, ${swatch.dataset.name ?? ''}`;
       renderThumbs(images);
     });

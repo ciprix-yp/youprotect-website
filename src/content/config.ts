@@ -5,6 +5,9 @@ import { CATEGORY_KEYS, INDUSTRY_KEYS } from '../lib/catalog-taxonomy';
 // Nu se editează de mână: textele se schimbă în catalog/texts/, faptele vin din feed-ul furnizorului.
 // Build-ul pică dacă lipsește un câmp obligatoriu.
 const httpsUrl = z.string().url().startsWith('https://');
+// Imagini găzduite de noi (scripts/catalog/fetch_images_mascot.py) sau, temporar, URL https din feed.
+const localImage = z.string().regex(/^\/images\/products\/[a-z0-9-]+\/[A-Za-z0-9_-]+\.webp$/);
+const media = z.union([localImage, httpsUrl]);
 
 const products = defineCollection({
   type: 'data',
@@ -25,8 +28,10 @@ const products = defineCollection({
         z.object({
           code: z.string(),
           name: z.string(),
-          swatch: httpsUrl.nullable(),
-          images: z.array(httpsUrl).min(1),
+          swatch: media.nullable(),
+          images: z.array(z.object({ src: media, thumb: media, view: z.string() })).min(1),
+          // Cadrele 360° (P01–P24) pentru culoarea principală; folosite de viewer-ul 360° (I-2026-11-11-01).
+          spin: z.array(media).default([]),
         }),
       )
       .min(1),

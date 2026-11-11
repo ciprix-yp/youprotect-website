@@ -5,8 +5,10 @@
 - Branch: `feature/catalog-pilot-mascot`. **Nu se face push pe `main`**: Directus e oprit (D-2026-11-11-01), iar un rebuild poate goli catalogul live.
 - Livrat pe branch: pilot 5 produse MASCOT, flux catalog în `scripts/catalog/`, texte în `catalog/texts/`, ghid `08-GHID_CONTINUT.md`, previzualizare `/preview/produse/`.
 - Rulare: `python3 -I scripts/catalog/extract_mascot.py <feed.xlsx> .catalog-work/mascot <modele…> --colours <comenzi.csv>`, apoi `python3 -I scripts/catalog/assemble_mascot.py .catalog-work/mascot catalog/texts/mascot catalog/maps/mascot-ro.json src/content/products`, apoi `npm run build`.
+- Imagini (după extragere): `uv run --no-project --with pillow python -I scripts/catalog/fetch_images_mascot.py .catalog-work/mascot catalog/texts/mascot .catalog-work/images/mascot public/images/products`, apoi din nou asamblarea. Originalele rămân în `.catalog-work/images/` (local).
 - Feed-urile furnizorilor stau în afara repo-ului (`~/Projects/postgres-railway-projects/Liste Preturi/`); `.catalog-work/` e ignorat de git. Repo-ul e public: fără prețuri și fără date de vânzări în repo.
-- Urmează: CAT-002 (imagini din Picturepark), apoi `/produse` pe colecția nouă. Blocat: CAT-003 (date Sir Safety).
+- Urmează: `/produse` pe colecția nouă (CAT-002 imagini: DONE), viewer 360° opțional. Blocat: CAT-003 (date Sir Safety).
+- GitHub: PR #10 (draft), branch `staging` → https://staging.youprotect-website.pages.dev, `STAGING_URL` setat, ruleset „main: security gates” activ (main blocat până la SEC-001 + SEC-002).
 - Node: build-ul a rulat cu Node 22 (`mise exec node@22.23.4 -- npm run build`); proiectul nu are încă `.mise.toml`.
 
 ## Ultimul update

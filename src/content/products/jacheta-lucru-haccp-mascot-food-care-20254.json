@@ -75,19 +75,83 @@
     {
       "code": "06",
       "name": "alb",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4FE90A8F2F8448289C6BC8CED54296F2-en.jpg",
+      "swatch": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/20254-442-06_P01_1000pxweb.jpg",
-        "https://pimage.mascotworkwear.ie/20254-442-06_P03_1000pxweb.jpg"
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P01.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P04.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P04-thumb.webp",
+          "view": "P04"
+        },
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P07.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P13.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P13-thumb.webp",
+          "view": "P13"
+        },
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P19.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-P19-thumb.webp",
+          "view": "P19"
+        }
+      ],
+      "spin": [
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P01.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P02.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P03.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P04.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P05.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P06.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P07.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P08.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P09.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P10.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P11.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P12.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P13.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P14.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P15.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P16.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P17.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P18.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P19.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P20.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P21.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P22.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P23.webp",
+        "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/06-spin-P24.webp"
       ]
     },
     {
       "code": "010",
       "name": "bleumarin închis",
-      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/71D0312B40404C96AB166252A10A34FB-en.jpg",
+      "swatch": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-swatch.webp",
       "images": [
-        "https://pimage.mascotworkwear.ie/20254-442-010_P01_1000pxweb.jpg"
-      ]
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-P01.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-P01-thumb.webp",
+          "view": "P01"
+        },
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-P07.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-P13.webp",
+          "thumb": "/images/products/jacheta-lucru-haccp-mascot-food-care-20254/010-P13-thumb.webp",
+          "view": "P13"
+        }
+      ],
+      "spin": []
     }
   ],
   "otherColoursCount": 4,
