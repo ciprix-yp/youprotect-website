@@ -9,6 +9,7 @@ interface Props {
   description?: string;
   ogType?: string;
   ogImage?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -16,6 +17,7 @@ const {
   description = "Echipamente de protecție și uniforme personalizate pentru companii.",
   ogType = "website",
   ogImage = SITE.defaultOgImage,
+  noindex = false,
 } = Astro.props;
 
 // OG/Twitter cer URL-uri absolute. `new URL` ignoră baza dacă input-ul e deja absolut.
@@ -34,6 +36,7 @@ const bookingsUrl =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title} | You Protect</title>
 
     <!-- Favicon -->

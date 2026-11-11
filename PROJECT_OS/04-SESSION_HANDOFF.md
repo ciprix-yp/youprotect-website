@@ -1,5 +1,14 @@
 # Session Handoff
 
+## ⚠️ Sesiunea 2026-11-11: pilot catalog (citește întâi)
+
+- Branch: `feature/catalog-pilot-mascot`. **Nu se face push pe `main`**: Directus e oprit (D-2026-11-11-01), iar un rebuild poate goli catalogul live.
+- Livrat pe branch: pilot 5 produse MASCOT, flux catalog în `scripts/catalog/`, texte în `catalog/texts/`, ghid `08-GHID_CONTINUT.md`, previzualizare `/preview/produse/`.
+- Rulare: `python3 -I scripts/catalog/extract_mascot.py <feed.xlsx> .catalog-work/mascot <modele…> --colours <comenzi.csv>`, apoi `python3 -I scripts/catalog/assemble_mascot.py .catalog-work/mascot catalog/texts/mascot catalog/maps/mascot-ro.json src/content/products`, apoi `npm run build`.
+- Feed-urile furnizorilor stau în afara repo-ului (`~/Projects/postgres-railway-projects/Liste Preturi/`); `.catalog-work/` e ignorat de git. Repo-ul e public: fără prețuri și fără date de vânzări în repo.
+- Urmează: CAT-002 (imagini din Picturepark), apoi `/produse` pe colecția nouă. Blocat: CAT-003 (date Sir Safety).
+- Node: build-ul a rulat cu Node 22 (`mise exec node@22.23.4 -- npm run build`); proiectul nu are încă `.mise.toml`.
+
 ## Ultimul update
 
 - Data: `2026-06-24`

@@ -141,6 +141,48 @@ Format task:
 - Dependencies: none.
 - Next action: GBP dashboard + secvență WhatsApp.
 
+
+### CAT-001
+- Status: `IN_PROGRESS`
+- Owner: `Claude`
+- Scope: Pilot catalog din fișiere de date: 5 produse MASCOT (19035, 51587, 20254, 20739, F0114), flux extract → texte RO → asamblare, ghid de conținut + verificare automată, previzualizare `/preview/produse/` (noindex).
+- Acceptance: format aprobat de user (11.11.2026); build PASS; lint texte 0 erori; ui-verify fără erori în paginile noi.
+- Dependencies: D-2026-11-11-01, D-2026-11-11-02.
+- Next action: CAT-002 (imagini), apoi mutarea paginilor `/produse` pe colecția nouă.
+
+### CAT-002
+- Status: `TODO`
+- Owner: `Claude`
+- Scope: Imagini găzduite de noi din MASCOT Picturepark (sesiune de oaspete, fără cont): căutare pe `model-calitate-culoare`, 24 de cadre P01–P24 pe culoare (serie 360°), optimizare web. Înlocuiește hotlink-ul la CDN-ul din feed.
+- Acceptance: pozele servite de pe youprotect.ro; build PASS; fără regresii vizuale.
+- Dependencies: CAT-001.
+- Next action: script de descărcare + optimizare pe cele 5 produse pilot. După: viewer 360° (I-2026-11-11-01).
+
+### CAT-003
+- Status: `BLOCKED`
+- Owner: `User`
+- Scope: Date de produs Sir Safety (poze, fișe tehnice, descrieri) pentru produsele recurente din vânzări (Sirflex, Piquet, Gemini Guard, Contender, Tonga, Harrison, Manhattan…).
+- Acceptance: export sau acces la portalul B2B `sirweb.sirsafety.com`.
+- Dependencies: acces de la Sir Safety.
+- Next action: user verifică exportul din portalul B2B sau cere date de la contactul Sir Safety.
+
+
+### SEC-001
+- Status: `TODO`
+- Owner: `Claude` + `User` (decizie + test pe DB)
+- Scope: Conexiunile Postgres nu verifică certificatul TLS (`rejectUnauthorized: false`) în `functions/api/leads.js`, `functions/api/submit-lead.js` și `src/lib/catalog.ts`. Semgrep `bypass-tls-verification`: CI `semgrep` va fi roșu până la rezolvare.
+- Acceptance: conexiune cu verificare TLS (CA Railway sau Hyperdrive fără opțiunea de bypass), testată pe formularul de lead; `src/lib/catalog.ts` dispare după mutarea `/produse` pe colecția nouă.
+- Dependencies: acces de test la DB; CAT-001 pentru `catalog.ts`.
+- Next action: verificat cum se conectează Hyperdrive la Railway și ce certificat expune Railway.
+
+### SEC-002
+- Status: `TODO`
+- Owner: `Claude`
+- Scope: Dependențe vulnerabile (npm audit: 1 critică, 13 high, în lanțul Astro 4 + `@astrojs/sitemap`). CI `dependencies` (OSV) va fi roșu până la upgrade.
+- Acceptance: upgrade Astro (versiune majoră) + integrări; build PASS; verificare vizuală; OSV fără high/critical.
+- Dependencies: preferabil după CAT-001 (paginile `/produse` pe colecția nouă).
+- Next action: branch separat de upgrade, cu ghidul de migrare Astro.
+
 ---
 
 ## Next Sprint (S2)

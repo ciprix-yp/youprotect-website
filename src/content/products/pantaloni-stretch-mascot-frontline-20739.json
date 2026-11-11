@@ -1,0 +1,370 @@
+{
+  "status": "review",
+  "name": "Pantaloni de lucru stretch MASCOT® Frontline",
+  "category": "pantaloni",
+  "industries": [
+    "logistica",
+    "corporate"
+  ],
+  "summary": "Pantaloni de lucru stretch, elastici pe patru direcții, ușori și cu finisaj hidrofob. Te miști liber și arăți îngrijit, la birou, la recepție sau pe teren.",
+  "description": [
+    "Pantalonii de lucru stretch MASCOT® Frontline se mișcă odată cu tine: țesătura ULTIMATE STRETCH e elastică pe patru direcții, așa că nimic nu strânge și nu jenează când te apleci, urci scări sau cobori din mașină. Sunt ușori, iar talia joasă și betelia croită pe formă urmăresc mișcările corpului.",
+    "Croiala modernă din gama Corporate Casual îi face să arate îngrijit, ca o uniformă de firmă. Echipa ta arată profesionist la birou, la recepție sau la client și păstrează confortul unui pantalon de lucru.",
+    "Pentru firmă sunt practici: finisajul hidrofob respinge stropii de apă, se spală la 60 °C, se pot usca în uscător și sunt certificați OEKO-TEX® STANDARD 100."
+  ],
+  "benefits": [
+    "Libertate totală de mișcare: elasticitate pe patru direcții.",
+    "Nimic nu strânge: talie joasă și betelie croită pe formă.",
+    "Ușori și protejați de stropi: țesătură ușoară, cu finisaj hidrofob.",
+    "Arăți îngrijit: croială modernă din gama Corporate Casual.",
+    "Ușor de întreținut: spălare la 60 °C și uscare în uscător.",
+    "Material verificat: OEKO-TEX® STANDARD 100, testat pentru substanțe nocive."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "88 % poliester / 12 % elastolefină, ULTIMATE STRETCH"
+    },
+    {
+      "label": "Gramaj",
+      "value": "275 g/m²"
+    },
+    {
+      "label": "Croială",
+      "value": "Modern fit, talie joasă"
+    },
+    {
+      "label": "Finisaj",
+      "value": "Hidrofob"
+    },
+    {
+      "label": "Închidere",
+      "value": "Fermoar"
+    },
+    {
+      "label": "Buzunare",
+      "value": "Buzunare frontale, buzunar pentru monede, buzunare la spate"
+    },
+    {
+      "label": "Alte detalii",
+      "value": "Găici pentru curea"
+    }
+  ],
+  "notes": [],
+  "certifications": [
+    {
+      "code": "OEKO-TEX® STANDARD 100",
+      "label": "Textile testate pentru substanțe nocive."
+    }
+  ],
+  "care": [
+    "Spălare la max. 60 °C",
+    "Nu se folosește înălbitor",
+    "Uscare în uscător, temperatura inițială max. 80 °C",
+    "Nu se calcă",
+    "Nu se curăță chimic",
+    "Categoria de întreținere industrială A1"
+  ],
+  "colours": [
+    {
+      "code": "010",
+      "name": "bleumarin închis",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/71D0312B40404C96AB166252A10A34FB-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/20739-511-010_P01_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/20739-511-010_P02_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/20739-511-010_P03_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/20739-511-010_P04_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/20739-511-010_P05_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/20739-511-010_P06_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "09",
+      "name": "negru",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4070E2287DC344C6991C3DDF654884A6-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/20739-511-09_P01_1000pxweb.jpg"
+      ]
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "C42–C68 (picior 82 cm); C46–C62 (picior 90 cm)",
+    "values": [
+      "C42",
+      "C43",
+      "C44",
+      "C45",
+      "C46",
+      "C47",
+      "C48",
+      "C49",
+      "C50",
+      "C51",
+      "C52",
+      "C54",
+      "C56",
+      "C58",
+      "C60",
+      "C62",
+      "C64",
+      "C66",
+      "C68"
+    ],
+    "table": [
+      {
+        "size": "C42",
+        "measure": "talie 68 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C43",
+        "measure": "talie 70 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C44",
+        "measure": "talie 73 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C45",
+        "measure": "talie 75 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C46",
+        "measure": "talie 78 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C47",
+        "measure": "talie 80 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C48",
+        "measure": "talie 83 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C49",
+        "measure": "talie 85 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C50",
+        "measure": "talie 88 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C51",
+        "measure": "talie 90 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C52",
+        "measure": "talie 93 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C54",
+        "measure": "talie 98 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C56",
+        "measure": "talie 103 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C58",
+        "measure": "talie 108 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C60",
+        "measure": "talie 113 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C62",
+        "measure": "talie 118 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C64",
+        "measure": "talie 123 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C66",
+        "measure": "talie 128 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C68",
+        "measure": "talie 133 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C46",
+        "measure": "talie 78 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C47",
+        "measure": "talie 80 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C48",
+        "measure": "talie 83 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C49",
+        "measure": "talie 85 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C50",
+        "measure": "talie 88 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C51",
+        "measure": "talie 90 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C52",
+        "measure": "talie 93 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C54",
+        "measure": "talie 98 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C56",
+        "measure": "talie 103 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C58",
+        "measure": "talie 108 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C60",
+        "measure": "talie 113 cm",
+        "leg": "90 cm"
+      },
+      {
+        "size": "C62",
+        "measure": "talie 118 cm",
+        "leg": "90 cm"
+      }
+    ],
+    "note": "Talia se măsoară imediat deasupra buricului."
+  },
+  "personalization": {
+    "placements": [
+      {
+        "position": "Buzunarul stâng din spate",
+        "maxSize": "8 × 3 cm"
+      },
+      {
+        "position": "Buzunarul drept din spate",
+        "maxSize": "8 × 3 cm"
+      },
+      {
+        "position": "Coapsa stângă, vertical",
+        "maxSize": "25 × 5 cm"
+      },
+      {
+        "position": "Coapsa stângă, orizontal",
+        "maxSize": "9 × 5 cm"
+      },
+      {
+        "position": "Coapsa dreaptă, vertical",
+        "maxSize": "25 × 5 cm"
+      },
+      {
+        "position": "Coapsa dreaptă, orizontal",
+        "maxSize": "9 × 5 cm"
+      },
+      {
+        "position": "Gamba stângă, orizontal",
+        "maxSize": "12 × 6 cm"
+      },
+      {
+        "position": "Gamba dreaptă, orizontal",
+        "maxSize": "12 × 6 cm"
+      },
+      {
+        "position": "Gamba stângă, vertical",
+        "maxSize": "28 × 10 cm"
+      },
+      {
+        "position": "Gamba dreaptă, vertical",
+        "maxSize": "28 × 10 cm"
+      }
+    ],
+    "special": true,
+    "hiVisNote": null
+  },
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://mascotsitecore-1ccb8.kxcdn.com/pdf/20739-511-010-en.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Cât de elastici sunt pantalonii MASCOT® Frontline 20739?",
+      "a": "Pantalonii MASCOT® Frontline 20739 sunt din țesătura ULTIMATE STRETCH, elastică pe patru direcții (88 % poliester, 12 % elastolefină), gândită ca nimic să nu strângă sau să jeneze la mișcare."
+    },
+    {
+      "q": "Sunt potriviți pentru uniforme de birou sau recepție?",
+      "a": "Da. Pantalonii MASCOT® Frontline 20739 fac parte din gama Corporate Casual, au croială modernă și arată îngrijit la birou, la recepție sau la client, cu confortul unui pantalon de lucru."
+    },
+    {
+      "q": "Ce mărimi și lungimi există?",
+      "a": "Mărimile C42–C68 la lungimea piciorului de 82 cm și C46–C62 la 90 cm. Talia se măsoară imediat deasupra buricului."
+    },
+    {
+      "q": "Există un model pentru femei?",
+      "a": "Da, MASCOT produce variantele pentru femei cu codurile 20637-511 și 20638-511."
+    },
+    {
+      "q": "Pot personaliza pantalonii cu logo?",
+      "a": "Da. Poți pune logoul pe buzunarele din spate, pe coapse și pe gambe, în zonele indicate de producător."
+    },
+    {
+      "q": "De unde pot comanda pantaloni MASCOT® Frontline pentru echipa mea?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină, inclusiv cu logo, și poți cere să testezi pantalonii înainte de decizie."
+    }
+  ],
+  "seo": {
+    "title": "Pantaloni de lucru stretch MASCOT 20739",
+    "description": "Pantaloni de lucru stretch MASCOT Frontline 20739: elastici pe 4 direcții, ușori, hidrofobi, cu croială modernă. Comozi și îngrijiți. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "MASCOT",
+    "brand": "MASCOT®",
+    "model": "20739-511",
+    "range": "FRONTLINE",
+    "productUrl": "https://www.mascotworkwear.ie/en/mascot-frontline-20739-511"
+  },
+  "reviewNotes": [],
+  "source": {
+    "feed": "MASCOT_extended_productdata_EXPORT-en.xlsx",
+    "assembledAt": "2026-11-11"
+  }
+}

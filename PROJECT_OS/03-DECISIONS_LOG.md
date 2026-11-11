@@ -117,3 +117,16 @@
 - Mapări: `/cine-suntem->/despre-noi`, `/despre->/despre-noi`, `/servicii->/cum-lucram`, `/contact->/programeaza-discutie`, `/blog(/*)->/`, `/magazin|/shop|/produsele-noastre->/produse`.
 - De ce: cont fără Dynamic Redirect; Worker route + _redirects acoperă www și apex fără WAF; single-hop e mai bun SEO decât lanț de redirecturi sau 404.
 - Impact: backlink-urile vechi nu mai cad în 404; autoritatea se consolidează pe apex. Verificat live. Cod fără referințe Wix/Shopify.
+
+## D-2026-11-11-01
+- Context: Directus (Railway `accomplished-forgiveness`) a fost oprit intenționat pentru costuri; ultimul deploy (01.06.2026) are status `REMOVED`, domeniul răspunde „Application not found”. Site-ul live are încă 6 produse demo, generate când Directus mergea. Orice rebuild fără Directus poate goli catalogul.
+- Decizie: catalogul devine **fișiere de date în repo** (Astro content collection `src/content/products/`), fără Directus și fără DB la build. Conținutul se construiește din feed-urile furnizorilor + texte în română aprobate de om.
+- Flux: `scripts/catalog/extract_mascot.py` (feed → `.catalog-work/`, local, fără prețuri) → `catalog/texts/<furnizor>/<model>.json` (texte RO) → `scripts/catalog/assemble_mascot.py` (fapte din feed + texte → `src/content/products/`; se oprește la traduceri lipsă) → schemă zod la build.
+- Selecția produselor pornește din vânzări reale (export SmartBill 2023–2026): Sir Safety ~45 %, MASCOT ~41 % (umflat de o comandă), Portwest ~4 %. Sir Safety are cele mai multe produse recurente, dar nu are date accesibile public.
+- Impact: nu se face push pe `main` până când paginile `/produse` nu citesc din noua colecție.
+
+## D-2026-11-11-02
+- Context: Pilot pe 5 produse MASCOT; feedback user pe ton și pe structura textelor.
+- Decizie: ghid unic de conținut `PROJECT_OS/08-GHID_CONTINUT.md`: voce **tu** (diplomat, respectuos, apropiat), formula în 3 straturi (experiența de purtare → cum te simți și cum arăți → ce câștigă firma), reguli de adevăr, SEO, GEO. Fișele de produs au șablon (`catalog/texts/_template.json`) și verificare automată (`scripts/catalog/lint_texts.py`), rulată la asamblare.
+- Marcaje: „Hi-Vis Group A” se afișează ca „Grupa Hi-Vis A (MASCOT)”, explicat ca sistemul MASCOT de combinare a pieselor pentru un set EN ISO 20471 (sursa: mascotworkwear.com/en/en-iso-20471). NU „clasa 1”: geaca 19035 e certificată singură clasa 3.
+- Ofertă: „Testezi fără riscuri”, garanția banilor înapoi în 90 de zile, definită o singură dată în `src/lib/site.ts` (`RISK_FREE_TESTING`).

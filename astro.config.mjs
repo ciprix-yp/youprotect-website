@@ -9,7 +9,8 @@ export default defineConfig({
     react(),
     sitemap({
       // Nu lista paginile noindex (LP-uri) sau de confirmare în sitemap
-      filter: (page) => !page.includes('/lp/') && !page.includes('/confirmare'),
+      filter: (page) =>
+        !page.includes('/lp/') && !page.includes('/confirmare') && !page.includes('/preview/'),
     })
   ],
   output: 'static',

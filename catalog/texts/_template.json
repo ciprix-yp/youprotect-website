@@ -1,0 +1,36 @@
+{
+  "_ghid": "Șablon fișă de produs. Copiază ca <model>.json și înlocuiește fiecare valoare. Regulile: PROJECT_OS/08-GHID_CONTINUT.md. Fișierele care încep cu _ sunt ignorate la asamblare.",
+  "model": "COD_MODEL (ex. 19035; trebuie să existe în .catalog-work/<furnizor>/)",
+  "slug": "tip-produs-brand-gama-cod (fără diacritice)",
+  "status": "review",
+  "keyword": "cum caută clientul, în română (ex. geacă de iarnă reflectorizantă)",
+  "name": "Tip produs cu keyword + Brand® + Model (ex. Tricou polo de lucru MASCOT® Bandol)",
+  "category": "reflectorizante | geci-jachete | tricouri-polo | pantaloni | camasi | incaltaminte",
+  "industries": ["constructii | logistica | productie | alimentar | corporate | energie"],
+  "primaryColour": "codul culorii afișate prima (din culorile comandate)",
+  "summary": "Fraza 1: keyword + ce este + standardul principal + experiența de purtare. Fraza 2: cum te simți sau cum arăți. 60–220 caractere.",
+  "description": [
+    "Stratul 1, experiența de purtare: începe cu keyword-ul. Ce simte corpul: cald, uscat, comod, respiră (doar dacă e declarat), liber în mișcare.",
+    "Stratul 2, cum te simți și cum arăți: protejat, văzut, profesionist, îngrijit, transmiți încredere, legat de un fapt de design.",
+    "Stratul 3, ce câștigă firma: standarde, întreținere, logo, evidență, testare fără riscuri."
+  ],
+  "benefits": [
+    "Rezultat: cum (ex. Cald fără volum: izolația ușoară te lasă să te miști liber.)",
+    "5–6 beneficii în total"
+  ],
+  "specs": [
+    { "label": "Etichetă", "value": "Valoare tradusă din feed; materialul și gramajul se adaugă automat" }
+  ],
+  "notes": [],
+  "faq": [
+    { "q": "Ce clasă de protecție are <produs> <cod>?", "a": "Răspunsul întâi, apoi faptul; repetă numele sau codul produsului." },
+    { "q": "Întrebare despre experiență (ex. Ține de cald fără să fie groasă?)", "a": "Da. …" },
+    { "q": "Pot imprima logoul firmei pe <produs>?", "a": "Da. Poți pune logoul …" },
+    { "q": "Ce mărimi există și există un model pentru femei?", "a": "…" },
+    { "q": "De unde pot comanda <produs> în România?", "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină …" }
+  ],
+  "seo": {
+    "title": "keyword + brand + cod, max. 50 caractere",
+    "description": "keyword + 2–3 beneficii de experiență + Ofertă … de la You Protect. 70–160 caractere"
+  }
+}

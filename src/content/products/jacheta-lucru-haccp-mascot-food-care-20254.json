@@ -1,0 +1,240 @@
+{
+  "status": "review",
+  "name": "Jachetă de lucru HACCP MASCOT® Food & Care",
+  "category": "geci-jachete",
+  "industries": [
+    "alimentar"
+  ],
+  "summary": "Jachetă de lucru HACCP pentru industria alimentară, aprobată DIN 10524: comodă, cu aspect curat și rezistentă la spălare industrială. Echipa ta arată impecabil și inspiră încredere.",
+  "description": [
+    "Jacheta de lucru HACCP MASCOT® Food & Care e gândită pentru oamenii care lucrează zi de zi cu alimente. Se poartă comod: manșetele se reglează din capse, fantele laterale lasă loc de mișcare, iar twill-ul de 270 g/m², din 65 % poliester și 35 % bumbac, este netransparent.",
+    "Arată curat și profesionist, iar asta se vede în fața clienților și la audit: capsele sunt ascunse, fără nasturi la vedere, iar jacheta respectă principiile HACCP și este aprobată DIN 10524, standardul pentru îmbrăcămintea de lucru din industria alimentară. Echipa ta transmite grijă pentru igienă.",
+    "Pentru tine, ca responsabil cu echipamentele, e ușor de gestionat: jacheta e certificată ProWash® pentru spălare industrială (EN ISO 15797), se spală la 60 °C și e pregătită pentru etichetă personalizată și cip HF sau UHF."
+  ],
+  "benefits": [
+    "Conformă pentru industria alimentară: HACCP și DIN 10524.",
+    "Aspect curat: capse ascunse și material netransparent.",
+    "Comodă la lucru: manșete reglabile și fante laterale.",
+    "Rezistă la spălare industrială: ProWash®, EN ISO 15797.",
+    "Ușor de gestionat: pregătită pentru etichetă și cip HF sau UHF."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "65 % poliester / 35 % bumbac, twill"
+    },
+    {
+      "label": "Gramaj",
+      "value": "270 g/m²"
+    },
+    {
+      "label": "Închidere",
+      "value": "Capse metalice ascunse"
+    },
+    {
+      "label": "Manșete",
+      "value": "Reglabile, cu capse"
+    },
+    {
+      "label": "Contracție",
+      "value": "max. 5 %"
+    },
+    {
+      "label": "Identificare",
+      "value": "Pregătită pentru etichetă personalizată și cip HF/UHF; etichetare colorată pe mărimi"
+    }
+  ],
+  "notes": [],
+  "certifications": [
+    {
+      "code": "OEKO-TEX® STANDARD 100",
+      "label": "Textile testate pentru substanțe nocive."
+    },
+    {
+      "code": "ProWash®, EN ISO 15797",
+      "label": "Testat pentru spălare industrială conform EN ISO 15797."
+    },
+    {
+      "code": "DIN 10524",
+      "label": "Aprobat conform DIN 10524, standardul pentru îmbrăcămintea de lucru din industria alimentară."
+    },
+    {
+      "code": "HACCP",
+      "label": "Respectă principiile HACCP."
+    }
+  ],
+  "care": [
+    "Spălare la max. 60 °C",
+    "Nu se folosește înălbitor",
+    "Uscare în uscător, temperatura inițială max. 80 °C",
+    "Călcare la temperatură medie, max. 150 °C",
+    "Curățare chimică normală",
+    "Categoria de întreținere industrială A0 (alb) și A1 (bleumarin închis)"
+  ],
+  "colours": [
+    {
+      "code": "06",
+      "name": "alb",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4FE90A8F2F8448289C6BC8CED54296F2-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/20254-442-06_P01_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/20254-442-06_P03_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "010",
+      "name": "bleumarin închis",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/71D0312B40404C96AB166252A10A34FB-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/20254-442-010_P01_1000pxweb.jpg"
+      ]
+    }
+  ],
+  "otherColoursCount": 4,
+  "sizes": {
+    "summary": "XS–6XL",
+    "values": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL"
+    ],
+    "table": [
+      {
+        "size": "XS",
+        "measure": "piept 88 cm"
+      },
+      {
+        "size": "S",
+        "measure": "piept 92 cm"
+      },
+      {
+        "size": "M",
+        "measure": "piept 100 cm"
+      },
+      {
+        "size": "L",
+        "measure": "piept 104 cm"
+      },
+      {
+        "size": "XL",
+        "measure": "piept 112 cm"
+      },
+      {
+        "size": "2XL",
+        "measure": "piept 116 cm"
+      },
+      {
+        "size": "3XL",
+        "measure": "piept 124 cm"
+      },
+      {
+        "size": "4XL",
+        "measure": "piept 132 cm"
+      },
+      {
+        "size": "5XL",
+        "measure": "piept 140 cm"
+      },
+      {
+        "size": "6XL",
+        "measure": "piept 148 cm"
+      }
+    ],
+    "note": null
+  },
+  "personalization": {
+    "placements": [
+      {
+        "position": "Piept stânga",
+        "maxSize": "10 × 10 cm"
+      },
+      {
+        "position": "Deasupra buzunarului stâng de la piept",
+        "maxSize": "10 × 4 cm"
+      },
+      {
+        "position": "Piept dreapta",
+        "maxSize": "10 × 10 cm"
+      },
+      {
+        "position": "Deasupra buzunarului drept de la piept",
+        "maxSize": "10 × 4 cm"
+      },
+      {
+        "position": "Mijlocul spatelui",
+        "maxSize": "28 × 28 cm"
+      },
+      {
+        "position": "Ceafă",
+        "maxSize": "12 × 5 cm"
+      },
+      {
+        "position": "Mâneca dreaptă, orizontal",
+        "maxSize": "10 × 5 cm"
+      },
+      {
+        "position": "Mâneca stângă, orizontal",
+        "maxSize": "10 × 5 cm"
+      }
+    ],
+    "special": false,
+    "hiVisNote": null
+  },
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://mascotsitecore-1ccb8.kxcdn.com/pdf/20254-442-06-en.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Este jacheta MASCOT® Food & Care 20254 potrivită pentru industria alimentară?",
+      "a": "Da. Jacheta MASCOT® Food & Care 20254 respectă principiile HACCP și este aprobată conform DIN 10524, standardul pentru îmbrăcămintea de lucru din industria alimentară."
+    },
+    {
+      "q": "Rezistă la spălare industrială?",
+      "a": "Da. Jacheta 20254 este certificată ProWash®, testată conform EN ISO 15797, și se poate spăla la maximum 60 °C."
+    },
+    {
+      "q": "Se vede prin material în varianta albă?",
+      "a": "Nu. Materialul jachetei MASCOT® Food & Care 20254 este netransparent, așa că jacheta arată îngrijit și în alb."
+    },
+    {
+      "q": "Pot folosi jacheta cu un sistem de evidență prin cip?",
+      "a": "Da. Jacheta 20254 e pregătită pentru o etichetă personalizată și pentru un cip HF sau UHF."
+    },
+    {
+      "q": "Ce culori și mărimi sunt disponibile?",
+      "a": "Pe site sunt prezentate culorile alb și bleumarin închis, în mărimile XS–6XL. Producătorul oferă și variante albe cu detalii colorate: roșu, verde, galben curry sau albastru azur."
+    },
+    {
+      "q": "De unde pot comanda jachete HACCP MASCOT pentru echipa mea?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină și poți cere să testezi jachetele înainte de decizie."
+    }
+  ],
+  "seo": {
+    "title": "Jachetă HACCP industria alimentară MASCOT 20254",
+    "description": "Jachetă de lucru HACCP MASCOT Food & Care 20254, DIN 10524, ProWash: comodă, netransparentă, rezistă la spălare industrială. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "MASCOT",
+    "brand": "MASCOT®",
+    "model": "20254-442",
+    "range": "FOOD & CARE",
+    "productUrl": "https://www.mascotworkwear.ie/en/mascot-food-care-20254-442"
+  },
+  "reviewNotes": [],
+  "source": {
+    "feed": "MASCOT_extended_productdata_EXPORT-en.xlsx",
+    "assembledAt": "2026-11-11"
+  }
+}

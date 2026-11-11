@@ -1,0 +1,281 @@
+{
+  "status": "review",
+  "name": "Tricou polo de lucru MASCOT® Bandol",
+  "category": "tricouri-polo",
+  "industries": [
+    "constructii",
+    "logistica",
+    "productie",
+    "corporate",
+    "energie"
+  ],
+  "summary": "Tricou polo de lucru din bumbac piqué cu elastan, comod la purtare și cu croială modernă. Echipa ta arată îngrijit, unitar și profesionist, cu logoul firmei.",
+  "description": [
+    "Tricoul polo de lucru MASCOT® Bandol e comod la purtare: bumbacul piqué de 220 g/m² e plăcut pe piele, iar cei 5 % elastan îți lasă libertate de mișcare când ridici, te întinzi sau te apleci. Banda de la gât acoperă cusătura, ca să nu irite.",
+    "Croiala modernă se așază frumos pe corp, iar gulerul și manșetele din ribană îi dau un aspect îngrijit. Cu Bandol, echipa ta arată unitar și profesionist, la birou, în hală sau la client, și transmite încredere de la prima întâlnire.",
+    "Pentru firmă e o bază simplă pentru uniforme: are zone dedicate pentru logo pe piept, spate, ceafă și mâneci, e certificat OEKO-TEX® STANDARD 100 și se spală la maximum 40 °C."
+  ],
+  "benefits": [
+    "Comod la purtare: bumbac piqué cu 5 % elastan, de 220 g/m².",
+    "Te miști liber: croială modernă și material elastic.",
+    "Nu irită la gât: banda acoperă cusătura.",
+    "Arăți îngrijit: guler și manșete din ribană.",
+    "Echipă unitară: logo pe piept, spate, ceafă sau mâneci.",
+    "Material verificat: OEKO-TEX® STANDARD 100, testat pentru substanțe nocive."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "95 % bumbac / 5 % elastan, piqué"
+    },
+    {
+      "label": "Gramaj",
+      "value": "220 g/m²"
+    },
+    {
+      "label": "Croială",
+      "value": "Modern fit"
+    },
+    {
+      "label": "Închidere",
+      "value": "Șliț cu nasturi"
+    },
+    {
+      "label": "Guler și manșete",
+      "value": "Ribană"
+    },
+    {
+      "label": "Contracție",
+      "value": "max. 5 %"
+    }
+  ],
+  "notes": [
+    "Culoarea gri melanj (08) are altă compoziție: 90 % bumbac și 10 % viscoză.",
+    "La expunere îndelungată directă la soare, nuanța se poate modifica. Dacă echipa ta lucrează permanent afară, producătorul recomandă un produs din gama PREMIUM."
+  ],
+  "certifications": [
+    {
+      "code": "OEKO-TEX® STANDARD 100",
+      "label": "Textile testate pentru substanțe nocive."
+    }
+  ],
+  "care": [
+    "Spălare la max. 40 °C",
+    "Nu se folosește înălbitor",
+    "Nu se usucă în uscător",
+    "Călcare la temperatură medie, max. 150 °C",
+    "Curățare chimică normală",
+    "Categoria de întreținere industrială C2"
+  ],
+  "colours": [
+    {
+      "code": "010",
+      "name": "bleumarin închis",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/71D0312B40404C96AB166252A10A34FB-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-010_P01_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/51587-969-010_P02_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/51587-969-010_P03_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/51587-969-010_P04_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/51587-969-010_P05_1000pxweb.jpg",
+        "https://pimage.mascotworkwear.ie/51587-969-010_P06_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "01",
+      "name": "bleumarin",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/C56CA7DA8DD04AE2BD0307D012D4DE66-en.svg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-01_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "02",
+      "name": "roșu",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/5FB099575DA54E649E632035345D6472-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-02_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "06",
+      "name": "alb",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4FE90A8F2F8448289C6BC8CED54296F2-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-06_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "09",
+      "name": "negru",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/4070E2287DC344C6991C3DDF654884A6-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-09_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "18",
+      "name": "antracit închis",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/E66DD1B6E93044429C7DB8D47D500801-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-18_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "333",
+      "name": "verde iarbă",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/30C507F3729D4F7C94FE2D9B986658DF-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-333_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "71",
+      "name": "albastru deschis",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/34EBA58B922C4D58B5C687385C15A89B-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-71_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "888",
+      "name": "antracit",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/E832A57358EF4A3F8E06A8140D880C04-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-888_P01_1000pxweb.jpg"
+      ]
+    },
+    {
+      "code": "90",
+      "name": "negru intens",
+      "swatch": "https://mascotsitecore-1ccb8.kxcdn.com/1E93BE5668784671B21C4839D9F01120-en.jpg",
+      "images": [
+        "https://pimage.mascotworkwear.ie/51587-969-90_P01_1000pxweb.jpg"
+      ]
+    }
+  ],
+  "otherColoursCount": 9,
+  "sizes": {
+    "summary": "S–4XL",
+    "values": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "table": [
+      {
+        "size": "S",
+        "measure": "piept 92 cm"
+      },
+      {
+        "size": "M",
+        "measure": "piept 100 cm"
+      },
+      {
+        "size": "L",
+        "measure": "piept 104 cm"
+      },
+      {
+        "size": "XL",
+        "measure": "piept 112 cm"
+      },
+      {
+        "size": "2XL",
+        "measure": "piept 116 cm"
+      },
+      {
+        "size": "3XL",
+        "measure": "piept 124 cm"
+      },
+      {
+        "size": "4XL",
+        "measure": "piept 132 cm"
+      }
+    ],
+    "note": null
+  },
+  "personalization": {
+    "placements": [
+      {
+        "position": "Piept stânga",
+        "maxSize": "10 × 10 cm"
+      },
+      {
+        "position": "Piept dreapta",
+        "maxSize": "10 × 10 cm"
+      },
+      {
+        "position": "Mijlocul spatelui",
+        "maxSize": "28 × 28 cm"
+      },
+      {
+        "position": "Ceafă",
+        "maxSize": "12 × 5 cm"
+      },
+      {
+        "position": "Mâneca dreaptă, orizontal",
+        "maxSize": "10 × 5 cm"
+      },
+      {
+        "position": "Mâneca stângă, orizontal",
+        "maxSize": "10 × 5 cm"
+      }
+    ],
+    "special": true,
+    "hiVisNote": null
+  },
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://mascotsitecore-1ccb8.kxcdn.com/pdf/51587-969-010-en.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Din ce material este tricoul polo MASCOT® Bandol 51587?",
+      "a": "Tricoul polo MASCOT® Bandol 51587 este din piqué de 220 g/m², cu 95 % bumbac și 5 % elastan. Excepție face culoarea gri melanj, cu 90 % bumbac și 10 % viscoză. Tricoul este certificat OEKO-TEX® STANDARD 100."
+    },
+    {
+      "q": "Este comod pentru purtare zilnică?",
+      "a": "Da. Tricoul polo MASCOT® Bandol are croială modernă și 5 % elastan, care îți lasă libertate de mișcare, iar banda de la gât acoperă cusătura, ca să nu irite pielea."
+    },
+    {
+      "q": "Pot personaliza tricoul cu logoul firmei?",
+      "a": "Da. Poți pune logoul pe piept, stânga sau dreapta (max. 10 × 10 cm), la mijlocul spatelui (max. 28 × 28 cm), la ceafă (max. 12 × 5 cm) și pe mâneci (max. 10 × 5 cm)."
+    },
+    {
+      "q": "Pot purta tricoul la lucru în exterior?",
+      "a": "Da, pentru purtare ocazională. La expunere îndelungată directă la soare, nuanța se poate modifica; dacă echipa ta lucrează permanent afară, producătorul recomandă un produs din gama PREMIUM."
+    },
+    {
+      "q": "Ce mărimi există și există un model pentru femei?",
+      "a": "Tricoul Bandol se găsește în mărimile S–4XL, pentru un perimetru al pieptului între 92 și 132 cm. MASCOT produce și varianta pentru femei, cu codul 51588-969."
+    },
+    {
+      "q": "De unde pot comanda tricouri polo MASCOT® Bandol cu logo?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, cu logoul firmei aplicat în zonele indicate de producător."
+    }
+  ],
+  "seo": {
+    "title": "Tricou polo de lucru MASCOT Bandol 51587",
+    "description": "Tricou polo de lucru MASCOT Bandol 51587: bumbac piqué cu elastan, comod, cu croială modernă. Echipa ta arată profesionist. Ofertă cu logo de la You Protect."
+  },
+  "supplier": {
+    "name": "MASCOT",
+    "brand": "MASCOT®",
+    "model": "51587-969",
+    "range": "CROSSOVER",
+    "productUrl": "https://www.mascotworkwear.ie/en/mascot-crossover-51587-969"
+  },
+  "reviewNotes": [],
+  "source": {
+    "feed": "MASCOT_extended_productdata_EXPORT-en.xlsx",
+    "assembledAt": "2026-11-11"
+  }
+}
