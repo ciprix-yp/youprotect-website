@@ -1,0 +1,62 @@
+# Shift-left Stage 2 — commit gate.
+# Runs automatically through the global shift-left git hook (machine/install.sh).
+# Enable the linters for the project's languages; refresh pins with `pre-commit autoupdate`.
+repos:
+  # Generic hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-yaml
+        args: ["--allow-multiple-documents"] # e.g. pnpm-lock.yaml, Kubernetes manifests
+      - id: check-json
+      # Exclude checksummed files (applied DB migrations) and generated files from the fixers.
+      # Legacy scratch folders (tmp/, backups/, Skills/) and generated files are left untouched by the
+      # whitespace fixers only; gitleaks and Semgrep below still scan them.
+      - id: end-of-file-fixer
+        exclude: ^(\.astro/|tmp/|backups/|Skills/|railway_schema\.sql$|package-lock\.json$)
+      - id: trailing-whitespace
+        args: ["--markdown-linebreak-ext=md"] # two trailing spaces = line break in Markdown
+        exclude: ^(\.astro/|tmp/|backups/|Skills/|railway_schema\.sql$|package-lock\.json$)
+
+  # Secrets — block API keys, tokens and passwords before they reach history
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # SAST — injection, XSS, insecure crypto, etc. on changed files only
+  - repo: https://github.com/semgrep/pre-commit
+    rev: v1.181.0
+    hooks:
+      - id: semgrep
+        # Registry rules + our house rules (.semgrep/, extend them after every incident)
+        args: ["--config", "p/default", "--config", ".semgrep/", "--error", "--skip-unknown-extensions"]
+        exclude: ^\.semgrep/
+        require_serial: true # one scan, one report (semgrep parallelises internally)
+
+  # --- Language linters (keep the ones that apply) ---
+
+  # Python (scripts/catalog, PROJECT_OS/pm)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.10
+    hooks:
+      - id: ruff
+        args: ["--select", "E,F,S", "--line-length", "130", "--fix"] # S = flake8-bandit security rules
+
+  # JavaScript / TypeScript: the project has no eslint config yet; Semgrep covers SAST meanwhile.
+  # - repo: local
+  #   hooks:
+  #     - id: eslint
+  #       name: eslint
+  #       entry: npx eslint --max-warnings=0
+  #       language: system
+  #       files: \.(js|jsx|ts|tsx)$
+
+  # Terraform / IaC
+  # - repo: https://github.com/aquasecurity/tfsec
+  #   rev: v1.28.13
+  #   hooks:
+  #     - id: tfsec

@@ -1,0 +1,115 @@
+{
+  "_comment": "Traduceri RO pentru valorile din feed-ul MASCOT. Cheia = textul exact din feed. Scriptul de asamblare se opreste daca lipseste o cheie. Certificari: code = marcajul afisat pe site, label = explicatia in romana (gol = fara explicatie).",
+  "colours": {
+    "navy": "bleumarin",
+    "dark navy": "bleumarin închis",
+    "red": "roșu",
+    "white": "alb",
+    "black": "negru",
+    "deep black": "negru intens",
+    "dark anthracite": "antracit închis",
+    "anthracite": "antracit",
+    "grass green": "verde iarbă",
+    "light blue": "albastru deschis",
+    "hi-vis orange/dark navy": "portocaliu fluorescent / bleumarin închis"
+  },
+  "certifications": {
+    "OEKO-TEX® STANDARD 100": {
+      "code": "OEKO-TEX® STANDARD 100",
+      "label": "Textile testate pentru substanțe nocive."
+    },
+    "EN ISO 20471 - class 3": {
+      "code": "EN ISO 20471, clasa 3",
+      "label": "Îmbrăcăminte de avertizare cu vizibilitate ridicată; clasa 3 este cel mai înalt nivel."
+    },
+    "Hi-Vis Group A": {
+      "code": "Grupa Hi-Vis A (MASCOT)",
+      "label": "Sistemul MASCOT de combinare: litera de pe etichetă îți arată cu ce piese reflectorizante MASCOT pentru partea de jos poți forma un set certificat EN ISO 20471."
+    },
+    "EN 342 3/WP (2.01 clo)": {
+      "code": "EN 342 3/WP (2,01 clo)",
+      "label": "Protecție împotriva frigului: izolație termică 2,01 clo, permeabilitate la aer clasa 3, rezistență la penetrarea apei (WP)."
+    },
+    "EN 343 4-1-X": {
+      "code": "EN 343 4-1-X",
+      "label": "Protecție împotriva ploii: rezistență la penetrarea apei clasa 4, rezistență la vapori de apă clasa 1; testul în turnul de ploaie nu a fost efectuat (X)."
+    },
+    "ProWash® - EN ISO 15797": {
+      "code": "ProWash®, EN ISO 15797",
+      "label": "Testat pentru spălare industrială conform EN ISO 15797."
+    },
+    "HACCP DIN 10524": {
+      "code": "DIN 10524",
+      "label": "Aprobat conform DIN 10524, standardul pentru îmbrăcămintea de lucru din industria alimentară."
+    },
+    "HACCP": {
+      "code": "HACCP",
+      "label": "Respectă principiile HACCP."
+    },
+    "Safety Class S3S": {
+      "code": "S3S",
+      "label": "Clasa de protecție S3S: bombeu de protecție, protecție la perforare nemetalică testată cu cui de 3 mm, față rezistentă la apă."
+    },
+    "Slip resistant (SR)": {
+      "code": "SR",
+      "label": "Rezistență la alunecare."
+    },
+    "Oil and fuel resistant sole (FO)": {
+      "code": "FO",
+      "label": "Talpă rezistentă la uleiuri și combustibili."
+    },
+    "Electrostatic discharge (ESD)": {
+      "code": "ESD",
+      "label": "Disipare electrostatică, pentru zone cu componente sensibile la descărcări electrostatice."
+    },
+    "EN ISO 20345: 2022": {
+      "code": "EN ISO 20345:2022",
+      "label": "Standardul european pentru încălțămintea de protecție, ediția 2022."
+    }
+  },
+  "care": {
+    "Max. 40° C": "Spălare la max. 40 °C",
+    "Warm wash, max. 60° C": "Spălare la max. 60 °C",
+    "Do not bleach": "Nu se folosește înălbitor",
+    "Do not tumble-dry": "Nu se usucă în uscător",
+    "Tumble-dry - initial temperature max. 80° C": "Uscare în uscător, temperatura inițială max. 80 °C",
+    "Do not iron": "Nu se calcă",
+    "Iron at moderate temperature, max. 150° C": "Călcare la temperatură medie, max. 150 °C",
+    "Normal dry cleaning": "Curățare chimică normală",
+    "Do not dry-clean": "Nu se curăță chimic",
+    "FT088-980-88 Impregnation Spray": "Întreținere cu spray de impregnare MASCOT FT088"
+  },
+  "materials": {
+    "polyester": "poliester",
+    "cotton": "bumbac",
+    "elastane": "elastan",
+    "elastolefin": "elastolefină",
+    "viscose": "viscoză",
+    "Leather": "Piele"
+  },
+  "logoPositions": {
+    "Left breast": "Piept stânga",
+    "Right breast": "Piept dreapta",
+    "Over left breast pocket": "Deasupra buzunarului stâng de la piept",
+    "Over right breast pocket": "Deasupra buzunarului drept de la piept",
+    "Right breast pocket": "Buzunarul drept de la piept",
+    "Mid-back": "Mijlocul spatelui",
+    "On the nape": "Ceafă",
+    "Horizontal on right sleeve": "Mâneca dreaptă, orizontal",
+    "Horizontal on left sleeve": "Mâneca stângă, orizontal",
+    "Left back pocket": "Buzunarul stâng din spate",
+    "Right back pocket": "Buzunarul drept din spate",
+    "Vertical on left thigh, read from the bottom upwards": "Coapsa stângă, vertical",
+    "Horizontal on left thigh": "Coapsa stângă, orizontal",
+    "Vertical on right thigh, read from the top downwards": "Coapsa dreaptă, vertical",
+    "Horizontal on right thigh": "Coapsa dreaptă, orizontal",
+    "Horizontal on left calf": "Gamba stângă, orizontal",
+    "Horizontal on right calf": "Gamba dreaptă, orizontal",
+    "Vertical on left calf, read from the bottom upwards": "Gamba stângă, vertical",
+    "Vertical on right calf, read from the top downwards": "Gamba dreaptă, vertical"
+  },
+  "logoPositionsSkip": [
+    "Left flip",
+    "Right flip"
+  ]
+}

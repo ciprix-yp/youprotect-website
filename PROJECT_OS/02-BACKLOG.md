@@ -114,6 +114,7 @@ Format task:
 - Owner: `-`
 - Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer. + social links footer + `sameAs` (cod pregătit în `src/lib/site.ts`, doar URL-uri lipsă).
 - Acceptance: CTA-urile navigaționale sunt `<a>`; paleta folosește tokeni `yp-*`; build PASS + verificare vizuală în browser.
+- Găsit la ui-verify (11.11.2026), existent și live: homepage cu derulare orizontală (451 px pe mobil, 1356 px pe desktop; cardurile animate din „Achiziții dezorganizate” + header fix), micro-text 9–11 px în `ProductCard` și în hero-ul `/produse`, contrast insuficient și linkuri distinse doar prin culoare în intro-ul `/produse`, linkuri din footer sub 24 px.
 - Dependencies: none.
 - Next action: PR separat (necesită verificare vizuală, de aceea a fost amânat de la fix-ul SEO).
 
@@ -140,6 +141,49 @@ Format task:
 - Acceptance: GBP optimizat pentru Maps Pack; recenzii noi.
 - Dependencies: none.
 - Next action: GBP dashboard + secvență WhatsApp.
+
+
+### CAT-001
+- Status: `DONE`
+- Owner: `Claude`
+- Scope: Catalog din fișiere de date: 5 produse MASCOT, flux extract → texte RO → asamblare, ghid de conținut + verificare automată; `/produse` și `/produse/[slug]` citesc din colecție (doar `published`), `/preview/produse/` pentru orice status (noindex).
+- Rezultat (11.11.2026): Directus scos complet (`src/lib/directus.ts`, `src/lib/catalog.ts`, `@directus/sdk`, scripturi vechi); filtrele `/produse` pornesc din date reale (categorii, industrii multiple, recomandare rapidă); testimoniale din `src/data/testimonials.json` (gol, ca și live); 301 pentru cele 6 slug-uri demo vechi; pagina 404 (înainte, orice URL inexistent dădea 200 cu homepage-ul).
+- Acceptance: build PASS; lint texte 0 erori; test browser filtre 10/10 PASS; ui-verify fără regresii față de live.
+- Next action: merge după SEC-001 + SEC-002.
+
+### CAT-002
+- Status: `DONE`
+- Owner: `Claude`
+- Scope: Imagini găzduite de noi din MASCOT Picturepark (sesiune de oaspete, fără cont), prin `scripts/catalog/fetch_images_mascot.py`.
+- Rezultat (11.11.2026): 253 de fișiere WebP, 3,6 MB, în `public/images/products/<slug>/`. Culoarea principală: galerie (PS, P01, P04, P07, P13, P19) + 24 de cadre 360° (`-spin-`); celelalte culori: P01, P07, P13. Fără hotlink la pozele Mascot (documentele PDF rămân pe CDN-ul Mascot).
+- Note: denumirile din Picturepark variază (`_P01.jpg` și `" P01"`); mostrele de culoare SVG nu se găzduiesc (risc XSS), butonul afișează doar numele (ex. 51587 bleumarin 01).
+- Acceptance: build PASS; ui-verify fără cereri eșuate; test în browser pentru schimbarea culorii și a miniaturilor: 7/7 PASS.
+- Next action: viewer 360° (I-2026-11-11-01), apoi mutarea `/produse` pe colecția nouă.
+
+### CAT-003
+- Status: `BLOCKED`
+- Owner: `User`
+- Scope: Date de produs Sir Safety (poze, fișe tehnice, descrieri) pentru produsele recurente din vânzări (Sirflex, Piquet, Gemini Guard, Contender, Tonga, Harrison, Manhattan…).
+- Acceptance: export sau acces la portalul B2B `sirweb.sirsafety.com`.
+- Dependencies: acces de la Sir Safety.
+- Next action: user verifică exportul din portalul B2B sau cere date de la contactul Sir Safety.
+
+
+### SEC-001
+- Status: `TODO`
+- Owner: `Claude` + `User` (decizie + test pe DB)
+- Scope: Conexiunile Postgres nu verifică certificatul TLS (`rejectUnauthorized: false`) în `functions/api/leads.js`, `functions/api/submit-lead.js` și `src/lib/catalog.ts`. Semgrep `bypass-tls-verification`: CI `semgrep` va fi roșu până la rezolvare.
+- Acceptance: conexiune cu verificare TLS (CA Railway sau Hyperdrive fără opțiunea de bypass), testată pe formularul de lead; `src/lib/catalog.ts` dispare după mutarea `/produse` pe colecția nouă.
+- Dependencies: acces de test la DB; CAT-001 pentru `catalog.ts`.
+- Next action: verificat cum se conectează Hyperdrive la Railway și ce certificat expune Railway.
+
+### SEC-002
+- Status: `TODO`
+- Owner: `Claude`
+- Scope: Dependențe vulnerabile (npm audit: 1 critică, 13 high, în lanțul Astro 4 + `@astrojs/sitemap`). CI `dependencies` (OSV) va fi roșu până la upgrade.
+- Acceptance: upgrade Astro (versiune majoră) + integrări; build PASS; verificare vizuală; OSV fără high/critical.
+- Dependencies: preferabil după CAT-001 (paginile `/produse` pe colecția nouă).
+- Next action: branch separat de upgrade, cu ghidul de migrare Astro.
 
 ---
 

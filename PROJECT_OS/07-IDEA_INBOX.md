@@ -112,3 +112,13 @@ Scop: capturam ideile noi fara sa rupem executia taskului curent.
 - Decizie PM: `accept`
 - Executie: `src/pages/produse/index.astro`
 - Note: Bara apare doar dupa selectie produse si include `Cere oferta` + `Discuta`.
+
+## I-2026-11-11-01
+- Status: `TRIAGED`
+- Source: `user`
+- Sugestie: Vizualizare 360° pe fișa de produs: utilizatorul rotește produsul cu mouse-ul sau cu degetul.
+- Impact: `ux|conversie`
+- Task tinta: pilot catalog (`feature/catalog-pilot-mascot`), după pasul „imagini găzduite de noi” (Picturepark).
+- Decizie PM: `accept` (amânat până după imagini; nice to have, nu blocant)
+- Executie: -
+- Note: MASCOT are în Picturepark 24 de cadre pe culoare (P01–P24, pas de 15°, verificat pe 19035-449-14010: P01 față, P07 lateral, P13 spate, P19 lateral). Se poate face doar rotire orizontală; 3D complet (sus/jos) ar cere un model 3D, care nu există. Cost mic: componentă proprie fără dependențe, cadrele se încarcă doar la prima interacțiune. Util mai ales pentru spate (zona de logo, benzi reflectorizante). Rolul produselor rămâne magnet de lead (fără coș); 360° susține „Cere ofertă”, nu îl înlocuiește.

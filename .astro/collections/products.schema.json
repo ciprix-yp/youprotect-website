@@ -1,0 +1,470 @@
+{
+  "$ref": "#/definitions/products",
+  "definitions": {
+    "products": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "review",
+            "published"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 5
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "reflectorizante",
+            "geci-jachete",
+            "tricouri-polo",
+            "pantaloni",
+            "camasi",
+            "incaltaminte"
+          ]
+        },
+        "industries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "constructii",
+              "logistica",
+              "productie",
+              "alimentar",
+              "corporate",
+              "energie"
+            ]
+          },
+          "minItems": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 60,
+          "maxLength": 220
+        },
+        "description": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 40
+          },
+          "minItems": 1
+        },
+        "benefits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 3,
+          "maxItems": 7
+        },
+        "specs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 3
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "certifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "care": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "colours": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "swatch": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^\\/images\\/products\\/[a-z0-9-]+\\/[A-Za-z0-9_-]+\\.webp$"
+                      },
+                      {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^https\\:\\/\\/"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "src": {
+                      "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                    },
+                    "thumb": {
+                      "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                    },
+                    "view": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "src",
+                    "thumb",
+                    "view"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              },
+              "spin": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0"
+                },
+                "default": []
+              }
+            },
+            "required": [
+              "code",
+              "name",
+              "swatch",
+              "images"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "otherColoursCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sizes": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string"
+            },
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "table": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "size": {
+                    "type": "string"
+                  },
+                  "measure": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "leg": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "size",
+                  "measure"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "summary",
+            "values",
+            "table",
+            "note"
+          ],
+          "additionalProperties": false
+        },
+        "personalization": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "placements": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "position": {
+                        "type": "string"
+                      },
+                      "maxSize": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "position",
+                      "maxSize"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "special": {
+                  "type": "boolean"
+                },
+                "hiVisNote": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "placements",
+                "special",
+                "hiVisNote"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "fisa-tehnica",
+                  "declaratie-conformitate"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "url": {
+                "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0/anyOf/1"
+              },
+              "language": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "label",
+              "url",
+              "language"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "faq": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "pattern": "\\?$"
+              },
+              "a": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "q",
+              "a"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 3,
+          "maxItems": 6
+        },
+        "seo": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "description": {
+              "type": "string",
+              "minLength": 70,
+              "maxLength": 160
+            }
+          },
+          "required": [
+            "title",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        "supplier": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "MASCOT",
+                "Sir Safety",
+                "Portwest"
+              ]
+            },
+            "brand": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "range": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "productUrl": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/products/properties/colours/items/properties/swatch/anyOf/0/anyOf/1"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "brand",
+            "model",
+            "range",
+            "productUrl"
+          ],
+          "additionalProperties": false
+        },
+        "reviewNotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "feed": {
+              "type": "string"
+            },
+            "assembledAt": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "feed",
+            "assembledAt"
+          ],
+          "additionalProperties": false
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "name",
+        "category",
+        "industries",
+        "summary",
+        "description",
+        "benefits",
+        "specs",
+        "certifications",
+        "care",
+        "colours",
+        "otherColoursCount",
+        "sizes",
+        "personalization",
+        "documents",
+        "faq",
+        "seo",
+        "supplier",
+        "source"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

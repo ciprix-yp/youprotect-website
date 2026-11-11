@@ -26,6 +26,14 @@ export const SITE = {
   },
 } as const;
 
+// Oferta „testare fără riscuri”, afișată pe fișele de produs. Confirmată de You Protect pe 11.11.2026.
+export const RISK_FREE_TESTING = {
+  title: "Testezi fără riscuri",
+  text: "Înainte de decizia finală, poți testa produsele cu echipa ta, în condiții reale de lucru. Testarea are garanția banilor înapoi în 90 de zile.",
+  href: "/cum-lucram/",
+  linkLabel: "Vezi cum lucrăm",
+} as const;
+
 // Profiluri sociale pentru footer + schema `sameAs`.
 // Gol acum (doar WhatsApp). Completează cu URL-uri reale când există;
 // codul le afișează automat și le adaugă în sameAs.

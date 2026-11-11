@@ -1,53 +1,32 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProductCard from "../../components/products/ProductCard.astro";
-import { getCatalogProducts } from "../../lib/catalog";
-import { getDirectusProducts } from "../../lib/directus";
+import { CATEGORIES, INDUSTRIES } from "../../lib/catalog-taxonomy";
 
-let products: any[] = [];
-let mode = "live";
-let warning: string | null = null;
+// Catalogul vine din src/content/products/ (doar produsele publicate), nu din Directus sau DB.
+const roCollator = new Intl.Collator("ro", { sensitivity: "base" });
+const entries = (
+  await getCollection("products", ({ data }) => data.status === "published")
+).sort((a, b) => roCollator.compare(a.data.name, b.data.name));
 
-try {
-  let dbProducts: any[] = [];
-  const dbResult = await getCatalogProducts();
-  dbProducts = dbResult.products;
-  mode = dbResult.mode;
-  warning = dbResult.warning;
-
-  const directusData = await getDirectusProducts();
-  if (directusData && directusData.length > 0) {
-    const directusMapped = directusData.map((dp: any) => ({
-      id: dp.id,
-      slug: dp.slug,
-      name: dp.name,
-      description: dp.description || "",
-      shortDescription: dp.description || "",
-      thumbnailUrl: dp.cover_image_url || null,
-      topCategory: dp.category_name || "Generala",
-      professionTags: [],
-      featured: dp.is_featured || false,
-      categoryName: dp.category_name || "Catalog general",
-      industry: dp.industry || null,
-      categorySlug: (dp.category_name || "general")
-        .toLowerCase()
-        .replace(/\s+/g, "-"),
-      producatorName: "You Protect",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      merchandisingTags: dp.is_featured ? ["Bestseller"] : [],
-      supplierSku: dp.supplier_sku || null,
-    }));
-    products = [...directusMapped, ...dbProducts];
-  } else {
-    products = dbProducts;
-  }
-} catch (e) {
-  const dbResult = await getCatalogProducts();
-  products = dbResult.products;
-  mode = dbResult.mode;
-  warning = dbResult.warning;
-}
+const products = entries.map(({ id, data }) => {
+  const industries = data.industries.map((key) => INDUSTRIES[key]);
+  return {
+    id,
+    slug: id,
+    name: data.name,
+    shortDescription: data.summary,
+    thumbnailUrl: data.colours[0].images[0].src,
+    featured: false,
+    categoryName: CATEGORIES[data.category],
+    industry: industries.join(", "),
+    industries,
+    producatorName: data.supplier.brand,
+    createdAt: data.source.assembledAt,
+    merchandisingTags: [] as string[],
+  };
+});
 
 const categoryCountMap = new Map<string, number>();
 for (const product of products) {
@@ -61,9 +40,8 @@ const categorySummary = [...categoryCountMap.entries()]
 
 const industryCountMap = new Map<string, number>();
 for (const product of products) {
-  if (product.industry) {
-    const currentCount = industryCountMap.get(product.industry) ?? 0;
-    industryCountMap.set(product.industry, currentCount + 1);
+  for (const industry of product.industries) {
+    industryCountMap.set(industry, (industryCountMap.get(industry) ?? 0) + 1);
   }
 }
 
@@ -90,6 +68,16 @@ const seasonalCount = products.filter((product) =>
 ).length;
 
 const hasProducts = products.length > 0;
+const hasTags = products.some((product) => product.merchandisingTags.length > 0);
+const hasDistinctDates = new Set(products.map((product) => product.createdAt)).size > 1;
+
+// „Recomandare rapidă”: doar opțiunile pentru care există produse.
+const recommendOptions = [
+  { label: "Pentru șantier", industry: INDUSTRIES.constructii },
+  { label: "Pentru producție", industry: INDUSTRIES.productie },
+  { label: "Pentru logistică", industry: INDUSTRIES.logistica },
+  { label: "Pentru industria alimentară", industry: INDUSTRIES.alimentar },
+].filter((option) => industryCountMap.has(option.industry));
 ---
 
 <BaseLayout
@@ -169,14 +157,6 @@ const hasProducts = products.length > 0;
   </section>
 
   <section class="max-w-7xl mx-auto px-4 py-8 md:py-16">
-    {
-      mode === "degraded" && (
-        <div class="mb-8 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
-          Catalogul nu a putut fi incarcat din DB in acest build. Motiv:{" "}
-          {warning ?? "necunoscut"}
-        </div>
-      )
-    }
 
     <div class="flex flex-col lg:flex-row gap-10">
       <!-- Sidebar Filters (Desktop) & Collapsible (Mobile) -->
@@ -249,20 +229,14 @@ const hasProducts = products.length > 0;
               >
                 Toate Categoriile
               </button>
-              {[
-                "Îmbrăcăminte de lucru",
-                "Încălțăminte de protecție",
-                "Mănuși de protecție",
-                "Protecție cap, față și auz",
-                "Protecție respiratorie",
-                "Lucru la înălțime"
-              ].map((catName) => (
+              {categorySummary.map(({ name: catName, count }) => (
                 <button
                   type="button"
                   data-category-filter={catName}
                   class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
                 >
                   {catName}
+                  <span class="text-xs text-yp-white/40">{count}</span>
                 </button>
               ))}
             </div>
@@ -280,19 +254,14 @@ const hasProducts = products.length > 0;
               >
                 Toate Industriile
               </button>
-              {[
-                "Construcții și instalații",
-                "Logistică și depozitare",
-                "Producție și manufactură",
-                "Energie și utilități",
-                "Servicii tehnice"
-              ].map((indName) => (
+              {industrySummary.map(({ name: indName, count }) => (
                 <button
                   type="button"
                   data-industry-filter={indName}
                   class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
                 >
                   {indName}
+                  <span class="text-xs text-yp-white/40">{count}</span>
                 </button>
               ))}
             </div>
@@ -310,15 +279,10 @@ const hasProducts = products.length > 0;
               >
                 Fără recomandare specifică
               </button>
-              {[
-                "Pentru șantier",
-                "Pentru producție",
-                "Pentru logistică",
-                "Pentru lucru la înălțime"
-              ].map((recName) => (
+              {recommendOptions.map(({ label: recName, industry }) => (
                 <button
                   type="button"
-                  data-recommend-filter={recName}
+                  data-recommend-filter={industry}
                   class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
                 >
                   {recName}
@@ -327,6 +291,7 @@ const hasProducts = products.length > 0;
             </div>
           </div>
 
+          {hasTags && (
           <div class="mb-6 pb-6 border-b border-yp-white/10">
             <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
               Curatoriat
@@ -362,6 +327,7 @@ const hasProducts = products.length > 0;
               </button>
             </div>
           </div>
+          )}
 
           <div>
             <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
@@ -375,13 +341,13 @@ const hasProducts = products.length > 0;
               >
                 Relevanță
               </button>
-              <button
+              {hasDistinctDates && <button
                 type="button"
                 data-sort-filter="new"
                 class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors"
               >
                 Noutăți
-              </button>
+              </button>}
               <button
                 type="button"
                 data-sort-filter="az"
@@ -437,7 +403,7 @@ const hasProducts = products.length > 0;
                     data-search-text={`${product.name} ${product.categoryName} ${product.industry || ""} ${product.shortDescription}`.toLowerCase()}
                     data-original-index={index}
                     data-category={product.categoryName}
-                    data-industry={product.industry || ""}
+                    data-industries={`|${product.industries.join("|")}|`}
                     data-is-bestseller={
                       hasExactTag(product, "bestseller") ? "1" : "0"
                     }
@@ -527,14 +493,6 @@ const hasProducts = products.length > 0;
       let activeSort = "relevance";
       let searchQuery = "";
 
-      // Quick Reccomendation Mappings
-      const recommendMapping = {
-        "Pentru șantier": ["Construcții și instalații"],
-        "Pentru producție": ["Producție și manufactură"],
-        "Pentru logistică": ["Logistică și depozitare"],
-        "Pentru lucru la înălțime": ["Servicii tehnice", "Construcții și instalații"]
-      };
-
       const matchesTag = (item) => {
         if (activeTag === "all") return true;
         if (activeTag === "bestseller")
@@ -599,19 +557,17 @@ const hasProducts = products.length > 0;
 
         catalogItems.forEach((item) => {
           const category = item.getAttribute("data-category") || "";
-          const industry = item.getAttribute("data-industry") || "";
+          const industries = item.getAttribute("data-industries") || "";
 
           const categoryMatch =
             activeCategory === "all" || category === activeCategory;
 
           const industryMatch =
-            activeIndustry === "all" || industry === activeIndustry;
+            activeIndustry === "all" || industries.includes(`|${activeIndustry}|`);
 
-          let recommendMatch = true;
-          if (activeRecommend !== "all") {
-             const allowedIndustries = recommendMapping[activeRecommend] || [];
-             recommendMatch = allowedIndustries.includes(industry);
-          }
+          // „Recomandare rapidă” filtrează tot după industrie (valoarea butonului = industria).
+          const recommendMatch =
+            activeRecommend === "all" || industries.includes(`|${activeRecommend}|`);
 
           const tagMatch = matchesTag(item);
 
@@ -778,14 +734,13 @@ const hasProducts = products.length > 0;
   <!-- CTA Sticky Footer Block for Catalog -->
   <section class="py-20 lg:py-28 bg-[#050505] border-t border-yp-white/10 mt-12 relative overflow-hidden">
      <!-- Decorative Background Element -->
-    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-screen bg-[url('/grain.png')]"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"></div>
     <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-yp-white">
       <h2 class="text-3xl md:text-4xl font-light mb-6">Nu trebuie să alegi singur <span class="font-medium text-yp-yellow">dintre zeci de variante</span></h2>
       <p class="text-yp-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
         Alege mai simplu cu ajutorul unei recomandări clare. Spune-ne ce tip de activitate ai, în ce condiții lucrează echipa și ce standard vrei să atingi, iar noi îți propunem o selecție potrivită.
       </p>
-      
+
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <button
             class="bg-yp-yellow text-yp-black h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"

@@ -1,5 +1,17 @@
 # Session Handoff
 
+## ⚠️ Sesiunea 2026-11-11: pilot catalog (citește întâi)
+
+- Branch: `feature/catalog-pilot-mascot` (PR #10). `main` e protejat de ruleset-ul „main: security gates”; merge doar cu toate verificările verzi.
+- Livrat pe branch: pilot 5 produse MASCOT, flux catalog în `scripts/catalog/`, texte în `catalog/texts/`, ghid `08-GHID_CONTINUT.md`, previzualizare `/preview/produse/`.
+- Rulare: `python3 -I scripts/catalog/extract_mascot.py <feed.xlsx> .catalog-work/mascot <modele…> --colours <comenzi.csv>`, apoi `python3 -I scripts/catalog/assemble_mascot.py .catalog-work/mascot catalog/texts/mascot catalog/maps/mascot-ro.json src/content/products`, apoi `npm run build`.
+- Imagini (după extragere): `uv run --no-project --with pillow python -I scripts/catalog/fetch_images_mascot.py .catalog-work/mascot catalog/texts/mascot .catalog-work/images/mascot public/images/products`, apoi din nou asamblarea. Originalele rămân în `.catalog-work/images/` (local).
+- Feed-urile furnizorilor stau în afara repo-ului (`~/Projects/postgres-railway-projects/Liste Preturi/`); `.catalog-work/` e ignorat de git. Repo-ul e public: fără prețuri și fără date de vânzări în repo.
+- Făcut: CAT-001 (`/produse` pe colecție, Directus scos, 404, redirecturi) și CAT-002 (imagini). Verificat pe staging.
+- Urmează: SEC-002 (upgrade Astro), SEC-001 (TLS în `functions/api/leads.js` și `submit-lead.js`), apoi merge PR #10. Opțional: viewer 360° (I-2026-11-11-01). Blocat: CAT-003 (date Sir Safety).
+- GitHub: PR #10 (draft), branch `staging` → https://staging.youprotect-website.pages.dev, `STAGING_URL` setat, ruleset „main: security gates” activ (main blocat până la SEC-001 + SEC-002).
+- Node: build-ul a rulat cu Node 22 (`mise exec node@22.23.4 -- npm run build`); proiectul nu are încă `.mise.toml`.
+
 ## Ultimul update
 
 - Data: `2026-06-24`

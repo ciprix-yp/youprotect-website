@@ -1,0 +1,22 @@
+---
+// Pagina 404. Fără ea, Cloudflare Pages răspunde 200 cu homepage-ul la orice URL inexistent (soft 404).
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Pagina nu a fost găsită" description="Pagina căutată nu există sau a fost mutată." noindex>
+  <section class="max-w-3xl mx-auto px-4 pt-40 pb-24 text-center">
+    <p class="text-xs uppercase tracking-[0.2em] text-yp-yellow mb-4">Eroare 404</p>
+    <h1 class="text-3xl md:text-4xl font-light text-yp-white">Pagina nu a fost găsită</h1>
+    <p class="mt-4 text-yp-white/70 leading-relaxed">
+      Adresa nu mai există sau a fost mutată. Poți căuta în catalog sau ne poți spune direct de ce are nevoie echipa ta.
+    </p>
+    <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/produse/" class="inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-semibold text-sm uppercase tracking-widest hover:bg-yp-white transition-colors">
+        Vezi catalogul
+      </a>
+      <a href="/cere-oferta/" class="inline-flex items-center justify-center px-8 py-4 border border-yp-white/30 text-yp-white text-sm uppercase tracking-widest hover:border-yp-yellow hover:text-yp-yellow transition-colors">
+        Cere ofertă
+      </a>
+    </div>
+  </section>
+</BaseLayout>

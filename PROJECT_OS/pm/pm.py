@@ -222,7 +222,8 @@ def cmd_close(args: argparse.Namespace) -> int:
 
 
 def run_cmd(cmd: List[str], cwd: Path) -> Tuple[int, str, str]:
-    proc = subprocess.run(cmd, cwd=str(cwd), text=True, capture_output=True)
+    # Callers pass fixed argv lists (git/npm/python3), no shell and no user input.
+    proc = subprocess.run(cmd, cwd=str(cwd), text=True, capture_output=True)  # noqa: S603
     return proc.returncode, proc.stdout, proc.stderr
 
 

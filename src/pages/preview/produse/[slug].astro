@@ -1,0 +1,22 @@
+---
+// Previzualizare fișă de produs, pentru orice status (draft, review, published). Nu se indexează, nu e în sitemap.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProductDetail from '../../../components/products/ProductDetail.astro';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'products'>;
+}
+
+const { entry } = Astro.props;
+const p = entry.data;
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} ogType="product" ogImage={p.colours[0].images[0].src} noindex>
+  <ProductDetail entry={entry} preview />
+</BaseLayout>

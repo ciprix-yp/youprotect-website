@@ -1,0 +1,6 @@
+{
+  "git.allowNoVerifyCommit": false,
+  "sonarlint.focusOnNewCode": true,
+  "semgrep.scan.configuration": ["p/default", ".semgrep/"],
+  "semgrep.scan.onlyGitDirty": true
+}

@@ -35,7 +35,7 @@ def run():
         result_json_str = data.get("resultJson", "{}")
         try:
             result_json = json.loads(result_json_str)
-        except:
+        except json.JSONDecodeError:
             result_json = {}
             
         result_urls = result_json.get("resultUrls", [])
