@@ -1,0 +1,413 @@
+---
+// Fișa de produs: folosită de /produse/[slug] (public) și /preview/produse/[slug] (previzualizare, noindex).
+// Conținutul vine din src/content/products/ (generat de scripts/catalog/assemble_*.py).
+import type { CollectionEntry } from 'astro:content';
+import { CATEGORIES, INDUSTRIES, INDUSTRY_PAGES } from '../../lib/catalog-taxonomy';
+import { jsonLd } from '../../lib/json-ld';
+import { RISK_FREE_TESTING } from '../../lib/site';
+
+interface Props {
+  entry: CollectionEntry<'products'>;
+  preview?: boolean;
+}
+
+const { entry, preview = false } = Astro.props;
+const p = entry.data;
+const slug = entry.id;
+const categoryLabel = CATEGORIES[p.category];
+const primary = p.colours[0];
+const mainImage = primary.images[0].src;
+const offerHref = `/cere-oferta/?ref=${encodeURIComponent(`/produse/${slug}/`)}`;
+const hasMeasures = p.sizes.table.some((row) => row.measure);
+const hasLeg = p.sizes.table.some((row) => row.leg);
+// „1 culoare”, „8 culori”, „20 de culori”: „de” apare când PluralRules('ro') întoarce „other”.
+const n = p.otherColoursCount;
+const otherColoursLabel =
+  n === 1
+    ? 'Încă o culoare disponibilă la cerere.'
+    : `Încă ${n} ${new Intl.PluralRules('ro').select(n) === 'other' ? 'de ' : ''}culori disponibile la cerere.`;
+
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: p.name,
+  description: p.summary,
+  image: p.colours.flatMap((c) => c.images.map((img) => new URL(img.src, siteOrigin).href)).slice(0, 10),
+  brand: { '@type': 'Brand', name: p.supplier.name },
+  mpn: p.supplier.model,
+  category: categoryLabel,
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: p.faq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Acasă', item: siteOrigin.href },
+    { '@type': 'ListItem', position: 2, name: 'Catalog', item: new URL('/produse/', siteOrigin).href },
+    { '@type': 'ListItem', position: 3, name: p.name, item: new URL(`/produse/${slug}/`, siteOrigin).href },
+  ],
+};
+
+const catalogHref = preview ? '/preview/produse/' : '/produse/';
+const catalogLabel = preview ? 'Catalog (previzualizare)' : 'Catalog';
+
+const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4';
+---
+
+<script type="application/ld+json" set:html={jsonLd(productSchema)} />
+<script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+<script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
+
+<section class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+  {preview && (
+  <div class="mb-8 border border-yp-yellow/40 bg-yp-yellow/10 px-4 py-3 text-sm text-yp-white/90">
+    <p>
+      <strong class="text-yp-yellow">Previzualizare, nepublicat.</strong>
+      Status: {p.status}. Textele sunt scrise din datele {p.supplier.name}; verifică-le înainte de aprobare.
+    </p>
+    {p.reviewNotes.length > 0 && (
+      <ul class="mt-2 list-disc pl-5 text-yp-white/80">
+        {p.reviewNotes.map((note) => <li>{note}</li>)}
+      </ul>
+    )}
+  </div>
+  )}
+
+  <nav aria-label="Breadcrumb" class="text-xs uppercase tracking-widest text-yp-white/60 mb-6 flex flex-wrap items-center">
+    <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
+    <span class="mx-2" aria-hidden="true">/</span>
+    <a href={catalogHref} class="inline-block py-2 hover:text-yp-yellow transition-colors">{catalogLabel}</a>
+    <span class="mx-2" aria-hidden="true">/</span>
+    <span class="text-yp-white">{categoryLabel}</span>
+  </nav>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <!-- Galerie -->
+    <div class="min-w-0">
+      <div class="bg-white aspect-square flex items-center justify-center">
+        <img
+          id="gallery-main"
+          src={mainImage}
+          alt={`${p.name}, ${primary.name}`}
+          width="1000"
+          height="1000"
+          class="w-full h-full object-contain p-6"
+          fetchpriority="high"
+        />
+      </div>
+      <div id="gallery-thumbs" class="mt-3 flex gap-2 overflow-x-auto pb-2" aria-label="Alte imagini">
+        {primary.images.map((img, i) => (
+          <button
+            type="button"
+            class="thumb shrink-0 w-20 h-20 bg-white border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
+            data-src={img.src}
+            aria-label={`Imaginea ${i + 1}`}
+            aria-current={i === 0 ? 'true' : 'false'}
+          >
+            <img src={img.thumb} alt="" width="80" height="80" loading="lazy" class="w-full h-full object-contain p-1" />
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Rezumat + CTA -->
+    <div class="min-w-0 flex flex-col gap-6">
+      <header>
+        <p class="text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow mb-3">{categoryLabel}</p>
+        <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{p.name}</h1>
+        <p class="mt-2 text-sm text-yp-white/50">
+          {p.supplier.brand} · cod {p.supplier.model}{p.supplier.range && ` · gama ${p.supplier.range}`}
+        </p>
+        <p class="mt-4 text-base text-yp-white/80 leading-relaxed">{p.summary}</p>
+      </header>
+
+      {p.certifications.length > 0 && (
+        <ul class="flex flex-wrap gap-2" aria-label="Certificări">
+          {p.certifications.map((c) => (
+            <li class="px-3 py-1.5 border border-yp-white/20 text-xs text-yp-white/80">{c.code}</li>
+          ))}
+        </ul>
+      )}
+
+      <div>
+        <h2 class={sectionTitle}>Culori prezentate ({p.colours.length})</h2>
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Alege culoarea">
+          {p.colours.map((c, i) => (
+            <button
+              type="button"
+              class="swatch flex items-center gap-2 px-3 py-2.5 border border-yp-white/20 aria-[pressed=true]:border-yp-yellow text-xs text-yp-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
+              data-images={JSON.stringify(c.images)}
+              data-name={c.name}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+            >
+              {c.swatch && <img src={c.swatch} alt="" width="20" height="20" class="w-5 h-5 rounded-full object-cover" />}
+              <span>{c.name}</span>
+            </button>
+          ))}
+        </div>
+        {p.otherColoursCount > 0 && (
+          <p class="mt-2 text-xs text-yp-white/50">{otherColoursLabel}</p>
+        )}
+      </div>
+
+      <div>
+        <h2 class={sectionTitle}>Mărimi</h2>
+        <p class="text-yp-white">{p.sizes.summary}</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <a
+          href={offerHref}
+          class="inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-semibold text-sm uppercase tracking-widest hover:bg-yp-white transition-colors"
+        >
+          Cere ofertă
+        </a>
+        <a
+          href="/programeaza-discutie/"
+          class="inline-flex items-center justify-center px-8 py-4 border border-yp-white/30 text-yp-white text-sm uppercase tracking-widest hover:border-yp-yellow hover:text-yp-yellow transition-colors"
+        >
+          Discută cu un consultant
+        </a>
+      </div>
+
+      <div class="border border-yp-white/15 p-4 flex gap-3">
+        <svg class="w-5 h-5 shrink-0 text-yp-yellow mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+        <div>
+          <p class="text-sm font-medium text-yp-white">{RISK_FREE_TESTING.title}</p>
+          <p class="mt-1 text-sm text-yp-white/70 leading-relaxed">{RISK_FREE_TESTING.text}</p>
+          <a href={RISK_FREE_TESTING.href} class="inline-block py-2 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
+            {RISK_FREE_TESTING.linkLabel}
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h2 class={sectionTitle}>Recomandat pentru</h2>
+        <ul class="flex flex-wrap gap-2">
+          {p.industries.map((key) => (
+            <li>
+              {INDUSTRY_PAGES[key] ? (
+                <a href={INDUSTRY_PAGES[key]} class="inline-block px-3 py-2.5 bg-yp-white/5 text-xs text-yp-white/80 hover:text-yp-yellow">
+                  {INDUSTRIES[key]}
+                </a>
+              ) : (
+                <span class="inline-block px-3 py-2.5 bg-yp-white/5 text-xs text-yp-white/80">{INDUSTRIES[key]}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-14">
+    <section class="min-w-0">
+      <h2 class={sectionTitle}>Descriere</h2>
+      <div class="space-y-4 text-yp-white/80 leading-relaxed">
+        {p.description.map((para) => <p>{para}</p>)}
+      </div>
+      {p.notes.length > 0 && (
+        <div class="mt-6 border-l-2 border-yp-white/30 pl-4 text-sm text-yp-white/70 space-y-2">
+          <p class="font-medium text-yp-white/90">De reținut</p>
+          {p.notes.map((note) => <p>{note}</p>)}
+        </div>
+      )}
+    </section>
+
+    <section class="min-w-0">
+      <h2 class={sectionTitle}>Beneficii</h2>
+      <ul class="space-y-3">
+        {p.benefits.map((b) => (
+          <li class="pl-4 border-l-2 border-yp-yellow text-yp-white/90 leading-relaxed">{b}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="min-w-0">
+      <h2 class={sectionTitle}>Specificații tehnice</h2>
+      <dl class="divide-y divide-yp-white/10 border-y border-yp-white/10">
+        {p.specs.map((s) => (
+          <div class="grid grid-cols-3 gap-4 py-3">
+            <dt class="text-sm text-yp-white/50">{s.label}</dt>
+            <dd class="col-span-2 text-sm text-yp-white/90">{s.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="min-w-0">
+      <h2 class={sectionTitle}>Certificări și standarde</h2>
+      <ul class="space-y-3">
+        {p.certifications.map((c) => (
+          <li class="text-sm">
+            <span class="text-yp-white font-medium">{c.code}</span>
+            {c.label && <span class="block text-yp-white/70 mt-0.5">{c.label}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="min-w-0">
+      <h2 class={sectionTitle}>Tabel de mărimi</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+          <thead class="text-yp-white/50">
+            <tr>
+              <th scope="col" class="py-2 pr-4 font-normal">Mărime</th>
+              {hasMeasures && <th scope="col" class="py-2 pr-4 font-normal">Măsură</th>}
+              {hasLeg && <th scope="col" class="py-2 font-normal">Lungime picior</th>}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-yp-white/10 text-yp-white/90">
+            {p.sizes.table.map((row) => (
+              <tr>
+                <td class="py-2 pr-4">{row.size}</td>
+                {hasMeasures && <td class="py-2 pr-4">{row.measure}</td>}
+                {hasLeg && <td class="py-2">{row.leg}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {p.sizes.note && <p class="mt-3 text-xs text-yp-white/60">{p.sizes.note}</p>}
+    </section>
+
+    {p.personalization && (
+      <section class="min-w-0">
+        <h2 class={sectionTitle}>Personalizare cu logo</h2>
+        <ul class="divide-y divide-yp-white/10 border-y border-yp-white/10">
+          {p.personalization.placements.map((pl) => (
+            <li class="flex justify-between gap-4 py-2 text-sm">
+              <span class="text-yp-white/90">{pl.position}</span>
+              {pl.maxSize && <span class="text-yp-white/60 whitespace-nowrap">max. {pl.maxSize}</span>}
+            </li>
+          ))}
+        </ul>
+        {p.personalization.special && <p class="mt-3 text-sm text-yp-white/70">Alte poziții, la cerere.</p>}
+        {p.personalization.hiVisNote && <p class="mt-3 text-sm text-yp-white/70">{p.personalization.hiVisNote}</p>}
+      </section>
+    )}
+
+    <section class="min-w-0">
+      <h2 class={sectionTitle}>Întreținere</h2>
+      <ul class="space-y-1.5 text-sm text-yp-white/80">
+        {p.care.map((c) => <li>{c}</li>)}
+      </ul>
+    </section>
+
+    {p.documents.length > 0 && (
+      <section class="min-w-0">
+        <h2 class={sectionTitle}>Documente</h2>
+        <ul class="space-y-2">
+          {p.documents.map((d) => (
+            <li>
+              <a href={d.url} target="_blank" rel="noopener noreferrer" class="inline-block py-2 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
+                {d.label} (PDF)
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+
+  <section class="mt-16 max-w-3xl">
+    <h2 class="text-2xl font-light text-yp-white mb-6">Întrebări frecvente</h2>
+    <div class="divide-y divide-yp-white/10 border-y border-yp-white/10">
+      {p.faq.map((item) => (
+        <details class="group">
+          <summary class="cursor-pointer list-none flex justify-between gap-4 py-4 text-yp-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow">
+            <span>{item.q}</span>
+            <span class="text-yp-yellow group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+          </summary>
+          <p class="pb-4 text-sm text-yp-white/75 leading-relaxed">{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <div class="mt-16 border border-yp-white/15 p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div>
+      <p class="text-xl text-yp-white font-light">Ofertă pentru echipa ta</p>
+      <p class="mt-1 text-sm text-yp-white/60">
+        {p.personalization ? `${p.name}, cu personalizare cu logo la cerere.` : p.name}
+      </p>
+    </div>
+    <a
+      href={offerHref}
+      class="inline-flex items-center justify-center px-8 py-4 bg-yp-yellow text-yp-black font-semibold text-sm uppercase tracking-widest hover:bg-yp-white transition-colors"
+    >
+      Cere ofertă
+    </a>
+  </div>
+</section>
+
+<script>
+  type GalleryImage = { src: string; thumb: string };
+  const main = document.getElementById('gallery-main') as HTMLImageElement | null;
+  const thumbs = document.getElementById('gallery-thumbs');
+
+  // Apărare suplimentară: acceptăm doar imagini găzduite de noi sau https.
+  const isSafeSrc = (src: unknown): src is string =>
+    typeof src === 'string' && (src.startsWith('/images/products/') || src.startsWith('https://'));
+
+  function selectThumb(button: HTMLElement) {
+    if (!main) return;
+    if (isSafeSrc(button.dataset.src)) main.src = button.dataset.src;
+    thumbs?.querySelectorAll('.thumb').forEach((t) => t.setAttribute('aria-current', String(t === button)));
+  }
+
+  function renderThumbs(images: GalleryImage[]) {
+    if (!thumbs) return;
+    thumbs.replaceChildren(
+      ...images.map(({ src, thumb }, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = (thumbs.querySelector('.thumb') as HTMLElement | null)?.className ?? 'thumb';
+        b.dataset.src = src;
+        b.setAttribute('aria-label', `Imaginea ${i + 1}`);
+        b.setAttribute('aria-current', String(i === 0));
+        const img = document.createElement('img');
+        img.src = thumb;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.className = 'w-full h-full object-contain p-1';
+        b.append(img);
+        return b;
+      }),
+    );
+  }
+
+  thumbs?.addEventListener('click', (e) => {
+    const button = (e.target as HTMLElement).closest('.thumb') as HTMLElement | null;
+    if (button) selectThumb(button);
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('.swatch').forEach((swatch) => {
+    swatch.addEventListener('click', () => {
+      let images: GalleryImage[] = [];
+      try {
+        const parsed: unknown = JSON.parse(swatch.dataset.images ?? '[]');
+        if (Array.isArray(parsed)) images = parsed.filter((i) => isSafeSrc(i?.src) && isSafeSrc(i?.thumb));
+      } catch {
+        return;
+      }
+      if (!images.length || !main) return;
+      document.querySelectorAll('.swatch').forEach((s) => s.setAttribute('aria-pressed', String(s === swatch)));
+      main.src = images[0].src;
+      main.alt = `${document.querySelector('h1')?.textContent ?? ''}, ${swatch.dataset.name ?? ''}`;
+      renderThumbs(images);
+    });
+  });
+</script>

@@ -114,6 +114,7 @@ Format task:
 - Owner: `-`
 - Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer. + social links footer + `sameAs` (cod pregătit în `src/lib/site.ts`, doar URL-uri lipsă).
 - Acceptance: CTA-urile navigaționale sunt `<a>`; paleta folosește tokeni `yp-*`; build PASS + verificare vizuală în browser.
+- Găsit la ui-verify (11.11.2026), existent și live: homepage cu derulare orizontală (451 px pe mobil, 1356 px pe desktop; cardurile animate din „Achiziții dezorganizate” + header fix), micro-text 9–11 px în `ProductCard` și în hero-ul `/produse`, contrast insuficient și linkuri distinse doar prin culoare în intro-ul `/produse`, linkuri din footer sub 24 px.
 - Dependencies: none.
 - Next action: PR separat (necesită verificare vizuală, de aceea a fost amânat de la fix-ul SEO).
 
@@ -143,12 +144,12 @@ Format task:
 
 
 ### CAT-001
-- Status: `IN_PROGRESS`
+- Status: `DONE`
 - Owner: `Claude`
-- Scope: Pilot catalog din fișiere de date: 5 produse MASCOT (19035, 51587, 20254, 20739, F0114), flux extract → texte RO → asamblare, ghid de conținut + verificare automată, previzualizare `/preview/produse/` (noindex).
-- Acceptance: format aprobat de user (11.11.2026); build PASS; lint texte 0 erori; ui-verify fără erori în paginile noi.
-- Dependencies: D-2026-11-11-01, D-2026-11-11-02.
-- Next action: mutarea paginilor `/produse` pe colecția nouă (CAT-002 imagini: DONE).
+- Scope: Catalog din fișiere de date: 5 produse MASCOT, flux extract → texte RO → asamblare, ghid de conținut + verificare automată; `/produse` și `/produse/[slug]` citesc din colecție (doar `published`), `/preview/produse/` pentru orice status (noindex).
+- Rezultat (11.11.2026): Directus scos complet (`src/lib/directus.ts`, `src/lib/catalog.ts`, `@directus/sdk`, scripturi vechi); filtrele `/produse` pornesc din date reale (categorii, industrii multiple, recomandare rapidă); testimoniale din `src/data/testimonials.json` (gol, ca și live); 301 pentru cele 6 slug-uri demo vechi; pagina 404 (înainte, orice URL inexistent dădea 200 cu homepage-ul).
+- Acceptance: build PASS; lint texte 0 erori; test browser filtre 10/10 PASS; ui-verify fără regresii față de live.
+- Next action: merge după SEC-001 + SEC-002.
 
 ### CAT-002
 - Status: `DONE`
