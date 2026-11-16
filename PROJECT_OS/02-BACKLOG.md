@@ -158,12 +158,12 @@ Format task:
 - Next action: viewer 360° (I-2026-11-11-01), apoi mutarea `/produse` pe colecția nouă.
 
 ### CAT-003
-- Status: `IN PROGRESS` (branch `feature/catalog-sirsafety`)
+- Status: `DONE` (branch `feature/catalog-sirsafety`, PR #13)
 - Owner: `Claude` (pipeline + texte), `User` (aprobare texte, acord poze)
 - Scope: Produsele Sir Safety recurente din vânzări.
 - Deblocat (16.11.2026): datele sunt publice pe www.sirsafety.com (pagină de produs + fișă tehnică PDF EN + declarație de conformitate EN), fără login. Pipeline: `extract_sirsafety.py` → `catalog/texts/sirsafety/<COD>.json` → `fetch_images_sirsafety.py` → `assemble_sirsafety.py` (verifică standardele și gramajul față de fișa tehnică). Primul lot: 12 modele, status `review`.
-- De confirmat de user: acordul Sir Safety pentru folosirea pozelor și textelor (nu există termeni publici); declarațiile de conformitate și instrucțiunile în română (Regulamentul (UE) 2016/425) se cer de la Sir Safety.
-- Next action: user citește fișele în `/preview/produse/` și le aprobă (status `published`).
+- Acord Sir Safety pentru poze și texte: confirmat de Ciprian pe 16.11.2026. Declarațiile de conformitate și instrucțiunile în română (Regulamentul (UE) 2016/425) rămân de cerut de la Sir Safety.
+- 16.11.2026: Ciprian a aprobat toate cele 21 de fișe; trecute în `published` (26 de produse publice).
 
 ### SEC-001
 - Status: `REVIEW` (cod gata pe `feature/launch-fixes`, PR #12; CI `semgrep` verde)
@@ -171,7 +171,8 @@ Format task:
 - Scope: Conexiunile Postgres nu verificau certificatul TLS (`rejectUnauthorized: false`).
 - Rezultat (16.11.2026): `submit-lead` se conectează doar prin Hyperdrive, fără opțiuni ssl (Hyperdrive face TLS spre Railway); fără fallback `DATABASE_URL`; acceptă doar întrebările cunoscute, cu limite de mărime; erori generice spre client. `/api/leads` scos (niciun apelant, endpoint public de scriere în DB-ul de producție), `scripts/qc-smoke.sh` scos (scria lead-uri de test în producție). Regulă semgrep nouă: `internal-error-message-in-response`.
 - Acceptance rămasă: un lead de test trimis din preview ajunge în DB (preview-ul folosește Hyperdrive-ul de producție) — doar cu acordul lui Ciprian.
-- Next action: test lead pe `feature-launch-fixes.youprotect-website.pages.dev/cere-oferta/`, apoi verificare în DB.
+- Test 16.11.2026 (lead marcat TEST, din preview): conexiunea la Hyperdrive reușește (etapa `connect`), deci verificarea TLS fără bypass e în regulă; prima interogare pică cu `terminated` din cauza OPS-006.
+- Next action: după OPS-006, un nou lead de test din preview.
 
 ### SEC-002
 - Status: `DONE` (branch `chore/astro-7`, 16.11.2026)
@@ -182,17 +183,20 @@ Format task:
 - Efecte secundare: compilatorul nou a găsit un `</div>` lipsă în `cum-lucram.astro` (butonul „Vezi catalogul” stătea în cardul 4, acum e centrat sub carduri); dispare CSS-ul Tailwind duplicat (~41 KB pe pagină) și eroarea JS „No carousel” de pe homepage.
 
 ### LEGAL-001
-- Status: `REVIEW`
-- Owner: `User`
-- Scope: Paginile legale lipseau (footer-ul trimitea spre ele). Create pe 16.11.2026: `/politica-confidentialitate/`, `/termeni-conditii/`, `/politica-cookies/`, scrise din ce face efectiv site-ul (fără cookie-uri proprii, DB Railway în UE, Cal.com doar la programări).
-- De confirmat: termenul de păstrare a cererilor (propus: 2 ani de la ultimul contact); revizuire de un jurist, ideal.
-- Next action: Ciprian citește paginile pe preview.
+- Status: `DONE` (aprobat de Ciprian pe 16.11.2026, inclusiv păstrarea cererilor 2 ani de la ultimul contact)
+- Owner: `Claude`
+- Scope: `/politica-confidentialitate/`, `/termeni-conditii/`, `/politica-cookies/`, scrise din ce face efectiv site-ul. Orice script terț nou cere actualizarea lor.
 
 ### DATA-001
-- Status: `TODO`
-- Owner: `User`
-- Scope: CUI-ul din footer (RO 46387843) diferă de cel de pe facturile SmartBill (RO46294850). Se corectează într-un singur loc: `SITE.legal.cui` din `src/lib/site.ts`.
-- Next action: Ciprian confirmă CUI-ul corect.
+- Status: `DONE` (16.11.2026)
+- Scope: CUI corect RO46294850 (confirmat de Ciprian; footer-ul vechi avea RO 46387843). Sursa unică: `SITE.legal` din `src/lib/site.ts`.
+
+### OPS-006
+- Status: `BLOCKED` (decizie Ciprian)
+- Owner: `User` + `Claude`
+- Scope: Formularul nu poate salva cereri: Postgres-ul `passionate-wholeness` rulează, dar nu mai are TCP Proxy public (lipsesc `RAILWAY_TCP_PROXY_DOMAIN` și `DATABASE_PUBLIC_URL`), deci Hyperdrive (Cloudflare) nu ajunge la el. Găsit pe 16.11.2026; probabil afectează și site-ul live. Nu știm de când (ultimul deploy Postgres: 30.08.2026).
+- Variante: (A) reactivezi TCP Proxy pe serviciul Postgres în Railway, apoi actualizăm host/port în configurația Hyperdrive `0e9c108d713140229e9081b5327a8f7d`; (B) mutăm stocarea lead-urilor în altă bază.
+- Acceptance: lead de test din preview cu `success: true`, apoi șters (cu confirmarea lui Ciprian).
 
 ---
 
