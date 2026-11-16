@@ -158,3 +158,6 @@ id_ed25519*
 credentials.json
 service-account*.json
 # shift-left:end
+
+# Tipuri generate de Astro la build
+.astro/

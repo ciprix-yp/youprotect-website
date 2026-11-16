@@ -115,6 +115,7 @@ Format task:
 - Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer. + social links footer + `sameAs` (cod pregătit în `src/lib/site.ts`, doar URL-uri lipsă).
 - Acceptance: CTA-urile navigaționale sunt `<a>`; paleta folosește tokeni `yp-*`; build PASS + verificare vizuală în browser.
 - Găsit la ui-verify (11.11.2026), existent și live: homepage cu derulare orizontală (451 px pe mobil, 1356 px pe desktop; cardurile animate din „Achiziții dezorganizate” + header fix), micro-text 9–11 px în `ProductCard` și în hero-ul `/produse`, contrast insuficient și linkuri distinse doar prin culoare în intro-ul `/produse`, linkuri din footer sub 24 px.
+- Găsit la upgrade-ul Astro (16.11.2026), existent și live: pe mobil, din cauza derulării orizontale, butonul de meniu (☰) de pe homepage stă la x=395–435 px, în afara ecranului de 375 px; cauza sunt elementele AOS încă neanimate (translatate lateral). `/lp/tco-calculator/` cere `/logo-yp.svg`, care nu există (404, logo stricat).
 - Dependencies: none.
 - Next action: PR separat (necesită verificare vizuală, de aceea a fost amânat de la fix-ul SEO).
 
@@ -178,12 +179,12 @@ Format task:
 - Next action: verificat cum se conectează Hyperdrive la Railway și ce certificat expune Railway.
 
 ### SEC-002
-- Status: `TODO`
+- Status: `DONE` (branch `chore/astro-7`, 16.11.2026)
 - Owner: `Claude`
-- Scope: Dependențe vulnerabile (npm audit: 1 critică, 13 high, în lanțul Astro 4 + `@astrojs/sitemap`). CI `dependencies` (OSV) va fi roșu până la upgrade.
-- Acceptance: upgrade Astro (versiune majoră) + integrări; build PASS; verificare vizuală; OSV fără high/critical.
-- Dependencies: preferabil după CAT-001 (paginile `/produse` pe colecția nouă).
-- Next action: branch separat de upgrade, cu ghidul de migrare Astro.
+- Scope: Dependențe vulnerabile în lanțul Astro 4 (OSV: 1 critică, 32 high, 40 medium, 10 low).
+- Rezultat: Astro 4.16 -> 7.4.12, `@astrojs/react` 7.1.9, `@astrojs/sitemap` 3.7.5; `@astrojs/tailwind` scos (nu suportă Astro 6+), Tailwind 3 rulează prin `postcss.config.mjs`; colecția `products` pe loader `glob()` în `src/content.config.ts`, `z` din `astro/zod`; `compressHTML: true` (Astro 7 ar fi lipit cuvintele din elemente inline); Node 22.23.4 în `.node-version` (Cloudflare Pages, CI) și `.mise.toml`; `.astro/` scos din git.
+- Verificare: `npm audit` 0 vulnerabilități, 294/294 semnături verificate; build 25 pagini; comparație HTML Astro 4 vs 7: text, link-uri, meta, JSON-LD, sitemap identice pe toate paginile; screenshot-uri 41/50 identice pixel cu pixel, restul doar anti-aliasing de font; teste în browser 17/18 la fel pe ambele versiuni (eșecul: logo lipsă pe LP, vezi UX-001).
+- Efecte secundare: compilatorul nou a găsit un `</div>` lipsă în `cum-lucram.astro` (butonul „Vezi catalogul” stătea în cardul 4, acum e centrat sub carduri); dispare CSS-ul Tailwind duplicat (~41 KB pe pagină) și eroarea JS „No carousel” de pe homepage.
 
 ---
 

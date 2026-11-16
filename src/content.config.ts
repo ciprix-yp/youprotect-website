@@ -1,16 +1,19 @@
-import { defineCollection, z } from 'astro:content';
-import { CATEGORY_KEYS, INDUSTRY_KEYS } from '../lib/catalog-taxonomy';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
+import { CATEGORY_KEYS, INDUSTRY_KEYS } from './lib/catalog-taxonomy';
 
 // Fișierele din src/content/products/ sunt generate de scripts/catalog/assemble_*.py.
 // Nu se editează de mână: textele se schimbă în catalog/texts/, faptele vin din feed-ul furnizorului.
 // Build-ul pică dacă lipsește un câmp obligatoriu.
-const httpsUrl = z.string().url().startsWith('https://');
+const httpsUrl = z.url({ protocol: /^https$/ });
 // Imagini găzduite de noi (scripts/catalog/fetch_images_mascot.py) sau, temporar, URL https din feed.
 const localImage = z.string().regex(/^\/images\/products\/[a-z0-9-]+\/[A-Za-z0-9_-]+\.webp$/);
 const media = z.union([localImage, httpsUrl]);
 
 const products = defineCollection({
-  type: 'data',
+  // ID-ul intrării = numele fișierului fără .json (slug-ul paginii).
+  loader: glob({ pattern: '*.json', base: './src/content/products' }),
   schema: z.object({
     status: z.enum(['draft', 'review', 'published']),
     name: z.string().min(5),
