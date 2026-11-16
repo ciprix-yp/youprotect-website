@@ -15,7 +15,7 @@
 3. Capturare sugestii ad-hoc în `07-IDEA_INBOX.md` (dacă apar în timpul execuției).
 4. Implementare (code/data/content).
 5. `pm review <TASK_ID>` pentru quality gate.
-6. `npm run qc:smoke` (build + smoke API pentru `view_samples` și `book_call`).
+6. Test formular: un lead de test pe preview, doar cu acordul lui Ciprian (preview-ul scrie în baza de producție, prin Hyperdrive). `qc:smoke` și `/api/leads` au fost scoase pe 16.11.2026.
 7. Commit pe branch + `npm run release:iteration -- <TASK_ID>`.
 8. Validare live Cloudflare (desktop + mobile).
 9. Actualizare documentație.

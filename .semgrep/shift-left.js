@@ -45,3 +45,26 @@ app.post("/cookie", (req, res) => {
   // ruleid: command-injection-from-request
   exec("echo " + req.headers["user-agent"]);
 });
+
+// internal-error-message-in-response
+export const onRequestPost = async () => {
+  try {
+    await client.query("SELECT 1");
+  } catch (error) {
+    // ruleid: internal-error-message-in-response
+    return jsonResponse({ success: false, error: error.message || String(error) }, 500);
+  }
+  try {
+    await client.query("SELECT 1");
+  } catch (err) {
+    // ruleid: internal-error-message-in-response
+    return Response.json({ ok: false, message: err.message });
+  }
+  try {
+    await client.query("SELECT 1");
+  } catch (error) {
+    console.error("failed:", error);
+    // ok: internal-error-message-in-response
+    return jsonResponse({ success: false, error: "Nu am putut salva cererea." }, 500);
+  }
+};

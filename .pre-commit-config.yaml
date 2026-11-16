@@ -16,10 +16,10 @@ repos:
       # Legacy scratch folders (tmp/, backups/, Skills/) and generated files are left untouched by the
       # whitespace fixers only; gitleaks and Semgrep below still scan them.
       - id: end-of-file-fixer
-        exclude: ^(\.astro/|tmp/|backups/|Skills/|railway_schema\.sql$|package-lock\.json$)
+        exclude: ^(\.astro/|Skills/|railway_schema\.sql$|package-lock\.json$)
       - id: trailing-whitespace
         args: ["--markdown-linebreak-ext=md"] # two trailing spaces = line break in Markdown
-        exclude: ^(\.astro/|tmp/|backups/|Skills/|railway_schema\.sql$|package-lock\.json$)
+        exclude: ^(\.astro/|Skills/|railway_schema\.sql$|package-lock\.json$)
 
   # Secrets — block API keys, tokens and passwords before they reach history
   - repo: https://github.com/gitleaks/gitleaks
