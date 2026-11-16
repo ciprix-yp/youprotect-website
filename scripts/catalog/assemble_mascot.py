@@ -108,8 +108,13 @@ def cm(value):
     return f"{m.group(1)}{NBSP}cm" if m else None
 
 
+def eu_size(row):
+    """Unele modele (ex. 20384, 20382) au sufixul „ONE” în feed (o bucată la pachet): „2XLONE”, „L  ONE”."""
+    return re.sub(r"\s*ONE$", "", str(row["EU Size"]).strip())
+
+
 def sizes(source, text):
-    rows = source["sizes"]
+    rows = [dict(r, **{"EU Size": eu_size(r)}) for r in source["sizes"]]
     eu = [r["EU Size"] for r in rows]
     if all(re.match(r"^\d{2}C\d{2}$", s) for s in eu):
         table = []

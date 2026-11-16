@@ -11,7 +11,15 @@
     "anthracite": "antracit",
     "grass green": "verde iarbă",
     "light blue": "albastru deschis",
-    "hi-vis orange/dark navy": "portocaliu fluorescent / bleumarin închis"
+    "hi-vis orange/dark navy": "portocaliu fluorescent / bleumarin închis",
+    "azure blue/dark navy": "albastru azur/bleumarin închis",
+    "dark anthracite/black": "antracit închis/negru",
+    "forest green": "verde pădure",
+    "grass green/green": "verde iarbă/verde",
+    "grey-flecked": "gri melanj",
+    "stone blue": "albastru-cenușiu",
+    "stone grey": "gri piatră",
+    "traffic red/black": "roșu semnal/negru"
   },
   "certifications": {
     "OEKO-TEX® STANDARD 100": {
@@ -65,6 +73,10 @@
     "EN ISO 20345: 2022": {
       "code": "EN ISO 20345:2022",
       "label": "Standardul european pentru încălțămintea de protecție, ediția 2022."
+    },
+    "EN 343 4-4-X": {
+      "code": "EN 343 4-4-X",
+      "label": "Protecție împotriva ploii: rezistență la penetrarea apei clasa 4 și rezistență la vapori de apă clasa 4, cel mai bun nivel de respirabilitate; testul în turnul de ploaie nu a fost efectuat (X)."
     }
   },
   "care": {
@@ -77,7 +89,8 @@
     "Iron at moderate temperature, max. 150° C": "Călcare la temperatură medie, max. 150 °C",
     "Normal dry cleaning": "Curățare chimică normală",
     "Do not dry-clean": "Nu se curăță chimic",
-    "FT088-980-88 Impregnation Spray": "Întreținere cu spray de impregnare MASCOT FT088"
+    "FT088-980-88 Impregnation Spray": "Întreținere cu spray de impregnare MASCOT FT088",
+    "Tumble-dry - initial temperature max. 60° C": "Uscare în uscător, temperatura inițială max. 60 °C"
   },
   "materials": {
     "polyester": "poliester",
@@ -85,7 +98,9 @@
     "elastane": "elastan",
     "elastolefin": "elastolefină",
     "viscose": "viscoză",
-    "Leather": "Piele"
+    "Leather": "Piele",
+    "organic cotton": "bumbac organic",
+    "recycled polyester": "poliester reciclat"
   },
   "logoPositions": {
     "Left breast": "Piept stânga",
@@ -106,7 +121,20 @@
     "Horizontal on left calf": "Gamba stângă, orizontal",
     "Horizontal on right calf": "Gamba dreaptă, orizontal",
     "Vertical on left calf, read from the bottom upwards": "Gamba stângă, vertical",
-    "Vertical on right calf, read from the top downwards": "Gamba dreaptă, vertical"
+    "Vertical on right calf, read from the top downwards": "Gamba dreaptă, vertical",
+    "Back of collar Max 6x5 cm/2": "Spatele gulerului",
+    "Left breast pocket": "Buzunarul stâng de la piept",
+    "Lower back": "Partea de jos a spatelui",
+    "Mid-chest": "Mijlocul pieptului",
+    "Mid-nape": "Ceafă, la mijloc",
+    "On the back": "Pe spate",
+    "Under napeline": "Sub linia cefei",
+    "Vertical on left breast, read from the bottom upwards": "Vertical pe pieptul stâng, de jos în sus",
+    "Vertical on left breast, read from the top downwards": "Vertical pe pieptul stâng, de sus în jos",
+    "Vertical on left sleeve, read from the bottom upwards": "Vertical pe mâneca stângă, de jos în sus",
+    "Vertical on right breast, read from the bottom upwards": "Vertical pe pieptul drept, de jos în sus",
+    "Vertical on right breast, read from the top downwards": "Vertical pe pieptul drept, de sus în jos",
+    "Vertical on right sleeve, read from the top downwards": "Vertical pe mâneca dreaptă, de sus în jos"
   },
   "logoPositionsSkip": [
     "Left flip",
