@@ -1,0 +1,16 @@
+# Shift-left Stage 5 — keep dependencies patched.
+# Add one entry per ecosystem the project uses (npm, pip, maven, gomod, docker, ...).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7 # let a new release age before adopting it (supply-chain safety)
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7

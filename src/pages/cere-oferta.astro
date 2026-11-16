@@ -1,14 +1,20 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import MultiStepForm from "../components/forms/MultiStepForm";
+
+// Produsele publicate, pentru /cere-oferta/?produs=<slug> (link-ul „Cere ofertă” de pe fișa de produs).
+const products = Object.fromEntries(
+  (await getCollection("products", ({ data }) => data.status === "published")).map((p) => [p.id, p.data.name]),
+);
 ---
 
-<BaseLayout 
-  title="Cere o Ofertă" 
-  description="Solicită o ofertă personalizată de echipamente de protecție la You Protect."
+<BaseLayout
+  title="Cere ofertă pentru echipa ta"
+  description="Răspunde la câteva întrebări și primești în cel mult 48 de ore o ofertă de echipamente de protecție potrivită echipei tale."
 >
   <div class="h-24 md:h-32"></div>
-  
+
   <section class="py-12 md:py-20 relative overflow-hidden">
     <!-- Backgound Elements -->
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yp-yellow/10 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
@@ -17,15 +23,15 @@ import MultiStepForm from "../components/forms/MultiStepForm";
     <div class="max-w-7xl mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-semibold text-white mb-6">
-          Cere o <span class="text-yp-yellow">Ofertă</span>
+          Cere o <span class="text-yp-yellow">ofertă</span>
         </h1>
         <p class="text-lg md:text-xl text-neutral-400">
-          Acest formular durează aproximativ 2 minute, dar ne va economisi ore întregi de clarificări ulterior.
+          Durează cam 2 minute. Din răspunsurile tale pregătim o ofertă potrivită echipei, fără zeci de mesaje de clarificare.
         </p>
       </div>
 
       <div data-aos="fade-up" data-aos-delay="100">
-        <MultiStepForm intent="quote" client:load />
+        <MultiStepForm intent="quote" products={products} client:load />
       </div>
     </div>
   </section>

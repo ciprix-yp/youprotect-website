@@ -1,5 +1,6 @@
 ---
 import { SITE } from "../lib/site";
+import "../styles/vendor";
 import "../styles/global.css";
 
 interface Props {
@@ -32,16 +33,8 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- AOS CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link rel="preload" href="/fonts/yp-text-300.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/yp-text-400.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- SEO & OG Tags -->
     <meta property="og:title" content={`${title} | You Protect`} />
@@ -59,11 +52,13 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
   </head>
   <body class="bg-yp-black text-yp-white font-body min-h-screen flex flex-col">
     <header class="py-6 px-4 md:px-8 bg-yp-black border-b border-white/5 flex justify-center">
-      <a href="/" aria-label="You Protect Home" class="inline-block transition-transform hover:scale-105">
+      <a href="/" aria-label="You Protect, pagina principală" class="inline-block transition-transform hover:scale-105">
         <img
-          src="/logo-yp.svg"
-          alt="You Protect Premium Security"
-          class="h-8 md:h-10 w-auto"
+          src="/images/logo-yp-clean.png"
+          alt="You Protect"
+          width="56"
+          height="56"
+          class="h-12 md:h-14 w-auto object-contain"
         />
       </a>
     </header>
@@ -72,32 +67,11 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
       <slot />
     </main>
 
-    <footer class="py-6 text-center text-sm text-yp-gray border-t border-white/5">
+    <footer class="py-6 text-center text-sm text-neutral-400 border-t border-white/5">
       &copy; {new Date().getFullYear()} You Protect. Toate drepturile rezervate.
     </footer>
-
-    <!-- AOS Initialization -->
-    <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script is:inline>
-      const initAOS = () => {
-        if (typeof AOS !== "undefined") {
-          AOS.init({
-            once: true,
-            mirror: false,
-            offset: 100,
-            duration: 800,
-            easing: "ease-out-cubic",
-            delay: 50,
-          });
-        }
-      };
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initAOS);
-      } else {
-        initAOS();
-      }
-      document.addEventListener("astro:after-swap", initAOS);
+    <script>
+      import "../scripts/aos-init";
     </script>
   </body>
 </html>

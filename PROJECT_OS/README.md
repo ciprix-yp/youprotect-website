@@ -17,6 +17,7 @@ Acesta este centrul operațional al proiectului. Orice sesiune începe de aici.
 - DB ERD: `/Users/homefolder/postgres-railway-projects/railway_erd.md`
 - Website <> DB map: `/Users/homefolder/postgres-railway-projects/WEBSITE_DB_INTEGRATION_MAP.md`
 - Deploy flow: `/Users/homefolder/youprotect-website/PROJECT_OS/06-DEPLOY_FLOW.md`
+- Ghid de conținut (voce, formula în 3 straturi, SEO, GEO, șablon fișă produs): `PROJECT_OS/08-GHID_CONTINUT.md`
 
 ## Reguli de operare
 

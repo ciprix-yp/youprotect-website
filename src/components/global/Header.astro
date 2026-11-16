@@ -18,7 +18,7 @@ const currentPath = Astro.url.pathname;
           <div class="text-yp-white font-heading text-lg leading-tight">
             You Protect
           </div>
-          <div class="text-yp-yellow/70 text-xs">Uniforme de Lucru</div>
+          <div class="text-yp-yellow/70 text-xs">Uniforme de lucru</div>
         </div>
       </a>
 
@@ -31,19 +31,19 @@ const currentPath = Astro.url.pathname;
           Acasă
         </a>
         <a
-          href="/despre-noi"
+          href="/despre-noi/"
           class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === "/despre-noi" ? "text-yp-yellow" : ""}`}
         >
-          Despre Noi
+          Despre noi
         </a>
         <a
-          href="/cum-lucram"
+          href="/cum-lucram/"
           class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === "/cum-lucram" ? "text-yp-yellow" : ""}`}
         >
-          Cum Lucrăm
+          Cum lucrăm
         </a>
         <a
-          href="/produse"
+          href="/produse/"
           class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath.startsWith("/produse") ? "text-yp-yellow" : ""}`}
         >
           Catalog
@@ -52,7 +52,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- CTA Button (Desktop) -->
       <a
-        href="/programeaza-discutie"
+        href="/programeaza-discutie/"
         class="hidden md:block bg-yp-yellow text-yp-black text-center font-heading font-semibold px-6 py-2.5 rounded hover:bg-white transition-all"
       >
         Programează o discuție
@@ -61,8 +61,11 @@ const currentPath = Astro.url.pathname;
       <!-- Mobile Menu Button -->
       <button
         id="mobile-menu-button"
-        class="md:hidden text-yp-white p-2"
+        type="button"
+        class="md:hidden text-yp-white p-2.5"
         aria-label="Meniu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
       >
         <svg
           class="w-6 h-6"
@@ -93,25 +96,25 @@ const currentPath = Astro.url.pathname;
         Acasă
       </a>
       <a
-        href="/despre-noi"
+        href="/despre-noi/"
         class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === "/despre-noi" ? "text-yp-yellow" : ""}`}
       >
-        Despre Noi
+        Despre noi
       </a>
       <a
-        href="/cum-lucram"
+        href="/cum-lucram/"
         class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === "/cum-lucram" ? "text-yp-yellow" : ""}`}
       >
-        Cum Lucrăm
+        Cum lucrăm
       </a>
       <a
-        href="/produse"
+        href="/produse/"
         class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath.startsWith("/produse") ? "text-yp-yellow" : ""}`}
       >
         Catalog
       </a>
       <a
-        href="/programeaza-discutie"
+        href="/programeaza-discutie/"
         class="block w-full text-center bg-yp-yellow text-yp-black font-heading font-semibold px-6 py-3 rounded hover:bg-white transition-all mt-4"
       >
         Programează o discuție
@@ -128,14 +131,21 @@ const currentPath = Astro.url.pathname;
   const menuButton = document.getElementById("mobile-menu-button");
   const mobileMenu = document.getElementById("mobile-menu");
 
+  const setOpen = (open: boolean) => {
+    mobileMenu?.classList.toggle("hidden", !open);
+    menuButton?.setAttribute("aria-expanded", String(open));
+  };
+
   menuButton?.addEventListener("click", () => {
-    mobileMenu?.classList.toggle("hidden");
+    setOpen(mobileMenu?.classList.contains("hidden") ?? false);
   });
 
-  // Close mobile menu when clicking outside
+  // Închide meniul la click în afara lui sau la Escape.
   document.addEventListener("click", (e) => {
-    if (!menuButton?.contains(e.target) && !mobileMenu?.contains(e.target)) {
-      mobileMenu?.classList.add("hidden");
-    }
+    const target = e.target as Node;
+    if (!menuButton?.contains(target) && !mobileMenu?.contains(target)) setOpen(false);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setOpen(false);
   });
 </script>

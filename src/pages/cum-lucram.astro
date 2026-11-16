@@ -13,7 +13,7 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
   ctaSubheading="Consultanță gratuită, recomandări clare și decizii mai simple."
   ctaButtonText="Programează o discuție"
   ctaSecondaryButtonText="Vezi catalogul"
-  ctaSecondaryButtonLink="/produse"
+  ctaSecondaryButtonLink="/produse/"
 >
   <!-- Client Profile Typographic -->
   <section class="py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
@@ -135,7 +135,7 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
             Credem că felul în care îți echipezi echipa spune cât respect ai pentru ea. De aceea, nu alegem produse doar după fișe tehnice sau preț, ci și după cum se simt oamenii în ele, cât de potrivite sunt pentru activitatea lor și ce mesaj transmite compania prin felul în care îi prezintă.
           </p>
         </div>
-        
+
         <div data-aos="fade-up" data-aos-delay="200" class="bg-white/5 p-8 md:p-12 rounded-sm border border-white/10 relative overflow-hidden group">
           <div class="absolute top-0 right-0 w-32 h-32 bg-yp-yellow/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-125"></div>
           <div class="text-yp-yellow text-xl font-medium mb-6 font-mono border-b border-yp-yellow/30 pb-4 inline-block">02/</div>
@@ -161,14 +161,16 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
           <p class="text-neutral-400 text-lg font-light leading-relaxed relative z-10">
             Procesul nostru este gândit să reducă haosul, comparațiile inutile și deciziile luate în grabă. Te ajutăm să alegi mai clar, să comanzi mai simplu și să ai mai mult control asupra unei zone care, în multe firme, consumă prea mult timp și energie.
           </p>
-        <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="500">
-           <a
-                href="/produse"
-                class="inline-flex border border-white/10 text-white/80 h-10 px-6 rounded-[4px] font-medium text-sm items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 hover:text-white transition-all duration-200"
-            >
-                Află mai multe &rarr; Vezi catalogul
-            </a>
         </div>
+      </div>
+
+      <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="500">
+        <a
+          href="/produse/"
+          class="inline-flex border border-white/10 text-white/80 h-10 px-6 rounded-[4px] font-medium text-sm items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 hover:text-white transition-all duration-200"
+        >
+          Află mai multe &rarr; Vezi catalogul
+        </a>
       </div>
     </div>
   </section>
@@ -337,20 +339,16 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
 
       <!-- CTA after steps -->
       <div class="mt-20 flex flex-col sm:flex-row justify-center items-center gap-4" data-aos="fade-up">
-        <button
-            class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
-            onclick="window.location.href='/programeaza-discutie'"
-        >
+        <a href="/programeaza-discutie/"
+            class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent">
             Programează o discuție
             <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-        </button>
-        <button
-            class="border border-white/15 text-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 transition-all duration-200"
-            onclick="window.location.href='/cere-oferta'"
-        >
+        </a>
+        <a href="/cere-oferta/"
+            class="border border-white/15 text-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/5 hover:border-white/30 transition-all duration-200">
             Cere ofertă
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </button>
+            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
       </div>
     </div>
   </section>

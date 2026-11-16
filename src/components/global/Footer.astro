@@ -1,4 +1,5 @@
 ---
+import { SITE } from "../../lib/site";
 const currentYear = new Date().getFullYear();
 ---
 
@@ -35,7 +36,7 @@ const currentYear = new Date().getFullYear();
             <span class="text-yp-yellow">📞</span>
             <a
               href="tel:+40742226127"
-              class="hover:text-yp-yellow transition-colors"
+              class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
             >
               0742 226 127
             </a>
@@ -44,7 +45,7 @@ const currentYear = new Date().getFullYear();
             <span class="text-yp-yellow">✉️</span>
             <a
               href="mailto:office@youprotect.ro"
-              class="hover:text-yp-yellow transition-colors"
+              class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
             >
               office@youprotect.ro
             </a>
@@ -55,7 +56,7 @@ const currentYear = new Date().getFullYear();
               href="https://maps.app.goo.gl/mTwMZfUZ5ZrVyAQP7"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:text-yp-yellow transition-colors"
+              class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
             >
               Strada Careiului nr. 45, Parc Industrial Areli, Vetiș, Satu Mare
             </a>
@@ -65,33 +66,33 @@ const currentYear = new Date().getFullYear();
 
       <!-- Quick Links -->
       <div data-aos="fade-up" data-aos-delay="100">
-        <h3 class="text-yp-white font-heading text-lg mb-4">Navigare Rapidă</h3>
-        <ul class="space-y-3 text-yp-white/70">
+        <h3 class="text-yp-white font-heading text-lg mb-4">Navigare rapidă</h3>
+        <ul class="space-y-1 text-yp-white/70">
           <li>
-            <a href="/" class="hover:text-yp-yellow transition-colors">Acasă</a>
+            <a href="/" class="inline-block py-1.5 hover:text-yp-yellow transition-colors">Acasă</a>
           </li>
           <li>
-            <a href="/despre-noi" class="hover:text-yp-yellow transition-colors"
-              >Despre Noi</a
+            <a href="/despre-noi/" class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
+              >Despre noi</a
             >
           </li>
           <li>
-            <a href="/cum-lucram" class="hover:text-yp-yellow transition-colors"
-              >Cum Lucrăm</a
+            <a href="/cum-lucram/" class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
+              >Cum lucrăm</a
             >
           </li>
           <li>
-            <a href="/produse" class="hover:text-yp-yellow transition-colors"
+            <a href="/produse/" class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
               >Produse</a
             >
           </li>
           <li>
-            <a href="/industrii" class="hover:text-yp-yellow transition-colors"
+            <a href="/industrii/" class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
               >Industrii</a
             >
           </li>
           <li>
-            <a href="/echipamente-protectie-satu-mare" class="hover:text-yp-yellow transition-colors"
+            <a href="/echipamente-protectie-satu-mare/" class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
               >Echipamente protecție Satu Mare</a
             >
           </li>
@@ -101,31 +102,31 @@ const currentYear = new Date().getFullYear();
       <!-- Legal & Resources -->
       <div data-aos="fade-up" data-aos-delay="200">
         <h3 class="text-yp-white font-heading text-lg mb-4">
-          Informații Legale
+          Informații legale
         </h3>
-        <ul class="space-y-3 text-yp-white/70">
+        <ul class="space-y-1 text-yp-white/70">
           <li>
             <a
-              href="/politica-confidentialitate"
-              class="hover:text-yp-yellow transition-colors"
+              href="/politica-confidentialitate/"
+              class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
             >
-              Politică Confidențialitate
+              Politica de confidențialitate
             </a>
           </li>
           <li>
             <a
-              href="/termeni-conditii"
-              class="hover:text-yp-yellow transition-colors"
+              href="/termeni-conditii/"
+              class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
             >
-              Termeni și Condiții
+              Termeni și condiții
             </a>
           </li>
           <li>
             <a
-              href="/politica-cookies"
-              class="hover:text-yp-yellow transition-colors"
+              href="/politica-cookies/"
+              class="inline-block py-1.5 hover:text-yp-yellow transition-colors"
             >
-              Politică Cookies
+              Politica de cookies
             </a>
           </li>
         </ul>
@@ -149,16 +150,16 @@ const currentYear = new Date().getFullYear();
         class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-yp-white/50"
       >
         <p>
-          © {currentYear} You Protect SRL. Toate drepturile rezervate.
+          © {currentYear} {SITE.legal.name}. Toate drepturile rezervate.
         </p>
         <div
           class="flex flex-wrap items-center justify-center md:justify-end gap-2 md:gap-4 mt-4 md:mt-0"
         >
-          <span>RO 46387843</span>
+          <span>CUI {SITE.legal.cui}</span>
           <span class="hidden md:inline">•</span>
-          <span>J30/624/2022</span>
+          <span>{SITE.legal.regCom}</span>
           <span class="hidden md:inline">•</span>
-          <span>EUID: ROONRC.J30/624/2022</span>
+          <span>EUID: {SITE.legal.euid}</span>
         </div>
       </div>
     </div>

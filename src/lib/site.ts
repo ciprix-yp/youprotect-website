@@ -7,7 +7,16 @@ export const SITE = {
   // Imagine OG implicită la nivel de site (există în /public).
   defaultOgImage: "/hero-youprotect-highvis.jpg",
   telephone: "+40742226127",
+  telephoneDisplay: "0742 226 127",
   email: "office@youprotect.ro",
+  // Datele firmei, folosite în footer și în paginile legale.
+  // CUI confirmat de Ciprian pe 16.11.2026 (cel de pe facturi); footer-ul vechi avea greșit RO 46387843.
+  legal: {
+    name: "You Protect SRL",
+    cui: "RO46294850",
+    regCom: "J30/624/2022",
+    euid: "ROONRC.J30/624/2022",
+  },
   address: {
     streetAddress: "Strada Careiului nr. 45, Parc Industrial Areli",
     addressLocality: "Vetiș",
@@ -24,6 +33,14 @@ export const SITE = {
     opens: "09:00",
     closes: "17:00",
   },
+} as const;
+
+// Oferta „testare fără riscuri”, afișată pe fișele de produs. Confirmată de You Protect pe 11.11.2026.
+export const RISK_FREE_TESTING = {
+  title: "Testezi fără riscuri",
+  text: "Înainte de decizia finală, poți testa produsele cu echipa ta, în condiții reale de lucru. Testarea are garanția banilor înapoi în 90 de zile.",
+  href: "/cum-lucram/",
+  linkLabel: "Vezi cum lucrăm",
 } as const;
 
 // Profiluri sociale pentru footer + schema `sameAs`.
