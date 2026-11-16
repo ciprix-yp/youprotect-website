@@ -1,0 +1,306 @@
+{
+  "status": "review",
+  "name": "Tricou polo din bumbac Sir Safety Piquet",
+  "category": "tricouri-polo",
+  "industries": [
+    "constructii",
+    "logistica",
+    "productie",
+    "alimentar",
+    "corporate",
+    "energie"
+  ],
+  "summary": "Tricou polo din bumbac piqué 100 %, de 180 g/m², care respiră și își păstrează forma după spălări. Cu gulerul cu doi nasturi, echipa ta arată îngrijit și profesionist.",
+  "description": [
+    "Tricoul polo din bumbac Sir Safety Piquet e plăcut la purtare: piqué-ul 100 % bumbac, de 180 g/m², respiră și îți dă o senzație de prospețime. Mânecile cu finisaj din ribană stau fix fără să strângă, iar banda de la gât acoperă cusătura, ca să nu irite pielea.",
+    "Gulerul cu doi nasturi în aceeași culoare îți dă un aspect sobru și profesionist, la lucru sau la o întâlnire mai puțin formală. Țesătura în fagure are o textură elegantă și își păstrează bine forma, așa că arăți îngrijit și după multe spălări.",
+    "Pentru firmă, Piquet e o bază practică pentru uniforme: cusăturile duble pe umeri și la răscroiala mânecilor întăresc zonele cele mai solicitate, produsul e certificat OEKO-TEX® și vine în 12 culori. Poți adăuga logoul firmei prin imprimare sau broderie, direct de la You Protect."
+  ],
+  "benefits": [
+    "Respiră: piqué 100 % bumbac, de 180 g/m².",
+    "Nu irită la gât: banda acoperă cusătura.",
+    "Nu strânge: mâneci cu finisaj din ribană, care își păstrează forma.",
+    "Arăți profesionist: guler cu doi nasturi în aceeași culoare.",
+    "Rezistă în timp: cusături duble pe umeri și la răscroiala mânecilor.",
+    "Echipă unitară: 12 culori și logoul firmei, prin imprimare sau broderie."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Piqué 100 % bumbac (culoarea gri melanj AM: 90 % bumbac, 10 % viscoză)"
+    },
+    {
+      "label": "Gramaj",
+      "value": "180 g/m²"
+    },
+    {
+      "label": "Guler",
+      "value": "Cu doi nasturi în culoarea tricoului"
+    },
+    {
+      "label": "Mâneci",
+      "value": "Scurte, cu finisaj din ribană"
+    },
+    {
+      "label": "Gât",
+      "value": "Bandă care acoperă cusătura"
+    },
+    {
+      "label": "Cusături",
+      "value": "Duble pe umeri și la răscroiala mânecilor"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "I (risc minim), conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [
+    "Culoarea gri melanj (AM) are altă compoziție: 90 % bumbac și 10 % viscoză.",
+    "Fișa tehnică nu dă instrucțiunile de spălare: urmează-le pe cele de pe eticheta tricoului."
+  ],
+  "certifications": [
+    {
+      "code": "OEKO-TEX®",
+      "label": "Produs certificat OEKO-TEX®: textil testat pentru substanțe nocive."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "Q7",
+      "name": "bleumarin",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/Q7-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/Q7-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "C2",
+      "name": "antracit",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/C2-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/C2-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "H5",
+      "name": "portocaliu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/H5-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/H5-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "K1",
+      "name": "alb",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/K1-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/K1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "S6",
+      "name": "verde închis",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/S6-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/S6-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "E0",
+      "name": "galben",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/E0-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/E0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "AM",
+      "name": "gri melanj",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/AM-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/AM-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "U0",
+      "name": "maro deschis",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/U0-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/U0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "P6",
+      "name": "albastru petrol",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/P6-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/P6-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "L5",
+      "name": "roșu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/L5-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/L5-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "P8",
+      "name": "albastru regal",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/P8-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/P8-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "S0",
+      "name": "verde",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/S0-PS.webp",
+          "thumb": "/images/products/tricou-polo-bumbac-sir-safety-piquet-mc3014/S0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "XS–3XL",
+    "values": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MC3014C2_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MC3014C2_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Din ce material este tricoul polo Sir Safety Piquet MC3014?",
+      "a": "Tricoul polo Sir Safety Piquet MC3014 este din piqué 100 % bumbac, de 180 g/m². Excepție face culoarea gri melanj (AM), cu 90 % bumbac și 10 % viscoză. Produsul este certificat OEKO-TEX®."
+    },
+    {
+      "q": "Este potrivit pentru zilele calde?",
+      "a": "Da. Tricoul polo Sir Safety Piquet MC3014 face parte din gama de vară SUMMER KNITWEAR, iar producătorul declară piqué-ul din bumbac respirabil. Banda de la gât acoperă cusătura, ca să nu irite pielea, iar mânecile din ribană nu strâng."
+    },
+    {
+      "q": "Pot pune logoul firmei pe tricoul polo Piquet?",
+      "a": "Da. Poți personaliza tricoul polo Sir Safety Piquet MC3014 cu logoul firmei, prin imprimare sau broderie, direct de la You Protect. Spune-ne în cererea de ofertă unde vrei logoul și pe câte tricouri."
+    },
+    {
+      "q": "Își păstrează tricoul forma după spălare?",
+      "a": "Da, conform producătorului: țesătura în fagure a tricoului polo Sir Safety Piquet MC3014 își păstrează bine forma și după multe spălări, iar mânecile cu finisaj din ribană rămân stabile în timp. Fișa tehnică nu dă temperatura de spălare, așa că urmezi instrucțiunile de pe etichetă."
+    },
+    {
+      "q": "Ce mărimi și culori există?",
+      "a": "Tricoul polo Sir Safety Piquet MC3014 se găsește în mărimile XS–3XL și în 12 culori: bleumarin, antracit, gri melanj, alb, galben, portocaliu, roșu, albastru regal, albastru petrol, verde, verde închis și maro deschis."
+    },
+    {
+      "q": "De unde pot comanda tricouri polo Sir Safety Piquet cu logo în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, cu logoul firmei aplicat prin imprimare sau broderie."
+    }
+  ],
+  "seo": {
+    "title": "Tricou polo din bumbac Sir Safety Piquet MC3014",
+    "description": "Tricou polo din bumbac Sir Safety Piquet MC3014: piqué 100 % bumbac care respiră, guler cu doi nasturi, 12 culori. Ofertă cu logo de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MC3014",
+    "range": null,
+    "productUrl": "https://www.sirsafety.com/piquet-short-sleeve-polo-shirt"
+  },
+  "reviewNotes": [
+    "Conflict: pagina web indică mărimile XS–4X; fișa tehnică indică XS–3XL (XS S M L XL XX 3X). Am urmat fișa.",
+    "Două culori se numesc GREEN în sursă: S0 → verde, S6 → verde închis, nume alese după pozele producătorului (S6 e vizibil mai închis); de confirmat.",
+    "Fișa scrie doar OEKO-TEX® certified product, fără eticheta exactă (ex. STANDARD 100) și fără numărul certificatului; de confirmat.",
+    "Fișa nu dă instrucțiuni de spălare (doar follow the recommended washing instructions); câmpul care (întreținere) a rămas gol.",
+    "Industrii din fișă (FIELDS OF USE): energie e dedusă din PETROCHEMICAL INDUSTRY, corporate din TERTIARY - TRADES, alimentar din FOOD - CLEANING - HOSPITAL.",
+    "Producătorul nu dă zone sau dimensiuni maxime pentru logo; FAQ-ul promite doar imprimare sau broderie de la You Protect, fără zone.",
+    "Fișa nu menționează o variantă pentru femei; FAQ-ul despre mărimi nu o pomenește."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-16"
+  }
+}

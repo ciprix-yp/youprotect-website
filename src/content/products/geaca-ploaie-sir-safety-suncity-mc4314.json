@@ -1,0 +1,183 @@
+{
+  "status": "review",
+  "name": "Geacă de ploaie de lucru Sir Safety Suncity",
+  "category": "geci-jachete",
+  "industries": [
+    "constructii",
+    "logistica",
+    "productie"
+  ],
+  "summary": "Geacă de ploaie de lucru certificată EN 343, care te ține uscat pe vreme rea și îți lasă libertate de mișcare. Arăți îngrijit, cu fermoarul ascuns sub clapă, în culoarea potrivită echipei tale.",
+  "description": [
+    "Geaca de ploaie de lucru Sir Safety Suncity te ține uscat când lucrezi afară: țesătura din poliester cu strat de poliuretan oprește ploaia, iar producătorul o declară și respirabilă. Manșetele elastice opresc vântul și apa la încheieturi, iar gluga cu margine elastică o desfaci doar când începe ploaia și o strângi la loc, prinsă cu capse. Producătorul a gândit-o pentru confort și libertate de mișcare, așa că nu te încurcă la lucru.",
+    "Te simți protejat pe vreme rea și arăți îngrijit: fermoarul e acoperit de o clapă cu capse, așa că geaca are o linie curată, iar buzunarele rezistente la apă îți țin lucrurile mărunte la adăpost de ploaie și umezeală. Alegi culoarea care se potrivește echipei: albastru închis, alb sau portocaliu fluorescent.",
+    "Pentru firmă, Suncity MC4314 este o geacă de ploaie certificată EN 343, cu clasa 3 la rezistența la penetrarea apei, și echipament de protecție de categoria I. O comanzi în aceeași culoare pentru toată echipa, cu logoul firmei aplicat prin imprimare sau broderie, și o poți testa cu echipa ta, în condiții reale de lucru, înainte de decizie."
+  ],
+  "benefits": [
+    "Uscat pe ploaie: certificată EN 343, clasa 3 la rezistența la penetrarea apei.",
+    "Fără apă la încheieturi: manșete elastice care opresc vântul și apa.",
+    "Gluga doar când ai nevoie: se pliază și se prinde cu capse.",
+    "Lucrurile rămân uscate: buzunare rezistente la apă.",
+    "Aspect curat: fermoar acoperit de clapă cu capse.",
+    "Culoarea echipei tale: albastru închis, alb sau portocaliu fluorescent."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Tricot 100 % poliester cu strat de poliuretan (PU), impermeabil și respirabil"
+    },
+    {
+      "label": "Gramaj",
+      "value": "190 g/m²"
+    },
+    {
+      "label": "Închidere",
+      "value": "Fermoar acoperit de clapă cu capse"
+    },
+    {
+      "label": "Glugă",
+      "value": "Pliabilă, cu margine elastică, se prinde cu capse"
+    },
+    {
+      "label": "Manșete",
+      "value": "Elastice, rezistente la vânt"
+    },
+    {
+      "label": "Buzunare",
+      "value": "Rezistente la apă"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "I (Regulamentul (UE) 2016/425)"
+    }
+  ],
+  "notes": [
+    "Varianta portocaliu fluorescent (H1) nu este certificată EN ISO 20471, deci nu ține loc de îmbrăcăminte de avertizare. Fișa tehnică indică doar certificarea EN 343, pentru ploaie."
+  ],
+  "certifications": [
+    {
+      "code": "EN 343 3/1",
+      "label": "Protecție împotriva ploii: clasa 3 la rezistența la penetrarea apei și clasa 1 la rezistența la vapori de apă (respirabilitate)."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "Q5",
+      "name": "albastru închis",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/Q5-PS.webp",
+          "thumb": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/Q5-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "H1",
+      "name": "portocaliu fluorescent",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/H1-PS.webp",
+          "thumb": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/H1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "K1",
+      "name": "alb",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/K1-PS.webp",
+          "thumb": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/K1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "S–3XL",
+    "values": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MC4314H1_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MC4314H1_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce protecție la ploaie are geaca Sir Safety Suncity MC4314?",
+      "a": "Geaca Sir Safety Suncity MC4314 este certificată EN 343, cu clasa 3 la rezistența la penetrarea apei și clasa 1 la rezistența la vapori de apă. Prima clasă arată cât de bine oprește geaca apa, a doua se referă la respirabilitate, unde clasa 1 este primul nivel al scalei."
+    },
+    {
+      "q": "Mă pot mișca liber în geaca de ploaie Suncity?",
+      "a": "Da. Producătorul a gândit geaca Suncity MC4314 pentru protecție, confort și libertate de mișcare. Gluga se pliază și se prinde cu capse când nu plouă, iar manșetele elastice stau stabil pe încheietură."
+    },
+    {
+      "q": "Este reflectorizantă geaca Suncity portocalie?",
+      "a": "Nu. Varianta portocaliu fluorescent (H1) a gecii Suncity MC4314 nu este certificată EN ISO 20471, deci nu este îmbrăcăminte de avertizare. Fișa tehnică indică doar EN 343, pentru protecția la ploaie."
+    },
+    {
+      "q": "Pot pune logoul firmei pe geaca de ploaie Suncity?",
+      "a": "Da. Poți pune logoul firmei pe geaca Suncity MC4314 prin imprimare sau broderie. Fiind o geacă impermeabilă, metoda și zona le stabilești cu You Protect, ca logoul să nu afecteze protecția la ploaie."
+    },
+    {
+      "q": "Ce mărimi și culori are geaca Suncity MC4314?",
+      "a": "Geaca Sir Safety Suncity MC4314 se găsește în mărimile S–3XL și în trei culori: albastru închis, alb și portocaliu fluorescent."
+    },
+    {
+      "q": "De unde pot comanda geaca de ploaie Sir Safety Suncity în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă direct de pe această pagină, pentru toată echipa și cu logoul firmei, și poți testa geaca Suncity MC4314 cu echipa ta înainte de decizie."
+    }
+  ],
+  "seo": {
+    "title": "Geacă de ploaie de lucru Sir Safety MC4314",
+    "description": "Geacă de ploaie de lucru Sir Safety MC4314, EN 343: te ține uscat, cu glugă pliabilă și manșete care opresc apa. Ofertă cu logo de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MC4314",
+    "range": null,
+    "productUrl": "https://www.sirsafety.com/suncity-jacket"
+  },
+  "reviewNotes": [
+    "Conflict pagină web vs. fișă tehnică (am urmat fișa): pagina descrie țesătură Wonderflex foarte elastică, rezistentă la uzură, anti-acid și rezistentă la produse petroliere, cu fermoar ascuns și nasturi; fișa spune tricot 100 % poliester cu strat PU, 190 g/m², fermoar acoperit de clapă cu capse și nu menționează elasticitate, rezistență la acizi sau la produse petroliere. Nu am folosit afirmațiile de pe pagină (rezistența chimică nu e certificată).",
+    "Fișa tehnică și declarația de conformitate sunt doar pentru H1 (portocaliu fluorescent), nu pentru culoarea principală Q5 (albastru închis). Confirmă că Q5 și K1 (alb) au aceeași certificare EN 343 3/1, același material și gramaj.",
+    "Certificări pe culori: fișa H1 listează doar EN 343 (categoria I EIP); nicio culoare nu are EN ISO 20471, nici portocaliul HI-VIS. Am spus deschis în notes și în FAQ că varianta portocalie nu e îmbrăcăminte de avertizare.",
+    "Fișa declară materialul respirabil, dar clasa EN 343 la rezistența la vapori de apă este 1 (primul nivel). Am atribuit respirabilitatea producătorului și am explicat clasa în FAQ.",
+    "Certificatul OEKO-TEX® al țesăturii exterioare este în reevaluare, conform fișei; nu l-am listat.",
+    "Logo pe material cu strat PU: broderia perforează stratul impermeabil. Confirmă cu producția ce metodă păstrează protecția EN 343 înainte de a o recomanda clientului."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-16"
+  }
+}

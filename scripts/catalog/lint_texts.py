@@ -20,7 +20,8 @@ FORMAL = re.compile(
 BANNED = ["cel mai bun", "cea mai bună", "cei mai buni", "revoluționar", "lider", "nr. 1", "numărul 1",
           "toată ziua", "100% sigur", "garantăm"]
 CEDILLA = re.compile(r"[şţŞŢ]")
-BAD_QUOTES = re.compile(r"[“”\"]")
+# În română se scrie „…”: deschiderea e U+201E, închiderea e U+201D (corectă). Greșite: “ (U+201C) și ".
+BAD_QUOTES = re.compile(r"[“\"]")
 STOPWORDS = {"de", "din", "pentru", "cu", "si", "și", "la", "în", "in", "pe"}
 
 

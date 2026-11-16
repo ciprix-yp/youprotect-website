@@ -1,0 +1,202 @@
+{
+  "status": "review",
+  "name": "Pantaloni de lucru cu pieptar Sir Safety Harrison",
+  "category": "pantaloni",
+  "industries": [
+    "constructii",
+    "productie",
+    "logistica"
+  ],
+  "summary": "Pantaloni de lucru cu pieptar din polibumbac de 300 g/m², cu 9 buzunare și buzunare pentru genunchiere. Țesătura e moale și respiră, iar inserțiile negre în contrast le dau un aspect profesionist.",
+  "description": [
+    "Pantalonii de lucru cu pieptar Sir Safety Harrison îmbină robustețea cu confortul: procentul de bumbac face țesătura moale și respirabilă, fără să piardă din rezistență. Bretelele elastice se reglează, talia elastică cu tunel și elasticul din spate se adaptează corpului, iar deschiderile laterale cu nasturi te ajută să îi îmbraci și să îi scoți mai ușor.",
+    "Te simți pregătit pentru lucrul în genunchi: buzunarele pentru genunchiere primesc genunchierele Sir Safety KGUARD MC4913, iar protecțiile din Oxford negru de la călcâi feresc tivul de uzură. Inserțiile negre în contrast și cusăturile duble le dau un aspect robust și profesionist, așa că echipa ta arată pregătită de lucru, pe șantier, în hală sau în depozit.",
+    "Pentru firmă, Harrison înseamnă pantaloni pentru muncă solicitantă: întăriturile anti-uzură din Oxford, cusăturile duble de înaltă rezistență și întăriturile din zonele solicitate le cresc durabilitatea. Cele 9 buzunare, bucla pentru ciocan, inelul în D și găicile lărgite pentru centura de scule țin uneltele la îndemână. Pantalonii sunt conformi EN ISO 13688, produsul este certificat OEKO-TEX®, iar logoul firmei îl poți adăuga prin imprimare sau broderie."
+  ],
+  "benefits": [
+    "Rezistență și confort: polibumbac de 300 g/m², moale și respirabil.",
+    "Pregătiți pentru lucrul în genunchi: buzunare pentru genunchierele KGUARD MC4913.",
+    "Uneltele la îndemână: 9 buzunare, buclă pentru ciocan și inel în D.",
+    "Se adaptează corpului: bretele elastice reglabile, talie elastică și deschideri laterale cu nasturi.",
+    "Rezistă la uzură: întărituri din Oxford și cusături duble de înaltă rezistență.",
+    "Centura de scule stă bine: găici lărgite care distribuie efortul pe talie."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "65 % poliester, 35 % bumbac, țesătură diagonal frânt 2/2 (broken twill)"
+    },
+    {
+      "label": "Gramaj",
+      "value": "300 g/m²"
+    },
+    {
+      "label": "Închidere",
+      "value": "Bretele elastice reglabile, cu prindere rapidă; deschideri laterale cu nasturi; șliț cu fermoar"
+    },
+    {
+      "label": "Talie",
+      "value": "Elastică și reglabilă, cu sistem tunel; elastic în spate"
+    },
+    {
+      "label": "Buzunare",
+      "value": "9: buzunar pe pieptar cu clapă și capse; două buzunare frontale; două buzunare la spate din țesătură rezistentă la uzură, cu clapă și capsă; buzunar dublu pentru metru pe dreapta; buzunar multifuncțional pe stânga; suport pentru telefon, suport pentru pix și buzunar din țesătură rezistentă la impact"
+    },
+    {
+      "label": "Pentru unelte",
+      "value": "Buclă pentru ciocan pe stânga, inel în D sub talie, găici lărgite pentru centura de scule"
+    },
+    {
+      "label": "Genunchiere",
+      "value": "Buzunare pentru genunchiere, compatibile cu Sir Safety KGUARD MC4913"
+    },
+    {
+      "label": "Întărituri",
+      "value": "Protecții la călcâi din poliester Oxford negru; cusături duble de înaltă rezistență și întărituri bartack în zonele solicitate; inserții negre în contrast"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "Categoria I, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [
+    "Din cauza stocului mixt, producătorul poate livra fie versiunea nouă a modelului, cea din poze, fie versiunea anterioară."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 13688",
+      "label": "Îmbrăcăminte de protecție: cerințe generale."
+    },
+    {
+      "code": "OEKO-TEX®",
+      "label": "Produs certificat OEKO-TEX®."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "P7",
+      "name": "albastru",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/pantaloni-lucru-pieptar-sir-safety-harrison-mc1813/P7-PS.webp",
+          "thumb": "/images/products/pantaloni-lucru-pieptar-sir-safety-harrison-mc1813/P7-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "C3",
+      "name": "gri",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/pantaloni-lucru-pieptar-sir-safety-harrison-mc1813/C3-PS.webp",
+          "thumb": "/images/products/pantaloni-lucru-pieptar-sir-safety-harrison-mc1813/C3-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "V7",
+      "name": "kaki",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/pantaloni-lucru-pieptar-sir-safety-harrison-mc1813/V7-PS.webp",
+          "thumb": "/images/products/pantaloni-lucru-pieptar-sir-safety-harrison-mc1813/V7-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "44–64",
+    "values": [
+      "44",
+      "46",
+      "48",
+      "50",
+      "52",
+      "54",
+      "56",
+      "58",
+      "60",
+      "62",
+      "64"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MC1813P7_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MC1813P7_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce standard respectă pantalonii cu pieptar Sir Safety Harrison MC1813?",
+      "a": "Pantalonii de lucru cu pieptar Sir Safety Harrison MC1813 sunt conformi EN ISO 13688, standardul cu cerințele generale pentru îmbrăcămintea de protecție, și sunt echipament de protecție de categoria I conform Regulamentului (UE) 2016/425. Produsul este certificat OEKO-TEX®."
+    },
+    {
+      "q": "Sunt pantalonii Harrison MC1813 comozi pentru munca fizică?",
+      "a": "Da. Pantalonii cu pieptar Sir Safety Harrison MC1813 sunt din polibumbac de 300 g/m², moale și respirabil, iar bretelele elastice reglabile, talia elastică și deschiderile laterale cu nasturi se adaptează corpului."
+    },
+    {
+      "q": "Pot folosi genunchiere cu pantalonii Harrison MC1813?",
+      "a": "Da. Pantalonii cu pieptar Sir Safety Harrison MC1813 au buzunare pentru genunchiere, compatibile cu genunchierele Sir Safety KGUARD MC4913, pe care le poți include în aceeași cerere de ofertă."
+    },
+    {
+      "q": "Pot pune logoul firmei pe pantalonii Harrison MC1813?",
+      "a": "Da. Poți pune logoul firmei pe pantalonii cu pieptar Sir Safety Harrison MC1813 prin imprimare sau broderie; zona și tehnica le alegi când ceri oferta."
+    },
+    {
+      "q": "Ce mărimi și culori are modelul Harrison MC1813?",
+      "a": "Pantalonii cu pieptar Sir Safety Harrison MC1813 se găsesc în mărimile 44–64, în albastru, gri și kaki. Din cauza stocului mixt, producătorul poate livra fie versiunea nouă, cea din poze, fie versiunea anterioară."
+    },
+    {
+      "q": "De unde pot comanda pantaloni cu pieptar Sir Safety Harrison în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, inclusiv cu logo, și poți cere să testezi pantalonii Harrison MC1813 înainte de decizie."
+    }
+  ],
+  "seo": {
+    "title": "Pantaloni de lucru cu pieptar Sir Safety MC1813",
+    "description": "Pantaloni de lucru cu pieptar Sir Safety Harrison MC1813: polibumbac moale, 9 buzunare, buzunare pentru genunchiere. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MC1813",
+    "range": "Harrison Series",
+    "productUrl": "https://www.sirsafety.com/harrison-bib-trousers"
+  },
+  "reviewNotes": [
+    "Pagina web spune că standardul EN 14404 (genunchiere) se atinge doar împreună cu genunchierele; fișa tehnică nu menționează EN 14404. Nu l-am trecut în text și nici la certificări.",
+    "Fișa spune doar OEKO-TEX® certified product, fără să precizeze standardul (ex. STANDARD 100); am afișat OEKO-TEX® fără alte detalii. De confirmat cu Sir Safety.",
+    "Stoc mixt: fișa avertizează că se poate livra versiunea nouă (din poze) sau cea anterioară; trecut în notes și în FAQ. De confirmat la comandă dacă se poate cere o singură versiune pentru toată echipa.",
+    "Genunchierele KGUARD MC4913: fișa spune doar că sunt compatibile; textul presupune că sunt un produs separat (le poți include în aceeași cerere de ofertă). De confirmat.",
+    "Fișa pune suportul pentru telefon o dată lângă buzunarul dublu pentru metru (dreapta) și o dată lângă buzunarul multifuncțional (stânga); textul nu precizează partea.",
+    "Pagina web spune D-rings (plural), fișa spune D-ring below the belt (unul). Textul urmează fișa.",
+    "Keyword-ul pantaloni de lucru cu pieptar e diferit de Symbol MC1113 (salopetă cu pieptar din bumbac).",
+    "Fișa tehnică nu dă instrucțiuni de spălare (doar: Please follow the recommended washing instructions), așa că `care` e gol. De cerut de la Sir Safety temperatura de spălare și eticheta de întreținere."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-16"
+  }
+}

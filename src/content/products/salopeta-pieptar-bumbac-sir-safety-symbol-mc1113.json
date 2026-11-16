@@ -1,0 +1,208 @@
+{
+  "status": "review",
+  "name": "Salopetă cu pieptar din bumbac Sir Safety Symbol",
+  "category": "pantaloni",
+  "industries": [
+    "constructii",
+    "productie"
+  ],
+  "summary": "Salopetă cu pieptar din bumbac 100 %, din țesătură Massaua de 270 g/m², cu bretele elastice reglabile și prindere rapidă. Se reglează pe corp, se îmbracă repede și îți lasă libertate de mișcare.",
+  "description": [
+    "Salopeta cu pieptar din bumbac Sir Safety Symbol se reglează pe corpul tău: bretelele elastice cu prindere rapidă se ajustează ușor, iar talia reglabilă cu nasturi și elasticul din talie îți lasă libertate de mișcare. Bumbacul 100 % respiră și e confortabil, iar protecția suplimentară din zona lombară te acoperă când te apleci.",
+    "Pieptarul cu două buzunare și cusăturile în culoare contrastantă îi dau un aspect îngrijit și practic. Te simți protejat de murdărie și de deteriorări ușoare, iar împreună cu pantalonii de lucru Symbol MC1111, din aceeași țesătură și în aceleași culori, echipa ta arată unitar și profesionist.",
+    "Pentru firmă, Symbol e o salopetă pentru uz profesional intens: țesătura Massaua compactă rezistă la uzură, iar cusăturile întărite și cusătura triplă pe exteriorul piciorului și pe pieptar îi cresc durabilitatea. Bretelele cu prindere rapidă se pun și se scot repede. Salopeta este conformă EN ISO 13688, țesătura exterioară principală e certificată OEKO-TEX® Standard 100, iar logoul firmei îl poți adăuga prin imprimare sau broderie."
+  ],
+  "benefits": [
+    "Se reglează pe corp: bretele elastice reglabile și talie reglabilă cu nasturi.",
+    "Se pune și se scoate repede: bretele cu prindere rapidă.",
+    "Confort natural: bumbac 100 % care respiră.",
+    "Spatele acoperit: protecție suplimentară în zona lombară.",
+    "Rezistă la uz intens: țesătură Massaua de 270 g/m² și cusătură triplă.",
+    "Mărunțișurile la îndemână: pieptar cu două buzunare și buzunar pentru metru."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "100 % bumbac Massaua"
+    },
+    {
+      "label": "Gramaj",
+      "value": "270 g/m²"
+    },
+    {
+      "label": "Țesătură",
+      "value": "Massaua, diagonal 3/1, sanforizată"
+    },
+    {
+      "label": "Închidere",
+      "value": "Bretele elastice reglabile, cu prindere rapidă; șliț cu fermoar"
+    },
+    {
+      "label": "Talie",
+      "value": "Reglabilă cu nasturi, cu elastic"
+    },
+    {
+      "label": "Buzunare",
+      "value": "Pieptar cu două buzunare; două buzunare frontale cu cusături întărite; buzunar la spate; buzunar pentru metru pe dreapta"
+    },
+    {
+      "label": "Protecție lombară",
+      "value": "Protecție suplimentară în zona lombară"
+    },
+    {
+      "label": "Cusături",
+      "value": "Cusătură triplă pe exteriorul piciorului și pe pieptar; cusături și întărituri bartack în culoare contrastantă"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "Categoria I, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [],
+  "certifications": [
+    {
+      "code": "EN ISO 13688",
+      "label": "Îmbrăcăminte de protecție: cerințe generale."
+    },
+    {
+      "code": "OEKO-TEX® Standard 100",
+      "label": "Țesătura exterioară principală, testată pentru substanțe nocive."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "Q7",
+      "name": "bleumarin",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/Q7-PS.webp",
+          "thumb": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/Q7-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "C2",
+      "name": "antracit",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/C2-PS.webp",
+          "thumb": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/C2-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "P8",
+      "name": "albastru regal",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/P8-PS.webp",
+          "thumb": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/P8-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "B4",
+      "name": "gri șoricel",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/B4-PS.webp",
+          "thumb": "/images/products/salopeta-pieptar-bumbac-sir-safety-symbol-mc1113/B4-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "44–62",
+    "values": [
+      "44",
+      "46",
+      "48",
+      "50",
+      "52",
+      "54",
+      "56",
+      "58",
+      "60",
+      "62"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MC1113C2_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MC1113C2_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce standard respectă salopeta Sir Safety Symbol MC1113?",
+      "a": "Salopeta cu pieptar Sir Safety Symbol MC1113 este conformă EN ISO 13688, standardul cu cerințele generale pentru îmbrăcămintea de protecție, și este echipament de protecție de categoria I conform Regulamentului (UE) 2016/425. Țesătura exterioară principală este certificată OEKO-TEX® Standard 100."
+    },
+    {
+      "q": "Cum se reglează salopeta Symbol MC1113 pe corp?",
+      "a": "Salopeta cu pieptar Sir Safety Symbol MC1113 se reglează din bretelele elastice, care au prindere rapidă, și din talia cu nasturi. Elasticul din talie îți lasă libertate de mișcare, iar bretelele cu prindere rapidă se pun și se scot repede."
+    },
+    {
+      "q": "Există pantaloni asortați la salopeta Symbol MC1113?",
+      "a": "Da. Pantalonii de lucru Sir Safety Symbol MC1111 sunt din aceeași țesătură Massaua de 270 g/m² și se găsesc în aceleași patru culori, așa că poți îmbrăca echipa unitar, cu pantaloni și salopete."
+    },
+    {
+      "q": "Pot pune logoul firmei pe salopeta Symbol MC1113?",
+      "a": "Da. Poți pune logoul firmei pe salopeta Sir Safety Symbol MC1113 prin imprimare sau broderie; zona și tehnica le alegi când ceri oferta."
+    },
+    {
+      "q": "Ce mărimi și culori are salopeta Symbol MC1113?",
+      "a": "Salopeta cu pieptar Sir Safety Symbol MC1113 se găsește în mărimile 44–62, în antracit, bleumarin, albastru regal și gri șoricel."
+    },
+    {
+      "q": "De unde pot comanda salopete cu pieptar Sir Safety Symbol în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, inclusiv cu logo, și poți cere să testezi salopeta Symbol MC1113 înainte de decizie."
+    }
+  ],
+  "seo": {
+    "title": "Salopetă cu pieptar din bumbac Sir Safety MC1113",
+    "description": "Salopetă cu pieptar din bumbac Sir Safety Symbol MC1113: bretele elastice cu prindere rapidă, talie reglabilă, rezistă la uzură. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MC1113",
+    "range": "Symbol Series",
+    "productUrl": "https://www.sirsafety.com/symbol-bib-trousers"
+  },
+  "reviewNotes": [
+    "Fișa spune five-pocket design (5 buzunare), dar lista de detalii are 6 buzunare (2 pe pieptar, 2 frontale, 1 la spate, 1 pentru metru). Textul nu dă un număr de buzunare.",
+    "Pagina web menționează posibilitatea de a aplica benzi reflectorizante (galben, portocaliu sau gri prismatic, gri clasic); fișa nu o menționează. Nu am folosit-o în text; de confirmat cu Sir Safety.",
+    "Sanforizată, diagonal 3/1 și șliț cu fermoar vin doar de pe pagina web; le-am pus doar în specificații. Protecția împotriva murdăriei și a deteriorărilor ușoare vine tot de pe pagina web.",
+    "Keyword-ul salopetă cu pieptar din bumbac e diferit de perechea MC1111 (pantaloni de lucru din bumbac) și de Harrison MC1813 (pantaloni de lucru cu pieptar).",
+    "Fișa tehnică nu dă instrucțiuni de spălare (doar: Please follow the recommended washing instructions), așa că `care` e gol. De cerut de la Sir Safety temperatura de spălare și eticheta de întreținere."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-16"
+  }
+}

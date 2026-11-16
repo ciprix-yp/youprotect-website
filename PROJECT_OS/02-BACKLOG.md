@@ -110,14 +110,10 @@ Format task:
 - Next action: handoff CMS/Cloudflare/GBP (vezi `04-SESSION_HANDOFF`) + GSC Request Indexing.
 
 ### UX-001
-- Status: `TODO`
-- Owner: `-`
-- Scope: Conversie `<button onclick=location>` -> `<a href>` (~18 instanțe, accesibilitate/SEO/no-JS) + consolidare tokeni de culoare (`yp-green` nefolosit, hex-uri ad-hoc `#0a0a0a/#0f0f0f/#050505` -> tokeni numiți). Aliniere tagline header/footer. + social links footer + `sameAs` (cod pregătit în `src/lib/site.ts`, doar URL-uri lipsă).
-- Acceptance: CTA-urile navigaționale sunt `<a>`; paleta folosește tokeni `yp-*`; build PASS + verificare vizuală în browser.
-- Găsit la ui-verify (11.11.2026), existent și live: homepage cu derulare orizontală (451 px pe mobil, 1356 px pe desktop; cardurile animate din „Achiziții dezorganizate” + header fix), micro-text 9–11 px în `ProductCard` și în hero-ul `/produse`, contrast insuficient și linkuri distinse doar prin culoare în intro-ul `/produse`, linkuri din footer sub 24 px.
-- Găsit la upgrade-ul Astro (16.11.2026), existent și live: pe mobil, din cauza derulării orizontale, butonul de meniu (☰) de pe homepage stă la x=395–435 px, în afara ecranului de 375 px; cauza sunt elementele AOS încă neanimate (translatate lateral). `/lp/tco-calculator/` cere `/logo-yp.svg`, care nu există (404, logo stricat).
-- Dependencies: none.
-- Next action: PR separat (necesită verificare vizuală, de aceea a fost amânat de la fix-ul SEO).
+- Status: `DONE` (16.11.2026, PR #12)
+- Owner: `Claude`
+- Rezultat: ui-verify pe 15 pagini (mobil + desktop): 0 încălcări axe, 0 ținte tactile sub 24 px, 0 erori în consolă, 0 cereri eșuate. Reparat: butonul de meniu ieșea din ecran pe mobil (overflow de la AOS), texte 9–11 px, contraste, 17 butoane `onclick` → link-uri, logo lipsă pe LP, link-uri fără „/” final (813 verificate), fontul de text fără ă/ș/ț (înlocuit cu „YP Text”, subset Lato 2.015 OFL), AOS oprit pentru „reduce motion”.
+- Rămas (opțional): consolidarea tokenilor de culoare (hex-uri ad-hoc → `yp-*`).
 
 ### CMS-001
 - Status: `TODO`
@@ -162,21 +158,20 @@ Format task:
 - Next action: viewer 360° (I-2026-11-11-01), apoi mutarea `/produse` pe colecția nouă.
 
 ### CAT-003
-- Status: `BLOCKED`
-- Owner: `User`
-- Scope: Date de produs Sir Safety (poze, fișe tehnice, descrieri) pentru produsele recurente din vânzări (Sirflex, Piquet, Gemini Guard, Contender, Tonga, Harrison, Manhattan…).
-- Acceptance: export sau acces la portalul B2B `sirweb.sirsafety.com`.
-- Dependencies: acces de la Sir Safety.
-- Next action: user verifică exportul din portalul B2B sau cere date de la contactul Sir Safety.
-
+- Status: `IN PROGRESS` (branch `feature/catalog-sirsafety`)
+- Owner: `Claude` (pipeline + texte), `User` (aprobare texte, acord poze)
+- Scope: Produsele Sir Safety recurente din vânzări.
+- Deblocat (16.11.2026): datele sunt publice pe www.sirsafety.com (pagină de produs + fișă tehnică PDF EN + declarație de conformitate EN), fără login. Pipeline: `extract_sirsafety.py` → `catalog/texts/sirsafety/<COD>.json` → `fetch_images_sirsafety.py` → `assemble_sirsafety.py` (verifică standardele și gramajul față de fișa tehnică). Primul lot: 12 modele, status `review`.
+- De confirmat de user: acordul Sir Safety pentru folosirea pozelor și textelor (nu există termeni publici); declarațiile de conformitate și instrucțiunile în română (Regulamentul (UE) 2016/425) se cer de la Sir Safety.
+- Next action: user citește fișele în `/preview/produse/` și le aprobă (status `published`).
 
 ### SEC-001
-- Status: `TODO`
-- Owner: `Claude` + `User` (decizie + test pe DB)
-- Scope: Conexiunile Postgres nu verifică certificatul TLS (`rejectUnauthorized: false`) în `functions/api/leads.js`, `functions/api/submit-lead.js` și `src/lib/catalog.ts`. Semgrep `bypass-tls-verification`: CI `semgrep` va fi roșu până la rezolvare.
-- Acceptance: conexiune cu verificare TLS (CA Railway sau Hyperdrive fără opțiunea de bypass), testată pe formularul de lead; `src/lib/catalog.ts` dispare după mutarea `/produse` pe colecția nouă.
-- Dependencies: acces de test la DB; CAT-001 pentru `catalog.ts`.
-- Next action: verificat cum se conectează Hyperdrive la Railway și ce certificat expune Railway.
+- Status: `REVIEW` (cod gata pe `feature/launch-fixes`, PR #12; CI `semgrep` verde)
+- Owner: `Claude` + `User` (test pe preview)
+- Scope: Conexiunile Postgres nu verificau certificatul TLS (`rejectUnauthorized: false`).
+- Rezultat (16.11.2026): `submit-lead` se conectează doar prin Hyperdrive, fără opțiuni ssl (Hyperdrive face TLS spre Railway); fără fallback `DATABASE_URL`; acceptă doar întrebările cunoscute, cu limite de mărime; erori generice spre client. `/api/leads` scos (niciun apelant, endpoint public de scriere în DB-ul de producție), `scripts/qc-smoke.sh` scos (scria lead-uri de test în producție). Regulă semgrep nouă: `internal-error-message-in-response`.
+- Acceptance rămasă: un lead de test trimis din preview ajunge în DB (preview-ul folosește Hyperdrive-ul de producție) — doar cu acordul lui Ciprian.
+- Next action: test lead pe `feature-launch-fixes.youprotect-website.pages.dev/cere-oferta/`, apoi verificare în DB.
 
 ### SEC-002
 - Status: `DONE` (branch `chore/astro-7`, 16.11.2026)
@@ -185,6 +180,19 @@ Format task:
 - Rezultat: Astro 4.16 -> 7.4.12, `@astrojs/react` 7.1.9, `@astrojs/sitemap` 3.7.5; `@astrojs/tailwind` scos (nu suportă Astro 6+), Tailwind 3 rulează prin `postcss.config.mjs`; colecția `products` pe loader `glob()` în `src/content.config.ts`, `z` din `astro/zod`; `compressHTML: true` (Astro 7 ar fi lipit cuvintele din elemente inline); Node 22.23.4 în `.node-version` (Cloudflare Pages, CI) și `.mise.toml`; `.astro/` scos din git.
 - Verificare: `npm audit` 0 vulnerabilități, 294/294 semnături verificate; build 25 pagini; comparație HTML Astro 4 vs 7: text, link-uri, meta, JSON-LD, sitemap identice pe toate paginile; screenshot-uri 41/50 identice pixel cu pixel, restul doar anti-aliasing de font; teste în browser 17/18 la fel pe ambele versiuni (eșecul: logo lipsă pe LP, vezi UX-001).
 - Efecte secundare: compilatorul nou a găsit un `</div>` lipsă în `cum-lucram.astro` (butonul „Vezi catalogul” stătea în cardul 4, acum e centrat sub carduri); dispare CSS-ul Tailwind duplicat (~41 KB pe pagină) și eroarea JS „No carousel” de pe homepage.
+
+### LEGAL-001
+- Status: `REVIEW`
+- Owner: `User`
+- Scope: Paginile legale lipseau (footer-ul trimitea spre ele). Create pe 16.11.2026: `/politica-confidentialitate/`, `/termeni-conditii/`, `/politica-cookies/`, scrise din ce face efectiv site-ul (fără cookie-uri proprii, DB Railway în UE, Cal.com doar la programări).
+- De confirmat: termenul de păstrare a cererilor (propus: 2 ani de la ultimul contact); revizuire de un jurist, ideal.
+- Next action: Ciprian citește paginile pe preview.
+
+### DATA-001
+- Status: `TODO`
+- Owner: `User`
+- Scope: CUI-ul din footer (RO 46387843) diferă de cel de pe facturile SmartBill (RO46294850). Se corectează într-un singur loc: `SITE.legal.cui` din `src/lib/site.ts`.
+- Next action: Ciprian confirmă CUI-ul corect.
 
 ---
 
