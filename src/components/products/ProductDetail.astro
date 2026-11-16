@@ -17,7 +17,8 @@ const slug = entry.id;
 const categoryLabel = CATEGORIES[p.category];
 const primary = p.colours[0];
 const mainImage = primary.images[0].src;
-const offerHref = `/cere-oferta/?ref=${encodeURIComponent(`/produse/${slug}/`)}`;
+// Formularul arată produsul și îl trimite cu cererea (MultiStepForm, câmpul „produs”).
+const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
 const hasMeasures = p.sizes.table.some((row) => row.measure);
 const hasLeg = p.sizes.table.some((row) => row.leg);
 // „1 culoare”, „8 culori”, „20 de culori”: „de” apare când PluralRules('ro') întoarce „other”.
@@ -258,30 +259,40 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
       </ul>
     </section>
 
-    <section class="min-w-0">
-      <h2 class={sectionTitle}>Tabel de mărimi</h2>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-          <thead class="text-yp-white/50">
-            <tr>
-              <th scope="col" class="py-2 pr-4 font-normal">Mărime</th>
-              {hasMeasures && <th scope="col" class="py-2 pr-4 font-normal">Măsură</th>}
-              {hasLeg && <th scope="col" class="py-2 font-normal">Lungime picior</th>}
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-yp-white/10 text-yp-white/90">
-            {p.sizes.table.map((row) => (
+    {p.sizes.table.length > 0 ? (
+      <section class="min-w-0">
+        <h2 class={sectionTitle}>Tabel de mărimi</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="text-yp-white/50">
               <tr>
-                <td class="py-2 pr-4">{row.size}</td>
-                {hasMeasures && <td class="py-2 pr-4">{row.measure}</td>}
-                {hasLeg && <td class="py-2">{row.leg}</td>}
+                <th scope="col" class="py-2 pr-4 font-normal">Mărime</th>
+                {hasMeasures && <th scope="col" class="py-2 pr-4 font-normal">Măsură</th>}
+                {hasLeg && <th scope="col" class="py-2 font-normal">Lungime picior</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {p.sizes.note && <p class="mt-3 text-xs text-yp-white/60">{p.sizes.note}</p>}
-    </section>
+            </thead>
+            <tbody class="divide-y divide-yp-white/10 text-yp-white/90">
+              {p.sizes.table.map((row) => (
+                <tr>
+                  <td class="py-2 pr-4">{row.size}</td>
+                  {hasMeasures && <td class="py-2 pr-4">{row.measure}</td>}
+                  {hasLeg && <td class="py-2">{row.leg}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {p.sizes.note && <p class="mt-3 text-xs text-yp-white/60">{p.sizes.note}</p>}
+      </section>
+    ) : (
+      <section class="min-w-0">
+        <h2 class={sectionTitle}>Mărimi disponibile</h2>
+        <ul class="flex flex-wrap gap-2 text-sm text-yp-white/90">
+          {p.sizes.values.map((v) => <li class="px-2.5 py-1 border border-yp-white/15">{v}</li>)}
+        </ul>
+        {p.sizes.note && <p class="mt-3 text-xs text-yp-white/60">{p.sizes.note}</p>}
+      </section>
+    )}
 
     {p.personalization && (
       <section class="min-w-0">
@@ -299,12 +310,14 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
       </section>
     )}
 
-    <section class="min-w-0">
-      <h2 class={sectionTitle}>Întreținere</h2>
-      <ul class="space-y-1.5 text-sm text-yp-white/80">
-        {p.care.map((c) => <li>{c}</li>)}
-      </ul>
-    </section>
+    {p.care.length > 0 && (
+      <section class="min-w-0">
+        <h2 class={sectionTitle}>Întreținere</h2>
+        <ul class="space-y-1.5 text-sm text-yp-white/80">
+          {p.care.map((c) => <li>{c}</li>)}
+        </ul>
+      </section>
+    )}
 
     {p.documents.length > 0 && (
       <section class="min-w-0">

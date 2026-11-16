@@ -3,6 +3,8 @@
 export const CATEGORIES = {
   reflectorizante: 'Îmbrăcăminte reflectorizantă',
   'geci-jachete': 'Geci și jachete',
+  veste: 'Veste',
+  'bluze-hanorace': 'Bluze și hanorace',
   'tricouri-polo': 'Tricouri și polo',
   pantaloni: 'Pantaloni',
   camasi: 'Cămăși',

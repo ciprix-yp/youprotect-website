@@ -1,78 +1,58 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-// Preiau parametrii din URL (dacă e posibil pe client-side)
-// Din cauza că e "static", vom face logica cu un script in-browser.
+// Pagina e statică; mesajul și calendarul depind de ?intent= și se aleg în browser.
+// Datele pentru calendar vin din sessionStorage (cheia BOOKING_PREFILL_KEY din MultiStepForm), nu din URL:
+// nume, email și telefon nu ajung în istoricul browserului sau în loguri.
 ---
 
-<BaseLayout 
-  title="Confirmare" 
-  description="Îți mulțumim pentru mesaj! Echipa You Protect va reveni în cel mai scurt timp."
+<BaseLayout
+  title="Cererea a fost trimisă"
+  description="Îți mulțumim! Echipa You Protect revine în cel mai scurt timp."
+  noindex
 >
   <div class="h-24 md:h-32"></div>
-  
+
   <section class="py-12 md:py-20 relative overflow-hidden min-h-[70vh] flex flex-col justify-center">
-    <!-- Backgound Elements -->
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yp-yellow/10 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
 
     <div class="max-w-4xl mx-auto px-4 w-full text-center">
       <div data-aos="fade-up">
         <div class="w-20 h-20 bg-yp-yellow/10 text-yp-yellow rounded-full flex items-center justify-center mx-auto mb-8 border border-yp-yellow/20">
-          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        
+
         <h1 class="text-4xl md:text-5xl font-heading font-semibold text-white mb-6">
-          Mesajul a fost <span class="text-yp-yellow">trimis cu succes!</span>
+          Cererea a fost <span class="text-yp-yellow">trimisă</span>
         </h1>
-        
-        <div id="confirmation-message" class="text-lg text-neutral-400 max-w-2xl mx-auto mb-12">
-          <!-- Textul completat prin script -> Vezi mai jos -->
-          Mulțumim! Vom reveni în curând cu informațiile solicitate.
+
+        <p id="msg-default" class="text-lg text-neutral-300 max-w-2xl mx-auto mb-12">
+          Mulțumim! Revenim în curând cu informațiile cerute.
+        </p>
+        <p id="msg-quote" class="hidden text-lg text-neutral-300 max-w-2xl mx-auto mb-12">
+          Pregătim oferta pentru echipa ta și ți-o trimitem în cel mult 48 de ore. Dacă avem nevoie de o clarificare, te
+          sunăm scurt înainte.
+        </p>
+        <div id="msg-consultation" class="hidden text-lg text-neutral-300 max-w-2xl mx-auto mb-12">
+          <p>Revenim în cel mult 24 de ore cu o propunere pentru discuție și câteva recomandări pentru echipa ta.</p>
+          <p class="mt-6 font-semibold text-white">Dacă vrei, alege direct o oră liberă din calendarul de mai jos.</p>
         </div>
       </div>
 
-      <div id="booking-section" class="hidden mt-12 animate-in fade-in duration-700 delay-300 w-full" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="text-2xl text-white font-medium mb-6">Programează data și ora dorită direct în calendarul nostru:</h2>
+      <div id="booking-section" class="hidden mt-12 w-full">
+        <h2 class="text-2xl text-white font-medium mb-6">Alege ziua și ora discuției</h2>
         <div class="w-full bg-yp-black border border-white/5 rounded-xl overflow-hidden shadow-2xl">
-          <!-- Cal inline embed code begins -->
           <div style="width:100%;height:100%;overflow:scroll" id="my-cal-inline"></div>
-          <script type="text/javascript">
-            (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-            
-            Cal("init", "30min", {origin:"https://cal.eu"});
-
-            // Pre-fill cu datele din URL (trimise din formular)
-            const urlParams = new URLSearchParams(window.location.search);
-            const name = urlParams.get('nume') || '';
-            const email = urlParams.get('email') || '';
-            const telefon = urlParams.get('telefon') || '';
-            const company = urlParams.get('companie') || '';
-
-            Cal.ns["30min"]("inline", {
-              elementOrSelector:"#my-cal-inline",
-              config: {
-                "layout": "month_view",
-                "theme": "dark"
-              },
-              calLink: "you-protect-wwd6jy/30min",
-              uiDebug: false,
-              prefill: {
-                name: name,
-                email: email,
-                notes: `Companie: ${company} \nTelefon: ${telefon}`
-              }
-            });
-            Cal.ns["30min"]("ui", {"theme":"dark", "hideEventTypeDetails":false, "layout":"month_view"});
-          </script>
-          <!-- Cal inline embed code ends -->
         </div>
       </div>
 
-      <div class="mt-12 flex justify-center gap-4">
-        <a href="/" class="px-8 py-3 bg-white/5 border border-white/10 text-white rounded font-medium hover:bg-white/10 transition-colors">
+      <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4">
+        <a href="/produse/" class="px-8 py-3 min-h-[44px] bg-yp-yellow text-yp-black rounded font-medium hover:bg-white transition-colors">
+          Vezi catalogul
+        </a>
+        <a href="/" class="px-8 py-3 min-h-[44px] bg-white/5 border border-white/10 text-white rounded font-medium hover:bg-white/10 transition-colors">
           Înapoi acasă
         </a>
       </div>
@@ -80,26 +60,78 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </section>
 
   <script>
-    // Logică pentru a afișa mesajele specifice pe baza "intent"
-    document.addEventListener("DOMContentLoaded", () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const intent = urlParams.get('intent');
-      
-      const msgBox = document.getElementById('confirmation-message');
-      const bookingSection = document.getElementById('booking-section');
+    const PREFILL_KEY = "yp_booking_prefill"; // aceeași cheie ca BOOKING_PREFILL_KEY din MultiStepForm.tsx
+    const intent = new URLSearchParams(window.location.search).get("intent");
 
-      if (intent === 'consultation') {
-        if (msgBox) {
-          msgBox.innerHTML = `Vom reveni în maximum 24 de ore cu o propunere pentru discuție. Între timp, pregătim câteva recomandări personalizate.<br/><br/><strong>De asemenea, poți alege direct o fereastră disponibilă în calendarul de mai jos:</strong>`;
-        }
-        if (bookingSection) {
-          bookingSection.classList.remove('hidden');
-        }
-      } else if (intent === 'quote') {
-        if (msgBox) {
-          msgBox.innerHTML = `Pregătim oferta personalizată pentru compania dumneavoastră și o trimitem în maximum 48 de ore. Pentru a vă face o recomandare cât mai precisă, este posibil să vă contactăm pentru câteva clarificări rapide.`;
-        }
+    function show(id: string) {
+      document.getElementById(id)?.classList.remove("hidden");
+    }
+
+    function readPrefill(): { name?: string; email?: string; phone?: string; company?: string } {
+      try {
+        const raw = sessionStorage.getItem(PREFILL_KEY);
+        sessionStorage.removeItem(PREFILL_KEY);
+        const data = raw ? JSON.parse(raw) : {};
+        return typeof data === "object" && data !== null ? data : {};
+      } catch {
+        return {};
       }
-    });
+    }
+
+    // Embed-ul oficial Cal.com, încărcat doar pentru programări (nu la cererile de ofertă).
+    function loadCalendar() {
+      const prefill = readPrefill();
+      const str = (v: unknown) => (typeof v === "string" ? v.slice(0, 200) : "");
+      const w = window as any;
+      (function (C: any, A: string, L: string) {
+        const p = function (a: any, ar: any) { a.q.push(ar); };
+        const d = C.document;
+        C.Cal = C.Cal || function () {
+          const cal = C.Cal;
+          const ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement("script")).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api: any = function () { p(api, arguments); };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            if (typeof namespace === "string") {
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              p(cal.ns[namespace], ar);
+              p(cal, ["initNamespace", namespace]);
+            } else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(window, "https://app.cal.com/embed/embed.js", "init");
+
+      w.Cal("init", "30min", { origin: "https://cal.eu" });
+      w.Cal.ns["30min"]("inline", {
+        elementOrSelector: "#my-cal-inline",
+        config: { layout: "month_view", theme: "dark" },
+        calLink: "you-protect-wwd6jy/30min",
+        prefill: {
+          name: str(prefill.name),
+          email: str(prefill.email),
+          notes: `Companie: ${str(prefill.company)}\nTelefon: ${str(prefill.phone)}`,
+        },
+      });
+      w.Cal.ns["30min"]("ui", { theme: "dark", hideEventTypeDetails: false, layout: "month_view" });
+    }
+
+    if (intent === "consultation") {
+      document.getElementById("msg-default")?.classList.add("hidden");
+      show("msg-consultation");
+      show("booking-section");
+      loadCalendar();
+    } else if (intent === "quote") {
+      document.getElementById("msg-default")?.classList.add("hidden");
+      show("msg-quote");
+    }
   </script>
 </BaseLayout>

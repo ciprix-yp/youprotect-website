@@ -1,0 +1,124 @@
+---
+// Text scris din ce face efectiv site-ul (verificat în cod și în browser pe 16.11.2026):
+// formularul salvează în Postgres pe Railway (europe-west4) prin Cloudflare; Cal.com doar la programări;
+// fonturile și scripturile sunt găzduite pe site. Termenul de păstrare a cererilor e propus, de confirmat.
+import LegalPage from "../components/legal/LegalPage.astro";
+import { SITE } from "../lib/site";
+
+const a = SITE.address;
+---
+
+<LegalPage
+  title="Politica de confidențialitate"
+  description="Ce date personale colectează You Protect prin youprotect.ro, de ce, cât timp le păstrează și ce drepturi ai."
+  updated="16 noiembrie 2026"
+>
+  <p>
+    Aici afli ce date personale colectăm când folosești youprotect.ro sau ne contactezi, de ce le folosim, cui le
+    transmitem și ce drepturi ai. Pe scurt: folosim datele doar ca să-ți răspundem la cerere și să lucrăm împreună, nu le
+    vindem și nu le folosim pentru reclame.
+  </p>
+
+  <h2>Cine suntem</h2>
+  <p>
+    Operatorul datelor este <strong>{SITE.legal.name}</strong>, cu sediul în {a.streetAddress}, {a.addressLocality},
+    județul {a.addressRegion}, cod poștal {a.postalCode}, CUI {SITE.legal.cui}, înregistrată la Registrul Comerțului cu
+    numărul {SITE.legal.regCom}.
+  </p>
+  <p>
+    Pentru orice întrebare despre datele tale ne scrii la <a href={`mailto:${SITE.email}`}>{SITE.email}</a> sau ne suni
+    la <a href={`tel:${SITE.telephone}`}>{SITE.telephoneDisplay}</a>.
+  </p>
+
+  <h2>Ce date colectăm</h2>
+  <h3>Când trimiți formularul „Cere ofertă” sau „Programează o discuție”</h3>
+  <ul>
+    <li>numele și prenumele, firma, telefonul și adresa de email;</li>
+    <li>răspunsurile la întrebările din formular, de exemplu mărimea echipei, domeniul de activitate și ce produse ai în vedere;</li>
+    <li>produsul pentru care ceri ofertă, dacă ai pornit de pe o fișă de produs;</li>
+    <li>adresa IP, tipul de browser și pagina de pe care ai trimis cererea, salvate automat odată cu cererea.</li>
+  </ul>
+  <h3>Când programezi o discuție în calendar</h3>
+  <p>
+    Calendarul de pe pagina de confirmare este oferit de Cal.com. Datele pe care le completezi acolo (nume, email, ora
+    aleasă, notițe) ajung la Cal.com și la noi, ca să organizăm discuția.
+  </p>
+  <h3>Când ne suni, ne scrii pe email sau pe WhatsApp</h3>
+  <p>Folosim datele pe care ni le dai în conversație, ca să-ți răspundem.</p>
+  <h3>Când doar vizitezi site-ul</h3>
+  <p>
+    Nu folosim cookie-uri de analiză sau de marketing și nu urmărim vizitele. Detalii în
+    <a href="/politica-cookies/">politica de cookies</a>.
+  </p>
+
+  <h2>De ce folosim datele și pe ce temei legal</h2>
+  <ul>
+    <li>
+      <strong>Ca să-ți răspundem la cerere</strong>, să pregătim oferta sau să organizăm discuția. Temeiul este
+      efectuarea unor demersuri înainte de încheierea unui contract, la cererea ta (art. 6 alin. 1 lit. b din
+      Regulamentul (UE) 2016/679, „GDPR”).
+    </li>
+    <li>
+      <strong>Ca să protejăm formularul de abuz și spam</strong>, cu adresa IP și tipul de browser. Temeiul este
+      interesul nostru legitim de a ține site-ul sigur (art. 6 alin. 1 lit. f GDPR).
+    </li>
+    <li>
+      <strong>Dacă devii client</strong>, pentru contract, facturare și evidența contabilă. Temeiul este contractul (art.
+      6 alin. 1 lit. b) și obligațiile legale (art. 6 alin. 1 lit. c GDPR).
+    </li>
+  </ul>
+  <p>
+    Nu îți trimitem newslettere sau mesaje de marketing fără acordul tău, nu vindem datele și nu luăm decizii automate
+    care să te afecteze.
+  </p>
+
+  <h2>Cui transmitem datele</h2>
+  <p>Lucrăm cu câțiva furnizori care prelucrează date în numele nostru, doar pentru serviciul pe care ni-l oferă:</p>
+  <ul>
+    <li><strong>Cloudflare</strong>: găzduirea site-ului și transmiterea formularului către baza de date;</li>
+    <li>
+      <strong>Railway</strong>: baza de date în care se salvează cererile, cu serverele în Uniunea Europeană (Țările de
+      Jos);
+    </li>
+    <li><strong>Cal.com</strong>: calendarul de programare, doar dacă alegi să programezi o discuție;</li>
+    <li><strong>WhatsApp (Meta)</strong>: doar dacă ne scrii pe WhatsApp.</li>
+  </ul>
+  <p>
+    Unii dintre acești furnizori sunt companii din afara Spațiului Economic European. Când datele ajung la ei, transferul
+    se face pe baza garanțiilor prevăzute de GDPR, de exemplu clauzele contractuale standard aprobate de Comisia
+    Europeană. Transmitem date și autorităților, atunci când legea ne obligă.
+  </p>
+
+  <h2>Cât timp păstrăm datele</h2>
+  <ul>
+    <li>cererile care nu devin comandă: cel mult 2 ani de la ultimul contact cu tine;</li>
+    <li>datele clienților: pe durata colaborării, iar documentele contabile cât cere legislația contabilă.</li>
+  </ul>
+
+  <h2>Ce drepturi ai</h2>
+  <p>Ai dreptul să ne ceri:</p>
+  <ul>
+    <li>ce date avem despre tine și o copie a lor;</li>
+    <li>corectarea datelor greșite;</li>
+    <li>ștergerea datelor, când nu mai avem un motiv legal să le păstrăm;</li>
+    <li>restricționarea prelucrării sau transmiterea datelor către tine sau către altă firmă;</li>
+    <li>să nu mai folosim datele în baza interesului legitim (dreptul de opoziție).</li>
+  </ul>
+  <p>
+    Ne scrii la <a href={`mailto:${SITE.email}`}>{SITE.email}</a> și îți răspundem în cel mult o lună. Dacă nu ești
+    mulțumit de răspuns, poți face plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter
+    Personal (ANSPDCP), <a href="https://www.dataprotection.ro" rel="noopener" target="_blank">www.dataprotection.ro</a>.
+  </p>
+
+  <h2>Cum protejăm datele</h2>
+  <p>
+    Site-ul folosește conexiune criptată (HTTPS), iar baza de date în care se salvează cererile este accesibilă doar
+    echipei You Protect.
+  </p>
+
+  <h2>Modificări</h2>
+  <p>
+    Când schimbăm felul în care folosim datele, actualizăm această pagină și data de sus. Pentru schimbări importante te
+    anunțăm direct, dacă avem datele tale de contact.
+  </p>
+</LegalPage>

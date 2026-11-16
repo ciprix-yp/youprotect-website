@@ -1,0 +1,66 @@
+---
+// Termeni de utilizare pentru un site de prezentare: pe site nu se vând produse și nu se încheie contracte.
+import LegalPage from "../components/legal/LegalPage.astro";
+import { SITE } from "../lib/site";
+
+const a = SITE.address;
+---
+
+<LegalPage
+  title="Termeni și condiții"
+  description="Condițiile de folosire a site-ului youprotect.ro: ce înseamnă o cerere de ofertă, informațiile despre produse și drepturile de autor."
+  updated="16 noiembrie 2026"
+>
+  <p>
+    youprotect.ro este site-ul <strong>{SITE.legal.name}</strong> ({a.streetAddress}, {a.addressLocality}, județul
+    {a.addressRegion}, CUI {SITE.legal.cui}, {SITE.legal.regCom}). Folosind site-ul, accepți condițiile de mai jos.
+  </p>
+
+  <h2>Ce găsești pe site</h2>
+  <p>
+    Site-ul prezintă echipamentele de protecție și hainele de lucru pe care le oferim firmelor, plus felul în care
+    lucrăm. Pe site nu se vând produse, nu se afișează prețuri și nu se încheie contracte.
+  </p>
+
+  <h2>Cererea de ofertă</h2>
+  <p>
+    Ce trimiți prin formularul „Cere ofertă” sau „Programează o discuție” este o cerere, nu o comandă, și nu te obligă la
+    nimic. Oferta pe care ți-o trimitem este personalizată și conține prețurile și condițiile ei (livrare, plată,
+    valabilitate). Colaborarea începe doar după ce confirmăm amândoi oferta în scris. Condițiile testării produselor se
+    stabilesc tot în scris, înainte de testare.
+  </p>
+
+  <h2>Informațiile despre produse</h2>
+  <p>
+    Descrierile, specificațiile și certificările produselor se bazează pe datele publicate de producători. Producătorii
+    pot schimba între timp materialele, culorile sau mărimile disponibile, iar culorile din poze pot arăta ușor diferit
+    pe ecranul tău. Sunt valabile informațiile din oferta confirmată și din documentele care însoțesc produsul
+    (declarația de conformitate și instrucțiunile de utilizare).
+  </p>
+
+  <h2>Drepturi de autor și mărci</h2>
+  <p>
+    Textele, designul și logo-ul You Protect ne aparțin și nu pot fi copiate fără acordul nostru scris. Mărcile
+    producătorilor (de exemplu MASCOT®) aparțin titularilor lor, iar pozele produselor sunt ale producătorilor.
+  </p>
+
+  <h2>Răspundere</h2>
+  <p>
+    Ne străduim ca informațiile de pe site să fie corecte și la zi, dar ele au caracter informativ. Pentru alegerea
+    echipamentelor potrivite riscurilor din firma ta, cere-ne o recomandare personalizată. Link-urile către alte site-uri
+    sunt oferite pentru comoditate; nu răspundem de conținutul lor.
+  </p>
+
+  <h2>Date personale și cookies</h2>
+  <p>
+    Felul în care folosim datele tale e descris în <a href="/politica-confidentialitate/">politica de confidențialitate</a>
+    și în <a href="/politica-cookies/">politica de cookies</a>.
+  </p>
+
+  <h2>Legea aplicabilă și contact</h2>
+  <p>
+    Acești termeni sunt guvernați de legea română. Pentru orice întrebare ne scrii la
+    <a href={`mailto:${SITE.email}`}>{SITE.email}</a> sau ne suni la
+    <a href={`tel:${SITE.telephone}`}>{SITE.telephoneDisplay}</a>.
+  </p>
+</LegalPage>

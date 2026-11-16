@@ -1,0 +1,4 @@
+# Versiunea Node e aceeași cu .node-version (citit de Cloudflare Pages și de CI).
+# Astro 7 cere Node >= 22.23.4.
+[tools]
+node = "22.23.4"

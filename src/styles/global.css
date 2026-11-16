@@ -2,11 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fontul de text: subset din Lato 2.015 (OFL), redenumit „YP Text” (vezi public/fonts/YP-Text-OFL.txt).
+   Lato de la Google Fonts nu are ă, ș, ț: literele apăreau într-un font de rezervă, mai gros. */
+@font-face {
+  font-family: "YP Text";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/yp-text-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "YP Text";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/yp-text-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "YP Text";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/yp-text-700.woff2") format("woff2");
+}
+
 @layer base {
   html {
-    font-family: 'Lato', sans-serif;
+    font-family: 'YP Text', sans-serif;
   }
-  
+
+  /* Elementele AOS încă neanimate (fade-left/right) sunt translatate lateral și lățeau pagina
+     (451 px pe un ecran de 375 px), ceea ce scotea butonul de meniu din ecran pe mobil.
+     clip nu creează container de scroll, deci nu strică poziționarea fixă a header-ului. */
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;

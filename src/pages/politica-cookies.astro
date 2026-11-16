@@ -1,0 +1,44 @@
+---
+// Verificat în browser pe 16.11.2026: site-ul nu setează cookie-uri și nu folosește localStorage.
+// Singurul cookie vine de la Cal.com (__cf_bm), doar pe /confirmare/?intent=consultation.
+// Dacă adaugi analytics, pixel sau alt script terț, actualizează pagina și verifică dacă e nevoie de banner.
+import LegalPage from "../components/legal/LegalPage.astro";
+import { SITE } from "../lib/site";
+---
+
+<LegalPage
+  title="Politica de cookies"
+  description="youprotect.ro nu folosește cookie-uri de analiză sau de marketing. Află ce cookie-uri pot apărea și de unde."
+  updated="16 noiembrie 2026"
+>
+  <p>
+    Cookie-urile sunt fișiere mici pe care un site le salvează în browserul tău. Pe scurt:
+    <strong>youprotect.ro nu folosește cookie-uri de analiză sau de marketing</strong> și nu îți urmărește vizitele.
+    De aceea nu îți cerem acordul printr-un banner.
+  </p>
+
+  <h2>Cookie-urile site-ului nostru</h2>
+  <p>
+    Site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe serverele noastre, așa că pe
+    paginile obișnuite browserul tău nu contactează servicii terțe.
+  </p>
+
+  <h2>Cookie-uri ale altor servicii</h2>
+  <p>
+    <strong>Cal.com</strong>: după ce trimiți formularul „Programează o discuție”, pagina de confirmare afișează
+    calendarul Cal.com, ca să alegi ora. Cal.com poate seta cookie-ul tehnic <code>__cf_bm</code>, care îi protejează
+    calendarul de roboți și expiră după cel mult 30 de minute. Fără el, calendarul nu funcționează.
+  </p>
+  <p>
+    Link-urile către WhatsApp și Google Maps deschid serviciile respective. Cookie-urile lor se aplică doar dacă le
+    deschizi, conform politicilor lor.
+  </p>
+
+  <h2>Cum controlezi cookie-urile</h2>
+  <p>
+    Poți vedea și șterge cookie-urile din setările browserului. Pentru datele personale pe care le colectăm prin
+    formulare, vezi <a href="/politica-confidentialitate/">politica de confidențialitate</a>. Întrebări: <a
+      href={`mailto:${SITE.email}`}>{SITE.email}</a
+    >.
+  </p>
+</LegalPage>
