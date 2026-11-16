@@ -11,7 +11,7 @@ export default {
       },
       fontFamily: {
         'heading': ['Montserrat', 'sans-serif'],
-        'body': ['Lato', 'sans-serif'],
+        'body': ['"YP Text"', 'sans-serif'],
         'accent': ['Playfair Display', 'serif'],
       },
     },

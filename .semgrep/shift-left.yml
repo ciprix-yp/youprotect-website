@@ -77,3 +77,24 @@ rules:
               - pattern-inside: exec($CMD, ...)
               - pattern-inside: execSync($CMD, ...)
           - focus-metavariable: $CMD
+
+  # Găsit în functions/api/submit-lead.js (16.11.2026): eroarea din baza de date ajungea în răspunsul HTTP.
+  - id: internal-error-message-in-response
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: >-
+      The message of a caught exception is sent back to the client (information disclosure:
+      SQL, hostnames, stack details). Log it server-side and return a generic message.
+    metadata:
+      cwe: "CWE-209: Generation of Error Message Containing Sensitive Information"
+      owasp: "A04:2021 - Insecure Design"
+    patterns:
+      - pattern-inside: |
+          try { ... } catch ($ERR) { ... }
+      - pattern-either:
+          - pattern: |
+              { ..., error: <... $ERR.message ...>, ... }
+          - pattern: |
+              { ..., message: <... $ERR.message ...>, ... }
+          - pattern: |
+              { ..., error: <... String($ERR) ...>, ... }

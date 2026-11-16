@@ -2,6 +2,7 @@
 import Header from "../components/global/Header.astro";
 import Footer from "../components/global/Footer.astro";
 import { SITE, sameAs } from "../lib/site";
+import "../styles/vendor";
 import "../styles/global.css";
 
 interface Props {
@@ -41,16 +42,8 @@ const bookingsUrl =
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- AOS CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link rel="preload" href="/fonts/yp-text-300.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/yp-text-400.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- SEO & OG Tags -->
     <meta property="og:title" content={`${title} | You Protect`} />
@@ -115,33 +108,8 @@ const bookingsUrl =
     </main>
 
     <Footer />
-
-    <!-- AOS Initialization -->
-    <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script is:inline>
-      const initAOS = () => {
-        // Only init if AOS is defined
-        if (typeof AOS !== "undefined") {
-          AOS.init({
-            once: true, // animăm o singură dată, la prima apariție (mai puțin „template-y")
-            mirror: false, // nu reluăm animația la scroll înapoi
-            offset: 100, // offset (in px) from the original trigger point
-            duration: 800, // values from 0 to 3000, with step 50ms
-            easing: "ease-out-cubic", // default easing for AOS animations
-            delay: 50, // values from 0 to 3000, with step 50ms
-          });
-        }
-      };
-
-      // Run on DOM loaded
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initAOS);
-      } else {
-        initAOS();
-      }
-
-      // If Astro ViewTransitions are ever added, this ensures AOS re-initializes on page swap:
-      document.addEventListener("astro:after-swap", initAOS);
+    <script>
+      import "../scripts/aos-init";
     </script>
   </body>
 </html>

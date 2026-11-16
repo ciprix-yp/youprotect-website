@@ -1,0 +1,31 @@
+{
+  "_note": "Traduceri pentru valorile din datele Sir Safety (www.sirsafety.com). Asamblarea se oprește dacă lipsește o valoare.",
+  "colours": {
+    "ANTHRACITE": "antracit",
+    "BLACK": "negru",
+    "BLACK/GREY": "negru/gri",
+    "BLUE": "albastru",
+    "BURGUNDY": "bordo",
+    "DARK BLUE": "albastru închis",
+    "GREEN": "verde",
+    "GREY": "gri",
+    "HI-VIS ORANGE": "portocaliu fluorescent",
+    "HI-VIS RED": "roșu fluorescent",
+    "HI-VIS YELLOW": "galben fluorescent",
+    "KHAKI": "kaki",
+    "LIGHT BROWN": "maro deschis",
+    "LOBSTER": "roșu corai",
+    "MANGO YELLOW": "galben mango",
+    "MELANGE GREY": "gri melanj",
+    "MOUSEY GREY": "gri șoricel",
+    "NAVY": "bleumarin",
+    "NEON YELLOW": "galben neon",
+    "OCHRE": "ocru",
+    "ORANGE": "portocaliu",
+    "PETROLEUM BLUE": "albastru petrol",
+    "RED": "roșu",
+    "ROYAL": "albastru regal",
+    "WHITE": "alb",
+    "YELLOW": "galben"
+  }
+}

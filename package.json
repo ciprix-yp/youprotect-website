@@ -11,12 +11,12 @@
     "pm:next": "./PROJECT_OS/pm/pm next",
     "pm:review": "./PROJECT_OS/pm/pm review",
     "cf:deploy": "./scripts/deploy-cloudflare.sh",
-    "qc:smoke": "./scripts/qc-smoke.sh",
     "release:iteration": "./scripts/release-iteration.sh"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",
     "@astrojs/sitemap": "^3.7.5",
+    "@fontsource/montserrat": "^5.3.0",
     "aos": "^2.3.4",
     "astro": "^7.4.12",
     "pg": "^8.18.0",

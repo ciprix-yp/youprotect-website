@@ -47,15 +47,15 @@ function Cards({ options, value, onChange, columns = 1 }: any) {
       {options.map((o: any) => {
         const sel = value === o.value;
         return (
-          <button 
-            key={o.value} 
-            onClick={() => onChange(o.value)} 
+          <button
+            key={o.value}
+            onClick={() => onChange(o.value)}
             className={`text-left p-4 rounded-xl transition-all duration-200 border ${sel ? "bg-yp-yellow/10 border-yp-yellow custom-active-scale" : "bg-white/5 border-white/10 hover:border-white/20"}`}
           >
             <div className={`font-semibold text-[13px] md:text-sm flex items-center leading-tight ${sel ? "text-yp-yellow" : "text-neutral-300"}`}>
               {o.icon && <span className="mr-2 text-base">{o.icon}</span>}{o.label}
             </div>
-            {o.sub && <div className="text-[11px] md:text-xs text-neutral-500 mt-1">{o.sub}</div>}
+            {o.sub && <div className="text-xs text-neutral-400 mt-1">{o.sub}</div>}
           </button>
         );
       })}
@@ -69,9 +69,9 @@ function Chips({ options, value, onChange }: any) {
       {options.map((o: any) => {
         const sel = value === o.value;
         return (
-          <button 
-            key={o.value} 
-            onClick={() => onChange(o.value)} 
+          <button
+            key={o.value}
+            onClick={() => onChange(o.value)}
             className={`px-4 py-2 rounded-full cursor-pointer transition-all duration-200 whitespace-nowrap border text-xs md:text-sm font-medium ${sel ? "bg-yp-yellow/10 border-yp-yellow text-yp-yellow" : "bg-white/5 border-white/10 text-neutral-400 hover:text-neutral-200 hover:bg-white/10"}`}
           >
             {o.label}
@@ -88,14 +88,16 @@ function Slider({ label, value, onChange, min, max, step = 1, suffix, hint }: an
       <div className="flex justify-between items-baseline mb-2">
         <label className="text-[13px] font-medium text-neutral-400">{label}</label>
         <span className="text-yp-yellow font-bold text-lg font-mono">
-          {value}<span className="text-[11px] font-normal text-neutral-500 ml-1">{suffix}</span>
+          {value}<span className="text-xs font-normal text-neutral-400 ml-1">{suffix}</span>
         </span>
       </div>
       <input type="range" min={min} max={max} step={step} value={value}
+        aria-label={label}
+        aria-valuetext={`${value} ${suffix ?? ''}`.trim()}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-yp-yellow h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer"
+        className="w-full accent-yp-yellow h-6 cursor-pointer"
       />
-      {hint && <div className="text-[11px] text-neutral-500 mt-2">{hint}</div>}
+      {hint && <div className="text-xs text-neutral-400 mt-2">{hint}</div>}
     </div>
   );
 }
@@ -103,9 +105,9 @@ function Slider({ label, value, onChange, min, max, step = 1, suffix, hint }: an
 function Metric({ label, value, highlight, sub }: any) {
   return (
     <div className={`rounded-xl border p-4 ${highlight ? "bg-yp-yellow/10 border-yp-yellow/30" : "bg-white/5 border-white/10"}`}>
-      <div className={`text-[10px] uppercase tracking-wider mb-1 font-mono ${highlight ? "text-yp-yellow/70" : "text-neutral-500"}`}>{label}</div>
+      <div className={`text-xs uppercase tracking-wider mb-1 font-mono ${highlight ? "text-yp-yellow/70" : "text-neutral-400"}`}>{label}</div>
       <div className={`font-bold font-mono text-xl ${highlight ? "text-yp-yellow" : "text-white"}`}>{value}</div>
-      {sub && <div className="text-[11px] text-neutral-500 mt-1">{sub}</div>}
+      {sub && <div className="text-xs text-neutral-400 mt-1">{sub}</div>}
     </div>
   );
 }
@@ -126,8 +128,8 @@ function BreakdownRow({ label, icon, direct, hidden, total, maxTotal }: any) {
         </div>
       </div>
       <div className="flex gap-3 mt-1.5">
-        <span className="text-[10px] text-neutral-500">Achiziție {fmt(direct)}</span>
-        <span className="text-[10px] text-red-500/80">Ascunse {fmt(hidden)}</span>
+        <span className="text-xs text-neutral-400">Achiziție {fmt(direct)}</span>
+        <span className="text-xs text-red-500/80">Ascunse {fmt(hidden)}</span>
       </div>
     </div>
   );
@@ -248,7 +250,7 @@ export default function TCOCalculator() {
 
   // ─── UTILS BUTTONS ───
   const BtnPrimary = ({ onClick, children, disabled, className = "" }: any) => (
-    <button 
+    <button
       onClick={onClick} disabled={disabled}
       className={`w-full bg-yp-yellow text-yp-black font-bold py-4 px-6 rounded-xl hover:bg-white transition-colors duration-200 shadow-lg shadow-yp-yellow/10 ${className}`}
     >
@@ -267,22 +269,22 @@ export default function TCOCalculator() {
       <style>{`
         .custom-active-scale:active { transform: scale(0.98); }
       `}</style>
-      
+
       <Progress step={step} total={5} />
 
       {/* ═══ STEP 1 ═══ */}
       {step === 1 && (<div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Calculează Costul Real al Echipamentelor de Protecție</h2>
         <p className="text-neutral-400 text-sm mb-6 leading-relaxed">Nu prețul de pe factură — ci tot ce plătești: înlocuiri, administrare, riscuri. Rezultate instant și gratuit.</p>
-        
-        <div className="text-[11px] text-neutral-500 uppercase tracking-widest mb-3 font-semibold">Industria ta</div>
+
+        <div className="text-xs text-neutral-400 uppercase tracking-widest mb-3 font-semibold">Industria ta</div>
         <Cards columns={2} options={INDUSTRIES.map((i) => ({ value: i.id, label: i.label, sub: i.desc }))} value={industry} onChange={setIndustry} />
         {errors.industry && <div className="text-red-500 text-xs mt-2">Selectează industria</div>}
-        
+
         <div className="mt-8">
           <Slider label="Angajați cu EIP" value={employees} onChange={setEmployees} min={5} max={200} suffix="pers." hint="Toți cei care primesc echipament de protecție" />
         </div>
-        
+
         <div className="mt-8"><BtnPrimary onClick={next}>Continuă →</BtnPrimary></div>
       </div>)}
 
@@ -290,14 +292,14 @@ export default function TCOCalculator() {
       {step === 2 && (<div className="animate-in fade-in slide-in-from-right-4 duration-500">
         <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Ce echipamente achiziționezi?</h2>
         <p className="text-neutral-400 text-sm mb-6 leading-relaxed">Bifează categoriile și ajustează prețul actual per bucată.</p>
-        
+
         <div className="flex flex-col gap-2.5">
           {EIP_CATS.map((cat) => {
             const sel = selCats.includes(cat.id);
             return (<div key={cat.id}>
               <button onClick={() => toggleCat(cat.id)} className={`w-full text-left p-3.5 rounded-xl flex justify-between items-center transition-all duration-200 border custom-active-scale ${sel ? "bg-yp-yellow/10 border-yp-yellow !rounded-b-none" : "bg-white/5 border-white/10 hover:border-white/20"}`}>
                 <span className={`text-[13px] md:text-sm font-semibold flex items-center gap-2 ${sel ? "text-yp-yellow" : "text-neutral-300"}`}><span className="text-lg">{cat.icon}</span> {cat.label}</span>
-                <span className={`text-[13px] ${sel ? "text-yp-yellow" : "text-neutral-500"}`}>{sel ? "✓" : `~${cat.avg} RON`}</span>
+                <span className={`text-[13px] ${sel ? "text-yp-yellow" : "text-neutral-400"}`}>{sel ? "✓" : `~${cat.avg} RON`}</span>
               </button>
               {sel && (
                 <div className="px-4 py-3 bg-yp-yellow/5 border border-yp-yellow border-t-0 rounded-b-xl flex items-center justify-between gap-3">
@@ -307,7 +309,7 @@ export default function TCOCalculator() {
                       onChange={(e) => setPrices((p: any) => ({ ...p, [cat.id]: Number(e.target.value) }))}
                       className="w-20 bg-white/5 border border-white/10 rounded-md px-2 py-1.5 text-yp-yellow text-[15px] font-mono font-bold text-right focus:border-yp-yellow focus:outline-none"
                     />
-                    <span className="text-xs text-neutral-500 font-medium">RON</span>
+                    <span className="text-xs text-neutral-400 font-medium">RON</span>
                   </div>
                 </div>
               )}
@@ -315,12 +317,12 @@ export default function TCOCalculator() {
           })}
         </div>
         {errors.cats && <div className="text-red-500 text-xs mt-2">Selectează cel puțin o categorie</div>}
-        
+
         <div className="mt-8">
-          <div className="text-[11px] text-neutral-500 uppercase tracking-widest mb-3 font-semibold">Frecvență medie de înlocuire</div>
+          <div className="text-xs text-neutral-400 uppercase tracking-widest mb-3 font-semibold">Frecvență medie de înlocuire</div>
           <Chips options={FREQ.map((f) => ({ value: f.v, label: f.label }))} value={freq} onChange={setFreq} />
         </div>
-        
+
         <div className="flex gap-4 mt-8 items-center">
           <BtnBack onClick={back}>← Înapoi</BtnBack>
           <div className="flex-1"><BtnPrimary onClick={next}>Continuă →</BtnPrimary></div>
@@ -331,24 +333,24 @@ export default function TCOCalculator() {
       {step === 3 && (<div className="animate-in fade-in slide-in-from-right-4 duration-500">
         <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Costurile invizibile</h2>
         <p className="text-neutral-400 text-sm mb-6 leading-relaxed">Timpul echipei, plângerile și rupturile de stoc au un preț real.</p>
-        
+
         <Slider label="Ore/lună gestionare EIP" value={adminH} onChange={setAdminH} min={1} max={40} suffix="ore" hint="Comandă, recepție, distribuire, evidențe, retururi" />
         <Slider label="Cost orar responsabil" value={hourCost} onChange={setHourCost} min={20} max={150} suffix="RON/h" hint="Salariu brut + contribuții" />
-        
-        <div className="text-[11px] text-neutral-500 uppercase tracking-widest mt-8 mb-3 font-semibold">Plângeri angajați privind EIP</div>
+
+        <div className="text-xs text-neutral-400 uppercase tracking-widest mt-8 mb-3 font-semibold">Plângeri angajați privind EIP</div>
         <Cards columns={3} options={[
           { value: "rareori", label: "Rareori", sub: "<10%" },
           { value: "des", label: "Des", sub: "10-30%" },
           { value: "constant", label: "Constant", sub: ">30%" },
         ]} value={complaints} onChange={setComplaints} />
         {errors.complaints && <div className="text-red-500 text-xs mt-2">Selectează o opțiune</div>}
-        
-        <div className="text-[11px] text-neutral-500 uppercase tracking-widest mt-8 mb-3 font-semibold">Rupturi de stoc EIP în ultimul an?</div>
+
+        <div className="text-xs text-neutral-400 uppercase tracking-widest mt-8 mb-3 font-semibold">Rupturi de stoc EIP în ultimul an?</div>
         <Cards columns={2} options={[
           { value: "da", label: "Da", sub: "Am improvizat sau așteptat" },
           { value: "nu", label: "Nu", sub: "Stoc suficient" },
         ]} value={stockIssue} onChange={setStockIssue} />
-        
+
         <div className="flex gap-4 mt-8 items-center">
           <BtnBack onClick={back}>← Înapoi</BtnBack>
           <div className="flex-1"><BtnPrimary onClick={next}>Vezi Rezultatele →</BtnPrimary></div>
@@ -358,12 +360,12 @@ export default function TCOCalculator() {
       {/* ═══ STEP 4: RESULTS + QUALIFYING ═══ */}
       {step === 4 && (<div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
         <div className="text-center mb-8">
-          <div className="text-[11px] text-yp-yellow font-bold uppercase tracking-widest mb-2">Costul tău real anual</div>
+          <div className="text-xs text-yp-yellow font-bold uppercase tracking-widest mb-2">Costul tău real anual</div>
           <div className="text-4xl font-bold text-white font-mono mb-1">{fmt(results.currentTotal)}</div>
           <div className="text-[13px] text-neutral-400 mt-2 max-w-sm mx-auto">Din care <span className="text-red-500/90 font-medium">{fmt(results.currentTotal - results.totalDirect)}</span> sunt cheltuieli ascunse care nu apar pe factură</div>
         </div>
 
-        <div className="text-[11px] text-neutral-500 uppercase tracking-widest mb-4 font-semibold">Defalcare comparativă</div>
+        <div className="text-xs text-neutral-400 uppercase tracking-widest mb-4 font-semibold">Defalcare comparativă</div>
         <div className="mb-6 p-5 bg-white/5 rounded-xl border border-white/10">
           {results.breakdown.map((b: any) => (
             <BreakdownRow key={b.id} label={b.label} icon={b.icon} direct={b.direct} hidden={b.hidden} total={b.currentTotal} maxTotal={Math.max(...results.breakdown.map((x: any) => x.currentTotal))} />
@@ -376,7 +378,7 @@ export default function TCOCalculator() {
         </div>
 
         <div className="mt-6 p-6 rounded-xl bg-gradient-to-br from-yp-yellow/10 to-transparent border border-yp-yellow/20 text-center relative overflow-hidden">
-          <div className="text-[11px] text-yp-yellow/70 uppercase tracking-widest mb-2 font-semibold">Cost per zi de purtare / angajat</div>
+          <div className="text-xs text-yp-yellow/70 uppercase tracking-widest mb-2 font-semibold">Cost per zi de purtare / angajat</div>
           <div className="text-4xl font-bold text-white font-mono my-2">
             {results.cpwCurrent.toFixed(2)} <span className="text-sm text-neutral-400 font-normal">RON/zi</span>
           </div>
@@ -385,7 +387,7 @@ export default function TCOCalculator() {
 
         <div className="mt-5 p-5 rounded-xl bg-[#0a0a0a] border border-white/10 flex flex-col sm:flex-row justify-between items-center sm:items-start gap-4">
           <div>
-            <div className="text-[11px] text-neutral-500 uppercase tracking-widest mb-1">Potențial Economie / An</div>
+            <div className="text-xs text-neutral-400 uppercase tracking-widest mb-1">Potențial Economie / An</div>
             <div className="text-2xl font-bold text-green-400 font-mono">{fmt(results.savings1y)}</div>
           </div>
           <div className="bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm font-bold border border-green-500/20">
@@ -399,10 +401,10 @@ export default function TCOCalculator() {
         </div>
 
         <details className="mt-5 group">
-          <summary className="text-[11px] text-neutral-400 cursor-pointer py-2 hover:text-white transition-colors outline-none font-medium flex items-center gap-2">
+          <summary className="text-xs text-neutral-400 cursor-pointer py-2 hover:text-white transition-colors outline-none font-medium flex items-center gap-2">
             ℹ️ Cum am calculat
           </summary>
-          <div className="text-[11px] text-neutral-500 mt-2 p-3 bg-white/5 rounded-md leading-relaxed">
+          <div className="text-xs text-neutral-400 mt-2 p-3 bg-white/5 rounded-md leading-relaxed">
             Logistică internă: 15-28% din cost achiziție (proporțional cu frecvența). Risipă înlocuire batch: 6-12%. Risc non-conformitate: coeficient {results.ind.risk}x ({results.ind.label}). Admin = orele × tariful tău. Scenariul optimizat presupune durabilitate de 2-3x și logistică redusă cu 60%.
           </div>
         </details>
@@ -410,7 +412,7 @@ export default function TCOCalculator() {
         {/* ── QUALIFYING QUESTIONS ── */}
         <div className="mt-8 p-5 md:p-6 rounded-xl bg-white/[0.02] border border-white/5">
           <div className="text-xs text-neutral-400 uppercase tracking-widest mb-5 font-semibold text-center">Încă două întrebări rapide</div>
-          
+
           <div className="mb-6">
             <div className="text-[13px] font-medium text-neutral-300 mb-3">Situația cu furnizorul actual?</div>
             <Cards columns={1} options={[
@@ -420,7 +422,7 @@ export default function TCOCalculator() {
               { value: "intern", label: "Fără contract stabil", sub: "Cumpărăm din diverse surse de necesitate", icon: "🔄" },
             ]} value={supplierStatus} onChange={setSupplierStatus} />
           </div>
-          
+
           <div>
             <div className="text-[13px] font-medium text-neutral-300 mb-3">Când anticipați următoarea comandă EIP?</div>
             <Cards columns={2} options={[
@@ -448,11 +450,11 @@ export default function TCOCalculator() {
         <div className="bg-yp-yellow/5 border border-yp-yellow/20 rounded-xl p-5 mb-8">
           <div className="text-[13px] text-yp-yellow font-bold mb-3">Ce primești în fișier:</div>
           {[
-            "Analiza TCO detaliată cu toate costurile ascunse", 
-            "Plan de optimizare personalizat în 4 etape", 
-            "Checklist evaluare rapidă furnizori EIP", 
-            "Template de negociere (ce să ceri exact)", 
-            "Calculator ROI proiectat pe 1, 2 și 3 ani", 
+            "Analiza TCO detaliată cu toate costurile ascunse",
+            "Plan de optimizare personalizat în 4 etape",
+            "Checklist evaluare rapidă furnizori EIP",
+            "Template de negociere (ce să ceri exact)",
+            "Calculator ROI proiectat pe 1, 2 și 3 ani",
             "Format AI-ready — compatibil ChatGPT/Claude"
           ].map((t, i) => (
             <div key={i} className="flex gap-2.5 items-start mb-2.5">
@@ -475,7 +477,7 @@ export default function TCOCalculator() {
             />
           ))}
         </div>
-        <div className="text-[10px] text-neutral-500 mt-4 leading-relaxed text-center px-2">
+        <div className="text-xs text-neutral-400 mt-4 leading-relaxed text-center px-2">
           Zero spam. Datele sunt procesate exclusiv pentru generarea și livrarea analizei tale TCO pe email.
         </div>
 
@@ -494,7 +496,7 @@ export default function TCOCalculator() {
         <div className="w-14 h-14 rounded-full mx-auto mb-6 bg-green-500/10 flex items-center justify-center border border-green-500/20">
           <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
         </div>
-        
+
         <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Ghidul tău este pe drum!</h2>
         <p className="text-neutral-400 text-sm mb-8 max-w-sm mx-auto">
           Verifică inbox-ul la adresa <strong>{lead.email}</strong>. Vei primi un mesaj generat automat din sistem în mai puțin de 5 minute.
@@ -515,7 +517,7 @@ export default function TCOCalculator() {
           <Metric label="Economie 3 Ani" value={fmt(results.savings3y)} highlight small />
         </div>
 
-        <a href="/produse" className="inline-block text-yp-yellow hover:text-white transition-colors underline underline-offset-4 font-semibold text-[13px]">
+        <a href="/produse/" className="inline-block text-yp-yellow hover:text-white transition-colors underline underline-offset-4 font-semibold text-[13px]">
           Explorează catalogul de echipamente premium →
         </a>
       </div>)}
