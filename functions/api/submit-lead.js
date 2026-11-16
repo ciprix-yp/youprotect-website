@@ -68,6 +68,18 @@ function isLikelyIp(value) {
   return /^[0-9a-f:]+$/i.test(value);
 }
 
+// Categoria erorii, fără textul ei (care poate conține nume de host sau de tabel).
+function errorCategory(error) {
+  const text = String(error?.message ?? '').toLowerCase();
+  if (text.includes('password') || text.includes('authentication')) return 'auth';
+  if (text.includes('timeout') || text.includes('timed out')) return 'timeout';
+  if (text.includes('certificate') || text.includes('ssl') || text.includes('tls')) return 'tls';
+  if (text.includes('refused') || text.includes('unreachable') || text.includes('not found')) return 'refused';
+  if (text.includes('terminated') || text.includes('closed')) return 'terminated';
+  if (text.includes('does not exist') || text.includes('violates')) return 'schema';
+  return 'other';
+}
+
 export const onRequestPost = async (context) => {
   const { request, env } = context;
   const databaseUrl = env?.HYPERDRIVE?.connectionString;
@@ -135,9 +147,12 @@ export const onRequestPost = async (context) => {
   const message = `Generat prin formularul nou: ${intent}${product ? ` · produs: ${product}` : ''}`;
 
   const client = new Client({ connectionString: databaseUrl });
+  // Etapa curentă: apare în răspunsul de eroare (fără mesajul intern), ca să știm ce a picat.
+  let stage = 'connect';
 
   try {
     await client.connect();
+    stage = 'lead';
     await client.query('BEGIN');
 
     const leadInsert = await client.query(
@@ -160,6 +175,7 @@ export const onRequestPost = async (context) => {
 
     const leadRequestId = leadInsert.rows[0]?.id;
 
+    stage = 'context';
     await client.query(
       `
       INSERT INTO website_lead_context (
@@ -175,6 +191,7 @@ export const onRequestPost = async (context) => {
       [leadRequestId, dbIntent, JSON.stringify(answersJson)]
     );
 
+    stage = 'commit';
     await client.query('COMMIT');
 
     return jsonResponse({ success: true, lead_request_id: leadRequestId });
@@ -184,9 +201,14 @@ export const onRequestPost = async (context) => {
     } catch (_e) {
       // Conexiunea poate fi deja închisă.
     }
-    // Detaliile rămân în logurile Cloudflare; clientul primește un mesaj generic.
-    console.error('submit-lead failed:', error);
-    return jsonResponse({ success: false, error: 'Nu am putut salva cererea. Încearcă din nou.' }, 500);
+    // Mesajul intern rămâne în logurile Cloudflare. Clientul primește doar etapa și codul tehnic
+    // (SQLSTATE, ex. 28P01, sau codul de rețea, ex. ECONNREFUSED), care nu conțin date.
+    console.error('submit-lead failed:', stage, error);
+    const code = typeof error?.code === 'string' && /^[A-Z0-9_]{2,40}$/.test(error.code) ? error.code : undefined;
+    return jsonResponse(
+      { success: false, error: 'Nu am putut salva cererea. Încearcă din nou.', stage, code, reason: errorCategory(error) },
+      500
+    );
   } finally {
     await client.end().catch(() => {});
   }

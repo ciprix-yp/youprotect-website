@@ -10,11 +10,10 @@ export const SITE = {
   telephoneDisplay: "0742 226 127",
   email: "office@youprotect.ro",
   // Datele firmei, folosite în footer și în paginile legale.
-  // ATENȚIE: CUI-ul din footer (RO 46387843) diferă de cel de pe facturile SmartBill (RO46294850).
-  // De confirmat cu Ciprian (16.11.2026); se corectează doar aici.
+  // CUI confirmat de Ciprian pe 16.11.2026 (cel de pe facturi); footer-ul vechi avea greșit RO 46387843.
   legal: {
     name: "You Protect SRL",
-    cui: "RO 46387843",
+    cui: "RO46294850",
     regCom: "J30/624/2022",
     euid: "ROONRC.J30/624/2022",
   },
