@@ -135,9 +135,12 @@ export const onRequestPost = async (context) => {
   const message = `Generat prin formularul nou: ${intent}${product ? ` · produs: ${product}` : ''}`;
 
   const client = new Client({ connectionString: databaseUrl });
+  // Etapa curentă: apare în răspunsul de eroare (fără mesajul intern), ca să știm ce a picat.
+  let stage = 'connect';
 
   try {
     await client.connect();
+    stage = 'lead';
     await client.query('BEGIN');
 
     const leadInsert = await client.query(
@@ -160,6 +163,7 @@ export const onRequestPost = async (context) => {
 
     const leadRequestId = leadInsert.rows[0]?.id;
 
+    stage = 'context';
     await client.query(
       `
       INSERT INTO website_lead_context (
@@ -175,6 +179,7 @@ export const onRequestPost = async (context) => {
       [leadRequestId, dbIntent, JSON.stringify(answersJson)]
     );
 
+    stage = 'commit';
     await client.query('COMMIT');
 
     return jsonResponse({ success: true, lead_request_id: leadRequestId });
@@ -184,9 +189,11 @@ export const onRequestPost = async (context) => {
     } catch (_e) {
       // Conexiunea poate fi deja închisă.
     }
-    // Detaliile rămân în logurile Cloudflare; clientul primește un mesaj generic.
-    console.error('submit-lead failed:', error);
-    return jsonResponse({ success: false, error: 'Nu am putut salva cererea. Încearcă din nou.' }, 500);
+    // Mesajul intern rămâne în logurile Cloudflare. Clientul primește doar etapa și codul tehnic
+    // (SQLSTATE, ex. 28P01, sau codul de rețea, ex. ECONNREFUSED), care nu conțin date.
+    console.error('submit-lead failed:', stage, error);
+    const code = typeof error?.code === 'string' && /^[A-Z0-9_]{2,40}$/.test(error.code) ? error.code : undefined;
+    return jsonResponse({ success: false, error: 'Nu am putut salva cererea. Încearcă din nou.', stage, code }, 500);
   } finally {
     await client.end().catch(() => {});
   }
