@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/ciprix-yp/youprotect-website#readme",
   "devDependencies": {
-    "@types/aos": "^3.0.7",
+    "@types/aos": "^3.0.8",
     "autoprefixer": "^10.6.2"
   }
 }
