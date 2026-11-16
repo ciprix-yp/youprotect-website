@@ -1,6 +1,22 @@
 # Session Handoff
 
-## ⚠️ Sesiunea 2026-11-11: pilot catalog (citește întâi)
+## ⚠️ Sesiunea 2026-11-16: Astro 7, reparații, catalog extins (citește întâi)
+
+- Lanț de PR-uri (fiecare peste cel anterior): #10 pilot catalog → #11 Astro 7 (`feature/astro-7`) → #12 reparații (`feature/launch-fixes`) → #13 catalog extins (`feature/catalog-sirsafety`). Merge în ordine, doar cu verificările verzi.
+- Verificări: pe #12 toate verzi (inclusiv `semgrep`, deci SEC-001 e rezolvat în cod).
+- Merge în `main` așteaptă deciziile lui Ciprian:
+  1. lead de test pe preview (Hyperdrive scrie în DB-ul de producție);
+  2. CUI-ul corect (DATA-001);
+  3. citirea paginilor legale (LEGAL-001);
+  4. aprobarea celor 21 de fișe noi și acordul Sir Safety pentru poze (CAT-003).
+- Node: `.node-version` + `.mise.toml` = 22.23.4 (Astro 7 o cere). `astro preview` pornește acum în fundal; oprire cu `npx astro preview stop`.
+- Catalog: 26 de produse (5 publicate, 21 în `review`, vizibile în `/preview/produse/`). Publicare: `status: "published"` în `catalog/texts/<furnizor>/<cod>.json`, apoi asamblarea:
+  - MASCOT: `python3 -I scripts/catalog/assemble_mascot.py .catalog-work/mascot catalog/texts/mascot catalog/maps/mascot-ro.json src/content/products --no-network`
+  - Sir Safety: `python3 -I scripts/catalog/assemble_sirsafety.py .catalog-work/sirsafety catalog/texts/sirsafety catalog/maps/sirsafety-ro.json src/content/products`
+- Sir Safety, de la zero: `uv run --no-project --with pypdf python -I scripts/catalog/extract_sirsafety.py .catalog-work/sirsafety <COD…>`, apoi texte în `catalog/texts/sirsafety/`, apoi `fetch_images_sirsafety.py` (cu pillow), apoi asamblarea.
+- Teste formular: doar în browser, cu `/api/` blocat. `qc:smoke` și `/api/leads` au fost scoase.
+
+## Sesiunea 2026-11-11: pilot catalog
 
 - Branch: `feature/catalog-pilot-mascot` (PR #10). `main` e protejat de ruleset-ul „main: security gates”; merge doar cu toate verificările verzi.
 - Livrat pe branch: pilot 5 produse MASCOT, flux catalog în `scripts/catalog/`, texte în `catalog/texts/`, ghid `08-GHID_CONTINUT.md`, previzualizare `/preview/produse/`.
