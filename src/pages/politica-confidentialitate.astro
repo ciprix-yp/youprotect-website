@@ -1,7 +1,8 @@
 ---
 // Text scris din ce face efectiv site-ul (verificat în cod și în browser pe 16.11.2026):
-// formularul salvează în Postgres pe Railway (europe-west4) prin Cloudflare; Cal.com doar la programări;
-// fonturile și scripturile sunt găzduite pe site. Termenul de păstrare a cererilor e propus, de confirmat.
+// formularul salvează cererea în Cloudflare D1 (jurisdicție UE) și trimite o notificare prin Resend; Prospector CRM
+// (Deep Logic) o preia de acolo. Cal.com doar la programări; fonturile și scripturile sunt găzduite pe site.
+// Păstrarea cererilor: 2 ani de la ultimul contact (aprobat de Ciprian pe 16.11.2026).
 import LegalPage from "../components/legal/LegalPage.astro";
 import { SITE } from "../lib/site";
 
@@ -33,7 +34,7 @@ const a = SITE.address;
   <h2>Ce date colectăm</h2>
   <h3>Când trimiți formularul „Cere ofertă” sau „Programează o discuție”</h3>
   <ul>
-    <li>numele și prenumele, firma, telefonul și adresa de email;</li>
+    <li>numele și prenumele, firma, CUI-ul firmei (dacă îl completezi), telefonul și adresa de email;</li>
     <li>răspunsurile la întrebările din formular, de exemplu mărimea echipei, domeniul de activitate și ce produse ai în vedere;</li>
     <li>produsul pentru care ceri ofertă, dacă ai pornit de pe o fișă de produs;</li>
     <li>adresa IP, tipul de browser și pagina de pe care ai trimis cererea, salvate automat odată cu cererea.</li>
@@ -75,10 +76,19 @@ const a = SITE.address;
   <h2>Cui transmitem datele</h2>
   <p>Lucrăm cu câțiva furnizori care prelucrează date în numele nostru, doar pentru serviciul pe care ni-l oferă:</p>
   <ul>
-    <li><strong>Cloudflare</strong>: găzduirea site-ului și transmiterea formularului către baza de date;</li>
     <li>
-      <strong>Railway</strong>: baza de date în care se salvează cererile, cu serverele în Uniunea Europeană (Țările de
-      Jos);
+      <strong>Cloudflare</strong>: găzduirea site-ului și primirea cererilor. Cererea se păstrează temporar într-o bază
+      de date Cloudflare cu datele în Uniunea Europeană, până o preluăm în CRM, și se șterge de acolo la cel mult 30 de
+      zile după preluare;
+    </li>
+    <li><strong>Resend</strong>: trimite pe email, echipei You Protect, notificarea cu datele cererii tale;</li>
+    <li>
+      <strong>Deep Logic SRL</strong>: aplicația CRM în care gestionăm cererile și ofertele, găzduită pe un server
+      administrat de Deep Logic;
+    </li>
+    <li>
+      <strong>Railway</strong>: baza de date în care au fost salvate cererile trimise până în noiembrie 2026, cu
+      serverele în Uniunea Europeană (Țările de Jos);
     </li>
     <li><strong>Cal.com</strong>: calendarul de programare, doar dacă alegi să programezi o discuție;</li>
     <li><strong>WhatsApp (Meta)</strong>: doar dacă ne scrii pe WhatsApp.</li>
@@ -112,8 +122,8 @@ const a = SITE.address;
 
   <h2>Cum protejăm datele</h2>
   <p>
-    Site-ul folosește conexiune criptată (HTTPS), iar baza de date în care se salvează cererile este accesibilă doar
-    echipei You Protect.
+    Site-ul folosește conexiune criptată (HTTPS). Cererile salvate pot fi citite doar de echipa You Protect, iar CRM-ul
+    le preia printr-o conexiune protejată cu cheie secretă.
   </p>
 
   <h2>Modificări</h2>
