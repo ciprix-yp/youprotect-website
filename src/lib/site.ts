@@ -7,7 +7,17 @@ export const SITE = {
   // Imagine OG implicită la nivel de site (există în /public).
   defaultOgImage: "/hero-youprotect-highvis.jpg",
   telephone: "+40742226127",
+  telephoneDisplay: "0742 226 127",
   email: "office@youprotect.ro",
+  // Datele firmei, folosite în footer și în paginile legale.
+  // ATENȚIE: CUI-ul din footer (RO 46387843) diferă de cel de pe facturile SmartBill (RO46294850).
+  // De confirmat cu Ciprian (16.11.2026); se corectează doar aici.
+  legal: {
+    name: "You Protect SRL",
+    cui: "RO 46387843",
+    regCom: "J30/624/2022",
+    euid: "ROONRC.J30/624/2022",
+  },
   address: {
     streetAddress: "Strada Careiului nr. 45, Parc Industrial Areli",
     addressLocality: "Vetiș",

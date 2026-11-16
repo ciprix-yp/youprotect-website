@@ -17,7 +17,8 @@ const slug = entry.id;
 const categoryLabel = CATEGORIES[p.category];
 const primary = p.colours[0];
 const mainImage = primary.images[0].src;
-const offerHref = `/cere-oferta/?ref=${encodeURIComponent(`/produse/${slug}/`)}`;
+// Formularul arată produsul și îl trimite cu cererea (MultiStepForm, câmpul „produs”).
+const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
 const hasMeasures = p.sizes.table.some((row) => row.measure);
 const hasLeg = p.sizes.table.some((row) => row.leg);
 // „1 culoare”, „8 culori”, „20 de culori”: „de” apare când PluralRules('ro') întoarce „other”.

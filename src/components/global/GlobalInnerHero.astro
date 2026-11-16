@@ -49,7 +49,7 @@ const {
                 data-aos="fade-up"
             >
                 <span
-                    class="text-[10px] md:text-xs font-mono tracking-widest text-yp-yellow uppercase"
+                    class="text-xs font-mono tracking-widest text-yp-yellow uppercase"
                 >
                     {breadcrumb}
                 </span>
@@ -93,10 +93,8 @@ const {
                         data-aos-delay="400"
                     >
                         {ctaButtonText && (
-                            <button
-                                class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent"
-                                onclick="window.location.href='/programeaza-discutie'"
-                            >
+                            <a href="/programeaza-discutie/"
+                                class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent">
                                 {ctaButtonText}
                                 <svg
                                     class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
@@ -110,7 +108,7 @@ const {
                                         stroke-width="2"
                                         d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                                 </svg>
-                            </button>
+                            </a>
                         )}
 
                         {ctaSecondaryButtonText && (
@@ -120,7 +118,7 @@ const {
                             >
                                 {ctaSecondaryButtonText}
                                 <svg
-                                    class="w-4 h-4 text-neutral-500"
+                                    class="w-4 h-4 text-neutral-400"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -136,10 +134,10 @@ const {
                     </div>
                 )
             }
-            
+
             {
                 ctaMicrocopy && (
-                    <p class="text-xs md:text-sm text-neutral-500 font-light max-w-lg mt-4" data-aos="fade-up" data-aos-delay="500">
+                    <p class="text-xs md:text-sm text-neutral-400 font-light max-w-lg mt-4" data-aos="fade-up" data-aos-delay="500">
                         {ctaMicrocopy}
                     </p>
                 )
