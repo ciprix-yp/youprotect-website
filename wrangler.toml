@@ -4,16 +4,16 @@ compatibility_date = "2026-02-25"
 compatibility_flags = ["nodejs_compat"]
 
 # Inbox-ul cererilor de pe site (functions/api/submit-lead.js, functions/api/crm/leads.js).
-# Baza se creează o dată, cu date doar în UE:
-#   npx wrangler d1 create youprotect-leads --jurisdiction eu
-# apoi id-ul primit se pune mai jos și se aplică schema:
+# Baza a fost creată pe 2026-11-17, cu date doar în UE (npx wrangler d1 create youprotect-leads --jurisdiction eu).
+# Aceeași bază servește production și preview; cererile de test sunt marcate environment = 'preview'.
+# Schema nouă (migrations/) se aplică cu:
 #   npx wrangler d1 migrations apply youprotect-leads --remote
 # Fără binding, formularul merge doar prin email (Resend).
-# [[d1_databases]]
-# binding = "LEADS_DB"
-# database_name = "youprotect-leads"
-# database_id = "<id din wrangler d1 create>"
-# migrations_dir = "migrations"
+[[d1_databases]]
+binding = "LEADS_DB"
+database_name = "youprotect-leads"
+database_id = "7744022e-2d83-4a89-b2ae-bc7600dc62d3"
+migrations_dir = "migrations"
 
 # Secrete (Cloudflare Pages → Settings → Variables and Secrets, la production și la preview):
 #   RESEND_API_KEY   – cheia Resend (aceeași ca în Keychain: secret get youprotect-website RESEND_API_KEY)
