@@ -3,6 +3,7 @@
 // formularul salvează cererea în Cloudflare D1 (jurisdicție UE) și trimite o notificare prin Resend; Prospector CRM
 // (Deep Logic) o preia de acolo. Cal.com doar la programări; fonturile și scripturile sunt găzduite pe site.
 // Păstrarea cererilor: 2 ani de la ultimul contact (aprobat de Ciprian pe 16.11.2026).
+// 17.11.2026: Railway scos din lista furnizorilor. Baza veche avea doar cereri de test și a fost ștearsă (D-2026-11-17-01).
 import LegalPage from "../components/legal/LegalPage.astro";
 import { SITE } from "../lib/site";
 
@@ -12,7 +13,7 @@ const a = SITE.address;
 <LegalPage
   title="Politica de confidențialitate"
   description="Ce date personale colectează You Protect prin youprotect.ro, de ce, cât timp le păstrează și ce drepturi ai."
-  updated="16 noiembrie 2026"
+  updated="17 noiembrie 2026"
 >
   <p>
     Aici afli ce date personale colectăm când folosești youprotect.ro sau ne contactezi, de ce le folosim, cui le
@@ -85,10 +86,6 @@ const a = SITE.address;
     <li>
       <strong>Deep Logic SRL</strong>: aplicația CRM în care gestionăm cererile și ofertele, găzduită pe un server
       administrat de Deep Logic;
-    </li>
-    <li>
-      <strong>Railway</strong>: baza de date în care au fost salvate cererile trimise până în noiembrie 2026, cu
-      serverele în Uniunea Europeană (Țările de Jos);
     </li>
     <li><strong>Cal.com</strong>: calendarul de programare, doar dacă alegi să programezi o discuție;</li>
     <li><strong>WhatsApp (Meta)</strong>: doar dacă ne scrii pe WhatsApp.</li>

@@ -4,6 +4,8 @@ Status: Draft for execution
 Date: 2026-02-24  
 Owner: YouProtect
 
+> Actualizare 17.11.2026: unele părți din spec nu mai corespund implementării. Catalogul vine din fișiere de date în repo (D-2026-11-11-01). Cererile merg prin Cloudflare D1, Resend și Prospector CRM (OPS-006). Postgres-ul de pe Railway și Directus au fost șterse (D-2026-11-17-01). Secțiunile despre Postgres, Directus și `postgres-railway-projects` sunt istorice.
+
 ## 1. Product Vision
 
 YouProtect website trebuie sa fie:
