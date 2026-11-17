@@ -173,8 +173,8 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
         >
           <img
             src="/logos/logo-1.png"
-            alt="Mascot"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+            alt="MASCOT"
+            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
             loading="lazy"
           />
         </div>
@@ -188,12 +188,12 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
           <img
             src="/logos/logo-2.png"
             alt="Sir Safety"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
             loading="lazy"
           />
         </div>
 
-        <!-- Logo 3: Certificare EN -->
+        <!-- Logo 3: Portwest -->
         <div
           class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
           data-aos="fade-up"
@@ -201,13 +201,13 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
         >
           <img
             src="/logos/logo-3.png"
-            alt="Certificare EN"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+            alt="Portwest"
+            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
             loading="lazy"
           />
         </div>
 
-        <!-- Logo 4: Certificare ISO -->
+        <!-- Logo 4: Malfini -->
         <div
           class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
           data-aos="fade-up"
@@ -215,14 +215,39 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
         >
           <img
             src="/logos/logo-4.png"
-            alt="Certificare ISO"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+            alt="Malfini"
+            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
             loading="lazy"
           />
         </div>
       </div>
     </div>
   </section>
+
+  <!-- TESTIMONIALE: Recenzii Google (src/data/testimonials.json). Imediat după branduri, ca dovada socială să apară
+       devreme, nu după 14 ecrane de text (auditul de conversie din 17.11.2026). -->
+  {
+    testimonials.length > 0 && (
+      <section class="py-24 bg-[#0a0a0a] border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+          <h2
+            class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight text-center"
+            data-aos="fade-up"
+          >
+            Ce spun clienții noștri
+          </h2>
+          <div
+            class="w-12 h-1 bg-yp-yellow mx-auto mb-16"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          />
+          <div data-aos="fade-up" data-aos-delay="200">
+            <Testimonials testimonials={testimonials} />
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <!-- BLOC 2: Obstacole -->
   <section class="py-24 bg-yp-black border-b border-white/5 relative">
@@ -1023,30 +1048,6 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
       </div>
     </div>
   </section>
-
-  <!-- TESTIMONIALE: Recenzii Google verificate -->
-  {
-    testimonials.length > 0 && (
-      <section class="py-24 bg-[#0a0a0a] border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6">
-          <h2
-            class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight text-center"
-            data-aos="fade-up"
-          >
-            Ce spun clienții noștri
-          </h2>
-          <div
-            class="w-12 h-1 bg-yp-yellow mx-auto mb-16"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          />
-          <div data-aos="fade-up" data-aos-delay="200">
-            <Testimonials testimonials={testimonials} />
-          </div>
-        </div>
-      </section>
-    )
-  }
 
   <!-- BLOC 8: CTA FINAL -->
   <section class="py-24 bg-yp-yellow relative overflow-hidden">
