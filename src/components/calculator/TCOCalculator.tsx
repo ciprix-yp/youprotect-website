@@ -274,7 +274,7 @@ export default function TCOCalculator() {
 
       {/* ═══ STEP 1 ═══ */}
       {step === 1 && (<div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Calculează Costul Real al Echipamentelor de Protecție</h2>
+        <h2 className="text-2xl font-bold text-white mb-2 leading-tight">Calculează costul real al echipamentelor de protecție</h2>
         <p className="text-neutral-400 text-sm mb-6 leading-relaxed">Nu prețul de pe factură — ci tot ce plătești: înlocuiri, administrare, riscuri. Rezultate instant și gratuit.</p>
 
         <div className="text-xs text-neutral-400 uppercase tracking-widest mb-3 font-semibold">Industria ta</div>

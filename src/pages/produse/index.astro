@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProductCard from "../../components/products/ProductCard.astro";
+import RiskFreeTesting from "../../components/global/RiskFreeTesting.astro";
 import { CATEGORIES, INDUSTRIES } from "../../lib/catalog-taxonomy";
 
 // Catalogul vine din src/content/products/ (doar produsele publicate), nu din Directus sau DB.
@@ -106,7 +107,7 @@ const recommendOptions = [
         data-aos="fade-up"
       >
         Echipamente de protecție,<br/>
-        Haine de Lucru pentru companii<br/>
+        haine de lucru pentru companii<br/>
         <span class="text-yp-white/50">care vor imagine profesională</span>
       </h1>
       <p
@@ -148,6 +149,9 @@ const recommendOptions = [
       <p class="text-xs text-yp-white/60 max-w-xl font-light" data-aos="fade-up" data-aos-delay="400">
         Pentru construcții, producție, logistică, energie și servicii tehnice.
       </p>
+      <div class="mt-6 max-w-xl" data-aos="fade-up" data-aos-delay="400">
+        <RiskFreeTesting variant="inline" />
+      </div>
 
     </div>
   </section>
@@ -387,7 +391,7 @@ const recommendOptions = [
 
               <div
                 id="catalog-grid"
-                class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
               >
                 {products.map((product, index) => (
                   <div

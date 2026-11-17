@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import MultiStepForm from "../components/forms/MultiStepForm";
+import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 
 // Produsele publicate, pentru /cere-oferta/?produs=<slug> (link-ul „Cere ofertă” de pe fișa de produs).
 const products = Object.fromEntries(
@@ -28,6 +29,7 @@ const products = Object.fromEntries(
         <p class="text-lg md:text-xl text-neutral-400">
           Durează cam 2 minute. Din răspunsurile tale pregătim o ofertă potrivită echipei, fără zeci de mesaje de clarificare.
         </p>
+        <RiskFreeTesting variant="inline" class="mt-6 max-w-xl mx-auto text-left" />
       </div>
 
       <div data-aos="fade-up" data-aos-delay="100">
