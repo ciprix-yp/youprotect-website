@@ -36,10 +36,13 @@ export const SITE = {
 } as const;
 
 // Oferta „testare fără riscuri”, afișată pe fișele de produs. Confirmată de You Protect pe 11.11.2026.
+// Afișată prin components/global/RiskFreeTesting.astro: caseta (`text`) pe fișele de produs, rândul scurt (`short`)
+// pe homepage, în catalog și pe paginile cu formular.
 export const RISK_FREE_TESTING = {
   title: "Testezi fără riscuri",
   text: "Înainte de decizia finală, poți testa produsele cu echipa ta, în condiții reale de lucru. Testarea are garanția banilor înapoi în 90 de zile.",
-  href: "/cum-lucram/",
+  short: "Încerci produsele cu echipa ta, în condiții reale de lucru, cu garanția banilor înapoi în 90 de zile.",
+  href: "/cum-lucram/#testare",
   linkLabel: "Vezi cum lucrăm",
 } as const;
 

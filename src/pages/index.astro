@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Testimonials from "../components/home/Testimonials.astro";
+import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
 ---
 
@@ -58,7 +59,7 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
     <div class="absolute inset-0 z-0">
       <img
         src="/hero-youprotect-highvis.jpg"
-        alt="Echipamente de Protecție și Haine de Lucru Premium You Protect Satu Mare"
+        alt="Echipamente de protecție și haine de lucru You Protect, Satu Mare"
         class="w-full h-full object-cover object-[85%_center] md:object-[70%_center] opacity-80"
       />
       <div
@@ -89,8 +90,8 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
         <h1
           class="text-3xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.15] text-white mb-6 max-w-[95%] md:max-w-[90%]"
         >
-          Echipamente de Protecție,<br /> Haine de Lucru care<br />
-          <span class="text-yp-yellow">Cresc Profitabilitatea</span>
+          Echipamente de protecție,<br /> haine de lucru care<br />
+          <span class="text-yp-yellow">cresc profitabilitatea</span>
         </h1>
 
         <p
@@ -136,13 +137,14 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
             </svg>
           </a>
         </div>
-        <p class="text-sm text-neutral-400 mb-16 max-w-md">Discutăm despre echipa ta, activitatea ta și ce soluții ți se potrivesc. Fără obligații și fără presiune.</p>
+        <p class="text-sm text-neutral-400 mb-10 max-w-md">Discutăm despre echipa ta, activitatea ta și ce soluții ți se potrivesc. Fără obligații și fără presiune.</p>
 
         <div
           class="border-t border-white/10 pt-6 w-full max-w-2xl"
           data-aos="fade-up"
           data-aos-delay="200"
         >
+          <RiskFreeTesting variant="inline" />
         </div>
       </div>
 
