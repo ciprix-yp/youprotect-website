@@ -1,6 +1,13 @@
 # Session Handoff
 
-## ⚠️ Sesiunea 2026-11-16: Astro 7, reparații, catalog extins (citește întâi)
+## Sesiunea 2026-11-17: cererile pe D1, baza Railway retrasă (citește întâi)
+
+- Cererile de pe site: D1 `youprotect-leads` + email Resend + Prospector CRM (job la 5 minute pe M1). Totul e verificat cap-coadă, vezi OPS-006. Testele de formular: doar pe preview, fără CUI, cu acordul lui Ciprian (`01-RUNBOOK.md`, pasul 6).
+- Baza veche de pe Railway e copiată, verificată și ștearsă, la fel și Hyperdrive și `DATABASE_URL` (D-2026-11-17-01). Site-ul nu mai depinde de Railway.
+- Copia criptată din OneDrive („Backup baze de date”) se păstrează: e singura sursă pentru datele nemigrate.
+- Sesiunea 2026-11-16 de mai jos e istorică: PR-urile ei sunt integrate, iar Hyperdrive nu mai există.
+
+## Sesiunea 2026-11-16: Astro 7, reparații, catalog extins
 
 - Lanț de PR-uri (fiecare peste cel anterior): #10 pilot catalog → #11 Astro 7 (`feature/astro-7`) → #12 reparații (`feature/launch-fixes`) → #13 catalog extins (`feature/catalog-sirsafety`). Merge în ordine, doar cu verificările verzi.
 - Verificări: pe #12 toate verzi (inclusiv `semgrep`, deci SEC-001 e rezolvat în cod).

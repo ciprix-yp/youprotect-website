@@ -13,9 +13,8 @@ Acesta este centrul operațional al proiectului. Orice sesiune începe de aici.
 ## Source of Truth extins
 
 - Product spec: `/Users/homefolder/youprotect-website/MASTER_SPEC.md`
-- DB technical: `/Users/homefolder/postgres-railway-projects/DATABASE_DOCUMENTATION.md`
-- DB ERD: `/Users/homefolder/postgres-railway-projects/railway_erd.md`
-- Website <> DB map: `/Users/homefolder/postgres-railway-projects/WEBSITE_DB_INTEGRATION_MAP.md`
+- Baza de date veche (Postgres pe Railway): ștearsă pe 17.11.2026, cu o copie criptată păstrată (D-2026-11-17-01). Documentația ei din `postgres-railway-projects` e doar istorică.
+- Cererile de pe site: Cloudflare D1 + Resend + Prospector CRM (OPS-006 în `02-BACKLOG.md`).
 - Deploy flow: `/Users/homefolder/youprotect-website/PROJECT_OS/06-DEPLOY_FLOW.md`
 - Ghid de conținut (voce, formula în 3 straturi, SEO, GEO, șablon fișă produs): `PROJECT_OS/08-GHID_CONTINUT.md`
 
