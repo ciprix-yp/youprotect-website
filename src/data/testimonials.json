@@ -1,1 +1,52 @@
-[]
+[
+  {
+    "id": "20295428-a7ad-49f8-ba11-01d4c809d8c1",
+    "google_review_id": "1766350562",
+    "author_name": "Camelia L.",
+    "author_photo_url": null,
+    "review_text": "Sunteți de apreciat și vă mulțumesc pentru ca aveți standardele alese! Recomand cu responsabilitate echipamentele dvs de muncă!",
+    "rating": 5,
+    "date_posted": "2026-01-21",
+    "status": "published"
+  },
+  {
+    "id": "002de664-1750-46bd-be3c-fc78d37bcc19",
+    "google_review_id": "1763973563",
+    "author_name": "Karoly N.",
+    "author_photo_url": null,
+    "review_text": "Suntem foarte multumiti de produsele se la You Protect.",
+    "rating": 5,
+    "date_posted": "2026-01-23",
+    "status": "published"
+  },
+  {
+    "id": "3a8a7726-8709-400e-a723-06b1a81f799a",
+    "google_review_id": "1743833605",
+    "author_name": "Iluti C.",
+    "author_photo_url": null,
+    "review_text": "Mulțumim „You Protect\" pentru produsele de înaltă calitate, care combină eleganța hainelor office cu confortul si functionalitatea echipamentelor de protectie. Recomand!",
+    "rating": 5,
+    "date_posted": "2025-04-05",
+    "status": "published"
+  },
+  {
+    "id": "1eca1e19-60b9-4902-af2a-c942803f6bde",
+    "google_review_id": "1742223303",
+    "author_name": "Cristi M.",
+    "author_photo_url": null,
+    "review_text": "Foarte multumit de produse si livrare. Produs de calitate la un pret bun.",
+    "rating": 5,
+    "date_posted": "2025-03-17",
+    "status": "published"
+  },
+  {
+    "id": "a7cf77e3-1f22-491a-985e-95b1796af785",
+    "google_review_id": "1738331469",
+    "author_name": "Mihai S.",
+    "author_photo_url": null,
+    "review_text": "Promptitudine, profesionalism, flexibilitate",
+    "rating": 5,
+    "date_posted": "2025-01-31",
+    "status": "published"
+  }
+]
