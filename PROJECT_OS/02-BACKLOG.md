@@ -192,11 +192,17 @@ Format task:
 - Scope: CUI corect RO46294850 (confirmat de Ciprian; footer-ul vechi avea RO 46387843). Sursa unică: `SITE.legal` din `src/lib/site.ts`.
 
 ### OPS-006
-- Status: `BLOCKED` (decizie Ciprian)
+- Status: `IN PROGRESS` (cod gata, CI verde; pornirea așteaptă pașii de mai jos)
 - Owner: `User` + `Claude`
-- Scope: Formularul nu poate salva cereri: Postgres-ul `passionate-wholeness` rulează, dar nu mai are TCP Proxy public (lipsesc `RAILWAY_TCP_PROXY_DOMAIN` și `DATABASE_PUBLIC_URL`), deci Hyperdrive (Cloudflare) nu ajunge la el. Găsit pe 16.11.2026; probabil afectează și site-ul live. Nu știm de când (ultimul deploy Postgres: 30.08.2026).
-- Variante: (A) reactivezi TCP Proxy pe serviciul Postgres în Railway, apoi actualizăm host/port în configurația Hyperdrive `0e9c108d713140229e9081b5327a8f7d`; (B) mutăm stocarea lead-urilor în altă bază.
-- Acceptance: lead de test din preview cu `success: true`, apoi șters (cu confirmarea lui Ciprian).
+- Problema (găsită pe 16.11.2026): Postgres-ul `passionate-wholeness` nu mai are TCP Proxy public, deci Hyperdrive nu ajunge la el; formularul nu salva cererile, probabil și pe site-ul vechi (nu știm de când; ultimul deploy Postgres: 30.08.2026).
+- Decizie Ciprian (16.11.2026): cererile merg prin Resend (email către office@youprotect.ro, de pe noreply@deeplogic.ro) și în Prospector CRM, cu tag-ul `website`; CUI opțional în formular.
+- Implementare: site PR #24 (`feature/leads-d1-resend`): inbox Cloudflare D1 (jurisdicție UE) + email Resend + `/api/crm/leads` (pull cu token); CRM PR #21 (`prospector-crm`, `feature/website-leads`): migrația `20261116120000_cereri_site.sql`, jobul `scripts/cereri-site/` (la 5 minute pe M1), pagina „Cereri de pe site”.
+- Pași rămași, în ordine:
+  1. Cloudflare: baza D1 `youprotect-leads` (jurisdicție EU) + id în `wrangler.toml` + migrația `migrations/0001_lead.sql`; secretele Pages `RESEND_API_KEY` și `CRM_SYNC_TOKEN` (production + preview). Din acest moment nu se mai pierd cereri.
+  2. Lead de test din preview (D1 + email), apoi merge PR #24.
+  3. Ciprian creează clientul You Protect în CRM (încă nu există, 16.11.2026); id-ul lui intră în `cereri-site.conf` pe M1.
+  4. Pornirea pe M1 după `prospector-crm/deploy/deeplogic-m1/README.md`, „Cererile de pe site” (migrația pe producție cere acordul lui Ciprian).
+- Neurgent (CRM de uz intern): textul de informare GDPR din fișa persoanei e scris pentru art. 14; pentru cei care completează formularul se aplică art. 13 — de revăzut cu consultantul GDPR înainte de folosirea externă a CRM-ului.
 
 ---
 

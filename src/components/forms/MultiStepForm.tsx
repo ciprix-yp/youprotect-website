@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { isValidCUI } from '../../lib/cui.js';
 
 type Intent = 'consultation' | 'quote';
 type Option = { label: string; hasOther?: boolean };
@@ -53,6 +54,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const [formData, setFormData] = useState<Record<string, any>>({
     name: '',
     company: '',
+    cui: '',
     phone: '',
     email: '',
     q1: '',
@@ -95,6 +97,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     if (sid === 'contact') {
       if (!formData.name.trim()) newErrors.name = 'Scrie numele tău.';
       if (!formData.company.trim()) newErrors.company = 'Scrie numele firmei.';
+      if (formData.cui.trim() && !isValidCUI(formData.cui)) newErrors.cui = 'CUI-ul nu pare corect. Verifică cifrele sau lasă câmpul gol.';
       if (!formData.phone.trim()) newErrors.phone = 'Scrie un număr de telefon.';
       if (!/^\S+@\S+\.\S+$/.test(formData.email.trim())) newErrors.email = 'Scrie o adresă de email validă, de forma nume@firma.ro.';
     } else {
@@ -185,7 +188,10 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       )}
       <div className="space-y-4">
         {field('name', 'Nume și prenume', { type: 'text', autoComplete: 'name', placeholder: 'Ion Popescu' })}
-        {field('company', 'Firma', { type: 'text', autoComplete: 'organization', placeholder: 'Exemplu SRL' })}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+          {field('company', 'Firma', { type: 'text', autoComplete: 'organization', placeholder: 'Exemplu SRL' })}
+          {field('cui', 'CUI (opțional)', { type: 'text', inputMode: 'numeric', autoComplete: 'off', placeholder: 'RO12345678' })}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {field('phone', 'Telefon', { type: 'tel', inputMode: 'tel', autoComplete: 'tel', placeholder: '0722 123 456' })}
           {field('email', 'Email', { type: 'email', inputMode: 'email', autoComplete: 'email', placeholder: 'ion@exemplu.ro' })}
