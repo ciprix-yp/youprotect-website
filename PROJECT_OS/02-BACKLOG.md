@@ -116,7 +116,7 @@ Format task:
 - Rămas (opțional): consolidarea tokenilor de culoare (hex-uri ad-hoc → `yp-*`).
 
 ### CMS-001
-- Status: `TODO`
+- Status: `DROPPED` (17.11.2026: Directus și baza Railway nu mai există; produsele demo au redirect 301 spre catalog, iar catalogul vine din fișiere de date, D-2026-11-11-01)
 - Owner: `User` (Directus/Postgres — nu se poate din repo)
 - Scope: Corecții conținut produs: slug typo `pantof-protecie` -> `pantof-protectie` (+301); descrieri trunchiate; înlocuire imagini Unsplash/Drive cu poze reale; specs/mărimi/standarde EN pentru produsele demo.
 - Acceptance: produse cu slug corect, descriere completă, imagini reale.
@@ -204,6 +204,33 @@ Format task:
 - Implementare: site PR #24 (`feature/leads-d1-resend`): inbox Cloudflare D1 (jurisdicție UE) + email Resend + `/api/crm/leads` (pull cu token); CRM PR #21 (`prospector-crm`, `feature/website-leads`): migrația `20261116120000_cereri_site.sql`, jobul `scripts/cereri-site/` (la 5 minute pe M1), pagina „Cereri de pe site”.
 - Operare: `prospector-crm/deploy/deeplogic-m1/README.md`, „Cererile de pe site” (oprire, rotirea tokenului și a parolei, cereri care nu intră).
 - Neurgent (CRM de uz intern): textul de informare GDPR din fișa persoanei e scris pentru art. 14; pentru cei care completează formularul se aplică art. 13 — de revăzut cu consultantul GDPR înainte de folosirea externă a CRM-ului.
+
+### CONV-001
+- Status: `DONE` (17.11.2026, PR #28)
+- Owner: `Claude`
+- Scope: Primul pas din auditul de conversie din 17.11.2026 (site live, 6 pagini, mobil și desktop, plus codul formularelor).
+- Rezultat:
+  - „Testezi fără riscuri” e componentă comună (`RiskFreeTesting`): apare pe homepage, în catalog și pe paginile cu formular, nu doar pe fișe;
+  - butonul WhatsApp nu mai acoperă formularele;
+  - catalogul are două coloane pe mobil (de la ~27 la ~10 ecrane);
+  - titlurile au majuscule ca în română.
+
+### CONV-002
+- Status: `DONE` (17.11.2026)
+- Owner: `Claude`
+- Scope: Dovadă socială și spațiere pe formulare.
+- Rezultat: cele 5 recenzii Google de pe site-ul vechi sunt din nou pe homepage (D-2026-11-17-02). Paginile cu formular au mai puțin spațiu gol sus pe mobil.
+
+### CONV-003
+- Status: `BLOCKED` (decizii Ciprian)
+- Owner: `User` (decizii) + `Claude` (implementare)
+- Scope: Ce a rămas din auditul de conversie din 17.11.2026 și cere decizii:
+  - **Categorii:** homepage-ul promite mănuși, căști, ochelari și lucru la înălțime, dar catalogul are doar haine și încălțăminte.
+  - **Prima întrebare din formularul de ofertă** pornește de la 5 persoane.
+  - **Măsurare:** site-ul nu are analytics, deci nu avem cifre de conversie.
+  - **Titlul principal** promite „cresc profitabilitatea”, ceea ce nu putem dovedi.
+  - **Condițiile garanției de 90 de zile** nu sunt scrise nicăieri. În plus, homepage-ul spune „testare… unde proiectul o permite”.
+  - **Lungimea formularelor:** 8 și 7 pași.
 
 ---
 
