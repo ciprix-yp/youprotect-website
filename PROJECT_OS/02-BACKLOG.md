@@ -166,13 +166,13 @@ Format task:
 - 16.11.2026: Ciprian a aprobat toate cele 21 de fișe; trecute în `published` (26 de produse publice).
 
 ### SEC-001
-- Status: `REVIEW` (cod gata pe `feature/launch-fixes`, PR #12; CI `semgrep` verde)
+- Status: `DONE` (17.11.2026: site-ul nu se mai conectează deloc la Postgres; `pg` și Hyperdrive au fost scoase odată cu OPS-006, PR #24)
 - Owner: `Claude` + `User` (test pe preview)
 - Scope: Conexiunile Postgres nu verificau certificatul TLS (`rejectUnauthorized: false`).
 - Rezultat (16.11.2026): `submit-lead` se conectează doar prin Hyperdrive, fără opțiuni ssl (Hyperdrive face TLS spre Railway); fără fallback `DATABASE_URL`; acceptă doar întrebările cunoscute, cu limite de mărime; erori generice spre client. `/api/leads` scos (niciun apelant, endpoint public de scriere în DB-ul de producție), `scripts/qc-smoke.sh` scos (scria lead-uri de test în producție). Regulă semgrep nouă: `internal-error-message-in-response`.
 - Acceptance rămasă: un lead de test trimis din preview ajunge în DB (preview-ul folosește Hyperdrive-ul de producție) — doar cu acordul lui Ciprian.
 - Test 16.11.2026 (lead marcat TEST, din preview): conexiunea la Hyperdrive reușește (etapa `connect`), deci verificarea TLS fără bypass e în regulă; prima interogare pică cu `terminated` din cauza OPS-006.
-- Next action: după OPS-006, un nou lead de test din preview.
+- 17.11.2026: lead-ul de test din preview a mers pe drumul nou (D1 + Resend + CRM), vezi OPS-006.
 
 ### SEC-002
 - Status: `DONE` (branch `chore/astro-7`, 16.11.2026)
@@ -192,16 +192,17 @@ Format task:
 - Scope: CUI corect RO46294850 (confirmat de Ciprian; footer-ul vechi avea RO 46387843). Sursa unică: `SITE.legal` din `src/lib/site.ts`.
 
 ### OPS-006
-- Status: `IN PROGRESS` (cod gata, CI verde; pornirea așteaptă pașii de mai jos)
+- Status: `DONE` (pornit pe 17.11.2026)
 - Owner: `User` + `Claude`
+- Rezultat (17.11.2026):
+  - D1 `youprotect-leads` (jurisdicție UE) legată ca `LEADS_DB`, schema `0001_lead.sql` aplicată; `RESEND_API_KEY` și `CRM_SYNC_TOKEN` în Cloudflare Pages (production + preview); PR #24 integrat (`e5288d7`).
+  - CRM: PR #21 integrat, migrația aplicată pe M1 cu acordul lui Ciprian (pgTAP 71/71 pe M1), aplicația `cb9b31d`, jobul la 5 minute prin launchd, la clientul You Protect.
+  - Verificare cap-coadă cu o cerere de test din preview, fără CUI: D1 (tag `website`), email acceptat de Resend, inbox-ul „Cereri de pe site” din CRM (marcată test), confirmată pe site. `/api/crm/leads` dă 401 fără token, pe preview și pe youprotect.ro.
+- Rămas: secretul vechi `DATABASE_URL` (Railway) e încă în Pages, pe production și preview, nefolosit; de șters cu acordul lui Ciprian. Cererile mai vechi din Postgres-ul Railway nu au fost mutate.
 - Problema (găsită pe 16.11.2026): Postgres-ul `passionate-wholeness` nu mai are TCP Proxy public, deci Hyperdrive nu ajunge la el; formularul nu salva cererile, probabil și pe site-ul vechi (nu știm de când; ultimul deploy Postgres: 30.08.2026).
 - Decizie Ciprian (16.11.2026): cererile merg prin Resend (email către office@youprotect.ro, de pe noreply@deeplogic.ro) și în Prospector CRM, cu tag-ul `website`; CUI opțional în formular.
 - Implementare: site PR #24 (`feature/leads-d1-resend`): inbox Cloudflare D1 (jurisdicție UE) + email Resend + `/api/crm/leads` (pull cu token); CRM PR #21 (`prospector-crm`, `feature/website-leads`): migrația `20261116120000_cereri_site.sql`, jobul `scripts/cereri-site/` (la 5 minute pe M1), pagina „Cereri de pe site”.
-- Pași rămași, în ordine:
-  1. Cloudflare: baza D1 `youprotect-leads` (jurisdicție EU) + id în `wrangler.toml` + migrația `migrations/0001_lead.sql`; secretele Pages `RESEND_API_KEY` și `CRM_SYNC_TOKEN` (production + preview). Din acest moment nu se mai pierd cereri.
-  2. Lead de test din preview (D1 + email), apoi merge PR #24.
-  3. Ciprian creează clientul You Protect în CRM (încă nu există, 16.11.2026); id-ul lui intră în `cereri-site.conf` pe M1.
-  4. Pornirea pe M1 după `prospector-crm/deploy/deeplogic-m1/README.md`, „Cererile de pe site” (migrația pe producție cere acordul lui Ciprian).
+- Operare: `prospector-crm/deploy/deeplogic-m1/README.md`, „Cererile de pe site” (oprire, rotirea tokenului și a parolei, cereri care nu intră).
 - Neurgent (CRM de uz intern): textul de informare GDPR din fișa persoanei e scris pentru art. 14; pentru cei care completează formularul se aplică art. 13 — de revăzut cu consultantul GDPR înainte de folosirea externă a CRM-ului.
 
 ---
