@@ -12,7 +12,8 @@
     "pm:review": "./PROJECT_OS/pm/pm review",
     "cf:deploy": "./scripts/deploy-cloudflare.sh",
     "release:iteration": "./scripts/release-iteration.sh",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "catalog:cards": "node scripts/catalog/card-images.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",
