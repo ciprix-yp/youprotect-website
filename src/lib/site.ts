@@ -56,3 +56,21 @@ export const SOCIAL_LINKS: { facebook?: string; instagram?: string; linkedin?: s
 };
 
 export const sameAs = Object.values(SOCIAL_LINKS).filter(Boolean) as string[];
+
+// Măsurare (D-2026-11-18-02). Paginile legale și bannerul se generează din aceste valori, ca să descrie exact ce rulează.
+//   ga4Id: ID-ul de măsurare Google Analytics 4 („G-…”). E public, apare în pagină. Gol = GA oprit și fără banner.
+//          La build se poate înlocui cu PUBLIC_GA4_ID (de exemplu un ID de test, local).
+//   cloudflareWebAnalytics: true după ce Web Analytics e pornit în Cloudflare Pages (scriptul îl injectează Cloudflare,
+//          fără cookie-uri). Verificare: pagina publicată conține „static.cloudflareinsights.com/beacon.min.js”.
+const GA4_ID_PATTERN = /^G-[A-Z0-9]{4,20}$/;
+const ga4Id = (import.meta.env.PUBLIC_GA4_ID as string | undefined) || "";
+
+export const ANALYTICS = {
+  ga4Id: GA4_ID_PATTERN.test(ga4Id) ? ga4Id : "",
+  cloudflareWebAnalytics: false,
+  // Alegerea din banner, în localStorage. Se cere din nou după 6 luni.
+  consentKey: "yp_consent",
+  consentMaxAgeDays: 182,
+  // Cookie-urile Google Analytics expiră după 13 luni (nu după 2 ani, cât e implicit).
+  gaCookieMaxAgeDays: 395,
+};

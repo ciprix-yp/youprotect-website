@@ -137,6 +137,13 @@ const showWhatsApp = !["/cere-oferta", "/programeaza-discutie"].some((p) => Astr
               Politica de cookies
             </a>
           </li>
+          {/* Apare doar când Google Analytics e configurat (îl afișează scriptul din Analytics.astro). Fără clasă de
+              display pe elementele cu `hidden`: utilitarele Tailwind (block, flex) ar suprascrie atributul. */}
+          <li hidden data-consent-item>
+            <button type="button" data-consent-open class="py-1.5 text-left hover:text-yp-yellow transition-colors">
+              Setări cookie-uri
+            </button>
+          </li>
         </ul>
 
         <!-- Program -->
