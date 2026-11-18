@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProductCard from "../../components/products/ProductCard.astro";
 import RiskFreeTesting from "../../components/global/RiskFreeTesting.astro";
 import { CATEGORIES, INDUSTRIES } from "../../lib/catalog-taxonomy";
+import { cardSrc } from "../../lib/catalog-images.js";
 
 // Catalogul vine din src/content/products/ (doar produsele publicate), nu din Directus sau DB.
 const roCollator = new Intl.Collator("ro", { sensitivity: "base" });
@@ -18,7 +19,8 @@ const products = entries.map(({ id, data }) => {
     slug: id,
     name: data.name,
     shortDescription: data.summary,
-    thumbnailUrl: data.colours[0].images[0].src,
+    // Varianta de 600 px (scripts/catalog/card-images.mjs); poza mare are 1200 px.
+    thumbnailUrl: cardSrc(data.colours[0].images[0].src),
     featured: false,
     categoryName: CATEGORIES[data.category],
     industry: industries.join(", "),

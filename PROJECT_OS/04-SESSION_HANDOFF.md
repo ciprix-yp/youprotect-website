@@ -20,6 +20,7 @@
 - Catalog: 26 de produse (5 publicate, 21 în `review`, vizibile în `/preview/produse/`). Publicare: `status: "published"` în `catalog/texts/<furnizor>/<cod>.json`, apoi asamblarea:
   - MASCOT: `python3 -I scripts/catalog/assemble_mascot.py .catalog-work/mascot catalog/texts/mascot catalog/maps/mascot-ro.json src/content/products --no-network`
   - Sir Safety: `python3 -I scripts/catalog/assemble_sirsafety.py .catalog-work/sirsafety catalog/texts/sirsafety catalog/maps/sirsafety-ro.json src/content/products`
+  - După asamblare (de la 18.11.2026): `npm run catalog:cards` face miniatura de 600 px pentru cardul din catalog. `npm test` pică dacă un produs publicat nu o are.
 - Sir Safety, de la zero: `uv run --no-project --with pypdf python -I scripts/catalog/extract_sirsafety.py .catalog-work/sirsafety <COD…>`, apoi texte în `catalog/texts/sirsafety/`, apoi `fetch_images_sirsafety.py` (cu pillow), apoi asamblarea.
 - Teste formular: doar în browser, cu `/api/` blocat. `qc:smoke` și `/api/leads` au fost scoase.
 

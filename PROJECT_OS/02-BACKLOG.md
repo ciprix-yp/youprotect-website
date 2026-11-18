@@ -247,15 +247,18 @@ Format task:
     o singură întrebare: personalizarea cu logo (D-2026-11-18-05).
 
 ### PERF-001
-- Status: `IN_PROGRESS`
+- Status: `DONE` (18.11.2026, PR #40 și PR-ul cu cardurile din catalog)
 - Owner: `Claude`
 - Scope: Greutatea paginilor pe telefon. Măsurat pe 18.11.2026, cu cache gol: homepage 5,1 MB (4,75 MB imagini),
   `/cum-lucram/` 3,5 MB, `/despre-noi/` 1,2 MB, catalogul 1,7 MB.
 - Făcut pe 18.11.2026: imaginile de pe homepage, `/cum-lucram/`, `/despre-noi/`, logo-uri și hero trecute pe WebP la
   mărimea afișată; încărcare întârziată sub primul ecran; 3 imagini nefolosite șterse; adresele vechi au redirect 301;
   `tests/image-weight.test.mjs` oprește orice imagine din `public/` peste 250 KB.
-- Rămâne: miniaturi mai mici pentru cardurile din catalog (pozele de produs de 1100 px, ~100 KB fiecare, se afișează la
-  ~300 px).
+- Live după PR #40 (telefon, cache gol): homepage 836 KB (primul ecran 580 KB), `/cum-lucram/` 691 KB,
+  `/despre-noi/` 448 KB.
+- Catalog: cardurile folosesc o miniatură de 600 px (`npm run catalog:cards`, `src/lib/catalog-images.js`); imaginile
+  catalogului scad de la 1,35 MB la 377 KB (măsurat local). `tests/catalog-cards.test.mjs` cere miniatura pentru fiecare
+  produs publicat.
 
 ### SEO-003 / GEO / mesaje de conversie
 - Status: `TODO`
