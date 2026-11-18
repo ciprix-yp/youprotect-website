@@ -161,3 +161,24 @@
 - Context: Homepage-ul nu avea nicio dovadă socială. `src/data/testimonials.json` a fost creat gol pe 11.11.2026, când a căzut Directus, dar recenziile nu fuseseră scoase intenționat. Baza veche (copia din 17.11.2026) avea 5 recenzii Google publicate pe site-ul vechi, toate de 5 stele, din ianuarie 2025 până în ianuarie 2026.
 - Decizie: recenziile revin pe homepage, cu textul neschimbat, fără pozele de profil Google și cu numele ca „Prenume I.”. Pozele s-ar încărca de pe serverele Google și ar expune IP-ul vizitatorilor, contrar D-2026-11-16-02. Numele scurtate dau aceeași dovadă, cu mai puține date personale într-un repo public.
 - Rămâne valabil: fără schema de recenzii (decizia lui Ciprian, politica Google pentru recenziile despre propria firmă). Recenziile noi vin prin OPS-005 (Google Business Profile) și se adaugă în `src/data/testimonials.json`.
+
+## D-2026-11-18-01
+- Context:
+  - Titlul de pe homepage promitea „cresc profitabilitatea”, fără dovadă.
+  - Calculatorul de cost (`/lp/tco-calculator/`) nu era legat de nicăieri și avea `noindex`.
+  - Trimitea datele unui webhook n8n vechi, inactiv; erorile erau ignorate, deci cererile se pierdeau.
+  - Promitea un „ghid PDF în 5 minute” pe care nu-l trimitea nimic.
+  - Folosea coeficienți „din industrie” fără sursă (risc pe domeniu, costuri ascunse de 15–28 %).
+- Decizie (Ciprian):
+  - Titlul trebuie să fie bun pentru SEO, să sune bine și să fie adevărat.
+  - Calculatorul devine lead magnet și arată orientativ că echipamentele de calitate aduc economii pe termen mediu și lung.
+- Implementare:
+  - **Titlul:** „Echipamente de protecție și haine de lucru alese după costul real, nu după preț”, cu link spre calculator.
+  - **Pagina:** calculatorul e pe `/calculator-cost-echipamente/`, indexabil și legat din hero și footer; adresa veche are redirect 301.
+  - **Modelul** (`src/lib/tco.js`) are doar formule la vedere: achiziție, înlocuiri pe an și timp de administrare.
+  - **Durabilitatea** produselor de calitate o alege vizitatorul.
+  - **Pragul de rentabilitate** e un calcul exact, fără ipoteze: de câte ori trebuie să dureze mai mult ca să coste la fel.
+  - **Rezultatul** se vede fără date de contact; dacă vizitatorul e pe minus, pagina o spune.
+  - **Cererile** pleacă prin `/api/submit-lead`, ca cerere de ofertă cu „Sursa: Calculatorul de cost”, ca să nu adauge în CRM un intent pe care Prospector nu-l acceptă încă.
+  - **Cifrele** care ajung în CRM sunt recalculate pe server.
+- Regulă: calculatorul nu afișează procente sau coeficienți fără sursă. O ipoteză nouă intră doar ca valoare pe care o alege vizitatorul.

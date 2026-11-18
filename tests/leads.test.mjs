@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
 import { parseLead, leadEmail, environmentOf, safeEqual } from '../server/leads.js';
+import { computeTco, parseTcoInputs } from '../src/lib/tco.js';
 import { onRequestPost as submitLead } from '../functions/api/submit-lead.js';
 import { onRequestGet as crmGet, onRequestPost as crmPost } from '../functions/api/crm/leads.js';
 
@@ -112,6 +113,42 @@ test('parseLead: categoria de pe homepage, doar din listă și doar la cererea d
   assert.equal(withCategory('quote', '<script>').lead.answers[0].question, 'q1');
   assert.equal(withCategory('quote', 'constructor').lead.answers[0].question, 'q1'); // nu din prototipul obiectului
   assert.equal(withCategory('consultation', 'manusi').lead.answers.some((a) => a.question === 'categorie'), false);
+});
+
+test('calculator: model simplu, ipoteze la vedere', () => {
+  const input = parseTcoInputs({
+    employees: 10, categories: ['incaltaminte', 'necunoscut'], prices: { incaltaminte: 200 }, qualityPrices: { incaltaminte: 300 },
+    months: 6, durability: 2, adminHours: 4, hourCost: 50, domain: 'Agricultură',
+  });
+  assert.deepEqual(input.categories, ['incaltaminte']);
+  const r = computeTco(input);
+  assert.equal(r.purchaseNow, 10 * 200 * 2); // 2 înlocuiri pe an
+  assert.equal(r.purchaseQuality, (10 * 300 * 2) / 2); // durează de 2 ori mai mult
+  assert.equal(r.adminNow, 4 * 12 * 50);
+  assert.equal(r.adminQuality, r.adminNow / 2);
+  assert.equal(r.difference, r.totalNow - r.totalQuality);
+  // La prag, costul de calitate e egal cu cel de acum.
+  const atBreakEven = computeTco({ ...input, durability: r.breakEven });
+  assert.ok(Math.abs(atBreakEven.totalQuality - r.totalNow) < 1e-6);
+  // Limite și tipuri
+  assert.equal(parseTcoInputs({ ...input, months: 5 }), null);
+  assert.equal(parseTcoInputs({ ...input, categories: [] }), null);
+  assert.equal(parseTcoInputs({ ...input, employees: '10' }), null);
+  assert.equal(parseTcoInputs({ ...input, employees: 1e9, durability: 99 }).employees, 500);
+  assert.equal(parseTcoInputs({ ...input, durability: 99 }).durability, 3);
+  assert.equal(parseTcoInputs({ ...input, domain: '<b>x</b>' }).domain, '');
+});
+
+test('calculator: cererea intră ca ofertă, cu cifrele recalculate pe server', () => {
+  const calculator = { employees: 20, categories: ['manusi'], months: 3, durability: 1.5, adminHours: 2, hourCost: 40,
+    results: { totalNow: 999999999 } };
+  const r = parseLead({ intent: 'quote', data: { ...valid.data, calculator } });
+  assert.equal(r.ok, true);
+  assert.equal(r.lead.answers[0].answer, 'Calculatorul de cost (estimare orientativă)');
+  const cost = r.lead.answers.find((a) => a.question === 'calc_cost_acum').answer;
+  assert.equal(cost.includes('999'), false); // cifrele din browser se ignoră
+  assert.ok(r.lead.answers.length <= 30); // limita de import din CRM
+  assert.equal(parseLead({ intent: 'quote', data: { ...valid.data, calculator: { employees: 3 } } }).ok, false);
 });
 
 test('email: doar text, fără CR/LF în subiect, cu tag website', () => {

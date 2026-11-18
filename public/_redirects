@@ -19,3 +19,7 @@
 /produse/mnui-impact-grip-pro         /produse  301
 /produse/pantof-protecie-carbon-s3    /produse  301
 /produse/softshell-industrial-pro-x   /produse  301
+
+# Calculatorul de cost s-a mutat de pe landing page-ul neindexat pe o pagină publică (18.11.2026).
+/lp/tco-calculator   /calculator-cost-echipamente  301
+/lp/tco-calculator/  /calculator-cost-echipamente/ 301
