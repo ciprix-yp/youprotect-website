@@ -237,10 +237,11 @@ Format task:
     generate din `ANALYTICS`. Așteaptă ID-ul GA4 de la Ciprian și pornirea Web Analytics în Cloudflare Pages.
   - **Titlul principal și calculatorul** — `DONE`. Detalii în D-2026-11-18-01. Cererile din calculator intră ca
     cerere de ofertă cu „Sursa: Calculatorul de cost”.
-  - **Condițiile garanției de 90 de zile** — `BLOCKED`. Le scriem după modelul „money back guaranteed”, cu decizii
-    de la Ciprian.
-  - **Formularul de ofertă** — `TODO`. Alimentează modulul de ofertare din Prospector. La firmele de peste 15–20 de
-    oameni, prima ofertă e lead magnet: clientul vede și atinge produsul, apoi primește oferta.
+  - **Testare fără riscuri** — `REVIEW`. Pagina `/testare-fara-riscuri/` și textele scurte sunt aliniate cu regulile
+    lui Ciprian (D-2026-11-18-03). Se publică după ce aprobă textul.
+  - **Formularul de ofertă** — `DONE` pentru acum. Rămâne pe `/cere-oferta/`, iar cererea ajunge pe email
+    (office@) și în CRM. Modulul de ofertare din Prospector nu se construiește acum; după ce există, conectăm
+    formularul și automatizăm (cu `structured` și slug-uri stabile, convenite cu Prospector).
 
 ---
 

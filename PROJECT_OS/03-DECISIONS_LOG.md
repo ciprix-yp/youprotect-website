@@ -200,6 +200,31 @@
   3. Pornește Web Analytics în Cloudflare Pages.
 - După fiecare pas: `ANALYTICS.ga4Id` primește ID-ul, iar `ANALYTICS.cloudflareWebAnalytics` devine `true` după ce beacon-ul apare pe pagina publicată.
 
+## D-2026-11-18-03
+- Context: site-ul promitea „garanția banilor înapoi în 90 de zile” fără condiții scrise. Homepage-ul spunea în plus „testare… unde proiectul o permite”.
+- Regulile lui Ciprian (18.11.2026):
+  - Testarea e un program complet: produsele le alegem și le aprobăm împreună cu clientul.
+  - Urmărim uzura, părerea celor care le poartă și feedback-ul din piață.
+  - Calculăm durata medie de viață și eficiența financiară.
+  - Clientul cumpără produsele.
+  - Banii se întorc integral doar dacă clientul e nemulțumit **și** produsele nu ies mai eficiente financiar decât soluția actuală.
+  - În testare intră 3–5 lucrători pe rol, în funcție de mărimea clientului.
+  - Toate produsele se personalizează.
+  - Dacă am plătit noi transportul tur, returul e pe costul clientului.
+  - Cantitățile și KPI-urile se stabilesc cu clientul, în funcție de problema lui.
+  - Clientul ne dă acces la date, iar datele rămân confidențiale.
+- Implementare:
+  - Pagina `/testare-fara-riscuri/`, legată din RISK_FREE_TESTING (fișe de produs, homepage, catalog, formulare), din `/cum-lucram/`, din termeni și din footer.
+  - Criteriul financiar e costul pe zi de purtare, aceeași măsură ca în calculator.
+- Riscuri pentru You Protect și cum sunt acoperite în text:
+  1. **Retur pe gust.** Trebuie îndeplinite amândouă condițiile, iar cea financiară e măsurată după protocolul semnat.
+  2. **Fără date sau fără reper.** Garanția se aplică doar cu protocol semnat și cu accesul la date la termen.
+  3. **90 de zile pot fi mai puțin decât durata de viață.** Durata se estimează din uzura măsurată la verificări, comparat cu un grup de control din același rol, pe aceeași perioadă. Metoda se fixează în protocol.
+  4. **Folosire sau întreținere greșită.** Produsele trebuie purtate conform fișei tehnice și etichetei. Cele deteriorate intenționat sau nereturnate nu se rambursează.
+  5. **Produsele personalizate nu se pot revinde.** Expunerea e limitată la comanda de test (3–5 oameni pe rol). Comenzile ulterioare nu intră în garanție.
+  6. **Cereri târzii.** Cererea se face în scris, în cel mult 14 zile de la evaluarea finală. Rambursarea se face în cel mult 14 zile de la primirea produselor.
+- Propuse de Claude și confirmate de Ciprian pe 18.11.2026: cele două termene de 14 zile și grupul de control. Dreptul de a folosi rezultatele anonim, ca studiu de caz, intră în protocolul semnat, nu pe site.
+
 ## D-2026-11-18-04
 - Context:
   - Ciprian vrea recenziile noi preluate automat, o dată pe lună, doar cele de 4 și 5 stele, rulate în carusel continuu.
