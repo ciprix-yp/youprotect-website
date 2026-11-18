@@ -25,7 +25,7 @@ const {
   thumbnailUrl = null,
 } = Astro.props;
 
-const imageUrl = thumbnailUrl || "/hero-youprotect-highvis.jpg";
+const imageUrl = thumbnailUrl || "/hero-youprotect-highvis.webp";
 const imageAlt = `${name} - ${categoryName}`;
 const normalizedTags = merchandisingTags
   .filter((tag) => !(featured && tag.toLowerCase() === "bestseller"))
