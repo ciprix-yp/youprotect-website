@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { isValidCUI } from '../../lib/cui.js';
+import { quoteCategoryLabel } from '../../lib/quote-categories.js';
+import { SITE } from '../../lib/site';
 
 type Intent = 'consultation' | 'quote';
 type Option = { label: string; hasOther?: boolean };
@@ -17,7 +19,22 @@ const FORM_2_STEPS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'contact'];
 // Cheia din sessionStorage cu datele pentru calendarul de pe /confirmare/ (nu le punem în URL).
 export const BOOKING_PREFILL_KEY = 'yp_booking_prefill';
 
-const PHONE = { href: 'tel:+40742226127', label: '0742 226 127' };
+const PHONE = { href: `tel:${SITE.telephone}`, label: SITE.telephoneDisplay };
+
+// Echipele de 1–4 persoane nu sunt în formular: le răspundem mai repede pe WhatsApp.
+const SMALL_TEAM_WHATSAPP = `https://wa.me/${SITE.telephone.replace(/\D/g, '')}?text=${encodeURIComponent(
+  'Bună! Am o echipă de 1–4 persoane și aș vrea o recomandare de echipamente.',
+)}`;
+
+// Variantele de la „Ce produse ai în vedere?” în care intră categoriile de pe homepage (?categorie=<slug>).
+const SSM_OPTION = 'Mănuși / căști / ochelari / alte echipamente SSM';
+const HEIGHT_OPTION = 'Lucru la înălțime (hamuri, sisteme anticădere)';
+const CATEGORY_OPTION: Record<string, string> = {
+  manusi: SSM_OPTION,
+  casti: SSM_OPTION,
+  ochelari: SSM_OPTION,
+  'lucru-la-inaltime': HEIGHT_OPTION,
+};
 
 const DOMAINS: Option[] = [
   { label: 'Construcții / infrastructură' },
@@ -47,6 +64,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [product, setProduct] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
@@ -69,10 +87,17 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Produsul de pe care vine vizitatorul (/cere-oferta/?produs=<slug>), doar dacă e în catalog.
+  // Produsul de pe care vine vizitatorul (/cere-oferta/?produs=<slug>), doar dacă e în catalog,
+  // sau categoria de pe homepage (/cere-oferta/?categorie=<slug>), doar dacă e în listă.
   useEffect(() => {
-    const slug = new URLSearchParams(window.location.search).get('produs');
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('produs');
     if (slug && Object.hasOwn(products, slug)) setProduct(slug);
+    const categorySlug = params.get('categorie');
+    if (intent === 'quote' && categorySlug && quoteCategoryLabel(categorySlug)) {
+      setCategory(categorySlug);
+      setFormData((prev) => ({ ...prev, q3: [CATEGORY_OPTION[categorySlug]] }));
+    }
   }, []);
 
   // La schimbarea pasului: formularul rămâne în ecran, iar focusul merge pe întrebare.
@@ -124,7 +149,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       const response = await fetch('/api/submit-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent, data: { ...formData, produs: product ?? undefined } }),
+        body: JSON.stringify({ intent, data: { ...formData, produs: product ?? undefined, categorie: category ?? undefined } }),
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -232,7 +257,13 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     </div>
   );
 
-  const renderRadioGroup = (fieldId: string, question: string, options: Option[], description?: string) => (
+  const renderRadioGroup = (
+    fieldId: string,
+    question: string,
+    options: Option[],
+    description?: string,
+    note?: React.ReactNode,
+  ) => (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {stepHeading(question, description)}
       <div className="space-y-3" role="radiogroup" aria-label={question}>
@@ -270,7 +301,26 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
         })}
       </div>
       {errors[fieldId] && <p className="text-red-400 text-sm mt-2 text-center md:text-left">{errors[fieldId]}</p>}
+      {note}
     </div>
+  );
+
+  // Sub întrebarea despre mărimea echipei: echipele de 1–4 persoane ne scriu pe WhatsApp.
+  const smallTeamNote = (
+    <p className="text-sm text-neutral-400 leading-relaxed">
+      Ai o echipă de 1–4 persoane?{' '}
+      <a
+        href={SMALL_TEAM_WHATSAPP}
+        target="_blank"
+        rel="noopener"
+        data-track="whatsapp"
+        data-track-location="formular-echipa-mica"
+        className="text-yp-yellow underline underline-offset-4 hover:text-white"
+      >
+        Scrie-ne pe WhatsApp
+      </a>
+      , îți răspundem mai repede acolo.
+    </p>
   );
 
   const renderMultiSelect = (fieldId: string, question: string, options: Option[], maxSelect?: number) => {
@@ -337,7 +387,14 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           { label: 'SSM / HR / Administrativ' },
           { label: 'Alt rol', hasOther: true },
         ]);
-      if (stepId === 'q2') return renderRadioGroup('q2', 'Pentru câți colegi ai în vedere echiparea, în perioada următoare?', TEAM_SIZES);
+      if (stepId === 'q2')
+        return renderRadioGroup(
+          'q2',
+          'Pentru câți colegi ai în vedere echiparea, în perioada următoare?',
+          TEAM_SIZES,
+          undefined,
+          smallTeamNote,
+        );
       if (stepId === 'q3') return renderRadioGroup('q3', 'În ce domeniu lucrează echipa ta, în principal?', DOMAINS);
       if (stepId === 'q4')
         return renderMultiSelect(
@@ -378,13 +435,15 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           { label: 'Altceva', hasOther: true },
         ]);
     } else {
-      if (stepId === 'q1') return renderRadioGroup('q1', 'Pentru câți colegi ai nevoie de echipamente acum?', TEAM_SIZES);
+      if (stepId === 'q1')
+        return renderRadioGroup('q1', 'Pentru câți colegi ai nevoie de echipamente acum?', TEAM_SIZES, undefined, smallTeamNote);
       if (stepId === 'q2') return renderRadioGroup('q2', 'În ce domeniu lucrează echipa ta, în principal?', DOMAINS);
       if (stepId === 'q3')
         return renderMultiSelect('q3', 'Ce produse ai în vedere?', [
           { label: 'Încălțăminte de protecție' },
           { label: 'Îmbrăcăminte de lucru' },
-          { label: 'Mănuși / căști / ochelari / alte echipamente SSM' },
+          { label: SSM_OPTION },
+          { label: HEIGHT_OPTION },
           { label: 'Echipamente reflectorizante / hi-vis' },
           { label: 'Echipamente specializate' },
           { label: 'Nu sunt sigur, am nevoie de recomandări' },
@@ -438,14 +497,15 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       ref={containerRef}
       className="max-w-xl mx-auto w-full bg-[#111] rounded-[8px] border border-white/5 p-6 md:p-8 shadow-2xl relative overflow-hidden scroll-mt-28"
     >
-      {product && (
+      {(product || category) && (
         <div className="mb-8 flex items-center justify-between gap-3 rounded-md border border-yp-yellow/30 bg-yp-yellow/5 px-4 py-3">
           <p className="text-sm text-neutral-300">
-            Ceri ofertă pentru: <span className="text-white font-medium">{products[product]}</span>
+            Ceri ofertă pentru:{' '}
+            <span className="text-white font-medium">{product ? products[product] : quoteCategoryLabel(category)}</span>
           </p>
           <button
             type="button"
-            onClick={() => setProduct(null)}
+            onClick={() => (product ? setProduct(null) : setCategory(null))}
             className="shrink-0 min-h-[44px] min-w-[44px] text-neutral-400 hover:text-white text-sm underline"
           >
             Scoate

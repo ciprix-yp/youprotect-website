@@ -1,6 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
+import { quoteCategoryLabel } from '../src/lib/quote-categories.js';
 
 export const MAX_BODY_BYTES = 20_000;
 const MAX_ANSWER_LENGTH = 300;
@@ -91,6 +92,10 @@ export function parseLead(payload) {
       answer: other ? `${answer} (Specificat: ${other})` : answer,
     });
   }
+  // Categoria din /cere-oferta/?categorie=<slug> (cardurile de pe homepage). Doar slug-uri din listă.
+  const category = intent === 'quote' ? quoteCategoryLabel(data.categorie) : null;
+  if (category) answers.unshift({ question: 'categorie', label: 'Categoria aleasă pe site', answer: category });
+
   const productSlug = normalizeString(data.produs, 120);
   const product = productSlug && PRODUCT_SLUG_REGEX.test(productSlug) ? productSlug : null;
 

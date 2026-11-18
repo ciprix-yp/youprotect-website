@@ -1,0 +1,12 @@
+# Suprimări pentru osv-scanner (jobul `dependencies` din .github/workflows/security.yml).
+# Fiecare intrare are un motiv și o dată de expirare: după ea, scanarea pică din nou și o reevaluăm.
+
+[[IgnoredVulns]]
+id = "GHSA-fc5q-39xc-vjpf"
+ignoreUntil = 2026-12-18
+reason = """
+picomatch <= 4.0.7: ReDoS când atacatorul controlează pattern-ul glob (ex. +(*)). Fără versiune reparată la
+18.11.2026. Aici picomatch rulează doar la build (astro, vite, tailwindcss/chokidar, unstorage/anymatch), cu
+pattern-uri scrise de noi în cod. Site-ul publicat e static, iar Pages Functions (functions/, server/) nu îl
+importă, deci nicio intrare de la vizitatori nu ajunge la el. La expirare: actualizează picomatch dacă există fix.
+"""
