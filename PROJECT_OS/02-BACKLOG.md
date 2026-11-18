@@ -246,6 +246,24 @@ Format task:
     formularul și automatizăm (cu `structured` și slug-uri stabile, convenite cu Prospector). Pe 18.11.2026 s-a adăugat
     o singură întrebare: personalizarea cu logo (D-2026-11-18-05).
 
+### PERF-001
+- Status: `IN_PROGRESS`
+- Owner: `Claude`
+- Scope: Greutatea paginilor pe telefon. Măsurat pe 18.11.2026, cu cache gol: homepage 5,1 MB (4,75 MB imagini),
+  `/cum-lucram/` 3,5 MB, `/despre-noi/` 1,2 MB, catalogul 1,7 MB.
+- Făcut pe 18.11.2026: imaginile de pe homepage, `/cum-lucram/`, `/despre-noi/`, logo-uri și hero trecute pe WebP la
+  mărimea afișată; încărcare întârziată sub primul ecran; 3 imagini nefolosite șterse; adresele vechi au redirect 301;
+  `tests/image-weight.test.mjs` oprește orice imagine din `public/` peste 250 KB.
+- Rămâne: miniaturi mai mici pentru cardurile din catalog (pozele de produs de 1100 px, ~100 KB fiecare, se afișează la
+  ~300 px).
+
+### SEO-003 / GEO / mesaje de conversie
+- Status: `TODO`
+- Owner: `Claude` + `User` (decizii de mesaj)
+- Scope: La final, după partea tehnică (cererea lui Ciprian, 18.11.2026): SEO, GEO (vizibilitate în răspunsurile
+  AI și local) și mesajele care ajută conversia. Textul homepage-ului e lung și abstract în a doua jumătate (WP-005).
+- Next action: audit pornind de la Search Console și GA4, după 2–4 săptămâni de date.
+
 ---
 
 ## Next Sprint (S2)
