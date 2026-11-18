@@ -1,0 +1,27 @@
+# Lunar: pornește un build nou al site-ului pe Cloudflare Pages, ca să preia recenziile noi de 4–5 stele de pe Google
+# (scripts/fetch-google-reviews.mjs rulează înainte de fiecare build). Secretul CF_PAGES_DEPLOY_HOOK e URL-ul unui
+# deploy hook din Cloudflare Pages → Settings → Builds → Deploy hooks (ramura main).
+name: recenzii-lunar
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # pe 1 ale lunii, 06:00 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Pornește build-ul Cloudflare Pages
+        env:
+          HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::Lipsește secretul CF_PAGES_DEPLOY_HOOK; recenziile nu s-au reîmprospătat."
+            exit 0
+          fi
+          curl --fail --silent --show-error --max-time 30 -X POST "$HOOK" -o /dev/null
+          echo "Build pornit; recenziile se preiau la build."
