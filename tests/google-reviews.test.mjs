@@ -33,6 +33,10 @@ test('recenzii: nume', () => {
   assert.equal(shortName('Camelia Laza'), 'Camelia L.');
   assert.equal(shortName('Mihai'), 'Mihai');
   assert.equal(shortName(''), 'Client Google');
+  // Pe 18.11.2026 site-ul afișa „novak C.” și „guler V.”: numele vin de la Google cum le-a scris omul.
+  assert.equal(shortName('novak csaba'), 'Novak C.');
+  assert.equal(shortName('ștefan ionescu'), 'Ștefan I.');
+  assert.equal(shortName('guler'), 'Guler');
 });
 
 test('recenzii: fără dubluri față de cele din repo', () => {

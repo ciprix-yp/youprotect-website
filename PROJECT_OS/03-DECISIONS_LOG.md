@@ -261,6 +261,8 @@
   - Field mask-ul cere doar câmpurile afișate (`reviews.name`, `rating`, `text`, `originalText`, `authorAttribution.displayName`, `publishTime`), fără poze.
   - Places API răspunde 403 (PERMISSION_DENIED) cât timp facturarea Google e în reactivare. Build-ul continuă cu recenziile din repo, iar jurnalul de build arată codul de eroare Google, fără cheie.
   - Hook-ul nu l-a putut copia Claude în GitHub: garda locală confundă `gh secret set` cu `secret set`. Îl pune Ciprian cu o comandă.
+- Funcționează în producție (verificat pe youprotect.ro, 18.11.2026, seara): homepage-ul are 9 recenzii, 5 din repo și 4 preluate de la Google (cea mai nouă din noiembrie 2026). Build-ul Cloudflare vede cheia, iar Places răspunde. Secretul GitHub `CF_PAGES_DEPLOY_HOOK` e pus de Ciprian.
+- Numele vin de la Google cum le-a scris omul („novak C.”); de la 18.11.2026 prima literă se face mare.
 
 ## D-2026-11-18-05
 - Context: decizia lui Ciprian, transmisă pe 18.11.2026 de sesiunea Prospector (projects-f7). În „Cere ofertă” intră o singură întrebare nouă, despre personalizare. Fără termen nou, mărimi, buget sau alte câmpuri. Modulul de ofertare e amânat până e gata prospectarea.
