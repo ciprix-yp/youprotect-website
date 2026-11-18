@@ -228,6 +228,13 @@
   5. **Produsele personalizate nu se pot revinde.** Expunerea e limitată la comanda de test (3–5 oameni pe rol). Comenzile ulterioare nu intră în garanție.
   6. **Cereri târzii.** Cererea se face în scris, în cel mult 14 zile de la evaluarea finală. Rambursarea se face în cel mult 14 zile de la primirea produselor.
 - Propuse de Claude și confirmate de Ciprian pe 18.11.2026: cele două termene de 14 zile și grupul de control. Dreptul de a folosi rezultatele anonim, ca studiu de caz, intră în protocolul semnat, nu pe site.
+- Confirmate de Ciprian pe 18.11.2026, odată cu modelul de protocol (Claude Docs, „Protocol de testare — Testare fără riscuri”):
+  - evaluarea și rambursarea se fac pe fiecare rol testat;
+  - uzura se notează pe o scală 0–4, cu formula duratei de viață și un plafon stabilit în protocol;
+  - verificările se fac la ziua 0, 30, 60 și 90;
+  - participanții apar în rapoarte cu un cod; clientul anunță în 5 zile lucrătoare dacă cineva iese din testare;
+  - studiul de caz are 3 opțiuni în protocol: anonim, cu numele după aprobare, sau deloc.
+- Pe site: pagina, RISK_FREE_TESTING și `/cum-lucram/` spun acum „pe fiecare rol”; pagina dă intervalele de verificare și codurile pentru participanți.
 
 ## D-2026-11-18-04
 - Context:
