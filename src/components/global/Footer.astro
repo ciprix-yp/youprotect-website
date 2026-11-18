@@ -1,5 +1,5 @@
 ---
-import { SITE } from "../../lib/site";
+import { SITE, LEGAL_EUID } from "../../lib/site";
 const currentYear = new Date().getFullYear();
 // Pe paginile cu formular, butonul WhatsApp acoperea opțiunile de răspuns (un tap pe el deschidea WhatsApp în loc
 // să bifeze). Acolo formularul are deja telefonul ca alternativă, așa că butonul nu apare.
@@ -180,7 +180,7 @@ const showWhatsApp = !["/cere-oferta", "/programeaza-discutie"].some((p) => Astr
           <span class="hidden md:inline">•</span>
           <span>{SITE.legal.regCom}</span>
           <span class="hidden md:inline">•</span>
-          <span>EUID: {SITE.legal.euid}</span>
+          <span>EUID: {LEGAL_EUID}</span>
         </div>
       </div>
     </div>

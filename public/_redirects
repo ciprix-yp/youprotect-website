@@ -2,26 +2,42 @@
 # Cloudflare Pages aplică acest fișier pe domeniul apex (youprotect.ro).
 # Format: <from> <to> <status>
 
-/cine-suntem        /despre-noi            301
-/despre             /despre-noi            301
-/servicii           /cum-lucram            301
-/contact            /programeaza-discutie  301
-/blog               /                      301
-/blog/*             /                      301
-/magazin            /produse               301
-/shop               /produse               301
-/produsele-noastre  /produse               301
+# Țintele au „/” la final, ca Google să facă un singur salt (fără el, Cloudflare mai adaugă un 308).
+/cine-suntem        /despre-noi/            301
+/despre             /despre-noi/            301
+/servicii           /cum-lucram/            301
+/contact            /programeaza-discutie/  301
+/blog               /                       301
+/blog/*             /                       301
+/magazin            /produse/               301
+/shop               /produse/               301
+/produsele-noastre  /produse/               301
+
+# Adrese vechi (Wix și magazinul Shopify) care încă apar în Search Console, verificate pe 18.11.2026.
+/clientul-ideal            /industrii/                    301
+/resurse-gratuite          /calculator-cost-echipamente/  301
+/polita-confidentialitate  /politica-confidentialitate/   301
+/blank                     /                              301
+/post/*                    /                              301
+/products/*                /produse/                      301
+/collections/*             /produse/                      301
 
 # Produsele demo din Directus (scos din uz pe 11.11.2026) -> catalog.
-/produse/antifoane-externe-x5         /produse  301
-/produse/casc-ventilat-v-gard         /produse  301
-/produse/jachet-hi-vis-storm          /produse  301
-/produse/mnui-impact-grip-pro         /produse  301
-/produse/pantof-protecie-carbon-s3    /produse  301
-/produse/softshell-industrial-pro-x   /produse  301
+/produse/antifoane-externe-x5    /produse/  301
+/produse/antifoane-externe-x5/   /produse/  301
+/produse/casc-ventilat-v-gard    /produse/  301
+/produse/casc-ventilat-v-gard/   /produse/  301
+/produse/jachet-hi-vis-storm    /produse/  301
+/produse/jachet-hi-vis-storm/   /produse/  301
+/produse/mnui-impact-grip-pro    /produse/  301
+/produse/mnui-impact-grip-pro/   /produse/  301
+/produse/pantof-protecie-carbon-s3    /produse/  301
+/produse/pantof-protecie-carbon-s3/   /produse/  301
+/produse/softshell-industrial-pro-x    /produse/  301
+/produse/softshell-industrial-pro-x/   /produse/  301
 
 # Calculatorul de cost s-a mutat de pe landing page-ul neindexat pe o pagină publică (18.11.2026).
-/lp/tco-calculator   /calculator-cost-echipamente  301
+/lp/tco-calculator   /calculator-cost-echipamente/ 301
 /lp/tco-calculator/  /calculator-cost-echipamente/ 301
 
 # Imaginile grele au trecut pe WebP la mărimea afișată (18.11.2026); adresele vechi duc la fișierele noi.

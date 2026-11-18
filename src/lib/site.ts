@@ -11,11 +11,12 @@ export const SITE = {
   email: "office@youprotect.ro",
   // Datele firmei, folosite în footer și în paginile legale.
   // CUI confirmat de Ciprian pe 16.11.2026 (cel de pe facturi); footer-ul vechi avea greșit RO 46387843.
+  // Nr. Reg. Com. verificat la ANAF pe 18.11.2026 (site-ul avea greșit J30/624/2022).
+  // Adresa: Ciprian confirmă Careiului 45 (Parc Industrial Areli); ANAF arăta încă nr. 11 ca sediu social pe 18.11.2026.
   legal: {
     name: "You Protect SRL",
     cui: "RO46294850",
-    regCom: "J30/624/2022",
-    euid: "ROONRC.J30/624/2022",
+    regCom: "J30/646/2022",
   },
   address: {
     streetAddress: "Strada Careiului nr. 45, Parc Industrial Areli",
@@ -34,6 +35,9 @@ export const SITE = {
     closes: "17:00",
   },
 } as const;
+
+// EUID = prefixul ONRC + numărul de înregistrare.
+export const LEGAL_EUID = `ROONRC.${SITE.legal.regCom}`;
 
 // Oferta „testare fără riscuri”, afișată pe fișele de produs. Confirmată de You Protect pe 11.11.2026; condițiile
 // (D-2026-11-18-03) sunt pe /testare-fara-riscuri/: banii se întorc dacă produsele NU ies mai eficiente financiar
