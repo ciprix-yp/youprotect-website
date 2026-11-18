@@ -105,6 +105,15 @@ test('parseLead: validează și ignoră câmpurile necunoscute', () => {
   assert.equal(parseLead({ ...valid, data: { ...valid.data, cui: '' } }).lead.cui, null);
 });
 
+test('parseLead: categoria de pe homepage, doar din listă și doar la cererea de ofertă', () => {
+  const withCategory = (intent, categorie) => parseLead({ ...valid, intent, data: { ...valid.data, categorie } });
+  const r = withCategory('quote', 'lucru-la-inaltime');
+  assert.deepEqual(r.lead.answers[0], { question: 'categorie', label: 'Categoria aleasă pe site', answer: 'Lucru la înălțime' });
+  assert.equal(withCategory('quote', '<script>').lead.answers[0].question, 'q1');
+  assert.equal(withCategory('quote', 'constructor').lead.answers[0].question, 'q1'); // nu din prototipul obiectului
+  assert.equal(withCategory('consultation', 'manusi').lead.answers.some((a) => a.question === 'categorie'), false);
+});
+
 test('email: doar text, fără CR/LF în subiect, cu tag website', () => {
   const lead = { ...parseLead({ ...valid, data: { ...valid.data, company: 'Rău\r\nBcc: x@y.ro' } }).lead,
     id: 'id', createdAt: '2026-11-16T00:00:00Z', environment: 'production', sourceUrl: null };

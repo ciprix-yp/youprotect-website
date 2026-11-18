@@ -98,37 +98,52 @@ function formatDate(dateStr: string | null): string {
     </div>
   </div>
 
-  <!-- Dots -->
-  <!-- Butonul are 24×24px (ținta tactilă minimă, WCAG 2.5.8); punctul vizibil e span-ul din el. -->
-  <div class="flex justify-center gap-1 mt-8" role="tablist" aria-label="Navigare testimoniale">
-    {testimonials.map((_, i) => (
-      <button
-        class="carousel-dot h-6 min-w-6 px-0.5 flex items-center justify-center"
-        role="tab"
-        aria-label={`Testimonial ${i + 1}`}
-        aria-selected={i === 0 ? 'true' : 'false'}
-        data-index={String(i)}
-      >
-        <span class={`h-2 rounded-full transition-all duration-300 ${i === 0 ? 'w-6 bg-yp-yellow' : 'w-2 bg-white/20 hover:bg-white/40'}`}></span>
-      </button>
-    ))}
+  <!-- Pauză + puncte. Butoanele au cel puțin 24×24px (ținta tactilă minimă, WCAG 2.5.8). -->
+  <!-- Derularea automată are buton de pauză (WCAG 2.2.2): se oprește doar la cererea vizitatorului, la mouse peste
+       recenzii sau cât timp focusul de la tastatură e în ele. -->
+  <div class="flex items-center justify-center gap-3 mt-8">
+    <button
+      type="button"
+      class="carousel-pause w-11 h-11 flex items-center justify-center rounded-[4px] border border-white/15 text-neutral-300 hover:text-yp-yellow hover:border-yp-yellow transition-colors"
+      aria-label="Oprește derularea recenziilor"
+    >
+      <svg class="icon-pause w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
+      <svg class="icon-play w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="flex gap-1" role="tablist" aria-label="Navigare testimoniale">
+      {testimonials.map((_, i) => (
+        <button
+          class="carousel-dot h-6 min-w-6 px-0.5 flex items-center justify-center"
+          role="tab"
+          aria-label={`Testimonial ${i + 1}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          data-index={String(i)}
+        >
+          <span class={`h-2 rounded-full transition-all duration-300 ${i === 0 ? 'w-6 bg-yp-yellow' : 'w-2 bg-white/20 hover:bg-white/40'}`}></span>
+        </button>
+      ))}
+    </div>
   </div>
 </div>
 
 <script>
+  // Carusel în buclă: N clone înainte și N după originale; după animație, poziția „sare” fără animație pe originalul
+  // echivalent, ca derularea să nu se termine niciodată.
   const container = document.querySelector<HTMLElement>('.testimonials-carousel');
   if (!container) throw new Error('No carousel');
 
-  const outer   = container.querySelector<HTMLElement>('.carousel-outer')!;
-  const track   = container.querySelector<HTMLElement>('.carousel-track')!;
-  const prevBtn = container.querySelector<HTMLButtonElement>('.carousel-prev');
-  const nextBtn = container.querySelector<HTMLButtonElement>('.carousel-next');
-  const dots    = Array.from(container.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
+  const outer    = container.querySelector<HTMLElement>('.carousel-outer')!;
+  const track    = container.querySelector<HTMLElement>('.carousel-track')!;
+  const prevBtn  = container.querySelector<HTMLButtonElement>('.carousel-prev');
+  const nextBtn  = container.querySelector<HTMLButtonElement>('.carousel-next');
+  const pauseBtn = container.querySelector<HTMLButtonElement>('.carousel-pause')!;
+  const dots     = Array.from(container.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  const INTERVAL_MS = 5000;
   const originals = Array.from(track.querySelectorAll<HTMLElement>('.carousel-card'));
   const N = originals.length;
 
-  // Prepend N leading clones + append N trailing clones for infinite loop
   for (let i = N - 1; i >= 0; i--) {
     const c = originals[i].cloneNode(true) as HTMLElement;
     c.setAttribute('aria-hidden', 'true');
@@ -142,10 +157,9 @@ function formatDate(dateStr: string | null): string {
 
   // DOM order: [lc0..lc(N-1)] [orig0..orig(N-1)] [tc0..tc(N-1)]
   // indices:    0 .. N-1        N .. 2N-1           2N .. 3N-1
-
-  let idx = N; // start at first original
+  let idx = N;
   let busy = false;
-  let timer: ReturnType<typeof setInterval> | null = null;
+  let settleTimer: number | undefined;
 
   function ipv(): number {
     return window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
@@ -166,43 +180,87 @@ function formatDate(dateStr: string | null): string {
     track.querySelectorAll<HTMLElement>('.carousel-card').forEach(c => (c.style.width = w + 'px'));
   }
 
-  function render(animated: boolean) {
-    track.style.transition = animated
-      ? 'transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-      : 'none';
+  /** Întoarce true dacă mutarea e animată (atunci se termină la transitionend). */
+  function render(animated: boolean): boolean {
+    const anim = animated && !reduceMotion.matches;
+    track.style.transition = anim ? 'transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
     track.style.transform = `translateX(-${idx * cardWidth()}px)`;
+    return anim;
   }
 
   function syncDots() {
     const active = ((idx % N) + N) % N;
     dots.forEach((d, i) => {
       const dot = d.firstElementChild as HTMLElement;
-      dot.classList.toggle('w-6',       i === active);
+      dot.classList.toggle('w-6',          i === active);
       dot.classList.toggle('bg-yp-yellow', i === active);
-      dot.classList.toggle('w-2',       i !== active);
+      dot.classList.toggle('w-2',          i !== active);
       dot.classList.toggle('bg-white/20',  i !== active);
       d.setAttribute('aria-selected', String(i === active));
     });
   }
 
-  function step(dir: 1 | -1) {
-    if (busy) return;
-    busy = true;
-    idx += dir;
-    render(true);
-    syncDots();
-  }
-
-  // Teleport after animation completes
-  track.addEventListener('transitionend', () => {
+  // După fiecare mutare: din zona de clone, sare pe originalul echivalent.
+  function settle() {
+    clearTimeout(settleTimer);
     busy = false;
-    const v = ipv();
     if (idx >= 2 * N) {
       idx -= N; render(false);
-    } else if (idx <= N - v) {
+    } else if (idx <= N - ipv()) {
       idx += N; render(false);
     }
+  }
+
+  function go(target: number) {
+    if (busy) return;
+    idx = target;
+    syncDots();
+    if (render(true)) {
+      busy = true;
+      // Plasă de siguranță: dacă transitionend nu vine (tab în fundal, animație întreruptă), caruselul nu rămâne blocat.
+      settleTimer = window.setTimeout(settle, 800);
+    } else {
+      settle();
+    }
+  }
+
+  track.addEventListener('transitionend', (e) => {
+    if (e.target === track && e.propertyName === 'transform') settle();
   });
+
+  // Derulare automată, fără oprire. Pauză doar când: vizitatorul apasă pauză, mouse-ul e peste recenzii,
+  // focusul de la tastatură e în carusel sau tab-ul nu e vizibil. O atingere pe mobil nu o mai oprește.
+  let paused = false;
+  let hovering = false;
+  let keyboardFocus = false;
+  let timer: number | undefined;
+
+  function schedule() {
+    clearInterval(timer);
+    timer = undefined;
+    if (paused || hovering || keyboardFocus || document.hidden) return;
+    timer = window.setInterval(() => go(idx + 1), INTERVAL_MS);
+  }
+
+  function setPaused(value: boolean) {
+    paused = value;
+    pauseBtn.setAttribute('aria-label', paused ? 'Pornește derularea recenziilor' : 'Oprește derularea recenziilor');
+    pauseBtn.querySelector('.icon-pause')?.classList.toggle('hidden', paused);
+    pauseBtn.querySelector('.icon-play')?.classList.toggle('hidden', !paused);
+    schedule();
+  }
+
+  container.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hovering = true; schedule(); } });
+  container.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hovering = false; schedule(); } });
+  container.addEventListener('focusin', (e) => {
+    keyboardFocus = (e.target as HTMLElement).matches(':focus-visible');
+    schedule();
+  });
+  container.addEventListener('focusout', (e) => {
+    if (!container.contains(e.relatedTarget as Node | null)) { keyboardFocus = false; schedule(); }
+  });
+  document.addEventListener('visibilitychange', schedule);
+  pauseBtn.addEventListener('click', () => setPaused(!paused));
 
   // Init
   setWidths();
@@ -213,39 +271,24 @@ function formatDate(dateStr: string | null): string {
     container.style.opacity = '1';
   });
 
-  // Controls
-  prevBtn?.addEventListener('click', () => step(-1));
-  nextBtn?.addEventListener('click', () => step(1));
+  // Controale manuale: după fiecare, intervalul o ia de la capăt.
+  prevBtn?.addEventListener('click', () => { go(idx - 1); schedule(); });
+  nextBtn?.addEventListener('click', () => { go(idx + 1); schedule(); });
+  dots.forEach((d, i) => d.addEventListener('click', () => { go(N + i); schedule(); }));
 
-  dots.forEach((d, i) => {
-    d.addEventListener('click', () => {
-      if (busy) return;
-      busy = true;
-      idx = N + i;
-      render(true);
-      syncDots();
-    });
-  });
-
-  // Resize
   let resizeT: ReturnType<typeof setTimeout>;
   window.addEventListener('resize', () => {
     clearTimeout(resizeT);
     resizeT = setTimeout(() => { setWidths(); render(false); }, 100);
   });
 
-  // Autoplay — pause on hover
-  const start = () => { timer = setInterval(() => step(1), 5000); };
-  const stop  = () => { if (timer) clearInterval(timer); };
-  container.addEventListener('mouseenter', stop);
-  container.addEventListener('mouseleave', start);
-  start();
-
-  // Touch swipe
+  // Swipe pe mobil
   let tx = 0;
   outer.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-  outer.addEventListener('touchend',   e => {
+  outer.addEventListener('touchend', e => {
     const d = tx - e.changedTouches[0].clientX;
-    if (Math.abs(d) > 50) step(d > 0 ? 1 : -1);
+    if (Math.abs(d) > 50) { go(idx + (d > 0 ? 1 : -1)); schedule(); }
   }, { passive: true });
+
+  schedule();
 </script>

@@ -222,15 +222,24 @@ Format task:
 - Rezultat: cele 5 recenzii Google de pe site-ul vechi sunt din nou pe homepage (D-2026-11-17-02). Paginile cu formular au mai puțin spațiu gol sus pe mobil.
 
 ### CONV-003
-- Status: `BLOCKED` (decizii Ciprian)
-- Owner: `User` (decizii) + `Claude` (implementare)
-- Scope: Ce a rămas din auditul de conversie din 17.11.2026 și cere decizii:
-  - **Categorii:** homepage-ul promite mănuși, căști, ochelari și lucru la înălțime, dar catalogul are doar haine și încălțăminte.
-  - **Prima întrebare din formularul de ofertă** pornește de la 5 persoane.
-  - **Măsurare:** site-ul nu are analytics, deci nu avem cifre de conversie.
-  - **Titlul principal** promite „cresc profitabilitatea”, ceea ce nu putem dovedi.
-  - **Condițiile garanției de 90 de zile** nu sunt scrise nicăieri. În plus, homepage-ul spune „testare… unde proiectul o permite”.
-  - **Lungimea formularelor:** 8 și 7 pași.
+- Status: `IN_PROGRESS` (decizii primite de la Ciprian pe 18.11.2026)
+- Owner: `Claude` (implementare) + `User` (garanție, cont Google)
+- Scope: Ce a rămas din auditul de conversie din 17.11.2026:
+  - **Categorii** — `DONE`. Mănuși, căști, ochelari și lucru la înălțime se vând. Cardurile de pe homepage duc la
+    `/cere-oferta/?categorie=<slug>`, iar formularul pornește cu categoria bifată. Slug-urile sunt în
+    `src/lib/quote-categories.js`, iar serverul o adaugă la răspunsuri ca „Categoria aleasă pe site”.
+  - **Echipe de 1–4 persoane** — `DONE`. Nu intră în formular. Sub întrebarea despre mărimea echipei, formularul le
+    trimite pe WhatsApp.
+  - **Recenzii în buclă** — `DONE`. Caruselul derulează continuu, iar pe mobil nu se mai oprește după o atingere.
+    Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele așteaptă accesul la Google.
+  - **Măsurare** — `TODO`. Cloudflare Web Analytics, plus Google Analytics 4 cu consimțământ. Politica de
+    confidențialitate și cea de cookies trebuie actualizate.
+  - **Titlul principal și calculatorul** — `TODO`. Titlul trebuie să fie bun pentru SEO și adevărat. Calculatorul
+    (`/lp/tco-calculator/`) devine lead magnet. Cererile lui trebuie să ajungă în D1, nu în webhook-ul n8n vechi.
+  - **Condițiile garanției de 90 de zile** — `BLOCKED`. Le scriem după modelul „money back guaranteed”, cu decizii
+    de la Ciprian.
+  - **Formularul de ofertă** — `TODO`. Alimentează modulul de ofertare din Prospector. La firmele de peste 15–20 de
+    oameni, prima ofertă e lead magnet: clientul vede și atinge produsul, apoi primește oferta.
 
 ---
 
