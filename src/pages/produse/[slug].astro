@@ -1,22 +1,61 @@
 ---
-// Fișa publică de produs. Se generează doar pentru produsele cu status „published”.
+// /produse/<slug>/: fișa unui produs publicat sau pagina unei categorii (src/lib/catalog-categories.ts).
+// Produsele și categoriile împart același prefix, ca adresele să fie cele căutate („/produse/incaltaminte-de-protectie/”);
+// build-ul se oprește dacă un slug de categorie e luat deja de un produs.
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductDetail from '../../components/products/ProductDetail.astro';
+import CategoryLanding from '../../components/products/CategoryLanding.astro';
+import { activeCategoryPages, categoryDescription, type CategoryPage } from '../../lib/catalog-categories';
+import { cardSrc } from '../../lib/catalog-images.js';
 
 export async function getStaticPaths() {
   const products = await getCollection('products', ({ data }) => data.status === 'published');
-  return products.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const productSlugs = new Set(products.map((p) => p.id));
+  const pages = activeCategoryPages(products.map((p) => p.data));
+  for (const page of pages) {
+    if (productSlugs.has(page.slug)) throw new Error(`Slug-ul de categorie „${page.slug}” e deja al unui produs.`);
+  }
+  return [
+    ...products.map((entry) => ({ params: { slug: entry.id }, props: { kind: 'product' as const, entry } })),
+    ...pages.map((page) => ({
+      params: { slug: page.slug },
+      props: {
+        kind: 'category' as const,
+        page,
+        entries: products.filter((p) => p.data.category === page.key),
+        others: pages.filter((o) => o.key !== page.key),
+      },
+    })),
+  ];
 }
 
-interface Props {
-  entry: CollectionEntry<'products'>;
-}
+type Props =
+  | { kind: 'product'; entry: CollectionEntry<'products'> }
+  | { kind: 'category'; page: CategoryPage; entries: CollectionEntry<'products'>[]; others: CategoryPage[] };
 
-const { entry } = Astro.props;
-const p = entry.data;
+const props = Astro.props;
 ---
 
-<BaseLayout title={p.seo.title} description={p.seo.description} ogType="product" ogImage={p.colours[0].images[0].src}>
-  <ProductDetail entry={entry} />
-</BaseLayout>
+{props.kind === 'product' ? (
+  <BaseLayout
+    title={props.entry.data.seo.title}
+    description={props.entry.data.seo.description}
+    ogType="product"
+    ogImage={props.entry.data.colours[0].images[0].src}
+  >
+    <ProductDetail entry={props.entry} />
+  </BaseLayout>
+) : (
+  <BaseLayout
+    title={props.page.title}
+    description={categoryDescription(
+      props.page,
+      props.entries.length,
+      [...new Set(props.entries.map((e) => e.data.supplier.brand))].sort(),
+    )}
+    ogImage={cardSrc(props.entries[0].data.colours[0].images[0].src)}
+  >
+    <CategoryLanding page={props.page} entries={props.entries} others={props.others} />
+  </BaseLayout>
+)}
