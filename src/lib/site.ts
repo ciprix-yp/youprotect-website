@@ -35,15 +35,17 @@ export const SITE = {
   },
 } as const;
 
-// Oferta „testare fără riscuri”, afișată pe fișele de produs. Confirmată de You Protect pe 11.11.2026.
+// Oferta „testare fără riscuri”, afișată pe fișele de produs. Confirmată de You Protect pe 11.11.2026; condițiile
+// (D-2026-11-18-03) sunt pe /testare-fara-riscuri/: banii se întorc dacă produsele NU ies mai eficiente financiar
+// ȘI clientul nu e mulțumit. Nu scurta textele până la „garanția banilor înapoi” fără condiție.
 // Afișată prin components/global/RiskFreeTesting.astro: caseta (`text`) pe fișele de produs, rândul scurt (`short`)
 // pe homepage, în catalog și pe paginile cu formular.
 export const RISK_FREE_TESTING = {
   title: "Testezi fără riscuri",
-  text: "Înainte de decizia finală, poți testa produsele cu echipa ta, în condiții reale de lucru. Testarea are garanția banilor înapoi în 90 de zile.",
-  short: "Încerci produsele cu echipa ta, în condiții reale de lucru, cu garanția banilor înapoi în 90 de zile.",
-  href: "/cum-lucram/#testare",
-  linkLabel: "Vezi cum lucrăm",
+  text: "Înainte să echipezi toată firma, testezi produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru. Măsurăm împreună cât rezistă și cât te costă pe zi de purtare. Dacă nu ies mai eficiente decât ce folosești acum și nu ești mulțumit, îți dăm banii înapoi integral.",
+  short: "Încerci produsele cu echipa ta 90 de zile și măsurăm împreună costul real. Dacă nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi.",
+  href: "/testare-fara-riscuri/",
+  linkLabel: "Vezi condițiile",
 } as const;
 
 // Profiluri sociale pentru footer + schema `sameAs`.
