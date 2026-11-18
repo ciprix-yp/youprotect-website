@@ -199,6 +199,10 @@
   2. În GA, setează păstrarea datelor la 14 luni; politica spune „cel mult 14 luni”.
   3. Pornește Web Analytics în Cloudflare Pages.
 - După fiecare pas: `ANALYTICS.ga4Id` primește ID-ul, iar `ANALYTICS.cloudflareWebAnalytics` devine `true` după ce beacon-ul apare pe pagina publicată.
+- Pornit pe 18.11.2026:
+  - `ANALYTICS.ga4Id` = `G-TV8YEFYQD5` (proprietatea creată de Ciprian). Verificat în browser: fără acord nu pleacă nicio cerere spre Google; după „Accept” se încarcă gtag; retragerea acordului șterge cookie-urile `_ga`.
+  - `cloudflareWebAnalytics: true`, după ce beacon-ul a apărut pe youprotect.ro (deploy ba108d7). Politica de cookies spune că scriptul vine de la Cloudflare.
+  - Rămâne la Ciprian, opțional: păstrarea datelor în GA la 14 luni (implicit e 2 luni; politica spune „cel mult 14 luni”, deci ambele sunt corecte).
 
 ## D-2026-11-18-03
 - Context: site-ul promitea „garanția banilor înapoi în 90 de zile” fără condiții scrise. Homepage-ul spunea în plus „testare… unde proiectul o permite”.
@@ -245,3 +249,8 @@
   1. Pune cheia Places API (din variabilele n8n `GOOGLE_API_KEY` sau una nouă, restricționată la „Places API (New)”) cu `secret set youprotect-website GOOGLE_PLACES_API_KEY`.
   2. Creează un deploy hook în Cloudflare Pages și pune-l cu `secret set youprotect-website CF_PAGES_DEPLOY_HOOK`.
 - Apoi Claude copiază cheia în Cloudflare Pages (producție) și hook-ul în secretele GitHub, fără să le afișeze.
+- Stare pe 18.11.2026:
+  - Cheia e în Cloudflare Pages, doar pe producție: plafonul proiectului Google e de 30 de cereri pe zi pentru fiecare tip de cerere Places, iar build-urile de preview nu trebuie să-l consume.
+  - Field mask-ul cere doar câmpurile afișate (`reviews.name`, `rating`, `text`, `originalText`, `authorAttribution.displayName`, `publishTime`), fără poze.
+  - Places API răspunde 403 (PERMISSION_DENIED) cât timp facturarea Google e în reactivare. Build-ul continuă cu recenziile din repo, iar jurnalul de build arată codul de eroare Google, fără cheie.
+  - Hook-ul nu l-a putut copia Claude în GitHub: garda locală confundă `gh secret set` cu `secret set`. Îl pune Ciprian cu o comandă.

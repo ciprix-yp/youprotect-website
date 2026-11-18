@@ -42,3 +42,32 @@ test('recenzii: fără dubluri față de cele din repo', () => {
   assert.equal(merged.length, 2);
   assert.equal(merged[0].id, 'vechi');
 });
+
+test('preluare: field mask fără poze, cheia curățată, 403 nu oprește build-ul și nu scrie cheia în jurnal', async () => {
+  const { fetchGoogleReviews, FIELD_MASK } = await import('../scripts/fetch-google-reviews.mjs');
+  assert.ok(!/photo/i.test(FIELD_MASK));
+  assert.match(FIELD_MASK, /reviews\.rating/);
+
+  let seen;
+  const forbidden = async (url, init) => {
+    seen = init.headers;
+    return new Response(
+      JSON.stringify({ error: { status: 'PERMISSION_DENIED', message: 'text liber', details: [{ reason: 'BILLING_DISABLED' }] } }),
+      { status: 403 },
+    );
+  };
+  const log = await fetchGoogleReviews({ GOOGLE_PLACES_API_KEY: ' test-key-123\n' }, forbidden);
+  assert.equal(seen['X-Goog-Api-Key'], 'test-key-123');
+  assert.equal(seen['X-Goog-FieldMask'], FIELD_MASK);
+  assert.match(log, /HTTP 403, PERMISSION_DENIED, BILLING_DISABLED/);
+  assert.match(log, /rămân recenziile/);
+  assert.ok(!log.includes('text liber'));
+
+  const leaky = async () => {
+    throw new TypeError('invalid header value test-key-123');
+  };
+  const log2 = await fetchGoogleReviews({ GOOGLE_PLACES_API_KEY: 'test-key-123' }, leaky);
+  assert.ok(!log2.includes('test-key-123'));
+
+  assert.match(await fetchGoogleReviews({}), /lipsește/);
+});

@@ -231,14 +231,15 @@ Format task:
   - **Echipe de 1–4 persoane** — `DONE`. Nu intră în formular. Sub întrebarea despre mărimea echipei, formularul le
     trimite pe WhatsApp.
   - **Recenzii în buclă** — `DONE`. Caruselul derulează continuu, iar pe mobil nu se mai oprește după o atingere.
-    Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele e gata în cod (D-2026-11-18-04) și
-    așteaptă cheia Places API și deploy hook-ul de la Ciprian.
-  - **Măsurare** — `IN_PROGRESS`. Codul e gata (D-2026-11-18-02): banner, GA4 doar cu acord, evenimente, politici
-    generate din `ANALYTICS`. Așteaptă ID-ul GA4 de la Ciprian și pornirea Web Analytics în Cloudflare Pages.
+    Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele e gata (D-2026-11-18-04). Cheia
+    Places API e în Cloudflare Pages (producție). Rămân: secretul GitHub `CF_PAGES_DEPLOY_HOOK`, pus de Ciprian, și
+    reactivarea facturării Google (până atunci Places răspunde 403, iar site-ul rămâne pe recenziile din repo).
+  - **Măsurare** — `DONE`. GA4 `G-TV8YEFYQD5`, încărcat doar după acord, și Cloudflare Web Analytics, fără cookie-uri
+    (D-2026-11-18-02). Politicile de cookies și de confidențialitate le descriu pe amândouă.
   - **Titlul principal și calculatorul** — `DONE`. Detalii în D-2026-11-18-01. Cererile din calculator intră ca
     cerere de ofertă cu „Sursa: Calculatorul de cost”.
-  - **Testare fără riscuri** — `REVIEW`. Pagina `/testare-fara-riscuri/` și textele scurte sunt aliniate cu regulile
-    lui Ciprian (D-2026-11-18-03). Se publică după ce aprobă textul.
+  - **Testare fără riscuri** — `DONE`. Pagina `/testare-fara-riscuri/` e publicată, aprobată de Ciprian pe
+    18.11.2026 (D-2026-11-18-03).
   - **Formularul de ofertă** — `DONE` pentru acum. Rămâne pe `/cere-oferta/`, iar cererea ajunge pe email
     (office@) și în CRM. Modulul de ofertare din Prospector nu se construiește acum; după ce există, conectăm
     formularul și automatizăm (cu `structured` și slug-uri stabile, convenite cu Prospector).
