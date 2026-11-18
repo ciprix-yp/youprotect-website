@@ -7,12 +7,13 @@ import { createHash } from 'node:crypto';
 export const MIN_RATING = 4;
 export const YOU_PROTECT_PLACE_ID = 'ChIJzczeE0MFOEcRMBTA9E1R9eY';
 
-/** „Camelia Laza” -> „Camelia L.”; un singur nume rămâne cum e. */
+/** „Camelia Laza” -> „Camelia L.”; un singur nume rămâne cum e. Prima literă devine mare („novak c” -> „Novak C.”). */
 export function shortName(displayName) {
   const parts = String(displayName ?? '').trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return 'Client Google';
-  if (parts.length === 1) return parts[0];
-  return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
+  const first = parts[0].charAt(0).toLocaleUpperCase('ro-RO') + parts[0].slice(1);
+  if (parts.length === 1) return first;
+  return `${first} ${parts[parts.length - 1].charAt(0).toLocaleUpperCase('ro-RO')}.`;
 }
 
 const bucharestDate = (iso) => {
