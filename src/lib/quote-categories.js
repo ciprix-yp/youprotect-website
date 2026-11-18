@@ -8,6 +8,11 @@ export const QUOTE_CATEGORIES = {
   'lucru-la-inaltime': 'Lucru la înălțime',
 };
 
+// Întrebarea despre personalizare din „Cere ofertă” (decizia lui Ciprian, 18.11.2026, convenită cu Prospector).
+// Valorile sunt fixe: CRM-ul le primește în `answers` ca {question: "personalizare", label: "Personalizare cu logo"},
+// iar în `structured`, când îl facem, ca personalizare: "da" | "nu" | "nu_stiu".
+export const PERSONALIZATION_ANSWERS = ['Da', 'Nu', 'Nu știu încă'];
+
 /** Numele categoriei pentru un slug din URL, sau null dacă slug-ul nu e în listă. */
 export function quoteCategoryLabel(slug) {
   return typeof slug === 'string' && Object.hasOwn(QUOTE_CATEGORIES, slug) ? QUOTE_CATEGORIES[slug] : null;

@@ -242,7 +242,8 @@ Format task:
     18.11.2026 (D-2026-11-18-03).
   - **Formularul de ofertă** — `DONE` pentru acum. Rămâne pe `/cere-oferta/`, iar cererea ajunge pe email
     (office@) și în CRM. Modulul de ofertare din Prospector nu se construiește acum; după ce există, conectăm
-    formularul și automatizăm (cu `structured` și slug-uri stabile, convenite cu Prospector).
+    formularul și automatizăm (cu `structured` și slug-uri stabile, convenite cu Prospector). Pe 18.11.2026 s-a adăugat
+    o singură întrebare: personalizarea cu logo (D-2026-11-18-05).
 
 ---
 
