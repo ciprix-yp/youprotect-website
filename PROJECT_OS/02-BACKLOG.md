@@ -279,8 +279,14 @@ Format task:
 - IndexNow (Bing și ceilalți participanți; Bing alimentează și căutarea din ChatGPT): cheia publică în
   `public/<cheie>.txt`, script `scripts/seo/indexnow.mjs`, rulat după deploy-uri cu pagini noi.
 - Adresa: Careiului 45 peste tot (decizia lui Ciprian, 18.11.2026); Ciprian actualizează sediul la Registrul Comerțului.
-- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); auditul de cuvinte cheie pentru Google și pentru
-  asistenții AI.
+- Auditul de cuvinte cheie (18.11.2026) e în Claude Docs: „Audit cuvinte cheie youprotect.ro — Google și asistenți AI”.
+- Pagini de categorie (18.11.2026): `/produse/<slug>/` pentru categoriile cu cel puțin două produse publicate
+  (`src/lib/catalog-categories.ts`, `CategoryLanding.astro`). Modelele, mărcile și certificările se generează din
+  fișele de produs. Legate din catalog și din breadcrumb-ul fișelor. `tests/catalog-categories.test.mjs`.
+- Vizibilitatea în ChatGPT: `scripts/seo/ai-visibility.mjs` pune lunar cele 15 întrebări din `ai-prompts.json` prin
+  OpenAI API (căutare pe web, locația Satu Mare). Rezultatele stau în afara repo-ului.
+- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); pagina de personalizare (prin parteneri);
+  volumele din Keyword Planner.
 
 ---
 

@@ -5,12 +5,16 @@ import ProductCard from "../../components/products/ProductCard.astro";
 import RiskFreeTesting from "../../components/global/RiskFreeTesting.astro";
 import { CATEGORIES, INDUSTRIES } from "../../lib/catalog-taxonomy";
 import { cardSrc } from "../../lib/catalog-images.js";
+import { activeCategoryPages } from "../../lib/catalog-categories";
 
 // Catalogul vine din src/content/products/ (doar produsele publicate), nu din Directus sau DB.
 const roCollator = new Intl.Collator("ro", { sensitivity: "base" });
 const entries = (
   await getCollection("products", ({ data }) => data.status === "published")
 ).sort((a, b) => roCollator.compare(a.data.name, b.data.name));
+
+// Paginile de categorie (de la două produse în sus), legate de deasupra grilei: Google le găsește din catalog.
+const categoryPages = activeCategoryPages(entries.map((e) => e.data));
 
 const products = entries.map(({ id, data }) => {
   const industries = data.industries.map((key) => INDUSTRIES[key]);
@@ -229,7 +233,7 @@ const recommendOptions = [
                 data-category-filter="all"
                 class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
               >
-                Toate Categoriile
+                Toate categoriile
               </button>
               {categorySummary.map(({ name: catName, count }) => (
                 <button
@@ -390,6 +394,19 @@ const recommendOptions = [
               <div class="mb-8 p-6 bg-yp-black/40 border border-yp-white/10 rounded-2xl flex items-center text-sm font-light text-yp-white/80 leading-relaxed shadow-lg backdrop-blur-sm">
                 <p>Descoperi opțiunile, <strong class="text-yp-white font-medium">iar alegerea bună o facem împreună.</strong> Dacă ai deja o direcție clară, <a href="/cere-oferta/" class="text-yp-yellow underline hover:text-yp-white">cere o ofertă</a>. Dacă încă compari variante, <a href="/programeaza-discutie/" class="text-yp-yellow underline hover:text-yp-white">programează o discuție</a> și te ajutăm să filtrezi rapid ce merită.</p>
               </div>
+
+              {categoryPages.length > 0 && (
+                <nav aria-label="Categorii" class="mb-8">
+                  <h2 class="text-sm uppercase tracking-widest text-yp-white/50 mb-3">Pe categorii</h2>
+                  <ul class="flex flex-wrap gap-2">
+                    {categoryPages.map((c) => (
+                      <li>
+                        <a href={`/produse/${c.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">{c.heading}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
 
               <div
                 id="catalog-grid"
