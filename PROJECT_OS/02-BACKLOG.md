@@ -265,7 +265,19 @@ Format task:
 - Owner: `Claude` + `User` (decizii de mesaj)
 - Scope: La final, după partea tehnică (cererea lui Ciprian, 18.11.2026): SEO, GEO (vizibilitate în răspunsurile
   AI și local) și mesajele care ajută conversia. Textul homepage-ului e lung și abstract în a doua jumătate (WP-005).
-- Next action: audit pornind de la Search Console și GA4, după 2–4 săptămâni de date.
+- Search Console (18.11.2026): acces prin contul de serviciu `youprotect-search-console@bucket-sir-safety-images`
+  (permisiune Full pe `sc-domain:youprotect.ro`), cheia în Keychain (`GSC_SERVICE_ACCOUNT_B64`), script
+  `scripts/seo/gsc.mjs` (sites, sitemaps, submit, queries, inspect). Datele din Search Console nu intră în repo.
+- Stare pe 18.11.2026:
+  - Google citise sitemap-ul ultima dată pe 27.06.2026; retrimis pe 18.11.2026.
+  - Din cele 42 de pagini din sitemap: 10 indexate, 10 „descoperite, neindexate” (produse), 22 necunoscute lui Google
+    (16 produse, calculatorul, testarea, Producție, paginile legale).
+  - 16 luni: 88 de clicuri, aproape toate pe numele firmei. „echipamente de protectie”: 176 de afișări, poziția 7,6.
+  - Adresele vechi Wix/Shopify cu afișări (`/clientul-ideal`, `/resurse-gratuite`, `/polita-confidentialitate`,
+    `/post/*`, `/products/*`) dădeau 404; acum au 301. Țintele redirect-urilor au „/” la final (un singur salt).
+  - Nr. Reg. Com. corectat la J30/646/2022 (ANAF); EUID se calculează din el.
+- Next action: Ciprian cere indexarea paginilor-cheie din Search Console (URL inspection → Request indexing);
+  apoi auditul de cuvinte cheie pentru Google și pentru asistenții AI.
 
 ---
 
