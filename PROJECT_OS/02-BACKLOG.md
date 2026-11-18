@@ -234,8 +234,8 @@ Format task:
     Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele așteaptă accesul la Google.
   - **Măsurare** — `TODO`. Cloudflare Web Analytics, plus Google Analytics 4 cu consimțământ. Politica de
     confidențialitate și cea de cookies trebuie actualizate.
-  - **Titlul principal și calculatorul** — `TODO`. Titlul trebuie să fie bun pentru SEO și adevărat. Calculatorul
-    (`/lp/tco-calculator/`) devine lead magnet. Cererile lui trebuie să ajungă în D1, nu în webhook-ul n8n vechi.
+  - **Titlul principal și calculatorul** — `DONE`. Detalii în D-2026-11-18-01. Cererile din calculator intră ca
+    cerere de ofertă cu „Sursa: Calculatorul de cost”.
   - **Condițiile garanției de 90 de zile** — `BLOCKED`. Le scriem după modelul „money back guaranteed”, cu decizii
     de la Ciprian.
   - **Formularul de ofertă** — `TODO`. Alimentează modulul de ofertare din Prospector. La firmele de peste 15–20 de

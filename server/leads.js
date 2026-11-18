@@ -2,6 +2,7 @@
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
 import { quoteCategoryLabel } from '../src/lib/quote-categories.js';
+import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
 
 export const MAX_BODY_BYTES = 20_000;
 const MAX_ANSWER_LENGTH = 300;
@@ -95,6 +96,14 @@ export function parseLead(payload) {
   // Categoria din /cere-oferta/?categorie=<slug> (cardurile de pe homepage). Doar slug-uri din listă.
   const category = intent === 'quote' ? quoteCategoryLabel(data.categorie) : null;
   if (category) answers.unshift({ question: 'categorie', label: 'Categoria aleasă pe site', answer: category });
+
+  // Cererile din calculatorul de cost vin ca cerere de ofertă (intent „quote”), ca să intre în CRM fără un intent
+  // nou. Rezumatul se recalculează aici din datele introduse; cifrele trimise de browser nu se folosesc.
+  if (intent === 'quote' && data.calculator !== undefined) {
+    const inputs = parseTcoInputs(data.calculator);
+    if (!inputs) return { ok: false, error: 'Datele din calculator nu sunt complete.' };
+    answers.unshift(...tcoAnswers(inputs, computeTco(inputs)));
+  }
 
   const productSlug = normalizeString(data.produs, 120);
   const product = productSlug && PRODUCT_SLUG_REGEX.test(productSlug) ? productSlug : null;

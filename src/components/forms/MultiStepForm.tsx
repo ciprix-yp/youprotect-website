@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { isValidCUI } from '../../lib/cui.js';
 import { quoteCategoryLabel } from '../../lib/quote-categories.js';
 import { SITE } from '../../lib/site';
+import { DOMAINS } from '../../lib/domains.js';
 
 type Intent = 'consultation' | 'quote';
 type Option = { label: string; hasOther?: boolean };
@@ -36,15 +37,7 @@ const CATEGORY_OPTION: Record<string, string> = {
   'lucru-la-inaltime': HEIGHT_OPTION,
 };
 
-const DOMAINS: Option[] = [
-  { label: 'Construcții / infrastructură' },
-  { label: 'Instalații / electrice / HVAC / sanitare' },
-  { label: 'Fotovoltaice / energie' },
-  { label: 'Producție / industrie' },
-  { label: 'Agricultură' },
-  { label: 'Servicii tehnice / mentenanță' },
-  { label: 'Alt domeniu', hasOther: true },
-];
+const DOMAIN_OPTIONS: Option[] = DOMAINS.map((label) => ({ label, hasOther: label === 'Alt domeniu' }));
 
 const TEAM_SIZES: Option[] = [
   { label: '5–15 persoane' },
@@ -395,7 +388,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           undefined,
           smallTeamNote,
         );
-      if (stepId === 'q3') return renderRadioGroup('q3', 'În ce domeniu lucrează echipa ta, în principal?', DOMAINS);
+      if (stepId === 'q3') return renderRadioGroup('q3', 'În ce domeniu lucrează echipa ta, în principal?', DOMAIN_OPTIONS);
       if (stepId === 'q4')
         return renderMultiSelect(
           'q4',
@@ -437,7 +430,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     } else {
       if (stepId === 'q1')
         return renderRadioGroup('q1', 'Pentru câți colegi ai nevoie de echipamente acum?', TEAM_SIZES, undefined, smallTeamNote);
-      if (stepId === 'q2') return renderRadioGroup('q2', 'În ce domeniu lucrează echipa ta, în principal?', DOMAINS);
+      if (stepId === 'q2') return renderRadioGroup('q2', 'În ce domeniu lucrează echipa ta, în principal?', DOMAIN_OPTIONS);
       if (stepId === 'q3')
         return renderMultiSelect('q3', 'Ce produse ai în vedere?', [
           { label: 'Încălțăminte de protecție' },
