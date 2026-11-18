@@ -276,8 +276,11 @@ Format task:
   - Adresele vechi Wix/Shopify cu afișări (`/clientul-ideal`, `/resurse-gratuite`, `/polita-confidentialitate`,
     `/post/*`, `/products/*`) dădeau 404; acum au 301. Țintele redirect-urilor au „/” la final (un singur salt).
   - Nr. Reg. Com. corectat la J30/646/2022 (ANAF); EUID se calculează din el.
-- Next action: Ciprian cere indexarea paginilor-cheie din Search Console (URL inspection → Request indexing);
-  apoi auditul de cuvinte cheie pentru Google și pentru asistenții AI.
+- IndexNow (Bing și ceilalți participanți; Bing alimentează și căutarea din ChatGPT): cheia publică în
+  `public/<cheie>.txt`, script `scripts/seo/indexnow.mjs`, rulat după deploy-uri cu pagini noi.
+- Adresa: Careiului 45 peste tot (decizia lui Ciprian, 18.11.2026); Ciprian actualizează sediul la Registrul Comerțului.
+- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); auditul de cuvinte cheie pentru Google și pentru
+  asistenții AI.
 
 ---
 
