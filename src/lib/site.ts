@@ -12,7 +12,8 @@ export const SITE = {
   // Datele firmei, folosite în footer și în paginile legale.
   // CUI confirmat de Ciprian pe 16.11.2026 (cel de pe facturi); footer-ul vechi avea greșit RO 46387843.
   // Nr. Reg. Com. verificat la ANAF pe 18.11.2026 (site-ul avea greșit J30/624/2022).
-  // Adresa: Ciprian confirmă Careiului 45 (Parc Industrial Areli); ANAF arăta încă nr. 11 ca sediu social pe 18.11.2026.
+  // Adresa: Careiului 45 (Parc Industrial Areli) peste tot, decizia lui Ciprian din 18.11.2026. ANAF arăta încă nr. 11
+  // ca sediu social; Ciprian actualizează Registrul Comerțului.
   legal: {
     name: "You Protect SRL",
     cui: "RO46294850",
