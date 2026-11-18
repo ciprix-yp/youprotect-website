@@ -231,7 +231,8 @@ Format task:
   - **Echipe de 1–4 persoane** — `DONE`. Nu intră în formular. Sub întrebarea despre mărimea echipei, formularul le
     trimite pe WhatsApp.
   - **Recenzii în buclă** — `DONE`. Caruselul derulează continuu, iar pe mobil nu se mai oprește după o atingere.
-    Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele așteaptă accesul la Google.
+    Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele e gata în cod (D-2026-11-18-04) și
+    așteaptă cheia Places API și deploy hook-ul de la Ciprian.
   - **Măsurare** — `IN_PROGRESS`. Codul e gata (D-2026-11-18-02): banner, GA4 doar cu acord, evenimente, politici
     generate din `ANALYTICS`. Așteaptă ID-ul GA4 de la Ciprian și pornirea Web Analytics în Cloudflare Pages.
   - **Titlul principal și calculatorul** — `DONE`. Detalii în D-2026-11-18-01. Cererile din calculator intră ca
