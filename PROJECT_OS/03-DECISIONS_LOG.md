@@ -223,4 +223,25 @@
   4. **Folosire sau întreținere greșită.** Produsele trebuie purtate conform fișei tehnice și etichetei. Cele deteriorate intenționat sau nereturnate nu se rambursează.
   5. **Produsele personalizate nu se pot revinde.** Expunerea e limitată la comanda de test (3–5 oameni pe rol). Comenzile ulterioare nu intră în garanție.
   6. **Cereri târzii.** Cererea se face în scris, în cel mult 14 zile de la evaluarea finală. Rambursarea se face în cel mult 14 zile de la primirea produselor.
-- Propuse de Claude, de confirmat de Ciprian: cele două termene de 14 zile și grupul de control.
+- Propuse de Claude și confirmate de Ciprian pe 18.11.2026: cele două termene de 14 zile și grupul de control. Dreptul de a folosi rezultatele anonim, ca studiu de caz, intră în protocolul semnat, nu pe site.
+
+## D-2026-11-18-04
+- Context:
+  - Ciprian vrea recenziile noi preluate automat, o dată pe lună, doar cele de 4 și 5 stele, rulate în carusel continuu.
+  - Până în noiembrie 2026 le prelua zilnic un workflow n8n (Google Places API → Directus), dar Directus și Railway au fost șterse (D-2026-11-17-01).
+  - Place ID: `ChIJzczeE0MFOEcRMBTA9E1R9eY`.
+- Decizie:
+  - **Preluarea:** la fiecare build, integrarea `recenzii-google` (`astro.config.mjs` → `scripts/fetch-google-reviews.mjs`) ia recenziile din Places API (varianta nouă).
+  - **Filtrul:** păstrează doar 4–5 stele cu text, fără poze și cu numele „Prenume I.” (D-2026-11-17-02).
+  - **Fișierele:** recenziile preluate se scriu în `src/data/testimonials.google.json`, ignorat de git. Homepage-ul le unește cu `src/data/testimonials.json`, fără dubluri.
+  - **Ritmul lunar:** `.github/workflows/recenzii-lunar.yml` pornește un build pe 1 ale lunii, printr-un deploy hook Cloudflare Pages.
+  - **Fără commit-uri automate:** deci fără PR-uri automate care ar ocoli regulile de merge.
+  - **Dacă Google nu răspunde:** build-ul continuă cu recenziile din repo.
+- Limite:
+  - Places API dă cel mult 5 recenzii, alese de Google drept „cele mai relevante”.
+  - Termenii Google Maps Platform restrâng păstrarea conținutului Places. Recenziile preluate stau doar în build-ul curent, iar la fiecare build se reîmprospătează.
+  - Pentru toate recenziile, varianta corectă e API-ul Google Business Profile, care cere aprobare Google.
+- De făcut de Ciprian:
+  1. Pune cheia Places API (din variabilele n8n `GOOGLE_API_KEY` sau una nouă, restricționată la „Places API (New)”) cu `secret set youprotect-website GOOGLE_PLACES_API_KEY`.
+  2. Creează un deploy hook în Cloudflare Pages și pune-l cu `secret set youprotect-website CF_PAGES_DEPLOY_HOOK`.
+- Apoi Claude copiază cheia în Cloudflare Pages (producție) și hook-ul în secretele GitHub, fără să le afișeze.
