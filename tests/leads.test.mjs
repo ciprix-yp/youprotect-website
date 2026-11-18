@@ -115,6 +115,22 @@ test('parseLead: categoria de pe homepage, doar din listă și doar la cererea d
   assert.equal(withCategory('consultation', 'manusi').lead.answers.some((a) => a.question === 'categorie'), false);
 });
 
+test('parseLead: personalizarea, doar cu valorile convenite cu CRM-ul, după produse', () => {
+  const quote = (data) => parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q3: ['Mănuși'], ...data } });
+  const answers = quote({ personalizare: 'Nu știu încă' }).lead.answers;
+  assert.deepEqual(answers.find((a) => a.question === 'personalizare'), {
+    question: 'personalizare',
+    label: 'Personalizare cu logo',
+    answer: 'Nu știu încă',
+  });
+  assert.deepEqual(answers.map((a) => a.question), ['q1', 'q3', 'personalizare']);
+  for (const bad of ['Poate', 'da', '<b>Da</b>', ['Da', 'Nu']]) {
+    assert.equal(quote({ personalizare: bad }).lead.answers.some((a) => a.question === 'personalizare'), false);
+  }
+  const consultation = parseLead({ intent: 'consultation', data: { ...valid.data, personalizare: 'Da' } });
+  assert.equal(consultation.lead.answers.some((a) => a.question === 'personalizare'), false);
+});
+
 test('calculator: model simplu, ipoteze la vedere', () => {
   const input = parseTcoInputs({
     employees: 10, categories: ['incaltaminte', 'necunoscut'], prices: { incaltaminte: 200 }, qualityPrices: { incaltaminte: 300 },

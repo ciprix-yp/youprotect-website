@@ -1,7 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { quoteCategoryLabel } from '../src/lib/quote-categories.js';
+import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../src/lib/quote-categories.js';
 import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
 
 export const MAX_BODY_BYTES = 20_000;
@@ -14,8 +14,11 @@ export const LEAD_TAG = 'website';
 // Întrebările fiecărui formular (MultiStepForm.tsx). Orice alt câmp trimis de client e ignorat.
 export const QUESTIONS = {
   consultation: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'],
-  quote: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7'],
+  quote: ['q1', 'q2', 'q3', 'personalizare', 'q4', 'q5', 'q6', 'q7'],
 };
+
+// Întrebări cu răspunsuri fixe: altă valoare se ignoră, ca CRM-ul să primească doar variantele convenite.
+const FIXED_ANSWERS = { quote: { personalizare: PERSONALIZATION_ANSWERS } };
 
 // Textul întrebărilor, pentru email și pentru CRM (aceleași formulări ca în formular).
 export const QUESTION_LABELS = {
@@ -31,6 +34,7 @@ export const QUESTION_LABELS = {
     q1: 'Câți colegi',
     q2: 'Domeniu',
     q3: 'Produse vizate',
+    personalizare: 'Personalizare cu logo',
     q4: 'Situația actuală',
     q5: 'Ce trebuie să rezolve oferta',
     q6: 'Termen',
@@ -86,6 +90,8 @@ export function parseLead(payload) {
   for (const key of QUESTIONS[intent]) {
     const answer = normalizeAnswer(data[key]);
     if (!answer) continue;
+    const allowed = FIXED_ANSWERS[intent]?.[key];
+    if (allowed && !allowed.includes(answer)) continue;
     const other = Object.hasOwn(others, key) ? normalizeString(others[key], MAX_ANSWER_LENGTH) : null;
     answers.push({
       question: key,

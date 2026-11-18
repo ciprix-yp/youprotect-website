@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { isValidCUI } from '../../lib/cui.js';
-import { quoteCategoryLabel } from '../../lib/quote-categories.js';
+import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../../lib/quote-categories.js';
 import { SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
 import { flagLead, track } from '../../lib/track';
@@ -16,7 +16,7 @@ interface MultiStepFormProps {
 
 // Datele de contact vin la final: întrebările ușoare întâi, apoi „unde îți trimitem oferta”.
 const FORM_1_STEPS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'contact'];
-const FORM_2_STEPS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'contact'];
+const FORM_2_STEPS = ['q1', 'q2', 'q3', 'personalizare', 'q4', 'q5', 'q6', 'q7', 'contact'];
 
 // Cheia din sessionStorage cu datele pentru calendarul de pe /confirmare/ (nu le punem în URL).
 export const BOOKING_PREFILL_KEY = 'yp_booking_prefill';
@@ -76,6 +76,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     q5: [],
     q6: '',
     q7: '',
+    personalizare: '',
     q_other: {},
   });
 
@@ -447,6 +448,12 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           { label: 'Echipamente specializate' },
           { label: 'Nu sunt sigur, am nevoie de recomandări' },
         ]);
+      if (stepId === 'personalizare')
+        return renderRadioGroup(
+          'personalizare',
+          'Vrei produsele personalizate cu logo-ul firmei tale?',
+          PERSONALIZATION_ANSWERS.map((label) => ({ label })),
+        );
       if (stepId === 'q4')
         return renderRadioGroup('q4', 'Cum se face acum echiparea echipei tale?', [
           { label: 'Avem deja un furnizor, dar vrem să vedem și alte variante' },
