@@ -182,3 +182,20 @@
   - **Cererile** pleacă prin `/api/submit-lead`, ca cerere de ofertă cu „Sursa: Calculatorul de cost”, ca să nu adauge în CRM un intent pe care Prospector nu-l acceptă încă.
   - **Cifrele** care ajung în CRM sunt recalculate pe server.
 - Regulă: calculatorul nu afișează procente sau coeficienți fără sursă. O ipoteză nouă intră doar ca valoare pe care o alege vizitatorul.
+
+## D-2026-11-18-02
+- Context:
+  - Site-ul nu avea nicio măsurare, deci nu știam ce aduce cereri. D-2026-11-16-02 cerea ca orice script de analiză să vină cu politica de cookies actualizată și, probabil, cu banner.
+  - Decizia lui Ciprian (18.11.2026): Cloudflare Web Analytics și Google Analytics, cu cookie-urile necesare și politica de confidențialitate actualizată. Vrea metrici clare, ca să știe ce trebuie îmbunătățit.
+- Decizie:
+  - **Cloudflare Web Analytics**, pornit din Cloudflare Pages, fără cookie-uri. Temeiul e interesul legitim.
+  - **Google Analytics 4** se încarcă doar după „Accept statisticile”. Temeiul e acordul: art. 6 alin. 1 lit. a GDPR și art. 4 alin. 5 din Legea nr. 506/2004.
+  - **Bannerul** are cele două butoane la fel de vizibile. Alegerea se păstrează în localStorage (`yp_consent`, 6 luni). Din subsol, „Setări cookie-uri” redeschide bannerul. La retragerea acordului se șterg cookie-urile `_ga`.
+  - **Setări GA:** cookie-urile expiră după 13 luni; Google Signals și personalizarea reclamelor sunt oprite.
+  - **Ce nu trimitem în GA:** date din formulare sau din calculator. Pleacă doar numele evenimentelor și ale pașilor: `form_start`, `form_step`, `generate_lead`, `calculator_step`, `calculator_result`, `cta_click`, `whatsapp_click`, `phone_click`, `email_click`.
+  - **Paginile legale și bannerul** se generează din `ANALYTICS` (`src/lib/site.ts`), ca să descrie exact ce rulează: fără ID GA nu există banner, iar politicile nu pomenesc GA.
+- De făcut de Ciprian:
+  1. Creează proprietatea GA4 pentru youprotect.ro și trimite ID-ul de măsurare („G-…”, e public).
+  2. În GA, setează păstrarea datelor la 14 luni; politica spune „cel mult 14 luni”.
+  3. Pornește Web Analytics în Cloudflare Pages.
+- După fiecare pas: `ANALYTICS.ga4Id` primește ID-ul, iar `ANALYTICS.cloudflareWebAnalytics` devine `true` după ce beacon-ul apare pe pagina publicată.

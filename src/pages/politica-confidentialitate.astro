@@ -4,11 +4,14 @@
 // (Deep Logic) o preia de acolo. Cal.com doar la programări; fonturile și scripturile sunt găzduite pe site.
 // Păstrarea cererilor: 2 ani de la ultimul contact (aprobat de Ciprian pe 16.11.2026).
 // 17.11.2026: Railway scos din lista furnizorilor. Baza veche avea doar cereri de test și a fost ștearsă (D-2026-11-17-01).
+// 18.11.2026: statisticile (Cloudflare Web Analytics, Google Analytics cu acord) apar doar când sunt pornite în ANALYTICS.
 // 18.11.2026: calculatorul de cost (/calculator-cost-echipamente/) trimite date doar la cererea vizitatorului (D-2026-11-18-01).
 import LegalPage from "../components/legal/LegalPage.astro";
-import { SITE } from "../lib/site";
+import { ANALYTICS, SITE } from "../lib/site";
 
 const a = SITE.address;
+// Statisticile se descriu din aceeași configurație ca bannerul (D-2026-11-18-02).
+const { ga4Id, cloudflareWebAnalytics } = ANALYTICS;
 ---
 
 <LegalPage
@@ -56,10 +59,32 @@ const a = SITE.address;
   <h3>Când ne suni, ne scrii pe email sau pe WhatsApp</h3>
   <p>Folosim datele pe care ni le dai în conversație, ca să-ți răspundem.</p>
   <h3>Când doar vizitezi site-ul</h3>
-  <p>
-    Nu folosim cookie-uri de analiză sau de marketing și nu urmărim vizitele. Detalii în
-    <a href="/politica-cookies/">politica de cookies</a>.
-  </p>
+  {
+    !ga4Id && !cloudflareWebAnalytics && (
+      <p>
+        Nu folosim cookie-uri de analiză sau de marketing și nu urmărim vizitele. Detalii în
+        <a href="/politica-cookies/">politica de cookies</a>.
+      </p>
+    )
+  }
+  {
+    cloudflareWebAnalytics && (
+      <p>
+        Numărăm vizitele cu Cloudflare Web Analytics, fără cookie-uri și fără să te recunoaștem de la o vizită la alta:
+        pagina vizitată, pagina de pe care ai venit, țara, tipul de browser și de dispozitiv. Vedem doar totaluri.
+      </p>
+    )
+  }
+  {
+    ga4Id && (
+      <p>
+        Doar dacă accepți statisticile în bannerul de cookie-uri, folosim Google Analytics: ce pagini vizitezi, de unde
+        ai venit, ce butoane apeși și la ce pas te oprești într-un formular, împreună cu un identificator salvat într-un
+        cookie, tipul de dispozitiv și zona aproximativă. Nu trimitem la Google ce completezi în formulare sau în
+        calculator. Detalii în <a href="/politica-cookies/">politica de cookies</a>.
+      </p>
+    )
+  }
 
   <h2>De ce folosim datele și pe ce temei legal</h2>
   <ul>
@@ -72,6 +97,23 @@ const a = SITE.address;
       <strong>Ca să protejăm formularul de abuz și spam</strong>, cu adresa IP și tipul de browser. Temeiul este
       interesul nostru legitim de a ține site-ul sigur (art. 6 alin. 1 lit. f GDPR).
     </li>
+    {
+      cloudflareWebAnalytics && (
+        <li>
+          <strong>Ca să știm câte vizite are site-ul și ce pagini sunt utile</strong>, cu statistici fără cookie-uri.
+          Temeiul este interesul nostru legitim de a îmbunătăți site-ul (art. 6 alin. 1 lit. f GDPR).
+        </li>
+      )
+    }
+    {
+      ga4Id && (
+        <li>
+          <strong>Ca să vedem unde se blochează vizitatorii și să îmbunătățim site-ul</strong>, cu Google Analytics.
+          Temeiul este acordul tău (art. 6 alin. 1 lit. a GDPR și art. 4 alin. 5 din Legea nr. 506/2004), pe care îl
+          poți retrage oricând din „Setări cookie-uri”, în subsolul paginii.
+        </li>
+      )
+    }
     <li>
       <strong>Dacă devii client</strong>, pentru contract, facturare și evidența contabilă. Temeiul este contractul (art.
       6 alin. 1 lit. b) și obligațiile legale (art. 6 alin. 1 lit. c GDPR).
@@ -86,7 +128,7 @@ const a = SITE.address;
   <p>Lucrăm cu câțiva furnizori care prelucrează date în numele nostru, doar pentru serviciul pe care ni-l oferă:</p>
   <ul>
     <li>
-      <strong>Cloudflare</strong>: găzduirea site-ului și primirea cererilor. Cererea se păstrează temporar într-o bază
+      <strong>Cloudflare</strong>: găzduirea site-ului și primirea cererilor{cloudflareWebAnalytics && <>, plus statisticile de vizite fără cookie-uri</>}. Cererea se păstrează temporar într-o bază
       de date Cloudflare cu datele în Uniunea Europeană, până o preluăm în CRM, și se șterge de acolo la cel mult 30 de
       zile după preluare;
     </li>
@@ -96,6 +138,15 @@ const a = SITE.address;
       administrat de Deep Logic;
     </li>
     <li><strong>Cal.com</strong>: calendarul de programare, doar dacă alegi să programezi o discuție;</li>
+    {
+      ga4Id && (
+        <li>
+          <strong>Google Ireland Limited</strong>: Google Analytics, doar dacă accepți statisticile. Datele se pot
+          transfera la Google LLC, în SUA, care este certificată în Cadrul UE–SUA privind protecția datelor (Data
+          Privacy Framework);
+        </li>
+      )
+    }
     <li><strong>WhatsApp (Meta)</strong>: doar dacă ne scrii pe WhatsApp.</li>
   </ul>
   <p>
@@ -108,6 +159,7 @@ const a = SITE.address;
   <ul>
     <li>cererile care nu devin comandă: cel mult 2 ani de la ultimul contact cu tine;</li>
     <li>datele clienților: pe durata colaborării, iar documentele contabile cât cere legislația contabilă.</li>
+    {ga4Id && <li>statisticile din Google Analytics: cel mult 14 luni, apoi Google le șterge automat.</li>}
   </ul>
 
   <h2>Ce drepturi ai</h2>

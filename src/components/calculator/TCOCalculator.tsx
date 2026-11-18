@@ -11,6 +11,7 @@ import {
   formatLei,
   parseTcoInputs,
 } from '../../lib/tco.js';
+import { track } from '../../lib/track';
 
 // Calculatorul de cost real (lead magnet). Calculul e în src/lib/tco.js, comun cu serverul.
 // Rezultatul apare imediat, fără date de contact. Datele de contact sunt opționale, la final, pentru cine vrea să
@@ -141,6 +142,8 @@ export default function TCOCalculator() {
       return;
     }
     setErrors({});
+    track('calculator_step', { step: STEPS[step], step_number: step + 1 });
+    if (STEPS[step + 1] === 'rezultat' && result) track('calculator_result', { cheaper_with_quality: result.difference > 0 });
     setStep((s) => s + 1);
   };
   const back = () => {

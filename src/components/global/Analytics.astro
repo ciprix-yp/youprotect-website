@@ -1,0 +1,204 @@
+---
+// Măsurarea site-ului (D-2026-11-18-02).
+// - Cloudflare Web Analytics: îl injectează Cloudflare Pages, fără cookie-uri; aici nu e nimic de făcut pentru el.
+// - Google Analytics 4: se încarcă DOAR după ce vizitatorul acceptă statisticile în banner. Fără acord nu pleacă nicio
+//   cerere spre Google. Alegerea se păstrează în localStorage (necesară, fără acord) și se cere din nou după 6 luni.
+// - Evenimentele vin de la componente ca `yp:track` / `yp:lead` (CustomEvent) sau din clicuri pe link-uri; dacă GA nu e
+//   pornit, se ignoră. În GA nu trimitem date din formulare (nume, email, telefon, cifrele din calculator).
+import { ANALYTICS } from "../../lib/site";
+
+const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
+---
+
+{
+  ga4Id && (
+    <div
+      id="yp-consent"
+      hidden
+      role="region"
+      aria-label="Cookie-uri"
+      data-ga4-id={ga4Id}
+      data-key={consentKey}
+      data-max-age-days={String(consentMaxAgeDays)}
+      data-cookie-days={String(gaCookieMaxAgeDays)}
+      class="fixed inset-x-0 bottom-0 z-[1000] p-4 sm:p-6 pointer-events-none"
+    >
+      <div class="pointer-events-auto mx-auto max-w-2xl rounded-[8px] border border-white/15 bg-[#111] p-5 shadow-2xl">
+        <p class="text-sm text-neutral-200 leading-relaxed">
+          Vrem să vedem ce pagini te ajută și unde se blochează vizitatorii, ca să îmbunătățim site-ul. Pentru asta
+          folosim Google Analytics, care setează cookie-uri. Îl pornim doar dacă ești de acord.{" "}
+          <a href="/politica-cookies/" class="text-yp-yellow underline underline-offset-4 hover:text-white">
+            Detalii
+          </a>
+        </p>
+        <div class="mt-4 flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
+          <button
+            type="button"
+            data-consent="deny"
+            class="min-h-[44px] px-5 rounded border border-white/25 text-sm font-medium text-white hover:bg-white/5"
+          >
+            Doar cele necesare
+          </button>
+          <button
+            type="button"
+            data-consent="grant"
+            class="min-h-[44px] px-5 rounded border border-white/25 text-sm font-medium text-white hover:bg-white/5"
+          >
+            Accept statisticile
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  type Consent = { v: 1; analytics: boolean; at: string };
+  type Params = Record<string, string | number | boolean | undefined>;
+  type Win = Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
+  const w = window as Win;
+
+  const banner = document.getElementById('yp-consent');
+  const id = banner?.dataset.ga4Id ?? '';
+  const KEY = banner?.dataset.key ?? 'yp_consent';
+  const MAX_AGE_MS = Number(banner?.dataset.maxAgeDays ?? 182) * 86_400_000;
+  const COOKIE_SECONDS = Number(banner?.dataset.cookieDays ?? 395) * 86_400;
+  const LEAD_FLAG = 'yp_lead';
+
+  function readConsent(): Consent | null {
+    try {
+      const c = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (c?.v === 1 && typeof c.analytics === 'boolean' && Date.now() - Date.parse(c.at) < MAX_AGE_MS) return c;
+    } catch (_e) {
+      // Fără localStorage (mod privat strict): bannerul apare la fiecare pagină, GA rămâne oprit.
+    }
+    return null;
+  }
+
+  function saveConsent(analytics: boolean) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ v: 1, analytics, at: new Date().toISOString() }));
+    } catch (_e) {
+      // Alegerea se aplică doar pe pagina curentă.
+    }
+  }
+
+  let gaLoaded = false;
+  function loadGa() {
+    if (gaLoaded || !id) return;
+    gaLoaded = true;
+    w.dataLayer = w.dataLayer || [];
+    // gtag cere obiectul `arguments`, nu un array.
+    w.gtag = function gtag() {
+      // eslint-disable-next-line prefer-rest-params
+      w.dataLayer!.push(arguments);
+    };
+    w.gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'granted',
+    });
+    w.gtag('js', new Date());
+    w.gtag('config', id, {
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      cookie_expires: COOKIE_SECONDS,
+    });
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`;
+    document.head.append(s);
+  }
+
+  // La retragerea acordului: GA nu mai primește nimic, iar cookie-urile lui se șterg.
+  function revokeGa() {
+    w.gtag?.('consent', 'update', { analytics_storage: 'denied' });
+    const host = location.hostname.replace(/^www\./, '');
+    for (const part of document.cookie.split(';')) {
+      const name = part.split('=')[0].trim();
+      if (!/^_ga(_|$)/.test(name)) continue;
+      for (const domain of ['', `; domain=.${host}`, `; domain=${host}`]) {
+        document.cookie = `${name}=; Max-Age=0; path=/${domain}`;
+      }
+    }
+  }
+
+  function track(name: string, params: Params = {}) {
+    if (!gaLoaded || !w.gtag) return;
+    w.gtag('event', name, params);
+  }
+
+  function showBanner() {
+    if (banner) banner.hidden = false;
+  }
+
+  function choose(analytics: boolean) {
+    saveConsent(analytics);
+    if (banner) banner.hidden = true;
+    if (analytics) {
+      loadGa();
+      fireLeadFlag();
+    } else {
+      revokeGa();
+    }
+  }
+
+  // Formularele setează în sessionStorage tipul cererii înainte de redirect; o raportăm o singură dată.
+  function fireLeadFlag() {
+    try {
+      const form = sessionStorage.getItem(LEAD_FLAG);
+      if (form && gaLoaded) {
+        sessionStorage.removeItem(LEAD_FLAG);
+        track('generate_lead', { form });
+      }
+    } catch (_e) {
+      // fără sessionStorage nu avem ce raporta
+    }
+  }
+
+  if (id) {
+    const consent = readConsent();
+    if (consent === null) showBanner();
+    else if (consent.analytics) loadGa();
+    fireLeadFlag();
+
+    banner?.querySelector('[data-consent="grant"]')?.addEventListener('click', () => choose(true));
+    banner?.querySelector('[data-consent="deny"]')?.addEventListener('click', () => choose(false));
+    document.querySelectorAll<HTMLElement>('[data-consent-item]').forEach((el) => (el.hidden = false));
+    document.querySelectorAll<HTMLElement>('[data-consent-open]').forEach((el) => {
+      el.addEventListener('click', () => {
+        showBanner();
+        banner?.querySelector<HTMLButtonElement>('[data-consent="grant"]')?.focus();
+      });
+    });
+  }
+
+  // Evenimente de la componente.
+  window.addEventListener('yp:track', (e) => {
+    const { name, params } = (e as CustomEvent<{ name: string; params?: Params }>).detail ?? {};
+    if (typeof name === 'string') track(name, params);
+  });
+  window.addEventListener('yp:lead', (e) => {
+    track('generate_lead', { form: (e as CustomEvent<{ form?: string }>).detail?.form ?? 'necunoscut' });
+  });
+
+  // Clicuri pe contact și pe butoanele principale. Doar tipul link-ului și locul, fără date personale.
+  const CTA_PATHS: Array<[RegExp, string]> = [
+    [/\/cere-oferta\/?/, 'cere-oferta'],
+    [/\/programeaza-discutie\/?/, 'programeaza-discutie'],
+    [/\/calculator-cost-echipamente\/?/, 'calculator'],
+  ];
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a) return;
+    const href = a.getAttribute('href') ?? '';
+    const where = a.dataset.trackLocation ?? (a.closest('header') ? 'meniu' : a.closest('footer') ? 'subsol' : 'pagina');
+    if (href.startsWith('https://wa.me/')) return track('whatsapp_click', { location: where });
+    if (href.startsWith('tel:')) return track('phone_click', { location: where });
+    if (href.startsWith('mailto:')) return track('email_click', { location: where });
+    for (const [re, cta] of CTA_PATHS) {
+      if (re.test(href)) return track('cta_click', { cta, location: where, text: (a.textContent ?? '').trim().slice(0, 60) });
+    }
+  });
+</script>

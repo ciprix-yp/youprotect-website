@@ -3,6 +3,7 @@ import { isValidCUI } from '../../lib/cui.js';
 import { quoteCategoryLabel } from '../../lib/quote-categories.js';
 import { SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
+import { flagLead, track } from '../../lib/track';
 
 type Intent = 'consultation' | 'quote';
 type Option = { label: string; hasOther?: boolean };
@@ -128,7 +129,11 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   };
 
   const nextStep = () => {
-    if (validateStep()) setCurrentStep((prev) => prev + 1);
+    if (!validateStep()) return;
+    // Măsurare: unde se opresc vizitatorii (doar numele pasului, nu răspunsul).
+    if (currentStep === 0) track('form_start', { form: intent });
+    track('form_step', { form: intent, step: steps[currentStep], step_number: currentStep + 1 });
+    setCurrentStep((prev) => prev + 1);
   };
 
   const prevStep = () => setCurrentStep((prev) => prev - 1);
@@ -146,6 +151,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      flagLead(intent);
 
       if (intent === 'consultation') {
         try {

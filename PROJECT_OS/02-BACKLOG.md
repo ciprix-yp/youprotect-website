@@ -232,8 +232,8 @@ Format task:
     trimite pe WhatsApp.
   - **Recenzii în buclă** — `DONE`. Caruselul derulează continuu, iar pe mobil nu se mai oprește după o atingere.
     Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele așteaptă accesul la Google.
-  - **Măsurare** — `TODO`. Cloudflare Web Analytics, plus Google Analytics 4 cu consimțământ. Politica de
-    confidențialitate și cea de cookies trebuie actualizate.
+  - **Măsurare** — `IN_PROGRESS`. Codul e gata (D-2026-11-18-02): banner, GA4 doar cu acord, evenimente, politici
+    generate din `ANALYTICS`. Așteaptă ID-ul GA4 de la Ciprian și pornirea Web Analytics în Cloudflare Pages.
   - **Titlul principal și calculatorul** — `DONE`. Detalii în D-2026-11-18-01. Cererile din calculator intră ca
     cerere de ofertă cu „Sursa: Calculatorul de cost”.
   - **Condițiile garanției de 90 de zile** — `BLOCKED`. Le scriem după modelul „money back guaranteed”, cu decizii

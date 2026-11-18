@@ -1,27 +1,105 @@
 ---
-// Verificat în browser pe 16.11.2026: site-ul nu setează cookie-uri și nu folosește localStorage.
-// Singurul cookie vine de la Cal.com (__cf_bm), doar pe /confirmare/?intent=consultation.
-// Dacă adaugi analytics, pixel sau alt script terț, actualizează pagina și verifică dacă e nevoie de banner.
+// Pagina se generează din ANALYTICS (src/lib/site.ts), ca să descrie exact ce rulează pe site (D-2026-11-18-02).
+// Verificat în browser pe 18.11.2026: fără acord, site-ul nu setează cookie-uri. Cu Google Analytics configurat,
+// alegerea din banner se păstrează în localStorage („yp_consent”), iar cookie-urile _ga apar doar după „Accept”.
+// Cal.com poate seta __cf_bm, doar pe /confirmare/?intent=consultation.
+// Dacă adaugi un script terț (pixel, chat), actualizează pagina și bannerul.
 import LegalPage from "../components/legal/LegalPage.astro";
-import { SITE } from "../lib/site";
+import { ANALYTICS, SITE } from "../lib/site";
+
+const { ga4Id, cloudflareWebAnalytics, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
+const gaMonths = Math.round(gaCookieMaxAgeDays / 30.4);
+const consentMonths = Math.round(consentMaxAgeDays / 30.4);
+const gaSuffix = ga4Id ? ga4Id.replace(/^G-/, "") : "";
 ---
 
 <LegalPage
   title="Politica de cookies"
-  description="youprotect.ro nu folosește cookie-uri de analiză sau de marketing. Află ce cookie-uri pot apărea și de unde."
-  updated="16 noiembrie 2026"
+  description={ga4Id
+    ? "Ce cookie-uri folosește youprotect.ro: Google Analytics doar cu acordul tău, fără cookie-uri de marketing."
+    : "youprotect.ro nu folosește cookie-uri de analiză sau de marketing. Află ce cookie-uri pot apărea și de unde."}
+  updated="18 noiembrie 2026"
 >
   <p>
     Cookie-urile sunt fișiere mici pe care un site le salvează în browserul tău. Pe scurt:
-    <strong>youprotect.ro nu folosește cookie-uri de analiză sau de marketing</strong> și nu îți urmărește vizitele.
-    De aceea nu îți cerem acordul printr-un banner.
+    {
+      ga4Id ? (
+        <>
+          <strong>folosim cookie-uri de analiză (Google Analytics) doar dacă ești de acord</strong>, din bannerul de pe
+          site. Nu folosim cookie-uri de marketing și nu facem reclame pe baza vizitelor tale.
+        </>
+      ) : (
+        <>
+          <strong>youprotect.ro nu folosește cookie-uri de analiză sau de marketing</strong> și nu îți urmărește
+          vizitele. De aceea nu îți cerem acordul printr-un banner.
+        </>
+      )
+    }
   </p>
 
   <h2>Cookie-urile site-ului nostru</h2>
-  <p>
-    Site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe serverele noastre, așa că pe
-    paginile obișnuite browserul tău nu contactează servicii terțe.
-  </p>
+  {
+    ga4Id ? (
+      <>
+        <p>
+          Fără acordul tău, site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe
+          serverele noastre.
+        </p>
+        <p>
+          <strong>Alegerea ta din banner</strong> se păstrează în browser (localStorage, cheia <code>yp_consent</code>),
+          ca să nu te întrebăm la fiecare pagină. Ține {consentMonths} luni, apoi te întrebăm din nou. Este necesară
+          pentru funcționarea site-ului, deci nu cere acord.
+        </p>
+      </>
+    ) : (
+      <p>
+        Site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe serverele noastre, așa că pe
+        paginile obișnuite browserul tău nu contactează servicii terțe.
+      </p>
+    )
+  }
+
+  {
+    cloudflareWebAnalytics && (
+      <>
+        <h2>Statistici fără cookie-uri: Cloudflare Web Analytics</h2>
+        <p>
+          Numărăm vizitele cu Cloudflare Web Analytics, oferit de Cloudflare, care găzduiește și site-ul. Nu setează
+          cookie-uri, nu salvează nimic în browserul tău și nu te recunoaște de la o vizită la alta. Vedem doar totaluri:
+          câte vizite are fiecare pagină, de unde vin vizitatorii (de exemplu Google), din ce țară și de pe ce tip de
+          dispozitiv.
+        </p>
+      </>
+    )
+  }
+
+  {
+    ga4Id && (
+      <>
+        <h2>Cookie-uri de analiză: Google Analytics, doar cu acordul tău</h2>
+        <p>
+          Dacă alegi „Accept statisticile”, pornim Google Analytics 4, oferit de Google Ireland Limited. Ne arată ce
+          pagini sunt utile, ce butoane sunt apăsate și la ce pas se opresc formularele, ca să îmbunătățim site-ul. Nu
+          trimitem la Google ce completezi în formulare sau în calculator (nume, email, telefon, prețuri). Google
+          Signals și personalizarea reclamelor sunt oprite.
+        </p>
+        <ul>
+          <li>
+            <code>_ga</code>: deosebește un browser de altul, ca să numărăm vizitatorii, nu doar vizitele. Expiră după{" "}
+            {gaMonths} luni.
+          </li>
+          <li>
+            <code>_ga_{gaSuffix}</code>: ține evidența vizitei curente. Expiră după {gaMonths} luni.
+          </li>
+        </ul>
+        <p>
+          Dacă alegi „Doar cele necesare”, Google Analytics nu se încarcă și browserul tău nu contactează Google. Îți
+          poți schimba alegerea oricând din <strong>„Setări cookie-uri”</strong>, în subsolul paginii. Când retragi
+          acordul, ștergem cookie-urile <code>_ga</code>.
+        </p>
+      </>
+    )
+  }
 
   <h2>Cookie-uri ale altor servicii</h2>
   <p>
@@ -36,7 +114,8 @@ import { SITE } from "../lib/site";
 
   <h2>Cum controlezi cookie-urile</h2>
   <p>
-    Poți vedea și șterge cookie-urile din setările browserului. Pentru datele personale pe care le colectăm prin
+    {ga4Id && <>Folosește „Setări cookie-uri”, din subsolul paginii. </>}
+    Poți vedea și șterge cookie-urile și din setările browserului. Pentru datele personale pe care le colectăm prin
     formulare, vezi <a href="/politica-confidentialitate/">politica de confidențialitate</a>. Întrebări: <a
       href={`mailto:${SITE.email}`}>{SITE.email}</a
     >.
