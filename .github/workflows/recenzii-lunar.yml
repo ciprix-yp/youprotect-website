@@ -19,6 +19,7 @@ jobs:
         env:
           HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
         run: |
+          HOOK="${HOOK//[[:space:]]/}" # un rând nou rămas la copiere ar strica URL-ul
           if [ -z "$HOOK" ]; then
             echo "::warning::Lipsește secretul CF_PAGES_DEPLOY_HOOK; recenziile nu s-au reîmprospătat."
             exit 0

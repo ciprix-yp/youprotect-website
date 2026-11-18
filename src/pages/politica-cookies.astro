@@ -43,7 +43,7 @@ const gaSuffix = ga4Id ? ga4Id.replace(/^G-/, "") : "";
       <>
         <p>
           Fără acordul tău, site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe
-          serverele noastre.
+          serverele noastre{cloudflareWebAnalytics && <>, cu excepția scriptului de statistici Cloudflare, descris mai jos</>}.
         </p>
         <p>
           <strong>Alegerea ta din banner</strong> se păstrează în browser (localStorage, cheia <code>yp_consent</code>),
@@ -53,8 +53,10 @@ const gaSuffix = ga4Id ? ga4Id.replace(/^G-/, "") : "";
       </>
     ) : (
       <p>
-        Site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe serverele noastre, așa că pe
-        paginile obișnuite browserul tău nu contactează servicii terțe.
+        Site-ul nu setează cookie-uri. Fonturile, stilurile și scripturile sunt găzduite pe serverele noastre
+        {cloudflareWebAnalytics
+          ? <>, cu excepția scriptului de statistici Cloudflare, descris mai jos.</>
+          : <>, așa că pe paginile obișnuite browserul tău nu contactează servicii terțe.</>}
       </p>
     )
   }
@@ -64,8 +66,9 @@ const gaSuffix = ga4Id ? ga4Id.replace(/^G-/, "") : "";
       <>
         <h2>Statistici fără cookie-uri: Cloudflare Web Analytics</h2>
         <p>
-          Numărăm vizitele cu Cloudflare Web Analytics, oferit de Cloudflare, care găzduiește și site-ul. Nu setează
-          cookie-uri, nu salvează nimic în browserul tău și nu te recunoaște de la o vizită la alta. Vedem doar totaluri:
+          Numărăm vizitele cu Cloudflare Web Analytics, oferit de Cloudflare, care găzduiește și site-ul. Scriptul se
+          încarcă de la Cloudflare (static.cloudflareinsights.com). Nu setează cookie-uri, nu salvează nimic în browserul
+          tău și nu te recunoaște de la o vizită la alta. Vedem doar totaluri:
           câte vizite are fiecare pagină, de unde vin vizitatorii (de exemplu Google), din ce țară și de pe ce tip de
           dispozitiv.
         </p>
