@@ -42,8 +42,8 @@ export const SITE = {
 // pe homepage, în catalog și pe paginile cu formular.
 export const RISK_FREE_TESTING = {
   title: "Testezi fără riscuri",
-  text: "Înainte să echipezi toată firma, testezi produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru. Măsurăm împreună cât rezistă și cât te costă pe zi de purtare. Dacă nu ies mai eficiente decât ce folosești acum și nu ești mulțumit, îți dăm banii înapoi integral.",
-  short: "Încerci produsele cu echipa ta 90 de zile și măsurăm împreună costul real. Dacă nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi.",
+  text: "Înainte să echipezi toată firma, testezi produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru. Măsurăm împreună cât rezistă și cât te costă pe zi de purtare. Pe rolurile unde nu ies mai eficiente decât ce folosești acum și nu ești mulțumit, îți dăm banii înapoi integral.",
+  short: "Încerci produsele cu echipa ta 90 de zile și măsurăm împreună costul real. Pe rolurile unde nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi.",
   href: "/testare-fara-riscuri/",
   linkLabel: "Vezi condițiile",
 } as const;

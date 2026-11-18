@@ -132,12 +132,13 @@ Format task:
 - Note: codul site-ului nu are referințe Wix/Shopify (verificat prin grep).
 
 ### OPS-005
-- Status: `TODO`
+- Status: `IN PROGRESS`
 - Owner: `User` (Google — dashboard)
-- Scope: Optimizare Google Business Profile (categorie primară, descriere cu „echipamente de protecție" + „Satu Mare", poze, Q&A, postări); campanie recenzii Google prin WhatsApp.
+- Scope: Optimizare Google Business Profile (categorie primară, descriere cu „echipamente de protecție" + „Satu Mare", poze, postări); campanie recenzii Google prin WhatsApp.
 - Acceptance: GBP optimizat pentru Maps Pack; recenzii noi.
 - Dependencies: none.
-- Next action: GBP dashboard + secvență WhatsApp.
+- Stare pe 18.11.2026: kitul e gata în Claude Docs („Kit recenzii Google — You Protect”): regulile Google, mesajele WhatsApp cu linkul direct de recenzie, ritmul de trimitere, lista pentru profil cu descrierea gata scrisă, modele de răspuns. Q&A a ieșit din scope: Google scoate secțiunea din profiluri din decembrie 2025.
+- Next action: Ciprian pune la punct profilul, apoi trimite lotul inițial (clienții cu livrări din ultimele 12 luni).
 
 
 ### CAT-001
