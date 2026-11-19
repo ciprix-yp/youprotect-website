@@ -5,9 +5,10 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/products/ProductCard.astro';
+import CategoryTiles from '../../components/products/CategoryTiles.astro';
 import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
-import { activeCategoryPages, modelsLabel } from '../../lib/catalog-categories';
+import { modelsLabel } from '../../lib/catalog-categories';
 import { activeBrandPages } from '../../lib/catalog-brands';
 import { toCardProps } from '../../lib/product-card';
 import { jsonLd } from '../../lib/json-ld';
@@ -20,22 +21,17 @@ const entries = (await getCollection('products', ({ data }) => data.status === '
     roCollator.compare(a.data.name, b.data.name),
 );
 const datas = entries.map((e) => e.data);
-const categoryPages = activeCategoryPages(datas);
 const brandPages = activeBrandPages(datas);
 
-// Dalele de categorie: în ordinea din taxonomie, cu poza primului model. Categoria cu pagină duce la pagina ei;
-// cea fără pagină (un singur model) filtrează grila de mai jos (?categorie=<cheie>).
+// Filtrul de categorie: în ordinea din taxonomie, doar categoriile cu modele publicate.
 const categories = categoryOrder
   .map((key) => {
     const items = entries.filter((e) => e.data.category === key);
     if (items.length === 0) return null;
-    const page = categoryPages.find((c) => c.key === key);
     return {
       key,
       label: CATEGORIES[key],
       count: items.length,
-      image: toCardProps(items[0]).image,
-      href: page ? `/produse/${page.slug}/` : `?categorie=${key}#modele`,
     };
   })
   .filter((c): c is NonNullable<typeof c> => c !== null);
@@ -114,23 +110,7 @@ const filterOption =
   <section aria-labelledby="categorii" class="border-b border-yp-white/10">
     <div class="mx-auto max-w-7xl px-4 py-8 md:py-10">
       <h2 id="categorii" class="mb-4 font-heading text-lg font-medium text-yp-white">Alege după tipul de echipament</h2>
-      <div class="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0" tabindex="0" role="region" aria-label="Categorii: derulează orizontal pe telefon">
-      <ul class="flex snap-x gap-3 sm:grid sm:grid-cols-4 lg:grid-cols-7">
-        {categories.map((c) => (
-          <li class="w-36 shrink-0 snap-start sm:w-auto">
-            <a href={c.href} class="group flex h-full flex-col border border-yp-white/10 transition-colors hover:border-yp-yellow focus-visible:border-yp-yellow">
-              <span class="relative block aspect-[4/3] overflow-hidden bg-white">
-                <img src={c.image} alt="" width="600" height="600" loading="lazy" class="absolute inset-0 h-full w-full object-contain p-3" />
-              </span>
-              <span class="flex flex-1 flex-col p-3">
-                <span class="min-h-[2lh] text-sm font-medium leading-snug text-yp-white group-hover:text-yp-yellow">{c.label}</span>
-                <span class="mt-1 text-xs text-yp-white/60">{modelsLabel(c.count)}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-      </div>
+      <CategoryTiles />
     </div>
   </section>
 
@@ -231,7 +211,7 @@ const filterOption =
         <div id="catalog-empty" hidden class="border border-yp-white/10 px-6 py-16 text-center">
           <p class="text-base text-yp-white">Niciun model nu se potrivește filtrelor alese.</p>
           <p class="mx-auto mt-2 max-w-md text-sm text-yp-white/70">
-            Scrie-ne ce îți trebuie: aducem și modele care nu sunt în catalog.
+            Scrie-ne ce îți trebuie și verificăm dacă putem aduce și modele care nu sunt în catalog.
           </p>
           <a href="/cere-oferta/" class="mt-6 inline-flex h-11 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black hover:bg-white">
             Cere ofertă

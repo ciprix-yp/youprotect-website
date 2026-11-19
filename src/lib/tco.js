@@ -13,12 +13,14 @@
 
 import { DOMAINS } from './domains.js';
 
+// `riskFreeTesting: false`: categoria nu intră în „Testare fără riscuri” (D-2026-11-19-06); rezultatul îi oferă
+// ofertă directă, nu testare.
 export const TCO_CATEGORIES = {
-  incaltaminte: { label: 'Încălțăminte de protecție', price: 180, qualityPrice: 350 },
-  imbracaminte: { label: 'Îmbrăcăminte de lucru', price: 120, qualityPrice: 220 },
-  manusi: { label: 'Mănuși de protecție', price: 25, qualityPrice: 45 },
-  casti: { label: 'Căști de protecție', price: 80, qualityPrice: 160 },
-  ochelari: { label: 'Ochelari de protecție', price: 35, qualityPrice: 70 },
+  incaltaminte: { label: 'Încălțăminte de protecție', price: 180, qualityPrice: 350, riskFreeTesting: true },
+  imbracaminte: { label: 'Îmbrăcăminte de lucru', price: 120, qualityPrice: 220, riskFreeTesting: true },
+  manusi: { label: 'Mănuși de protecție', price: 25, qualityPrice: 45, riskFreeTesting: true },
+  casti: { label: 'Căști de protecție', price: 80, qualityPrice: 160, riskFreeTesting: false },
+  ochelari: { label: 'Ochelari de protecție', price: 35, qualityPrice: 70, riskFreeTesting: false },
 };
 
 export const TCO_LIMITS = {

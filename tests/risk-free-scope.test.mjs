@@ -44,3 +44,10 @@ test('riskFreeExclusions: categoria întreagă când toate sunt excluse, altfel 
   assert.deepEqual(riskFreeExclusions(items), ['căști de protecție', 'mănuși electroizolante Y']);
   assert.deepEqual(riskFreeExclusions([{ name: 'Tricou Z', category: 'tricouri-polo', riskFreeTesting: true }]), []);
 });
+
+test('calculatorul de cost nu oferă testare pentru căști și ochelari', async () => {
+  const { TCO_CATEGORIES } = await import('../src/lib/tco.js');
+  assert.equal(TCO_CATEGORIES.casti.riskFreeTesting, false);
+  assert.equal(TCO_CATEGORIES.ochelari.riskFreeTesting, false);
+  for (const key of ['incaltaminte', 'imbracaminte', 'manusi']) assert.equal(TCO_CATEGORIES[key].riskFreeTesting, true, key);
+});
