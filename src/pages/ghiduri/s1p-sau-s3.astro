@@ -1,0 +1,179 @@
+---
+// Ghid: diferența dintre S1P și S3 (EN ISO 20345:2022). Faptele vin din sursele din src/lib/guides.ts; modelele din
+// catalog se generează din fișele de produs (categoria „incaltaminte”).
+import { getCollection } from 'astro:content';
+import GuideLayout, { type GuideFaq } from '../../components/guides/GuideLayout.astro';
+import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
+import { categoryPageFor } from '../../lib/catalog-categories';
+import { footwearClass, guideBySlug } from '../../lib/guides';
+import { SITE } from '../../lib/site';
+
+const guide = guideBySlug('s1p-sau-s3');
+const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
+const footwear = (await getCollection('products', ({ data }) => data.status === 'published' && data.category === 'incaltaminte'))
+  .map((e) => ({ id: e.id, name: e.data.name, cls: footwearClass(e.data.certifications) }))
+  .sort((a, b) => roCollator.compare(a.name, b.name));
+const classes = [...new Set(footwear.map((f) => f.cls).filter((c): c is string => c !== null))].sort();
+const hasS1P = classes.some((c) => c.startsWith('S1P'));
+const categoryPage = categoryPageFor('incaltaminte');
+
+const answer =
+  'Și S1P, și S3 au bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi și protecție la perforare. S3 adaugă două lucruri: fața încălțămintei rezistă la pătrunderea și absorbția apei, iar talpa are crampoane. Dacă oamenii tăi lucrează afară, pe teren denivelat sau pe ude, ai nevoie de ce adaugă S3.';
+
+// Ce cere EN ISO 20345:2022 pentru fiecare clasă (Atlas, Safety Jogger, Ejendals).
+const columns = ['S1', 'S1P', 'S2', 'S3', 'S7'] as const;
+const rows: { label: string; has: (typeof columns)[number][] }[] = [
+  { label: 'Bombeu de protecție (impact de 200 J)', has: ['S1', 'S1P', 'S2', 'S3', 'S7'] },
+  { label: 'Călcâi închis, antistatic, absorbție de energie la călcâi', has: ['S1', 'S1P', 'S2', 'S3', 'S7'] },
+  { label: 'Protecție la perforare (P, PL sau PS)', has: ['S1P', 'S3', 'S7'] },
+  { label: 'Fața rezistă la pătrunderea și absorbția apei (WPA)', has: ['S2', 'S3', 'S7'] },
+  { label: 'Talpă cu crampoane', has: ['S3', 'S7'] },
+  { label: 'Încălțămintea întreagă rezistă la apă (WR)', has: ['S7'] },
+];
+
+const faq: GuideFaq[] = [
+  {
+    q: 'Care e diferența dintre S1P și S3 la încălțămintea de protecție?',
+    a: 'S3 are tot ce are S1P (bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi și protecție la perforare) plus fața rezistentă la pătrunderea și absorbția apei și talpa cu crampoane, conform EN ISO 20345:2022.',
+  },
+  {
+    q: 'Pot purta încălțăminte S1P pe șantier?',
+    a: 'Decide evaluarea riscurilor de la locul de muncă, pe care o face angajatorul (HG nr. 1.048/2006, art. 14). Încălțămintea S1P nu are cerințe de rezistență la apă și nici talpă cu crampoane. Dacă lucrul e afară, pe teren denivelat sau pe ude, clasele potrivite sunt S3 sau S7.',
+  },
+  {
+    q: 'Ce înseamnă S3S pe încălțămintea de protecție?',
+    a: 'S3S este clasa S3 cu protecție la perforare nemetalică, testată cu un cui de 3 mm (tip PS), conform EN ISO 20345:2022. S3L are protecție nemetalică testată cu un cui de 4,5 mm, iar S3 simplu are lamelă metalică.',
+  },
+  {
+    q: 'Care e diferența dintre S3 și S7?',
+    a: 'S7 are tot ce are S3, plus rezistență la apă a încălțămintei întregi (marcajul WR), testată pe încălțămintea asamblată. La S3, rezistența la apă se cere doar pentru fața încălțămintei (WPA).',
+  },
+  {
+    q: 'Mai e valabilă încălțămintea certificată după EN ISO 20345:2011?',
+    a: 'Da, până la expirarea certificatului; așa explică MASCOT pentru modelele sale. Ediția standardului după care e certificat un model o găsești pe eticheta și pe declarația lui de conformitate.',
+  },
+  {
+    q: 'De unde cumpăr încălțăminte de protecție S3 pentru o echipă, în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, pentru câte perechi și mărimi îți trebuie, iar livrarea se face în toată România. Înainte de comanda mare, poți testa încălțămintea cu câțiva oameni din echipă.`,
+    link: categoryPage ? { href: `/produse/${categoryPage.slug}/`, label: 'Vezi încălțămintea de protecție din catalog' } : undefined,
+  },
+];
+---
+
+<GuideLayout guide={guide} answer={answer} faq={faq}>
+  <section aria-labelledby="clase">
+    <h2 id="clase">Ce cere standardul pentru fiecare clasă</h2>
+    <p>
+      Standardul european pentru încălțămintea de protecție este EN ISO 20345, ediția 2022. Toată încălțămintea certificată
+      după el are bombeu de protecție, testat la un impact de 200 J. Clasele adaugă, pe rând, alte cerințe. SB înseamnă
+      doar cerințele de bază.
+    </p>
+    <div class="mt-6 overflow-x-auto" tabindex="0" role="region" aria-label="Tabel: cerințele pe clase, derulează orizontal">
+      <table class="w-full text-xs sm:text-sm text-left border-collapse">
+        <caption class="sr-only">Cerințele EN ISO 20345:2022 pentru clasele S1, S1P, S2, S3 și S7</caption>
+        <thead>
+          <tr class="border-b border-yp-white/20">
+            <th scope="col" class="py-3 pr-2 sm:pr-4 font-medium text-yp-white">Cerință</th>
+            {columns.map((c) => <th scope="col" class="py-3 px-1 sm:px-2 w-10 sm:w-16 font-medium text-yp-white text-center">{c}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr class="border-b border-yp-white/10">
+              <th scope="row" class="py-3 pr-2 sm:pr-4 font-normal text-yp-white/85">{r.label}</th>
+              {columns.map((c) => (
+                <td class="py-3 px-1 sm:px-2 text-center">
+                  {r.has.includes(c) ? <span class="text-yp-yellow">Da</span> : <span class="text-yp-white/60">Nu</span>}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-6">
+      S6 este echivalentul lui S2 cu rezistență la apă a încălțămintei întregi (WR). Clasele S4 și S5 sunt pentru cizme
+      din cauciuc sau polimeri.
+    </p>
+  </section>
+
+  <section aria-labelledby="cand">
+    <h2 id="cand">Când alegi S1P și când S3</h2>
+    <p>
+      Diferența ține de apă și de teren. S1P nu are cerințe de rezistență la apă și nici talpă cu crampoane, așa că se
+      potrivește spațiilor uscate, cu podea plană, unde există risc de a călca pe obiecte ascuțite: depozite, ateliere,
+      hale. S3 adaugă fața care rezistă la apă și talpa cu crampoane, de care ai nevoie pe șantier, afară și pe ude. Dacă
+      oamenii stau mult în apă sau în noroi, S7 rezistă la apă ca încălțăminte întreagă.
+    </p>
+    <p>
+      Clasa potrivită pentru fiecare post o stabilește angajatorul, după evaluarea riscurilor
+      (<a class="guide-link" href="https://legislatie.just.ro/Public/DetaliiDocument/249634" rel="noopener">HG nr. 1.048/2006, art. 14</a>).
+      Tot angajatorul dă echipamentul individual de protecție, gratuit (art. 10).
+    </p>
+  </section>
+
+  <section aria-labelledby="perforare">
+    <h2 id="perforare">P, PL sau PS: ce fel de protecție la perforare</h2>
+    <p>Din ediția 2022, litera de după clasă îți spune din ce e lamela antiperforație și cu ce cui a fost testată:</p>
+    <dl class="mt-4 space-y-3">
+      <div class="border-l-2 border-yp-white/20 pl-4">
+        <dt class="text-yp-white font-medium">P (S1P, S3)</dt>
+        <dd>Lamelă metalică, testată cu un cui de 4,5 mm.</dd>
+      </div>
+      <div class="border-l-2 border-yp-white/20 pl-4">
+        <dt class="text-yp-white font-medium">PL (S1PL, S3L)</dt>
+        <dd>Lamelă nemetalică, testată cu un cui de 4,5 mm.</dd>
+      </div>
+      <div class="border-l-2 border-yp-white/20 pl-4">
+        <dt class="text-yp-white font-medium">PS (S1PS, S3S)</dt>
+        <dd>Lamelă nemetalică, testată cu un cui de 3 mm. Cuiul mai subțire apasă pe o suprafață mai mică, deci testul e mai greu de trecut.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section aria-labelledby="schimbari">
+    <h2 id="schimbari">Ce s-a schimbat față de ediția 2011</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>Rezistența la alunecare pe plăci ceramice cu soluție de detergent a devenit cerință de bază. Marcajul SR înseamnă testul suplimentar, pe plăci ceramice cu glicerină.</li>
+      <li>Rezistența tălpii la uleiuri și combustibili nu mai e obligatorie. Dacă talpa o are, pe etichetă apare FO.</li>
+      <li>Marcajul P se folosește doar pentru lamelele metalice. Cele nemetalice primesc PL sau PS.</li>
+      <li>Au apărut clasele S6 și S7, pentru încălțămintea care rezistă la apă în întregime (WR).</li>
+      <li>Au apărut marcaje noi, de exemplu LG (aderență pe scări) și SC (capacul de la vârf rezistă la abraziune).</li>
+    </ul>
+    <p class="mt-4">
+      MASCOT explică faptul că modelele certificate după ediția 2011 își păstrează certificarea până expiră certificatul și
+      că modelele lui certificate după ediția 2022 nu sunt mai bune decât cele certificate după ediția 2011.
+    </p>
+  </section>
+
+  <section aria-labelledby="catalog">
+    <h2 id="catalog">Încălțămintea de protecție din catalogul You Protect</h2>
+    {footwear.length > 0 ? (
+      <>
+        <p>
+          În catalog avem acum {footwear.length === 1 ? 'un model' : `${footwear.length} modele`} certificate EN ISO 20345,
+          în clasele {classes.join(' și ')}:
+        </p>
+        <ul class="mt-4 space-y-1">
+          {footwear.map((f) => (
+            <li>
+              <a class="guide-link inline-block py-2" href={`/produse/${f.id}/`}>{f.name}</a>
+              {f.cls && <span class="text-yp-white/60"> · {f.cls}</span>}
+            </li>
+          ))}
+        </ul>
+        {!hasS1P && (
+          <p class="mt-4">
+            Modele S1P nu avem acum în catalog. Dacă evaluarea de risc îți cere S1P,
+            <a class="guide-link" href="/cere-oferta/">scrie-ne în cererea de ofertă</a> și verificăm ce putem aduce.
+          </p>
+        )}
+      </>
+    ) : (
+      <p>
+        <a class="guide-link" href="/cere-oferta/">Scrie-ne în cererea de ofertă</a> ce clasă îți trebuie și îți recomandăm modele.
+      </p>
+    )}
+    <RiskFreeTesting variant="box" class="mt-8" />
+  </section>
+</GuideLayout>

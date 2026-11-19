@@ -1,0 +1,140 @@
+// Ghidurile de la /ghiduri/, pentru întrebările la care You Protect nu apărea în prima măsurătoare ChatGPT (18.11.2026,
+// scripts/seo/ai-prompts.json). Reguli de adevăr (D-2026-11-19-03):
+//   - fiecare fapt despre un standard sau o lege are sursa în `sources` și pe pagină;
+//   - fără prețuri și fără cifre de cost: le dăm în ofertă, iar calculatorul lucrează cu prețurile vizitatorului;
+//   - recomandările de clasă sunt atribuite cui le face (de exemplu Centexbel); alegerea o face angajatorul, după
+//     evaluarea riscurilor (HG nr. 1.048/2006, art. 14).
+// Modelele din catalog pomenite în ghiduri se generează din fișele de produs.
+import type { CategoryKey } from './catalog-taxonomy.ts';
+
+export interface GuideSource {
+  label: string;
+  url: string;
+}
+
+export interface Guide {
+  slug: string;
+  /** Titlul din Google; layout-ul adaugă „ | You Protect”. */
+  title: string;
+  description: string;
+  /** H1. */
+  heading: string;
+  /** Textul de pe pagina /ghiduri/ și din legăturile de pe paginile de categorie. */
+  summary: string;
+  /** Categoriile din catalog la care ghidul e relevant: paginile lor trimit la el. */
+  categories: CategoryKey[];
+  /** Data publicării și a ultimei verificări a surselor (AAAA-LL-ZZ). */
+  published: string;
+  updated: string;
+  sources: GuideSource[];
+}
+
+export const GUIDES_HREF = '/ghiduri/';
+
+const HG_1048: GuideSource = {
+  label: 'Portal Legislativ: HG nr. 1.048/2006 privind utilizarea echipamentelor individuale de protecție, republicată',
+  url: 'https://legislatie.just.ro/Public/DetaliiDocument/249634',
+};
+
+export const GUIDES: Guide[] = [
+  {
+    slug: 's1p-sau-s3',
+    title: 'S1P vs S3: diferența la încălțămintea de protecție',
+    description:
+      'Ce au în comun S1P și S3, ce adaugă S3 (fața rezistentă la apă și talpa cu crampoane) și ce înseamnă P, PL, PS, S3S și S7 după EN ISO 20345:2022.',
+    heading: 'S1P sau S3: care e diferența la încălțămintea de protecție',
+    summary:
+      'Ce au în comun cele două clase, ce adaugă S3, ce înseamnă P, PL și PS și ce s-a schimbat în ediția 2022 a standardului EN ISO 20345.',
+    categories: ['incaltaminte'],
+    published: '2026-11-19',
+    updated: '2026-11-19',
+    sources: [
+      { label: 'MASCOT: EN ISO 20345', url: 'https://mascotworkwear.com/en/en-iso-20345' },
+      { label: 'Atlas: EN ISO 20345:2022', url: 'https://www.atlasschuhe.de/en/technology/en-iso-203452022.html' },
+      { label: 'Safety Jogger: EN ISO 20345:2022', url: 'https://www.safetyjogger.com/en/eu/technical/iso_20345_2022' },
+      {
+        label: 'Ejendals (Jalas): EN ISO 20345, cerințe și metode de testare',
+        url: 'https://www.ejendals.com/no/jalas/sikkerhetsstandarder-fottoy/en-iso-20345--krav-til-vernesko/',
+      },
+      HG_1048,
+    ],
+  },
+  {
+    slug: 'clase-vizibilitate-en-iso-20471',
+    title: 'EN ISO 20471: ce clasă de vizibilitate îți trebuie',
+    description:
+      'Clasele 1, 2 și 3 din EN ISO 20471, suprafețele minime de material fluorescent și reflectorizant și ce clasă se recomandă pentru lucru lângă drum.',
+    heading: 'EN ISO 20471: ce clasă de vizibilitate îți trebuie lângă drum',
+    summary:
+      'Ce înseamnă clasele 1, 2 și 3, ce suprafețe minime cere fiecare, cum ajungi la clasa 3 cu un set și ce clasă se recomandă pentru lucru lângă trafic.',
+    categories: ['reflectorizante'],
+    published: '2026-11-19',
+    updated: '2026-11-19',
+    sources: [
+      {
+        label: 'Centexbel: îmbrăcămintea de avertizare după EN ISO 20471:2013+A1:2016',
+        url: 'https://www.centexbel.be/en/problem-solving/testing/high-visibility-clothing-according-en-iso-204712013a12016',
+      },
+      { label: 'MASCOT: EN ISO 20471', url: 'https://mascotworkwear.com/en/en-iso-20471' },
+      HG_1048,
+    ],
+  },
+  {
+    slug: 'cost-echipament-protectie-muncitor',
+    title: 'Cât costă echipamentul de protecție pe muncitor',
+    description:
+      'Ce echipament de protecție poate cere un șantier, cine îl plătește și cum calculezi costul pe an și pe zi de purtare pentru fiecare muncitor din echipă.',
+    heading: 'Cât costă echipamentul de protecție pentru un muncitor din construcții',
+    summary:
+      'Ce echipament poate fi necesar pe un șantier, cine îl plătește și cum calculezi costul pe an și pe zi de purtare, cu prețurile tale.',
+    categories: [],
+    published: '2026-11-19',
+    updated: '2026-11-19',
+    sources: [HG_1048],
+  },
+];
+
+export function guideHref(guide: Guide): string {
+  return `${GUIDES_HREF}${guide.slug}/`;
+}
+
+export function guideBySlug(slug: string): Guide {
+  const guide = GUIDES.find((g) => g.slug === slug);
+  if (!guide) throw new Error(`Ghidul „${slug}” nu există în src/lib/guides.ts.`);
+  return guide;
+}
+
+export function guidesForCategory(key: CategoryKey): Guide[] {
+  return GUIDES.filter((g) => g.categories.includes(key));
+}
+
+/** „19 noiembrie 2026”, în ora României (build-ul rulează în UTC). */
+export function formatGuideDate(iso: string): string {
+  return new Intl.DateTimeFormat('ro-RO', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/Bucharest',
+  }).format(new Date(`${iso}T12:00:00Z`));
+}
+
+/**
+ * Clasa EN ISO 20345 din certificările unei fișe („S3S”, „S7S”, „S1PL”), sau null.
+ * Codurile vin din fișe: „S3S” sau „EN ISO 20345:2022 S7S FO SR”.
+ */
+export function footwearClass(certifications: { code: string }[]): string | null {
+  for (const c of certifications) {
+    const m = c.code.match(/\b(SB|S[1-7](?:P[LS]?|[LS])?)\b/);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+/** Clasa EN ISO 20471 din certificările unei fișe („EN ISO 20471, clasa 3” → 3), sau null. */
+export function hiVisClass(certifications: { code: string }[]): number | null {
+  for (const c of certifications) {
+    const m = c.code.match(/EN ISO 20471[^0-9]*clasa\s*([123])\b/i);
+    if (m) return Number(m[1]);
+  }
+  return null;
+}

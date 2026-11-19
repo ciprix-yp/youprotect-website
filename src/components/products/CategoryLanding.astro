@@ -10,6 +10,7 @@ import { cardSrc } from '../../lib/catalog-images.js';
 import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
 import { jsonLd } from '../../lib/json-ld';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
+import { guideHref, guidesForCategory } from '../../lib/guides';
 import { SITE } from '../../lib/site';
 
 interface Props {
@@ -26,6 +27,7 @@ const brands = [...new Set(products.map((e) => e.data.supplier.brand))].sort(roC
 const count = products.length;
 const href = `/produse/${page.slug}/`;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const guides = guidesForCategory(page.key);
 
 const faq: { q: string; a: string; link?: { href: string; label: string } }[] = [
   {
@@ -129,6 +131,17 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
       </li>
     ))}
   </ul>
+
+  {guides.length > 0 && (
+    <aside class="mt-10 max-w-3xl border-l-2 border-yp-yellow pl-4" aria-label="Ghiduri">
+      {guides.map((g) => (
+        <p>
+          <span class="block text-xs uppercase tracking-[0.16em] text-yp-yellow">Ghid</span>
+          <a href={guideHref(g)} class="inline-block py-2 text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{g.heading}</a>
+        </p>
+      ))}
+    </aside>
+  )}
 
   <CertificationsTable products={products} headingClass={sectionTitle} />
 

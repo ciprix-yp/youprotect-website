@@ -1,0 +1,147 @@
+---
+// Ghid: clasele EN ISO 20471 și ce clasă îți trebuie lângă drum. Suprafețele minime și recomandările pe clase vin de la
+// Centexbel și MASCOT (sursele din src/lib/guides.ts); modelele din catalog se generează din fișele de produs.
+import { getCollection } from 'astro:content';
+import GuideLayout, { type GuideFaq } from '../../components/guides/GuideLayout.astro';
+import { categoryPageFor } from '../../lib/catalog-categories';
+import { guideBySlug, hiVisClass } from '../../lib/guides';
+import { PERSONALIZATION_PAGE } from '../../lib/personalization';
+import { SITE } from '../../lib/site';
+
+const guide = guideBySlug('clase-vizibilitate-en-iso-20471');
+const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
+const hiVis = (await getCollection('products', ({ data }) => data.status === 'published'))
+  .map((e) => ({ id: e.id, name: e.data.name, cls: hiVisClass(e.data.certifications) }))
+  .filter((p): p is { id: string; name: string; cls: number } => p.cls !== null)
+  .sort((a, b) => b.cls - a.cls || roCollator.compare(a.name, b.name));
+const categoryPage = categoryPageFor('reflectorizante');
+
+const answer =
+  'Hainele de avertizare pentru lucru lângă trafic se certifică după EN ISO 20471, care are trei clase; clasa 3 dă cea mai mare vizibilitate. Centexbel, centru belgian de testare și certificare pentru textile, recomandă orientativ clasa 2 pentru lucrări rutiere și construcții urbane și clasa 3 pentru drumuri cu viteză mare și lucru noaptea pe autostradă. Clasa pentru fiecare post o alege angajatorul, după evaluarea riscurilor.';
+
+// Suprafețele minime vizibile, în m² (Centexbel, MASCOT), și recomandarea orientativă a Centexbel.
+const classes = [
+  { cls: 3, background: '0,80 m²', reflective: '0,20 m²', use: 'Cel mai înalt nivel. Drumuri cu viteză mare, lucru noaptea pe autostradă.' },
+  { cls: 2, background: '0,50 m²', reflective: '0,13 m²', use: 'Nivel intermediar. Lucrări rutiere, construcții urbane.' },
+  { cls: 1, background: '0,14 m²', reflective: '0,10 m²', use: 'Riscuri mici, de exemplu lucru în afara drumului.' },
+];
+
+const faq: GuideFaq[] = [
+  {
+    q: 'Ce clasă EN ISO 20471 trebuie să aibă o geacă reflectorizantă pentru lucru lângă drum?',
+    a: 'Clasa o alege angajatorul, după evaluarea riscurilor (HG nr. 1.048/2006, art. 14). Orientativ, Centexbel recomandă clasa 2 pentru lucrări rutiere și construcții urbane și clasa 3 pentru drumuri cu viteză mare și lucru noaptea pe autostradă. Clasa 3 este cel mai înalt nivel de vizibilitate din EN ISO 20471.',
+  },
+  {
+    q: 'Ce înseamnă clasele 1, 2 și 3 din EN ISO 20471?',
+    a: 'Clasa arată cât material vizibil are haina. Clasa 3 cere cel puțin 0,80 m² de material fluorescent și 0,20 m² de bandă reflectorizantă, clasa 2 cel puțin 0,50 m² și 0,13 m², iar clasa 1 cel puțin 0,14 m² și 0,10 m².',
+  },
+  {
+    q: 'Pot ajunge la clasa 3 cu o geacă și o pereche de pantaloni reflectorizanți?',
+    a: 'Da, dacă producătorul a certificat combinația ca set. MASCOT, de exemplu, arată că două produse certificate EN ISO 20471 pot forma împreună un set de clasa 3 și marchează pe etichetă grupa Hi-Vis, ca să știi ce piese se potrivesc.',
+  },
+  {
+    q: 'Pot pune logo-ul firmei pe o geacă reflectorizantă?',
+    a: 'Da, în limita dată de producător pentru acel model, ca haina să păstreze suprafața minimă de material fluorescent și reflectorizant cerută de clasa ei.',
+    link: { href: PERSONALIZATION_PAGE.href, label: PERSONALIZATION_PAGE.linkLabel },
+  },
+  {
+    q: 'Cine plătește hainele reflectorizante ale angajaților?',
+    a: 'Angajatorul. Potrivit HG nr. 1.048/2006, art. 10, echipamentul individual de protecție se distribuie gratuit de angajator, care se ocupă și de întreținerea, repararea și înlocuirea lui.',
+  },
+  {
+    q: 'De unde cumpăr geci reflectorizante clasa 3 pentru firmă, în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar livrarea se face în toată România. Hainele le poți personaliza cu logo-ul firmei, în limita dată de producător.`,
+    link: categoryPage ? { href: `/produse/${categoryPage.slug}/`, label: 'Vezi îmbrăcămintea reflectorizantă din catalog' } : undefined,
+  },
+];
+---
+
+<GuideLayout guide={guide} answer={answer} faq={faq}>
+  <section aria-labelledby="clase">
+    <h2 id="clase">Clasele 1, 2 și 3: cât material vizibil cere fiecare</h2>
+    <p>
+      EN ISO 20471 împarte îmbrăcămintea de avertizare în trei clase, după suprafața minimă de material fluorescent (fondul,
+      vizibil ziua) și de bandă reflectorizantă (vizibilă noaptea, în lumina farurilor). Cu cât suprafața e mai mare, cu
+      atât clasa e mai mare.
+    </p>
+    <div class="mt-6 overflow-x-auto" tabindex="0" role="region" aria-label="Tabel: suprafețele minime pe clase, derulează orizontal">
+      <table class="w-full text-sm text-left border-collapse">
+        <caption class="sr-only">Suprafețele minime EN ISO 20471 pe clase și recomandarea orientativă Centexbel</caption>
+        <thead>
+          <tr class="border-b border-yp-white/20">
+            <th scope="col" class="py-3 pr-3 font-medium text-yp-white">Clasa</th>
+            <th scope="col" class="py-3 px-2 font-medium text-yp-white">Suprafețe minime</th>
+            <th scope="col" class="py-3 pl-2 font-medium text-yp-white">Orientativ, după Centexbel</th>
+          </tr>
+        </thead>
+        <tbody>
+          {classes.map((c) => (
+            <tr class="border-b border-yp-white/10 align-top">
+              <th scope="row" class="py-3 pr-3 font-medium text-yp-yellow whitespace-nowrap">Clasa {c.cls}</th>
+              <td class="py-3 px-2">
+                <span class="block whitespace-nowrap">{c.background} fluorescent</span>
+                <span class="block whitespace-nowrap">{c.reflective} reflectorizant</span>
+              </td>
+              <td class="py-3 pl-2">{c.use}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="drum">
+    <h2 id="drum">Ce clasă îți trebuie lângă drum</h2>
+    <p>
+      <a class="guide-link" href="https://legislatie.just.ro/Public/DetaliiDocument/249634" rel="noopener">HG nr. 1.048/2006</a>
+      nu fixează o clasă anume. Anexa 3 a hotărârii trece lucrările în apropierea vehiculelor în mișcare, asfaltarea și semnalizarea rutieră printre activitățile care pot
+      cere echipament pentru semnalizarea vizuală a prezenței lucrătorului. Clasa o alege angajatorul, după evaluarea riscurilor
+      (art. 14), și tot el dă echipamentul, gratuit (art. 10).
+    </p>
+    <p>
+      Ca reper, Centexbel recomandă clasa 2 pentru lucrări rutiere și construcții urbane și clasa 3 pentru drumuri cu viteză
+      mare și lucru noaptea pe autostradă. Dacă oamenii tăi lucrează lângă trafic rapid sau pe întuneric, clasa 3 îi face
+      cel mai vizibili.
+    </p>
+  </section>
+
+  <section aria-labelledby="set">
+    <h2 id="set">Clasa 3 dintr-o singură haină sau dintr-un set</h2>
+    <p>
+      Ajungi la clasa 3 în două feluri: cu o haină certificată singură în clasa 3, de exemplu o geacă, sau cu un set de piese
+      pe care producătorul l-a certificat împreună. MASCOT arată că două produse certificate EN ISO 20471 pot forma un set de
+      clasa 3 și marchează pe etichetă grupa Hi-Vis, ca să vezi ce piese se combină. La MASCOT, salopetele cu pieptar intră
+      într-un set certificat doar dacă haina de sus se poartă peste pieptar.
+    </p>
+  </section>
+
+  <section aria-labelledby="logo">
+    <h2 id="logo">Logo pe haina reflectorizantă</h2>
+    <p>
+      Logo-ul acoperă o parte din materialul fluorescent, iar haina trebuie să păstreze suprafața minimă a clasei ei. De aceea
+      producătorul dă, pentru fiecare model, o limită pentru logo. Le vezi pe
+      <a class="guide-link" href={PERSONALIZATION_PAGE.href}>pagina de personalizare</a>.
+    </p>
+  </section>
+
+  <section aria-labelledby="catalog">
+    <h2 id="catalog">Hainele reflectorizante din catalogul You Protect</h2>
+    {hiVis.length > 0 ? (
+      <>
+        <p>Modelele certificate EN ISO 20471 din catalog, cu clasa declarată de producător:</p>
+        <ul class="mt-4 space-y-1">
+          {hiVis.map((p) => (
+            <li>
+              <a class="guide-link inline-block py-2" href={`/produse/${p.id}/`}>{p.name}</a>
+              <span class="text-yp-white/60"> · clasa {p.cls}</span>
+            </li>
+          ))}
+        </ul>
+      </>
+    ) : (
+      <p>
+        <a class="guide-link" href="/cere-oferta/">Scrie-ne în cererea de ofertă</a> ce clasă îți trebuie și îți recomandăm modele.
+      </p>
+    )}
+  </section>
+</GuideLayout>
