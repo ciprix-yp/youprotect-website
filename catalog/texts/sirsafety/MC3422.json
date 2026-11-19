@@ -1,0 +1,150 @@
+{
+  "model": "MC3422",
+  "slug": "combinezon-protectie-chimica-tip-3b-sir-safety-chemical-bio-mc3422",
+  "status": "review",
+  "riskFreeTesting": false,
+  "keyword": "combinezon de protecție chimică tip 3B",
+  "name": "Combinezon de protecție chimică tip 3B Sir Safety Chemical Bio",
+  "category": "combinezoane",
+  "industries": [
+    "productie",
+    "constructii",
+    "energie",
+    "alimentar"
+  ],
+  "primaryColour": "E0",
+  "summary": "Combinezon de protecție chimică tip 3B de unică folosință, din polipropilenă cu film de polietilenă, certificat și tip 4B, 5B și 6B. Cusăturile termosudate nu lasă lichidele să treacă, iar genunchii sunt întăriți.",
+  "description": [
+    "Combinezonul de protecție chimică tip 3B Sir Safety Chemical Bio e din polipropilenă cu film de polietilenă, de 90 g/m². Gluga, manșetele, talia și gleznele elastice îl țin comod și stabil pe corp, iar buclele pentru degetul mare țin mâneca pe încheietură și sub mănușă, ca să nu urce când te miști. La genunchi are un material de întărire, care crește rezistența mecanică acolo unde uzura e mai mare.",
+    "Te simți protejat pe mai multe planuri: Chemical Bio face barieră la praful fin, la stropii de substanțe chimice lichide și la lichide, inclusiv anorganice, la agenții infecțioși, precum bacterii, virusuri și alte microorganisme, și la contaminarea radioactivă sub formă de particule. Cusăturile termosudate împiedică pătrunderea lichidelor și a substanțelor chimice prin cusături, iar tratamentul antistatic completează protecția. Se închide cu două fermoare: unul cu cursor dublu, celălalt acoperit de o bandă adezivă.",
+    "Pentru firmă, Chemical Bio MC3422 este EIP de categoria III, conform Regulamentului (UE) 2016/425, cu certificările EN 14605 tip 3B și 4B, EN ISO 13982-1 tip 5B, EN 13034 tip 6B, EN 14126, EN 1073-2 și EN 1149-5. E de unică folosință și nu necesită întreținere, iar o cutie are 12 bucăți. Producătorul îl recomandă în agricultură, industria alimentară, curățenie și spitale, construcții și lucrări de drumuri, industria chimică-farmaceutică și petrochimică, servicii și meserii."
+  ],
+  "benefits": [
+    "Protecție la jeturi și pulverizări de lichide: tip 3B și 4B conform EN 14605.",
+    "Barieră la praf fin și stropi: tip 5B conform EN ISO 13982-1 și tip 6B conform EN 13034.",
+    "Protecție biologică: EN 14126, împotriva agenților infecțioși precum bacterii și virusuri.",
+    "Protecție la particule radioactive: contaminare radioactivă sub formă de particule, conform EN 1073-2.",
+    "Lichidele nu trec prin cusături: cusături termosudate.",
+    "Mâneca stă pe loc: bucle pentru degetul mare, sub mănușă."
+  ],
+  "material": "Polipropilenă cu film de polietilenă",
+  "weight": "90 g/m²",
+  "certifications": [
+    {
+      "code": "EN 14605 tip 3B și 4B",
+      "label": "Îmbrăcăminte de protecție chimică tip 3 (jeturi de substanțe chimice lichide) și tip 4 (pulverizări). Litera B arată că protecția e testată și pentru agenți biologici."
+    },
+    {
+      "code": "EN ISO 13982-1 tip 5B",
+      "label": "Îmbrăcăminte de protecție chimică tip 5: protecție împotriva particulelor solide din aer, inclusiv praful fin. B: testat și pentru agenți biologici."
+    },
+    {
+      "code": "EN 13034 tip 6B",
+      "label": "Îmbrăcăminte de protecție chimică tip 6: protecție limitată împotriva stropilor ușori de substanțe chimice lichide. B: testat și pentru agenți biologici."
+    },
+    {
+      "code": "EN 14126",
+      "label": "Îmbrăcăminte de protecție împotriva agenților infecțioși. Conform fișei tehnice: bacterii, virusuri și alte microorganisme."
+    },
+    {
+      "code": "EN 1073-2",
+      "label": "Îmbrăcăminte de protecție împotriva contaminării radioactive sub formă de particule."
+    },
+    {
+      "code": "EN 1149-5",
+      "label": "Îmbrăcăminte de protecție cu proprietăți electrostatice. Conform fișei tehnice, combinezonul Chemical Bio are tratament antistatic."
+    }
+  ],
+  "specs": [
+    {
+      "label": "Tip",
+      "value": "Combinezon de protecție chimică, de unică folosință"
+    },
+    {
+      "label": "Tipuri de protecție",
+      "value": "Tip 3B și 4B (EN 14605), tip 5B (EN ISO 13982-1), tip 6B (EN 13034)"
+    },
+    {
+      "label": "Alte protecții",
+      "value": "Agenți infecțioși (EN 14126), contaminare radioactivă sub formă de particule (EN 1073-2), antistatic (EN 1149-5)"
+    },
+    {
+      "label": "Cusături",
+      "value": "Termosudate"
+    },
+    {
+      "label": "Închidere",
+      "value": "Două fermoare: unul cu cursor dublu, celălalt acoperit de o bandă adezivă"
+    },
+    {
+      "label": "Elastic",
+      "value": "Glugă, manșete, talie și glezne; bucle pentru degetul mare"
+    },
+    {
+      "label": "Întărituri",
+      "value": "Material de întărire la genunchi"
+    },
+    {
+      "label": "Întreținere",
+      "value": "Nu necesită; combinezon de unică folosință"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "12"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [
+    "Certificarea EN 1073-2 a combinezonului Chemical Bio MC3422 se referă la contaminarea cu particule radioactive, nu la protecția împotriva radiațiilor."
+  ],
+  "care": [
+    "Combinezonul Chemical Bio MC3422 este de unică folosință și, conform fișei tehnice, nu necesită întreținere."
+  ],
+  "colourNames": {},
+  "sizeNote": null,
+  "faq": [
+    {
+      "q": "Ce tipuri de protecție are combinezonul Sir Safety Chemical Bio MC3422?",
+      "a": "Tip 3B și 4B conform EN 14605, tip 5B conform EN ISO 13982-1 și tip 6B conform EN 13034. Combinezonul Chemical Bio MC3422 este certificat și EN 14126 (agenți infecțioși), EN 1073-2 (contaminare radioactivă sub formă de particule) și EN 1149-5 (proprietăți electrostatice). Este EIP de categoria III, conform Regulamentului (UE) 2016/425."
+    },
+    {
+      "q": "Ce înseamnă tip 3B la combinezonul Chemical Bio MC3422?",
+      "a": "Tip 3 înseamnă protecție împotriva jeturilor de substanțe chimice lichide, conform EN 14605, iar litera B arată că protecția e testată și pentru agenți biologici. Combinezonul Sir Safety Chemical Bio MC3422 are, pe lângă tipul 3B, și tipurile 4B, 5B și 6B."
+    },
+    {
+      "q": "Protejează combinezonul Chemical Bio MC3422 împotriva virusurilor și bacteriilor?",
+      "a": "Da. Combinezonul Sir Safety Chemical Bio MC3422 este certificat EN 14126, standardul pentru îmbrăcămintea de protecție împotriva agenților infecțioși, iar fișa tehnică indică protecție împotriva bacteriilor, virusurilor și altor microorganisme."
+    },
+    {
+      "q": "Este comod combinezonul Chemical Bio MC3422?",
+      "a": "Da. Combinezonul Sir Safety Chemical Bio MC3422 are glugă, manșete, talie și glezne elastice, care îl țin comod și stabil pe corp, și bucle pentru degetul mare, care țin mâneca pe încheietură și sub mănușă când te miști. Genunchii sunt întăriți, pentru rezistență mecanică mai mare."
+    },
+    {
+      "q": "Este combinezonul Chemical Bio MC3422 de unică folosință?",
+      "a": "Da. Fișa tehnică Sir Safety descrie Chemical Bio MC3422 ca pe un combinezon de unică folosință, care nu necesită întreținere. Se găsește în mărimile M, L, XL și 2XL, în galben, câte 12 bucăți într-o cutie."
+    },
+    {
+      "q": "De unde pot comanda combinezonul de protecție chimică Sir Safety Chemical Bio în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, iar noi livrăm combinezoanele Sir Safety Chemical Bio MC3422 oriunde în România."
+    }
+  ],
+  "seo": {
+    "title": "Combinezon de protecție chimică tip 3B MC3422",
+    "description": "Combinezon de protecție chimică tip 3B Sir Safety Chemical Bio MC3422: tip 4B, 5B, 6B, EN 14126, cusături termosudate. Ofertă de la You Protect."
+  },
+  "reviewNotes": [
+    "Material: pagina web scrie „multilayer polypropylene and polyethylene”; fișa tehnică scrie „Polypropylene with polyethylene film”. Am urmat fișa.",
+    "Închidere: pagina web descrie fermoar dublu ascuns cu clapă adezivă, clapă interioară și clapă exterioară adezivă dublă; fișa spune două fermoare, unul cu cursor dublu și celălalt acoperit de o bandă adezivă. Am urmat fișa; de confirmat cu Sir Safety.",
+    "Elastic: pagina web enumeră gluga, manșetele și gleznele; fișa adaugă talia. Am urmat fișa.",
+    "Cusături: pagina web scrie „heat-sealed taped seams”, fișa „heat-sealed seams” care fac costumul „completely waterproof”. Am scris doar că împiedică pătrunderea lichidelor și a substanțelor chimice prin cusături (formularea din FEATURES); am evitat „complet impermeabil” și „benzi” (doar pe pagina web).",
+    "Omis de pe pagina web: „Wide range”, „Enhanced protection against chemical agents, even in high concentrations”, „Remarkable mechanical resistance”, „Recommended for protection against multiple chemical agents” și „guarantees protection against radioactive contamination”: afirmații vagi sau absolute. Am păstrat doar faptul măsurabil: întăritura de la genunchi.",
+    "Tipul 3 nu e explicat în fișă (doar „CHEMICAL PROTECTION TYPE 3/4, EN 14605, Type: 3B 4B”). Explicația „jeturi de substanțe chimice lichide” vine din sensul general al EN 14605; de verificat.",
+    "Nota „particule radioactive, nu radiații” vine din domeniul de aplicare al EN 1073-2, nu din fișă (fișa: „radioactive contamination in the form of particles”). Fișa nu dă clasa EN 1073-2 și nici clasele EN 14126; de cerut de la Sir Safety dacă le vrem pe pagină.",
+    "„Pack of 12 pieces” (pagina) și „QUANTITY PER CARTON 12” (fișa) coincid.",
+    "Fără sfaturi de utilizare (îmbrăcare, combinare cu mănuși, cizme sau mască, eliminare după folosire): sursa nu le dă. Fiind EIP de categoria III, merită cerute instrucțiunile de utilizare de la Sir Safety.",
+    "Industrii: „productie” din industria chimică-farmaceutică, „constructii” din construcții și lucrări de drumuri, „energie” din industria petrochimică, „alimentar” din „FOOD - CLEANING - HOSPITAL”. Agricultura și „TERTIARY - TRADES” nu au corespondent."
+  ]
+}

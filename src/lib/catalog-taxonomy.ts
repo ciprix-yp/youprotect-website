@@ -13,6 +13,9 @@ export const CATEGORIES = {
   manusi: 'Mănuși de protecție',
   'protectia-ochilor': 'Ochelari și viziere de protecție',
   antifoane: 'Antifoane',
+  'protectia-respiratorie': 'Protecția respiratorie',
+  'protectie-cadere': 'Protecție la cădere',
+  combinezoane: 'Combinezoane de protecție',
 } as const;
 
 export const INDUSTRIES = {

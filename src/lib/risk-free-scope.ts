@@ -1,5 +1,6 @@
 // Ce produse nu intră în „Testare fără riscuri” (decizia owner-ului din 19.11.2026, D-2026-11-19-06): căștile,
-// ochelarii, vizierele, antifoanele și mănușile electroizolante. O cască ține ani, deci 90 de zile nu arată cât rezistă,
+// ochelarii, vizierele, antifoanele și mănușile electroizolante; apoi, după aceeași logică (D-2026-11-19-08), măștile,
+// filtrele, hamurile, lonjele și combinezoanele de protecție chimică. O cască ține ani, deci 90 de zile nu arată cât rezistă,
 // iar echipamentul electroizolant nu se testează cu returnare. Fiecare fișă de produs are câmpul `riskFreeTesting`
 // (implicit true); textele de mai jos se generează din el, ca să rămână adevărate când se schimbă catalogul.
 import { CATEGORIES, type CategoryKey } from './catalog-taxonomy.ts';
