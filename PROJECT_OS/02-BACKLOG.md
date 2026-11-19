@@ -285,7 +285,11 @@ Format task:
   fișele de produs. Legate din catalog și din breadcrumb-ul fișelor. `tests/catalog-categories.test.mjs`.
 - Vizibilitatea în ChatGPT: `scripts/seo/ai-visibility.mjs` pune lunar cele 15 întrebări din `ai-prompts.json` prin
   OpenAI API (căutare pe web, locația Satu Mare). Rezultatele stau în afara repo-ului.
-- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); pagina de personalizare (prin parteneri);
+- Pagina de personalizare (19.11.2026): `/haine-de-lucru-personalizate/` (D-2026-11-19-01). Zonele de logo și
+  limitele EN ISO 20471 se generează din fișele de produs (`src/lib/personalization.ts`). Legată din footer, homepage,
+  pagina Satu Mare, fișele cu zone de logo și întrebările de pe paginile de categorie. `/personalizare` → 301.
+  `tests/personalization.test.mjs`.
+- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); paginile de marcă MASCOT și Sir Safety;
   volumele din Keyword Planner.
 
 ---

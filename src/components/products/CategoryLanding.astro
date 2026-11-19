@@ -8,6 +8,7 @@ import { CATEGORIES, INDUSTRIES } from '../../lib/catalog-taxonomy';
 import { cardSrc } from '../../lib/catalog-images.js';
 import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
 import { jsonLd } from '../../lib/json-ld';
+import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { SITE } from '../../lib/site';
 
 interface Props {
@@ -25,17 +26,22 @@ const count = products.length;
 const href = `/produse/${page.slug}/`;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 
-const faq = [
+const faq: { q: string; a: string; link?: { href: string; label: string } }[] = [
   {
     q: `Ce certificări au ${page.plural} din catalogul You Protect?`,
     a: products
       .map((e) => `${e.data.name}: ${e.data.certifications.map((c) => c.code).join(', ') || 'fără certificare declarată de producător'}.`)
       .join(' '),
   },
-  {
-    q: `Pot personaliza ${page.plural} cu logo-ul firmei?`,
-    a: 'Da. Personalizarea cu logo o facem prin parteneri, prin broderie, serigrafie sau transfer termic, în funcție de produs. Locul și mărimea logo-ului le stabilim împreună la ofertă.',
-  },
+  ...(page.logo
+    ? [
+        {
+          q: `Pot personaliza ${page.plural} cu logo-ul firmei?`,
+          a: 'Da. Personalizarea cu logo o facem prin parteneri, prin broderie, serigrafie sau transfer termic, în funcție de produs. Locul și mărimea logo-ului le stabilim împreună la ofertă.',
+          link: { href: PERSONALIZATION_PAGE.href, label: PERSONALIZATION_PAGE.linkLabel },
+        },
+      ]
+    : []),
   {
     q: `De unde comand ${page.plural} pentru firma mea?`,
     a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar livrarea se face în toată România.`,
@@ -156,7 +162,12 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
       {faq.map((item) => (
         <div>
           <dt class="text-yp-white font-medium">{item.q}</dt>
-          <dd class="mt-2 text-yp-white/75 leading-relaxed">{item.a}</dd>
+          <dd class="mt-2 text-yp-white/75 leading-relaxed">
+            {item.a}
+            {item.link && (
+              <a href={item.link.href} class="block w-fit py-2 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
+            )}
+          </dd>
         </div>
       ))}
     </dl>
