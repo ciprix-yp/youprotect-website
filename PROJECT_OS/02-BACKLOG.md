@@ -289,8 +289,11 @@ Format task:
   limitele EN ISO 20471 se generează din fișele de produs (`src/lib/personalization.ts`). Legată din footer, homepage,
   pagina Satu Mare, fișele cu zone de logo și întrebările de pe paginile de categorie. `/personalizare` → 301.
   `tests/personalization.test.mjs`.
-- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); paginile de marcă MASCOT și Sir Safety;
-  volumele din Keyword Planner.
+- Pagini de marcă (19.11.2026): `/produse/mascot/` și `/produse/sir-safety/` (D-2026-11-19-02,
+  `src/lib/catalog-brands.ts`, `BrandLanding.astro`). Legate din catalog („Pe mărci”), din fișele de produs (numele
+  mărcii) și din logo-urile de pe homepage. `tests/catalog-brands.test.mjs`.
+- Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); a doua măsurătoare ChatGPT în decembrie;
+  volumele din Keyword Planner; ghidurile (S1P vs S3, EN ISO 20471, costul echipării).
 
 ---
 

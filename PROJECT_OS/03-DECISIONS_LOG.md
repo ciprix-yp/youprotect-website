@@ -284,3 +284,19 @@
     adică din datele producătorului.
 - Corectură: pe pagina de încălțăminte, întrebarea „Pot personaliza bocancii… cu logo? Da.” nu avea acoperire (nicio
   fișă de încălțăminte nu are zone de logo). `CategoryPage.logo` o scoate acolo; testul verifică regula.
+
+## D-2026-11-19-02
+- Context: în prima măsurătoare ChatGPT (18.11.2026), la „Cine vinde MASCOT în România?” și „Cine vinde Sir Safety
+  în România?” You Protect nu apărea; erau citați workwear.ro, topprotectie.ro și mondo-romania.ro. MASCOT și Sir
+  Safety fac împreună cea mai mare parte din vânzări (D-2026-11-11-01).
+- Implementare: pagini de marcă la `/produse/<slug>/`, generate pentru mărcile cu cel puțin două produse publicate.
+  Modelele, grupate pe categorii, certificările și zonele de logo vin din fișele de produs.
+- Reguli de adevăr:
+  - Despre producător scriem doar ce spune site-ul lui oficial, cu sursa pe pagină (verificat pe 19.11.2026):
+    - MASCOT: daneză, fondată în 1982, sediul la vest de Silkeborg, fabrici proprii în Vietnam și Laos.
+    - Sir Safety System: italiană, din Assisi, pornită în 1979 de Gino Sirci.
+  - Despre You Protect: „vinde produse <marcă> firmelor și livrează în toată România”. Fără „distribuitor
+    autorizat”, „oficial” sau „exclusiv”: statutul nu e documentat. Testul blochează aceste cuvinte.
+  - Modelele din afara catalogului: „întreabă-ne și verificăm dacă îl putem aduce”, fără promisiune.
+- Dacă You Protect apare pe lista de distribuitori a unei mărci (mesajele către producători), afirmația se poate
+  întări, cu link la lista lor.

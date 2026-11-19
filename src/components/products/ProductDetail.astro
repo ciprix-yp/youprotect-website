@@ -6,6 +6,7 @@ import { CATEGORIES, INDUSTRIES, INDUSTRY_PAGES } from '../../lib/catalog-taxono
 import { jsonLd } from '../../lib/json-ld';
 import { activeCategoryPages } from '../../lib/catalog-categories';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
+import { activeBrandPages } from '../../lib/catalog-brands';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
 
 interface Props {
@@ -21,6 +22,7 @@ const categoryLabel = CATEGORIES[p.category];
 const published = await getCollection('products', ({ data }) => data.status === 'published');
 const categoryPage = preview ? undefined : activeCategoryPages(published.map((e) => e.data)).find((c) => c.key === p.category);
 const categoryHref = categoryPage ? `/produse/${categoryPage.slug}/` : null;
+const brandPage = preview ? undefined : activeBrandPages(published.map((e) => e.data)).find((b) => b.brand === p.supplier.brand);
 const primary = p.colours[0];
 const mainImage = primary.images[0].src;
 // Formularul arată produsul și îl trimite cu cererea (MultiStepForm, câmpul „produs”).
@@ -137,7 +139,11 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         <p class="text-xs font-medium uppercase tracking-[0.2em] text-yp-yellow mb-3">{categoryLabel}</p>
         <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{p.name}</h1>
         <p class="mt-2 text-sm text-yp-white/50">
-          {p.supplier.brand} · cod {p.supplier.model}{p.supplier.range && ` · gama ${p.supplier.range}`}
+          {brandPage ? (
+            <a href={`/produse/${brandPage.slug}/`} class="underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{p.supplier.brand}</a>
+          ) : (
+            p.supplier.brand
+          )}{' '}· cod {p.supplier.model}{p.supplier.range && ` · gama ${p.supplier.range}`}
         </p>
         <p class="mt-4 text-base text-yp-white/80 leading-relaxed">{p.summary}</p>
       </header>

@@ -1,0 +1,38 @@
+---
+// Tabelul „Certificările fiecărui model”, pe paginile de categorie și de marcă. Datele vin din fișele de produs.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  products: CollectionEntry<'products'>[];
+  headingClass: string;
+}
+
+const { products, headingClass } = Astro.props;
+---
+
+<section class="mt-14" aria-labelledby="certificari">
+  <h2 id="certificari" class={headingClass}>Certificările fiecărui model</h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left text-yp-white/80 border-collapse">
+      <thead>
+        <tr class="border-b border-yp-white/20 text-yp-white">
+          <th scope="col" class="py-3 pr-4 font-medium">Model</th>
+          <th scope="col" class="py-3 pr-4 font-medium">Marcă</th>
+          <th scope="col" class="py-3 font-medium">Certificări declarate de producător</th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((e) => (
+          <tr class="border-b border-yp-white/10 align-top">
+            <th scope="row" class="py-3 pr-4 font-normal">
+              <a href={`/produse/${e.id}/`} class="text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{e.data.name}</a>
+            </th>
+            <td class="py-3 pr-4 whitespace-nowrap">{e.data.supplier.brand}</td>
+            <td class="py-3">{e.data.certifications.map((c) => c.code).join(' · ') || '—'}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-3 text-xs text-yp-white/50">Ce înseamnă fiecare marcaj găsești pe fișa produsului.</p>
+</section>
