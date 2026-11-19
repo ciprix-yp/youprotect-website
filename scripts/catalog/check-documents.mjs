@@ -22,6 +22,20 @@ const docs = readdirSync(PRODUCTS)
 
 let broken = 0;
 for (const doc of docs) {
+  if (doc.url.startsWith('/documente/')) {
+    // Găzduit de noi (public/documente/): fișierul există și e PDF.
+    let head = '';
+    try {
+      head = readFileSync(join(ROOT, 'public', doc.url)).subarray(0, 5).toString();
+    } catch {
+      head = 'lipsește';
+    }
+    if (head !== '%PDF-') {
+      console.error(`${doc.product}: ${doc.label} nu e PDF (${head}): public${doc.url}`);
+      broken++;
+    }
+    continue;
+  }
   const url = new URL(doc.url);
   if (url.protocol !== 'https:' || !ALLOWED_HOSTS.has(url.hostname)) {
     console.error(`${doc.product}: gazdă neașteptată ${url.hostname} (adaug-o în ALLOWED_HOSTS dacă e a unui furnizor)`);

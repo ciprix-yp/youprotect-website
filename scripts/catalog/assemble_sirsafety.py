@@ -22,6 +22,7 @@ from lint_texts import lint  # noqa: E402  (same folder; works with python -I)
 
 NBSP = "\u00a0"  # spațiu nedespărțit între număr și unitate
 CHECK_IMAGES = True  # --no-image-check: validează textele înainte de descărcarea pozelor
+PUBLIC_DOCS = Path("public/documente")
 
 
 class AssemblyError(Exception):
@@ -135,8 +136,14 @@ def assemble(source, text, maps, public_dir):
         specs.append({"label": "Gramaj", "value": text["weight"].replace(" g/m²", f"{NBSP}g/m²")})
     specs += text.get("specs", [])
 
-    documents = [{"type": "fisa-tehnica", "label": "Fișă tehnică (în engleză)", "url": source["datasheet"]["url"],
-                  "language": "en"}]
+    documents = []
+    # Declarația în română din portalul B2B (fetch_declarations_sirsafety.py), găzduită pe site.
+    ro_doc = PUBLIC_DOCS / text["slug"] / "declaratie-de-conformitate-ro.pdf"
+    if ro_doc.exists():
+        documents.append({"type": "declaratie-conformitate", "label": "Declarație de conformitate UE (în română)",
+                          "url": f"/documente/{text['slug']}/{ro_doc.name}", "language": "ro"})
+    documents.append({"type": "fisa-tehnica", "label": "Fișă tehnică (în engleză)", "url": source["datasheet"]["url"],
+                      "language": "en"})
     # `declaration` vine din extract_sirsafety.py: linkul e un PDF verificat; fără el, fișa nu pune linkul.
     decl = source.get("declaration")
     notes = list(text.get("notes", []))
