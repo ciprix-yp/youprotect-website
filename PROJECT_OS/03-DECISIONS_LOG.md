@@ -401,3 +401,19 @@
   riscuri” nu se aplică la măști, filtre, hamuri, lonje și combinezoane.
 - Catalogul are 48 de produse publicate; paginile noi de categorie: /produse/masti-de-protectie/,
   /produse/hamuri-de-siguranta/, /produse/combinezoane-de-protectie/.
+
+## D-2026-11-19-10
+- Context: owner-ul a dat acces la portalul B2B Sir Safety (b2b.sirsafety.com; credențialele în Keychain,
+  `SIRSAFETY_B2B_USER` / `SIRSAFETY_B2B_PASSWORD`, doar local). Folosit doar în citire, în „Articoli”; fără prețuri,
+  stocuri sau comenzi.
+- Ce oferă: declarația de conformitate în română pentru orice produs (`export/getCD`, langID 51), generată la cerere,
+  fără date de client; fișa tehnică în engleză/germană/franceză (`export/getDS`, langID 2/54/55), nu și în română;
+  instrucțiunile de utilizare nu sunt în portal.
+- Verificare pe toate cele 34 de produse Sir Safety, declarația față de certificările de pe site:
+  - categoriile EIP corespund peste tot; viziera Speed FB1211 e EN ISO 16321-1 (pagina lor web spunea greșit EN 166);
+  - Virus 8500 MC3439 există doar în M–3XL (pagina lor web spunea S–3XL);
+  - Chemical Bio MC3422: declarația nu listează EN 13034 (tip 6B), deși fișa tehnică îl declară. Scos de pe site, cu o
+    notă pe fișă care explică diferența;
+  - mănușile Electro MA1814: declarația Secura (atașată) listează EN 60903 și EN ISO 21420, categoria III, certificat
+    UE/1241/2026/1437 (CIOP-PIB, nr. 1437). Tensiunea de rezistență nu apare în declarație.
+- Declarațiile lipsă (MC1111, MC1113, MC3012, MC3014) există în portal; găzduirea lor pe site e decizia owner-ului.
