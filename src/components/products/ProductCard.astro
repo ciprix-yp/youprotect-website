@@ -1,181 +1,35 @@
 ---
-interface Props {
-  id: string;
-  name: string;
-  slug: string;
-  categoryName: string;
-  industry?: string | null;
-  shortDescription: string;
-  producatorName?: string;
-  featured?: boolean;
-  merchandisingTags?: string[];
-  thumbnailUrl?: string | null;
-}
+// Cardul de produs: aceeași structură și aceeași înălțime pe fiecare rând (poza pătrată, numele pe două rânduri,
+// un rând pentru standard), ca grila să rămână aliniată oricât de lung e numele.
+import type { CardProps } from '../../lib/product-card';
 
-const {
-  id,
-  name,
-  slug,
-  categoryName,
-  industry = null,
-  shortDescription,
-  producatorName = "You Protect",
-  featured = false,
-  merchandisingTags = [],
-  thumbnailUrl = null,
-} = Astro.props;
-
-const imageUrl = thumbnailUrl || "/hero-youprotect-highvis.webp";
-const imageAlt = `${name} - ${categoryName}`;
-const normalizedTags = merchandisingTags
-  .filter((tag) => !(featured && tag.toLowerCase() === "bestseller"))
-  .slice(0, 2);
-const primaryTag = featured ? "Bestseller" : (normalizedTags[0] ?? null);
+type Props = CardProps;
+const { slug, name, brand, categoryName, spec, image } = Astro.props;
+const href = `/produse/${slug}/`;
+const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
 ---
 
 <article
-  class="group relative flex flex-col w-full h-full border border-yp-white/10 bg-yp-black/20 hover:bg-yp-black/60 hover:border-yp-yellow/50 transition-all duration-500 overflow-hidden"
+  class="group relative flex h-full flex-col border border-yp-white/10 bg-yp-black transition-colors hover:border-yp-yellow/60 focus-within:border-yp-yellow"
 >
-  <!-- Wireframe corner accents -->
-  <div
-    class="corner-accent absolute top-0 left-0 w-2 h-2 border-t border-l border-yp-white/20 group-hover:border-yp-yellow/50 transition-colors z-20"
-  >
+  <div class="relative aspect-square overflow-hidden bg-white">
+    <img src={image} alt={name} width="600" height="600" loading="lazy" class="absolute inset-0 h-full w-full object-contain p-3 sm:p-5" />
   </div>
-  <div
-    class="corner-accent absolute top-0 right-0 w-2 h-2 border-t border-r border-yp-white/20 group-hover:border-yp-yellow/50 transition-colors z-20"
-  >
-  </div>
-
-  <div
-    class="relative w-full overflow-hidden bg-white border-b border-yp-white/10 aspect-[4/5] object-contain"
-  >
-    <a href={`/produse/${slug}/`} class="block w-full h-full">
-      <img
-        src={imageUrl}
-        alt={imageAlt}
-        loading="lazy"
-        class="w-full h-full object-contain p-2 sm:p-4 transition-transform duration-700 ease-out group-hover:scale-105"
-      />
-    </a>
-
-    <div class="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 flex flex-col gap-2">
-      {
-        primaryTag && (
-          <span class="inline-flex items-center px-2 py-1 text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] bg-yp-black border border-yp-white/20 text-yp-white font-medium shadow-sm group-hover:border-yp-yellow group-hover:text-yp-yellow transition-colors">
-            {primaryTag}
-          </span>
-        )
-      }
-    </div>
-
-    <!-- Hover quick actions overlay -->
-    <div
-      class="quick-actions-overlay absolute inset-0 bg-gradient-to-t from-yp-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none hidden sm:flex items-end p-6"
-    >
-      <a
-        href={`/produse/${slug}/`}
-        title="Vezi detaliile tehnice"
-        class="pointer-events-auto ml-auto flex items-center justify-center w-10 h-10 border border-yp-yellow text-yp-yellow hover:bg-yp-yellow hover:text-yp-black rounded-sm shadow-lg transition-all duration-300"
-      >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-        </svg>
-      </a>
-    </div>
-  </div>
-
-  <div class="flex flex-col flex-1 p-3 sm:p-5">
-    <div class="flex justify-between items-start gap-4 mb-2 sm:mb-3">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.1em] sm:tracking-[0.2em] text-yp-white/60 group-hover:text-yp-white transition-colors"
-      >
-        {industry && <span class="hidden sm:inline">{industry} • </span>}{categoryName}
-      </p>
-      <p
-        class="hidden sm:block text-xs font-medium uppercase tracking-[0.2em] text-yp-white/60"
-      >
-        {producatorName}
-      </p>
-    </div>
-
-    <h3
-      class="product-title text-sm sm:text-lg md:text-xl font-light text-yp-white leading-snug sm:tracking-wide mb-2 sm:mb-3 group-hover:text-yp-yellow transition-colors duration-300"
-    >
-      <a href={`/produse/${slug}/`}>
-        <span class="absolute inset-0 z-0"></span>
-        {name}
-      </a>
+  <div class="flex flex-1 flex-col p-3 sm:p-4">
+    <p class="truncate text-xs text-yp-white/60">{brand}</p>
+    <h3 class="mt-1 min-h-[3lh] text-sm font-medium leading-snug text-yp-white line-clamp-3 sm:text-base">
+      <a href={href} class="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none">{name}</a>
     </h3>
-
-    <div class="hidden sm:block mt-auto">
-      <p class="text-xs text-yp-white/50 font-light leading-relaxed line-clamp-2">
-        {shortDescription || "Echipament tehnic din portofoliul You Protect."}
-      </p>
-    </div>
-
-    <div
-      class="specs-footer mt-auto sm:mt-4 pt-3 sm:pt-4 border-t border-yp-white/5 flex items-center justify-between opacity-80 group-hover:opacity-100 transition-opacity"
-    >
-      <span class="text-xs uppercase tracking-widest text-yp-white/70"
-        >Specificații</span
+    <p class="mb-3 mt-2 min-h-[1lh] truncate text-xs text-yp-white/75" title={spec ?? undefined}>{spec}</p>
+    <div class="mt-auto flex items-center justify-between gap-2 border-t border-yp-white/10 pt-3">
+      <span class="hidden truncate text-xs text-yp-white/60 sm:block">{categoryName}</span>
+      <a
+        href={offerHref}
+        class="relative z-10 shrink-0 py-2 text-xs font-medium text-yp-yellow underline-offset-4 hover:underline"
+        aria-label={`Cere ofertă: ${name}`}
       >
-      <svg
-        class="w-3 h-3 text-yp-white/60 group-hover:text-yp-yellow"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        ><path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
-      >
+        Cere ofertă
+      </a>
     </div>
   </div>
 </article>
-
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Mobile Intersection Observer Active States */
-  :global(article.mobile-active .corner-accent) {
-    border-color: rgba(228, 255, 0, 0.5); /* matching tailwind yellow */
-  }
-
-  :global(article.mobile-active img) {
-    transform: scale(1.05);
-    opacity: 1;
-    mix-blend-mode: normal;
-  }
-
-  :global(article.mobile-active .quick-actions-overlay) {
-    opacity: 1;
-  }
-
-  :global(article.mobile-active .product-title) {
-    color: #e3fc02; /* yp-yellow */
-  }
-
-  :global(article.mobile-active .specs-footer) {
-    opacity: 1;
-  }
-
-  :global(article.mobile-active .specs-footer svg) {
-    color: #e3fc02;
-  }
-</style>

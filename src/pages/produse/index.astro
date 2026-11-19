@@ -1,791 +1,348 @@
 ---
-import { getCollection } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProductCard from "../../components/products/ProductCard.astro";
-import RiskFreeTesting from "../../components/global/RiskFreeTesting.astro";
-import { CATEGORIES, INDUSTRIES } from "../../lib/catalog-taxonomy";
-import { cardSrc } from "../../lib/catalog-images.js";
-import { activeCategoryPages } from "../../lib/catalog-categories";
-import { activeBrandPages } from "../../lib/catalog-brands";
+// Catalogul (/produse/): antet scurt, categoriile ca dale egale, apoi grila cu filtre. Produsele publicate vin din
+// src/content/products/; ordinea implicită urmează categoriile (CATEGORIES), ca modelele de același tip să stea
+// împreună. Cardurile au aceeași structură peste tot (ProductCard + src/lib/product-card.ts).
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/products/ProductCard.astro';
+import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
+import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
+import { activeCategoryPages, modelsLabel } from '../../lib/catalog-categories';
+import { activeBrandPages } from '../../lib/catalog-brands';
+import { toCardProps } from '../../lib/product-card';
+import { jsonLd } from '../../lib/json-ld';
 
-// Catalogul vine din src/content/products/ (doar produsele publicate), nu din Directus sau DB.
-const roCollator = new Intl.Collator("ro", { sensitivity: "base" });
-const entries = (
-  await getCollection("products", ({ data }) => data.status === "published")
-).sort((a, b) => roCollator.compare(a.data.name, b.data.name));
+const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
+const categoryOrder = Object.keys(CATEGORIES) as CategoryKey[];
+const entries = (await getCollection('products', ({ data }) => data.status === 'published')).sort(
+  (a, b) =>
+    categoryOrder.indexOf(a.data.category) - categoryOrder.indexOf(b.data.category) ||
+    roCollator.compare(a.data.name, b.data.name),
+);
+const datas = entries.map((e) => e.data);
+const categoryPages = activeCategoryPages(datas);
+const brandPages = activeBrandPages(datas);
 
-// Paginile de categorie (de la două produse în sus), legate de deasupra grilei: Google le găsește din catalog.
-const categoryPages = activeCategoryPages(entries.map((e) => e.data));
-const brandPages = activeBrandPages(entries.map((e) => e.data));
+// Dalele de categorie: în ordinea din taxonomie, cu poza primului model. Categoria cu pagină duce la pagina ei;
+// cea fără pagină (un singur model) filtrează grila de mai jos (?categorie=<cheie>).
+const categories = categoryOrder
+  .map((key) => {
+    const items = entries.filter((e) => e.data.category === key);
+    if (items.length === 0) return null;
+    const page = categoryPages.find((c) => c.key === key);
+    return {
+      key,
+      label: CATEGORIES[key],
+      count: items.length,
+      image: toCardProps(items[0]).image,
+      href: page ? `/produse/${page.slug}/` : `?categorie=${key}#modele`,
+    };
+  })
+  .filter((c): c is NonNullable<typeof c> => c !== null);
 
-const products = entries.map(({ id, data }) => {
-  const industries = data.industries.map((key) => INDUSTRIES[key]);
-  return {
-    id,
-    slug: id,
-    name: data.name,
-    shortDescription: data.summary,
-    // Varianta de 600 px (scripts/catalog/card-images.mjs); poza mare are 1200 px.
-    thumbnailUrl: cardSrc(data.colours[0].images[0].src),
-    featured: false,
-    categoryName: CATEGORIES[data.category],
-    industry: industries.join(", "),
-    industries,
-    producatorName: data.supplier.brand,
-    createdAt: data.source.assembledAt,
-    merchandisingTags: [] as string[],
-  };
-});
+const industries = (Object.keys(INDUSTRIES) as (keyof typeof INDUSTRIES)[])
+  .map((key) => ({ key, label: INDUSTRIES[key], count: entries.filter((e) => e.data.industries.includes(key)).length }))
+  .filter((i) => i.count > 0);
 
-const categoryCountMap = new Map<string, number>();
-for (const product of products) {
-  const currentCount = categoryCountMap.get(product.categoryName) ?? 0;
-  categoryCountMap.set(product.categoryName, currentCount + 1);
-}
+const brands = [...new Set(entries.map((e) => toCardProps(e).brand))]
+  .map((name) => ({
+    name,
+    count: entries.filter((e) => toCardProps(e).brand === name).length,
+    page: brandPages.find((b) => b.brand.replace('®', '') === name),
+  }))
+  .sort((a, b) => b.count - a.count || roCollator.compare(a.name, b.name));
+// „MASCOT, Sir Safety și Climax”: mărcile cu pagină au link.
+const brandParts = brands.map((b, i) => ({
+  text: b.page ? b.page.name : b.name,
+  href: b.page ? `/produse/${b.page.slug}/` : null,
+  sep: i === brands.length - 1 ? '' : i === brands.length - 2 ? ' și ' : ', ',
+}));
 
-const categorySummary = [...categoryCountMap.entries()]
-  .map(([name, count]) => ({ name, count }))
-  .sort((left, right) => left.name.localeCompare(right.name, "ro-RO"));
-
-const industryCountMap = new Map<string, number>();
-for (const product of products) {
-  for (const industry of product.industries) {
-    industryCountMap.set(industry, (industryCountMap.get(industry) ?? 0) + 1);
-  }
-}
-
-const industrySummary = [...industryCountMap.entries()]
-  .map(([name, count]) => ({ name, count }))
-  .sort((left, right) => left.name.localeCompare(right.name, "ro-RO"));
-
-const hasExactTag = (product: (typeof products)[number], target: string) =>
-  product.merchandisingTags.some((tag) => tag.trim().toLowerCase() === target);
-
-const hasSeasonTag = (product: (typeof products)[number]) =>
-  product.merchandisingTags.some((tag) =>
-    tag.trim().toLowerCase().startsWith("sezon"),
-  );
-
-const bestsellerCount = products.filter((product) =>
-  hasExactTag(product, "bestseller"),
-).length;
-const noveltyCount = products.filter((product) =>
-  hasExactTag(product, "noutate"),
-).length;
-const seasonalCount = products.filter((product) =>
-  hasSeasonTag(product),
-).length;
-
-const hasProducts = products.length > 0;
-const hasTags = products.some((product) => product.merchandisingTags.length > 0);
-const hasDistinctDates = new Set(products.map((product) => product.createdAt)).size > 1;
-
-// „Recomandare rapidă”: doar opțiunile pentru care există produse.
-const recommendOptions = [
-  { label: "Pentru șantier", industry: INDUSTRIES.constructii },
-  { label: "Pentru producție", industry: INDUSTRIES.productie },
-  { label: "Pentru logistică", industry: INDUSTRIES.logistica },
-  { label: "Pentru industria alimentară", industry: INDUSTRIES.alimentar },
-].filter((option) => industryCountMap.has(option.industry));
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Acasă', item: siteOrigin.href },
+    { '@type': 'ListItem', position: 2, name: 'Catalog', item: new URL('/produse/', siteOrigin).href },
+  ],
+};
+const filterHeading = 'mb-3 text-sm font-medium text-yp-white';
+const filterOption =
+  'flex w-full items-center justify-between gap-3 py-1.5 text-left text-sm text-yp-white/70 hover:text-yp-white aria-pressed:font-medium aria-pressed:text-yp-yellow';
 ---
 
 <BaseLayout
   title="Catalog echipamente de protecție și haine de lucru"
-  description="Catalogul You Protect: încălțăminte de protecție, haine reflectorizante, geci, pantaloni și tricouri de lucru MASCOT și Sir Safety. Cere ofertă pentru echipă."
+  description="Catalogul You Protect: încălțăminte, haine reflectorizante și de lucru, căști, mănuși, măști și hamuri MASCOT și Sir Safety. Cere ofertă pentru echipă."
 >
-  <section
-    class="relative pt-32 pb-16 md:pt-40 md:pb-24 border-b border-yp-white/10 overflow-hidden"
-  >
-    <div class="absolute inset-0 pointer-events-none">
-      <div
-        class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-yp-white/5 blur-[100px]"
-      >
-      </div>
-    </div>
+  <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
 
-    <div class="relative max-w-7xl mx-auto px-4">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.2em] text-yp-white/50 mb-4"
-        data-aos="fade-down"
-      >
-        Catalog produse
-      </p>
-      <h1
-        class="text-4xl md:text-5xl font-light tracking-tight leading-tight text-yp-white max-w-4xl"
-        data-aos="fade-up"
-      >
-        Echipamente de protecție,<br/>
-        haine de lucru pentru companii<br/>
-        <span class="text-yp-white/50">care vor imagine profesională</span>
-      </h1>
-      <p
-        class="mt-6 text-base md:text-lg text-neutral-400 font-light leading-relaxed max-w-2xl"
-        data-aos="fade-up"
-        data-aos-delay="100"
-      >
-        Explorează rapid categoriile potrivite echipei tale și cere o ofertă pentru selecția care se potrivește activității tale.
-      </p>
-
-      <div
-        class="mt-12 flex items-center gap-6 text-sm font-light text-yp-white/50 border-t border-yp-white/10 pt-6"
-        data-aos="fade-up"
-        data-aos-delay="200"
-      >
-        <span class="flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-yp-yellow animate-pulse"
-          ></span>
-          Selecție B2B pentru companii
-        </span>
-        <span class="flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-yp-white/40"></span>
-          Consultanță și ofertă personalizată
-        </span>
+  <section class="border-b border-yp-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <nav aria-label="Breadcrumb" class="mb-6 flex flex-wrap items-center text-sm text-yp-white/60">
+        <a href="/" class="inline-block py-2 hover:text-yp-yellow">Acasă</a>
+        <span class="mx-2" aria-hidden="true">/</span>
+        <span class="text-yp-white">Catalog</span>
+      </nav>
+      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div>
+          <h1 class="max-w-3xl font-heading text-3xl font-light leading-tight text-yp-white md:text-4xl">
+            Catalog echipamente de protecție și haine de lucru
+          </h1>
+          <p class="mt-4 max-w-2xl text-base leading-relaxed text-yp-white/75">
+            {modelsLabel(entries.length)} de la{' '}
+            {brandParts.map((part) => (<>{part.href ? <a href={part.href} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{part.text}</a> : part.text}{part.sep}</>))}, pentru
+            construcții, producție, logistică și energie. Prețul îl primești în ofertă, pentru cantitățile echipei tale.
+          </p>
+        </div>
+        <div class="flex flex-col gap-4 lg:max-w-sm">
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black transition-colors hover:bg-white">
+              Cere ofertă
+            </a>
+            <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-white/25 px-6 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow">
+              Discută cu un consultant
+            </a>
+          </div>
+          <RiskFreeTesting variant="inline" />
+        </div>
       </div>
-
-      <div class="mt-10 flex flex-col sm:flex-row gap-4 mb-4" data-aos="fade-up" data-aos-delay="300">
-        <a href="/cere-oferta/"
-            class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent w-fit">
-            Cere ofertă
-            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-        </a>
-        <a href="/programeaza-discutie/"
-            class="border border-yp-white/20 text-yp-white h-12 px-8 rounded-[4px] font-medium text-sm flex items-center justify-center gap-2 hover:bg-yp-white/5 hover:border-yp-white/40 transition-all duration-200 w-fit">
-            Programează o discuție
-            <svg class="w-4 h-4 text-yp-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </a>
-      </div>
-      <p class="text-xs text-yp-white/60 max-w-xl font-light" data-aos="fade-up" data-aos-delay="400">
-        Pentru construcții, producție, logistică, energie și servicii tehnice.
-      </p>
-      <div class="mt-6 max-w-xl" data-aos="fade-up" data-aos-delay="400">
-        <RiskFreeTesting variant="inline" />
-      </div>
-
     </div>
   </section>
 
-  <section class="max-w-7xl mx-auto px-4 py-8 md:py-16">
+  <section aria-labelledby="categorii" class="border-b border-yp-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-8 md:py-10">
+      <h2 id="categorii" class="mb-4 font-heading text-lg font-medium text-yp-white">Alege după tipul de echipament</h2>
+      <div class="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0" tabindex="0" role="region" aria-label="Categorii: derulează orizontal pe telefon">
+      <ul class="flex snap-x gap-3 sm:grid sm:grid-cols-4 lg:grid-cols-7">
+        {categories.map((c) => (
+          <li class="w-36 shrink-0 snap-start sm:w-auto">
+            <a href={c.href} class="group flex h-full flex-col border border-yp-white/10 transition-colors hover:border-yp-yellow focus-visible:border-yp-yellow">
+              <span class="relative block aspect-[4/3] overflow-hidden bg-white">
+                <img src={c.image} alt="" width="600" height="600" loading="lazy" class="absolute inset-0 h-full w-full object-contain p-3" />
+              </span>
+              <span class="flex flex-1 flex-col p-3">
+                <span class="min-h-[2lh] text-sm font-medium leading-snug text-yp-white group-hover:text-yp-yellow">{c.label}</span>
+                <span class="mt-1 text-xs text-yp-white/60">{modelsLabel(c.count)}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      </div>
+    </div>
+  </section>
 
-    <div class="flex flex-col lg:flex-row gap-10">
-      <!-- Sidebar Filters (Desktop) & Collapsible (Mobile) -->
-      <aside class="w-full lg:w-64 shrink-0 lg:sticky lg:top-28 h-fit z-30">
-        <div class="lg:hidden mb-4">
-          <button
-            id="mobile-filter-toggle"
-            type="button"
-            class="w-full bg-yp-black/80 border border-yp-white/20 text-yp-white py-3 px-4 flex justify-between items-center rounded-lg backdrop-blur-sm"
-          >
-            <span
-              class="text-sm font-medium uppercase tracking-widest text-yp-yellow"
-              >Filtrează Catalogul</span
-            >
-            <svg
-              id="mobile-filter-icon"
-              class="w-5 h-5 text-yp-white/50 transition-transform duration-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"></path></svg
-            >
-          </button>
-        </div>
-
-        <div
-          id="filter-wrapper"
-          class="hidden lg:block bg-yp-black/40 border border-yp-white/10 rounded-2xl p-6 backdrop-blur-sm"
-          data-aos="fade-right"
-          data-aos-delay="200"
+  <section id="modele" aria-labelledby="modele-titlu" class="mx-auto max-w-7xl scroll-mt-24 px-4 py-8 md:py-12">
+    <h2 id="modele-titlu" class="sr-only">Toate modelele</h2>
+    <div class="flex flex-col gap-8 lg:flex-row">
+      <aside class="shrink-0 lg:sticky lg:top-24 lg:h-fit lg:w-60" aria-label="Filtre">
+        <button
+          id="catalog-filter-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="catalog-filters"
+          class="flex w-full items-center justify-between border border-yp-white/20 px-4 py-3 text-sm font-medium text-yp-white lg:hidden"
         >
-          <div class="mb-6 pb-6 border-b border-yp-white/10">
-            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-              Căutare Rapidă
-            </h3>
-            <div class="relative">
-              <input
-                type="text"
-                id="catalog-search"
-                placeholder="Ex: Bocanci, vizibilitate..."
-                class="w-full bg-yp-gray/50 border border-yp-white/20 rounded-lg py-2.5 px-4 text-sm text-yp-white placeholder:text-yp-white/60 focus:outline-none focus:border-yp-yellow transition-colors"
-              />
-              <svg
-                class="absolute right-3 top-3 w-4 h-4 text-yp-white/60"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                ><path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg
-              >
-            </div>
-          </div>
-
-          <div class="mb-6">
-            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-              Categorie Produs
-            </h3>
-            <div class="flex flex-col gap-2" id="catalog-category-filters">
-              <button
-                type="button"
-                data-category-filter="all"
-                class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
-              >
-                Toate categoriile
-              </button>
-              {categorySummary.map(({ name: catName, count }) => (
-                <button
-                  type="button"
-                  data-category-filter={catName}
-                  class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
-                >
-                  {catName}
-                  <span class="text-xs text-yp-white/60">{count}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div class="mb-6 pb-6 border-b border-yp-white/10">
-            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-              Industrie / Utilizare
-            </h3>
-            <div class="flex flex-col gap-2" id="catalog-industry-filters">
-              <button
-                type="button"
-                data-industry-filter="all"
-                class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
-              >
-                Toate Industriile
-              </button>
-              {industrySummary.map(({ name: indName, count }) => (
-                <button
-                  type="button"
-                  data-industry-filter={indName}
-                  class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
-                >
-                  {indName}
-                  <span class="text-xs text-yp-white/60">{count}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div class="mb-6 pb-6 border-b border-yp-white/10">
-            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-              Recomandare Rapidă
-            </h3>
-            <div class="flex flex-col gap-2" id="catalog-recommend-filters">
-              <button
-                type="button"
-                data-recommend-filter="all"
-                class="text-left text-sm font-medium text-yp-yellow py-1 transition-colors hover:text-yp-yellow flex items-center justify-between"
-              >
-                Fără recomandare specifică
-              </button>
-              {recommendOptions.map(({ label: recName, industry }) => (
-                <button
-                  type="button"
-                  data-recommend-filter={industry}
-                  class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors flex items-center justify-between"
-                >
-                  {recName}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {hasTags && (
-          <div class="mb-6 pb-6 border-b border-yp-white/10">
-            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-              Curatoriat
-            </h3>
-            <div class="flex flex-col gap-2" id="catalog-tag-filters">
-              <button
-                type="button"
-                data-tag-filter="all"
-                class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white"
-              >
-                Orice fel
-              </button>
-              <button
-                type="button"
-                data-tag-filter="bestseller"
-                class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white"
-              >
-                Bestsellers
-              </button>
-              <button
-                type="button"
-                data-tag-filter="new"
-                class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white"
-              >
-                Noutăți Tehnice
-              </button>
-              <button
-                type="button"
-                data-tag-filter="seasonal"
-                class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white"
-              >
-                Sezonalitate
-              </button>
-            </div>
-          </div>
-          )}
-
+          <span>Filtre <span id="catalog-filter-count" class="text-yp-yellow"></span></span>
+          <svg class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div id="catalog-filters" class="mt-4 hidden space-y-6 lg:mt-0 lg:block">
           <div>
-            <h3 class="text-sm uppercase tracking-widest text-yp-white/50 mb-4">
-              Sortare
-            </h3>
-            <div class="flex flex-col gap-2" id="catalog-sort-filters">
-              <button
-                type="button"
-                data-sort-filter="relevance"
-                class="text-left text-sm font-medium text-yp-yellow py-1"
-              >
-                Relevanță
-              </button>
-              {hasDistinctDates && <button
-                type="button"
-                data-sort-filter="new"
-                class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors"
-              >
-                Noutăți
-              </button>}
-              <button
-                type="button"
-                data-sort-filter="az"
-                class="text-left text-sm font-light text-yp-white/60 py-1 hover:text-yp-white transition-colors"
-              >
-                Alfabetic (A-Z)
-              </button>
+            <label for="catalog-search" class={filterHeading + ' block'}>Caută în catalog</label>
+            <input
+              type="search"
+              id="catalog-search"
+              placeholder="Ex.: bocanci, cască, S3"
+              autocomplete="off"
+              class="w-full rounded-[4px] border border-yp-white/25 bg-yp-gray/40 px-3 py-2.5 text-sm text-yp-white placeholder:text-yp-white/50 focus:border-yp-yellow focus:outline-none"
+            />
+          </div>
+          <div>
+            <h3 class={filterHeading}>Categorie</h3>
+            <div class="flex flex-col" data-filter-group="category">
+              <button type="button" data-value="all" aria-pressed="true" class={filterOption}>Toate categoriile</button>
+              {categories.map((c) => (
+                <button type="button" data-value={c.key} aria-pressed="false" class={filterOption}>
+                  <span>{c.label}</span><span class="text-xs text-yp-white/50">{c.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 class={filterHeading}>Industrie</h3>
+            <div class="flex flex-col" data-filter-group="industry">
+              <button type="button" data-value="all" aria-pressed="true" class={filterOption}>Toate industriile</button>
+              {industries.map((i) => (
+                <button type="button" data-value={i.key} aria-pressed="false" class={filterOption}>
+                  <span>{i.label}</span><span class="text-xs text-yp-white/50">{i.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 class={filterHeading}>Marcă</h3>
+            <div class="flex flex-col" data-filter-group="brand">
+              <button type="button" data-value="all" aria-pressed="true" class={filterOption}>Toate mărcile</button>
+              {brands.map((b) => (
+                <button type="button" data-value={b.name} aria-pressed="false" class={filterOption}>
+                  <span>{b.name}</span><span class="text-xs text-yp-white/50">{b.count}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </aside>
 
-      <!-- Main Content Area -->
-      <div class="flex-1">
-        {
-          !hasProducts ? (
-            <div class="py-20 text-center">
-              <h2 class="text-3xl font-light text-yp-white">
-                Catalogul este în curs de actualizare.
-              </h2>
-              <p class="mt-4 text-yp-white/50 font-light max-w-xl mx-auto mb-8">
-                Dacă ai nevoie de o recomandare rapidă sau de o ofertă pentru echipa ta, ne poți contacta direct.
-              </p>
-              <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="/cere-oferta/"
-                    class="bg-yp-yellow text-yp-black h-12 px-8 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent">
-                    Cere ofertă
-                </a>
-                <a href="/programeaza-discutie/"
-                    class="border border-yp-white/20 text-yp-white h-12 px-8 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-yp-white/5 hover:border-yp-white/40 transition-all duration-200">
-                    Programează o discuție
-                </a>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <!-- Pre-grid orientational message -->
-              <div class="mb-8 p-6 bg-yp-black/40 border border-yp-white/10 rounded-2xl flex items-center text-sm font-light text-yp-white/80 leading-relaxed shadow-lg backdrop-blur-sm">
-                <p>Descoperi opțiunile, <strong class="text-yp-white font-medium">iar alegerea bună o facem împreună.</strong> Dacă ai deja o direcție clară, <a href="/cere-oferta/" class="text-yp-yellow underline hover:text-yp-white">cere o ofertă</a>. Dacă încă compari variante, <a href="/programeaza-discutie/" class="text-yp-yellow underline hover:text-yp-white">programează o discuție</a> și te ajutăm să filtrezi rapid ce merită.</p>
-              </div>
+      <div class="min-w-0 flex-1">
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-yp-white/10 pb-4">
+          <p id="catalog-count" class="text-sm text-yp-white/75" aria-live="polite">{modelsLabel(entries.length)}</p>
+          <div class="flex items-center gap-4">
+            <button id="catalog-reset" type="button" hidden class="py-2 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
+              Șterge filtrele
+            </button>
+            <label class="flex items-center gap-2 text-sm text-yp-white/75">
+              Ordine
+              <select id="catalog-sort" class="rounded-[4px] border border-yp-white/25 bg-yp-black px-2 py-2 text-sm text-yp-white focus:border-yp-yellow focus:outline-none">
+                <option value="category">pe categorii</option>
+                <option value="az">alfabetică</option>
+              </select>
+            </label>
+          </div>
+        </div>
 
-              {categoryPages.length > 0 && (
-                <nav aria-label="Categorii" class="mb-8">
-                  <h2 class="text-sm uppercase tracking-widest text-yp-white/50 mb-3">Pe categorii</h2>
-                  <ul class="flex flex-wrap gap-2">
-                    {categoryPages.map((c) => (
-                      <li>
-                        <a href={`/produse/${c.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">{c.heading}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              )}
+        <ul id="catalog-grid" class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+          {entries.map((e, index) => (
+            <li
+              data-catalog-item
+              data-order={index}
+              data-name={e.data.name.toLocaleLowerCase('ro-RO')}
+              data-category={e.data.category}
+              data-industries={`|${e.data.industries.join('|')}|`}
+              data-brand={toCardProps(e).brand}
+              data-search={`${e.data.name} ${CATEGORIES[e.data.category]} ${e.data.supplier.brand} ${e.data.certifications.map((c) => c.code).join(' ')}`.toLocaleLowerCase('ro-RO')}
+            >
+              <ProductCard {...toCardProps(e)} />
+            </li>
+          ))}
+        </ul>
 
-              {brandPages.length > 0 && (
-                <nav aria-label="Mărci" class="mb-8">
-                  <h2 class="text-sm uppercase tracking-widest text-yp-white/50 mb-3">Pe mărci</h2>
-                  <ul class="flex flex-wrap gap-2">
-                    {brandPages.map((b) => (
-                      <li>
-                        <a href={`/produse/${b.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">{b.name}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              )}
-
-              <div
-                id="catalog-grid"
-                class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
-              >
-                {products.map((product, index) => (
-                  <div
-                    data-catalog-item
-                    data-search-text={`${product.name} ${product.categoryName} ${product.industry || ""} ${product.shortDescription}`.toLowerCase()}
-                    data-original-index={index}
-                    data-category={product.categoryName}
-                    data-industries={`|${product.industries.join("|")}|`}
-                    data-is-bestseller={
-                      hasExactTag(product, "bestseller") ? "1" : "0"
-                    }
-                    data-is-new={hasExactTag(product, "noutate") ? "1" : "0"}
-                    data-is-seasonal={hasSeasonTag(product) ? "1" : "0"}
-                    data-sort-name={product.name.toLocaleLowerCase("ro-RO")}
-                    data-sort-created={product.createdAt}
-                    data-sort-featured={product.featured ? "1" : "0"}
-                    class=""
-                    data-aos="fade-up"
-                    data-aos-delay={String((index % 6) * 50)}
-                  >
-                    <ProductCard
-                      id={product.id}
-                      slug={product.slug}
-                      name={product.name}
-                      categoryName={product.categoryName}
-                      industry={product.industry}
-                      shortDescription={product.shortDescription}
-                      producatorName={product.producatorName}
-                      featured={product.featured}
-                      merchandisingTags={product.merchandisingTags}
-                      thumbnailUrl={product.thumbnailUrl}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div id="catalog-empty-filter" class="hidden mt-10 text-center text-yp-white/50 font-light py-20 border border-yp-white/10 rounded-sm">
-                <p class="mb-6">Nu ai găsit încă selecția potrivită?</p>
-                <div class="flex flex-col items-center justify-center">
-                  <p class="text-sm text-yp-white mb-6">Te ajutăm să alegi în funcție de activitate, echipă și nivelul de protecție necesar.</p>
-                  <a href="/programeaza-discutie/"
-                    class="bg-yp-yellow text-yp-black h-10 px-6 rounded-[4px] font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200">
-                    Programează o discuție
-                  </a>
-                </div>
-              </div>
-            </div>
-          )
-        }
+        <div id="catalog-empty" hidden class="border border-yp-white/10 px-6 py-16 text-center">
+          <p class="text-base text-yp-white">Niciun model nu se potrivește filtrelor alese.</p>
+          <p class="mx-auto mt-2 max-w-md text-sm text-yp-white/70">
+            Scrie-ne ce îți trebuie: aducem și modele care nu sunt în catalog.
+          </p>
+          <a href="/cere-oferta/" class="mt-6 inline-flex h-11 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black hover:bg-white">
+            Cere ofertă
+          </a>
+        </div>
       </div>
-      <!-- End Layout Flex -->
+    </div>
+  </section>
+
+  <section class="border-t border-yp-white/10 bg-[#050505]">
+    <div class="mx-auto max-w-3xl px-4 py-16 text-center md:py-20">
+      <h2 class="font-heading text-2xl font-light text-yp-white md:text-3xl">Nu trebuie să alegi singur dintre zeci de variante</h2>
+      <p class="mx-auto mt-4 max-w-2xl leading-relaxed text-yp-white/75">
+        Spune-ne ce activitate are echipa, în ce condiții lucrează și ce standard vrei să atingi. Îți propunem o selecție
+        potrivită, cu prețuri pentru cantitățile tale.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-yellow px-8 text-sm font-medium text-yp-black transition-colors hover:bg-white">
+          Cere ofertă
+        </a>
+        <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-white/25 px-8 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow">
+          Programează o discuție
+        </a>
+      </div>
     </div>
   </section>
 
   <script is:inline>
     (() => {
-      const categoryButtons = Array.from(
-        document.querySelectorAll("[data-category-filter]"),
-      );
-      const industryButtons = Array.from(
-        document.querySelectorAll("[data-industry-filter]"),
-      );
-      const recommendButtons = Array.from(
-        document.querySelectorAll("[data-recommend-filter]"),
-      );
-      const tagButtons = Array.from(
-        document.querySelectorAll("[data-tag-filter]"),
-      );
-      const sortButtons = Array.from(
-        document.querySelectorAll("[data-sort-filter]"),
-      );
-      const catalogItems = Array.from(
-        document.querySelectorAll("[data-catalog-item]"),
-      );
-      const catalogGridEl = document.getElementById("catalog-grid");
-      const emptyFilterEl = document.getElementById("catalog-empty-filter");
-      const searchInput = document.getElementById("catalog-search");
+      const grid = document.getElementById('catalog-grid');
+      if (!grid) return;
+      const items = Array.from(grid.querySelectorAll('[data-catalog-item]'));
+      const state = { category: 'all', industry: 'all', brand: 'all', query: '', sort: 'category' };
+      const groups = Array.from(document.querySelectorAll('[data-filter-group]'));
+      const search = document.getElementById('catalog-search');
+      const sort = document.getElementById('catalog-sort');
+      const count = document.getElementById('catalog-count');
+      const reset = document.getElementById('catalog-reset');
+      const empty = document.getElementById('catalog-empty');
+      const toggle = document.getElementById('catalog-filter-toggle');
+      const panel = document.getElementById('catalog-filters');
+      const activeCount = document.getElementById('catalog-filter-count');
+      const plural = new Intl.PluralRules('ro');
+      const models = (n) => (n === 1 ? '1 model' : `${n} ${plural.select(n) === 'other' ? 'de ' : ''}modele`);
 
-      const filterToggleBtn = document.getElementById("mobile-filter-toggle");
-      const filterWrapper = document.getElementById("filter-wrapper");
-      const filterIcon = document.getElementById("mobile-filter-icon");
-
-      if (filterToggleBtn && filterWrapper && filterIcon) {
-        filterToggleBtn.addEventListener("click", () => {
-          filterWrapper.classList.toggle("hidden");
-          filterIcon.classList.toggle("rotate-180");
-        });
+      const params = new URLSearchParams(window.location.search);
+      const fromUrl = params.get('categorie');
+      if (fromUrl && document.querySelector(`[data-filter-group="category"] [data-value="${CSS.escape(fromUrl)}"]`)) {
+        state.category = fromUrl;
       }
 
-      let activeCategory = "all";
-      let activeIndustry = "all";
-      let activeRecommend = "all";
-      let activeTag = "all";
-      let activeSort = "relevance";
-      let searchQuery = "";
-
-      const matchesTag = (item) => {
-        if (activeTag === "all") return true;
-        if (activeTag === "bestseller")
-          return item.getAttribute("data-is-bestseller") === "1";
-        if (activeTag === "new")
-          return item.getAttribute("data-is-new") === "1";
-        if (activeTag === "seasonal")
-          return item.getAttribute("data-is-seasonal") === "1";
-        return true;
-      };
-
-      const parseDateValue = (value) => {
-        const timestamp = Date.parse(value || "");
-        return Number.isNaN(timestamp) ? 0 : timestamp;
-      };
-
-      const compareItems = (left, right) => {
-        if (activeSort === "az") {
-          const leftName = left.getAttribute("data-sort-name") || "";
-          const rightName = right.getAttribute("data-sort-name") || "";
-          return leftName.localeCompare(rightName, "ro-RO");
+      const refresh = () => {
+        const q = state.query.trim().toLocaleLowerCase('ro-RO');
+        let visible = 0;
+        for (const item of items) {
+          const show =
+            (state.category === 'all' || item.dataset.category === state.category) &&
+            (state.industry === 'all' || item.dataset.industries.includes(`|${state.industry}|`)) &&
+            (state.brand === 'all' || item.dataset.brand === state.brand) &&
+            (!q || item.dataset.search.includes(q));
+          item.hidden = !show;
+          if (show) visible += 1;
         }
-
-        if (activeSort === "new") {
-          const leftCreated = parseDateValue(
-            left.getAttribute("data-sort-created"),
-          );
-          const rightCreated = parseDateValue(
-            right.getAttribute("data-sort-created"),
-          );
-          if (rightCreated !== leftCreated) return rightCreated - leftCreated;
-        }
-
-        const leftFeatured =
-          left.getAttribute("data-sort-featured") === "1" ? 1 : 0;
-        const rightFeatured =
-          right.getAttribute("data-sort-featured") === "1" ? 1 : 0;
-        if (rightFeatured !== leftFeatured) return rightFeatured - leftFeatured;
-
-        const leftBestseller =
-          left.getAttribute("data-is-bestseller") === "1" ? 1 : 0;
-        const rightBestseller =
-          right.getAttribute("data-is-bestseller") === "1" ? 1 : 0;
-        if (rightBestseller !== leftBestseller)
-          return rightBestseller - leftBestseller;
-
-        const leftNew = left.getAttribute("data-is-new") === "1" ? 1 : 0;
-        const rightNew = right.getAttribute("data-is-new") === "1" ? 1 : 0;
-        if (rightNew !== leftNew) return rightNew - leftNew;
-
-        const leftIndex = Number(
-          left.getAttribute("data-original-index") || "0",
+        const sorted = [...items].sort((a, b) =>
+          state.sort === 'az'
+            ? a.dataset.name.localeCompare(b.dataset.name, 'ro')
+            : Number(a.dataset.order) - Number(b.dataset.order),
         );
-        const rightIndex = Number(
-          right.getAttribute("data-original-index") || "0",
-        );
-        return leftIndex - rightIndex;
-      };
-
-      const refreshFilters = () => {
-        let visibleCount = 0;
-
-        catalogItems.forEach((item) => {
-          const category = item.getAttribute("data-category") || "";
-          const industries = item.getAttribute("data-industries") || "";
-
-          const categoryMatch =
-            activeCategory === "all" || category === activeCategory;
-
-          const industryMatch =
-            activeIndustry === "all" || industries.includes(`|${activeIndustry}|`);
-
-          // „Recomandare rapidă” filtrează tot după industrie (valoarea butonului = industria).
-          const recommendMatch =
-            activeRecommend === "all" || industries.includes(`|${activeRecommend}|`);
-
-          const tagMatch = matchesTag(item);
-
-          const textContent = item.getAttribute("data-search-text") || "";
-          const searchMatch =
-            !searchQuery || textContent.includes(searchQuery.toLowerCase());
-
-          // To display, must match Category AND (Industry OR Recommend) AND Tag AND Search
-          const isVisible =
-            categoryMatch && industryMatch && recommendMatch && tagMatch && searchMatch;
-
-          item.classList.toggle("hidden", !isVisible);
-          if (isVisible) {
-            visibleCount += 1;
+        for (const item of sorted) grid.appendChild(item);
+        for (const group of groups) {
+          const key = group.dataset.filterGroup;
+          for (const button of group.querySelectorAll('button')) {
+            button.setAttribute('aria-pressed', String(button.dataset.value === state[key]));
           }
-        });
-
-        if (emptyFilterEl) {
-          emptyFilterEl.classList.toggle("hidden", visibleCount > 0);
         }
-
-        if (catalogGridEl) {
-          const ordered = [...catalogItems].sort(compareItems);
-          ordered.forEach((item) => {
-            catalogGridEl.appendChild(item);
-          });
-        }
-
-        // Update button styles
-        categoryButtons.forEach((button) => {
-          const filterValue =
-            button.getAttribute("data-category-filter") || "all";
-          const isActive = filterValue === activeCategory;
-          button.classList.toggle("text-yp-yellow", isActive);
-          button.classList.toggle("font-medium", isActive);
-          button.classList.toggle("text-yp-white/60", !isActive);
-          button.classList.toggle("font-light", !isActive);
-        });
-
-        industryButtons.forEach((button) => {
-          const filterValue =
-            button.getAttribute("data-industry-filter") || "all";
-          const isActive = filterValue === activeIndustry;
-          button.classList.toggle("text-yp-yellow", isActive);
-          button.classList.toggle("font-medium", isActive);
-          button.classList.toggle("text-yp-white/60", !isActive);
-          button.classList.toggle("font-light", !isActive);
-        });
-
-        recommendButtons.forEach((button) => {
-          const filterValue =
-            button.getAttribute("data-recommend-filter") || "all";
-          const isActive = filterValue === activeRecommend;
-          button.classList.toggle("text-yp-yellow", isActive);
-          button.classList.toggle("font-medium", isActive);
-          button.classList.toggle("text-yp-white", isActive);
-          button.classList.toggle("text-yp-white/60", !isActive);
-          button.classList.toggle("font-light", !isActive);
-        });
-
-        tagButtons.forEach((button) => {
-          const filterValue = button.getAttribute("data-tag-filter") || "all";
-          const isActive = filterValue === activeTag;
-          button.classList.toggle("text-yp-white", isActive);
-          button.classList.toggle("font-medium", isActive);
-          button.classList.toggle("text-yp-white/60", !isActive);
-          button.classList.toggle("font-light", !isActive);
-        });
-
-        sortButtons.forEach((button) => {
-          const filterValue =
-            button.getAttribute("data-sort-filter") || "relevance";
-          const isActive = filterValue === activeSort;
-          button.classList.toggle("text-yp-yellow", isActive);
-          button.classList.toggle("font-medium", isActive);
-          button.classList.toggle("text-yp-white/60", !isActive);
-          button.classList.toggle("font-light", !isActive);
-        });
+        const active = ['category', 'industry', 'brand'].filter((k) => state[k] !== 'all').length + (q ? 1 : 0);
+        count.textContent = visible === items.length ? models(visible) : `${models(visible)} din ${items.length}`;
+        reset.hidden = active === 0;
+        activeCount.textContent = active ? `(${active})` : '';
+        empty.hidden = visible > 0;
+        grid.hidden = visible === 0;
       };
 
-      if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
-          searchQuery = e.target.value;
-          refreshFilters();
+      for (const group of groups) {
+        group.addEventListener('click', (event) => {
+          const button = event.target.closest('button');
+          if (!button) return;
+          state[group.dataset.filterGroup] = button.dataset.value;
+          refresh();
         });
       }
-
-      categoryButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activeCategory = button.getAttribute("data-category-filter") || "all";
-          refreshFilters();
-        });
+      search.addEventListener('input', () => {
+        state.query = search.value;
+        refresh();
       });
-
-      industryButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activeIndustry = button.getAttribute("data-industry-filter") || "all";
-          // reset recommend filter when industry is explicitly chosen
-          activeRecommend = "all";
-          refreshFilters();
-        });
+      sort.addEventListener('change', () => {
+        state.sort = sort.value;
+        refresh();
       });
-
-      recommendButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activeRecommend = button.getAttribute("data-recommend-filter") || "all";
-          // reset industry filter when recommend is chosen
-          activeIndustry = "all";
-          refreshFilters();
-        });
+      reset.addEventListener('click', () => {
+        Object.assign(state, { category: 'all', industry: 'all', brand: 'all', query: '' });
+        search.value = '';
+        refresh();
       });
-
-      tagButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activeTag = button.getAttribute("data-tag-filter") || "all";
-          refreshFilters();
-        });
+      toggle.addEventListener('click', () => {
+        const open = toggle.getAttribute('aria-expanded') !== 'true';
+        toggle.setAttribute('aria-expanded', String(open));
+        panel.classList.toggle('hidden', !open);
+        toggle.querySelector('svg').classList.toggle('rotate-180', open);
       });
-
-      sortButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activeSort = button.getAttribute("data-sort-filter") || "relevance";
-          refreshFilters();
-        });
-      });
-
-      refreshFilters();
-
-      // Mobile Scroll Highlight for Cards
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (window.innerWidth >= 1024) return; // Only apply on mobile/tablet
-          entries.forEach((entry) => {
-            const card = entry.target.querySelector("article");
-            if (!card) return;
-
-            if (entry.isIntersecting) {
-              card.classList.add(
-                "border-yp-yellow",
-                "bg-yp-black/60",
-                "mobile-active",
-              );
-              card.classList.remove("border-yp-white/10", "bg-yp-black/20");
-            } else {
-              card.classList.remove(
-                "border-yp-yellow",
-                "bg-yp-black/60",
-                "mobile-active",
-              );
-              card.classList.add("border-yp-white/10", "bg-yp-black/20");
-            }
-          });
-        },
-        {
-          rootMargin: "-30% 0px -30% 0px", // Trigger when card is in the middle 40% of the screen
-          threshold: 0,
-        },
-      );
-
-      catalogItems.forEach((item) => observer.observe(item));
+      refresh();
     })();
   </script>
-
-  <!-- CTA Sticky Footer Block for Catalog -->
-  <section class="py-20 lg:py-28 bg-[#050505] border-t border-yp-white/10 mt-12 relative overflow-hidden">
-     <!-- Decorative Background Element -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"></div>
-    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-yp-white">
-      <h2 class="text-3xl md:text-4xl font-light mb-6">Nu trebuie să alegi singur <span class="font-medium text-yp-yellow">dintre zeci de variante</span></h2>
-      <p class="text-yp-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-        Alege mai simplu cu ajutorul unei recomandări clare. Spune-ne ce tip de activitate ai, în ce condiții lucrează echipa și ce standard vrei să atingi, iar noi îți propunem o selecție potrivită.
-      </p>
-
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="/cere-oferta/"
-            class="bg-yp-yellow text-yp-black h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-white transition-all duration-200 group border border-transparent">
-            Cere ofertă
-            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-        </a>
-
-        <a href="/programeaza-discutie/"
-            class="border border-yp-white/20 text-yp-white h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-yp-white/5 hover:border-yp-white/40 transition-all duration-200">
-            Programează o discuție
-            <svg class="w-5 h-5 text-yp-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </a>
-      </div>
-      <p class="mt-8 text-sm text-yp-white/60 max-w-xl mx-auto font-light">
-        Pentru companii care vor mai mult decât produse: vor claritate, coerență și o imagine profesională mai puternică.
-      </p>
-    </div>
-  </section>
-
 </BaseLayout>

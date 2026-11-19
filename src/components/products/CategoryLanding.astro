@@ -3,10 +3,10 @@
 // mărcile și certificările se generează din fișele de produs, ca să rămână adevărate când se schimbă catalogul.
 import type { CollectionEntry } from 'astro:content';
 import ProductCard from './ProductCard.astro';
+import { toCardProps } from '../../lib/product-card';
 import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
-import { CATEGORIES, INDUSTRIES } from '../../lib/catalog-taxonomy';
-import { cardSrc } from '../../lib/catalog-images.js';
+import { CATEGORIES } from '../../lib/catalog-taxonomy';
 import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
 import { jsonLd } from '../../lib/json-ld';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
@@ -115,19 +115,10 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
     {products.every((e) => e.data.riskFreeTesting) && <RiskFreeTesting variant="inline" class="mt-6" />}
   </header>
 
-  <ul class="mt-10 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6" aria-label={`Modele: ${CATEGORIES[page.key]}`}>
+  <ul class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4" aria-label={`Modele: ${CATEGORIES[page.key]}`}>
     {products.map((e) => (
       <li>
-        <ProductCard
-          id={e.id}
-          slug={e.id}
-          name={e.data.name}
-          categoryName={CATEGORIES[e.data.category]}
-          industry={e.data.industries.map((k) => INDUSTRIES[k]).join(', ')}
-          shortDescription={e.data.summary}
-          producatorName={e.data.supplier.brand}
-          thumbnailUrl={cardSrc(e.data.colours[0].images[0].src)}
-        />
+        <ProductCard {...toCardProps(e)} />
       </li>
     ))}
   </ul>
