@@ -417,3 +417,17 @@
   - mănușile Electro MA1814: declarația Secura (atașată) listează EN 60903 și EN ISO 21420, categoria III, certificat
     UE/1241/2026/1437 (CIOP-PIB, nr. 1437). Tensiunea de rezistență nu apare în declarație.
 - Declarațiile lipsă (MC1111, MC1113, MC3012, MC3014) există în portal; găzduirea lor pe site e decizia owner-ului.
+
+## D-2026-11-19-11
+- Owner-ul (19.11.2026): declarațiile UE de conformitate în română din portalul B2B Sir Safety se pun pe fișele de
+  produs, primele în lista de documente, lângă cele în engleză.
+- `scripts/catalog/fetch_declarations_sirsafety.py` (prin `secret run`): login la portal, `export/getCD` cu limba 51,
+  verifică PDF-ul (în română, numește articolul, fără date de client), reduce antetul la 150 dpi (544 → 110 KB, sub
+  limita din pre-commit; textul și semnătura rămân) și scrie `public/documente/<slug>/declaratie-de-conformitate-ro.pdf`.
+  `assemble_sirsafety.py` leagă fișierul când există.
+- 30 din 34 de produse Sir Safety au declarația în română (3,3 MB în total), inclusiv MC1111, MC1113, MC3012 și MC3014,
+  care nu aveau nicio declarație funcțională. Cele 4 fabricate de alții (MA1814, FB1215, FA1530, FA1535) au doar
+  declarația de corespondență, în italiană, fără variantă în română.
+- Documentul e cel generat de Sir Safety: unele diacritice lipsesc din fontul lor („DECLARAIE”). Nu le modificăm.
+- `tests/local-documents.test.mjs`: fiecare document local există, e PDF, are sub 500 KB și e folosit de o fișă;
+  `check-documents.mjs` verifică lunar și documentele locale.

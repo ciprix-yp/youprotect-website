@@ -133,6 +133,12 @@
   "personalization": null,
   "documents": [
     {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/pantaloni-lucru-elastici-sir-safety-gemini-guard-mc2051/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
       "type": "fisa-tehnica",
       "label": "Fișă tehnică (în engleză)",
       "url": "https://www.sirsafety.com/assets/schede/MC2051Q5_EN.pdf",
@@ -194,6 +200,6 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-16"
+    "assembledAt": "2026-11-19"
   }
 }

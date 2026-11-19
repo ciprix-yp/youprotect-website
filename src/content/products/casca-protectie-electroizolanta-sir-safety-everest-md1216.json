@@ -180,6 +180,12 @@
   "personalization": null,
   "documents": [
     {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/casca-protectie-electroizolanta-sir-safety-everest-md1216/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
       "type": "fisa-tehnica",
       "label": "Fișă tehnică (în engleză)",
       "url": "https://www.sirsafety.com/assets/schede/MD1216H0_EN.pdf",

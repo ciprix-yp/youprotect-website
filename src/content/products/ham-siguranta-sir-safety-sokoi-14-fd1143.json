@@ -104,6 +104,12 @@
   "personalization": null,
   "documents": [
     {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/ham-siguranta-sir-safety-sokoi-14-fd1143/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
       "type": "fisa-tehnica",
       "label": "Fișă tehnică (în engleză)",
       "url": "https://www.sirsafety.com/assets/schede/FD114300_EN.pdf",

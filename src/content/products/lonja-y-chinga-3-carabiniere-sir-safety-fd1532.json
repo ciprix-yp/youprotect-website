@@ -84,6 +84,12 @@
   "personalization": null,
   "documents": [
     {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/lonja-y-chinga-3-carabiniere-sir-safety-fd1532/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
       "type": "fisa-tehnica",
       "label": "Fișă tehnică (în engleză)",
       "url": "https://www.sirsafety.com/assets/schede/FD1532_EN.pdf",

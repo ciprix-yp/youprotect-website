@@ -88,6 +88,12 @@
   "personalization": null,
   "documents": [
     {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/lonja-siguranta-franghie-2-carabiniere-standard-sir-safety-fd1570/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
       "type": "fisa-tehnica",
       "label": "Fișă tehnică (în engleză)",
       "url": "https://www.sirsafety.com/assets/schede/FD157000_EN.pdf",

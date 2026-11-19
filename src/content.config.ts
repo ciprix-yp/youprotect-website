@@ -9,6 +9,8 @@ import { CATEGORY_KEYS, INDUSTRY_KEYS } from './lib/catalog-taxonomy';
 const httpsUrl = z.url({ protocol: /^https$/ });
 // Imagini găzduite de noi (scripts/catalog/fetch_images_mascot.py) sau, temporar, URL https din feed.
 const localImage = z.string().regex(/^\/images\/products\/[a-z0-9-]+\/[A-Za-z0-9_-]+\.webp$/);
+// Documente găzduite de noi: declarațiile în română din portalul B2B Sir Safety (fetch_declarations_sirsafety.py).
+const localDocument = z.string().regex(/^\/documente\/[a-z0-9-]+\/[a-z0-9-]+\.pdf$/);
 const media = z.union([localImage, httpsUrl]);
 
 const products = defineCollection({
@@ -62,7 +64,7 @@ const products = defineCollection({
         // declaratie-corespondenta: Sir Safety pentru produsele fabricate de alții, cu declarația UE a producătorului.
         type: z.enum(['fisa-tehnica', 'declaratie-conformitate', 'declaratie-corespondenta']),
         label: z.string(),
-        url: httpsUrl,
+        url: z.union([httpsUrl, localDocument]),
         language: z.string(),
       }),
     ),
