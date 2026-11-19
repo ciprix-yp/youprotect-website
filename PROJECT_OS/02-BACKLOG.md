@@ -295,6 +295,8 @@ Format task:
 - Ghiduri (19.11.2026): `/ghiduri/` cu S1P vs S3, clasele EN ISO 20471 și costul echipamentului pe muncitor
   (D-2026-11-19-03, `src/lib/guides.ts`, `GuideLayout.astro`). Legate din footer, din paginile de categorie
   (încălțăminte, reflectorizante) și din calculator. `tests/guides.test.mjs`.
+- Titluri și descrieri (19.11.2026): 6 titluri și 10 descrieri scurtate sub limite (D-2026-11-19-04).
+  `scripts/seo/check-meta.mjs` le verifică în CI după build; `tests/seo-meta.test.mjs`.
 - Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); a doua măsurătoare ChatGPT în decembrie;
   volumele din Keyword Planner; ghidul „cum alegi haine de lucru care rezistă” (întrebarea 8 din `ai-prompts.json`).
 
