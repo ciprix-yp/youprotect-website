@@ -292,8 +292,11 @@ Format task:
 - Pagini de marcă (19.11.2026): `/produse/mascot/` și `/produse/sir-safety/` (D-2026-11-19-02,
   `src/lib/catalog-brands.ts`, `BrandLanding.astro`). Legate din catalog („Pe mărci”), din fișele de produs (numele
   mărcii) și din logo-urile de pe homepage. `tests/catalog-brands.test.mjs`.
+- Ghiduri (19.11.2026): `/ghiduri/` cu S1P vs S3, clasele EN ISO 20471 și costul echipamentului pe muncitor
+  (D-2026-11-19-03, `src/lib/guides.ts`, `GuideLayout.astro`). Legate din footer, din paginile de categorie
+  (încălțăminte, reflectorizante) și din calculator. `tests/guides.test.mjs`.
 - Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); a doua măsurătoare ChatGPT în decembrie;
-  volumele din Keyword Planner; ghidurile (S1P vs S3, EN ISO 20471, costul echipării).
+  volumele din Keyword Planner; ghidul „cum alegi haine de lucru care rezistă” (întrebarea 8 din `ai-prompts.json`).
 
 ---
 

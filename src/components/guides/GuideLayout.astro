@@ -1,0 +1,174 @@
+---
+// Pagina unui ghid (/ghiduri/<slug>/): breadcrumb, H1, răspunsul pe scurt, conținutul paginii, întrebări frecvente,
+// sursele și celelalte ghiduri. Datele (titlu, descriere, surse, date) vin din src/lib/guides.ts.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GlobalPreFooterCTA from '../global/GlobalPreFooterCTA.astro';
+import { GUIDES, GUIDES_HREF, formatGuideDate, guideHref, type Guide } from '../../lib/guides';
+import { jsonLd } from '../../lib/json-ld';
+import { SITE } from '../../lib/site';
+
+export interface GuideFaq {
+  q: string;
+  a: string;
+  link?: { href: string; label: string };
+}
+
+interface Props {
+  guide: Guide;
+  /** Răspunsul pe scurt, primul paragraf de sub titlu. */
+  answer: string;
+  faq: GuideFaq[];
+}
+
+const { guide, answer, faq } = Astro.props;
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const pageUrl = new URL(guideHref(guide), siteOrigin).href;
+const others = GUIDES.filter((g) => g.slug !== guide.slug);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Acasă', item: siteOrigin.href },
+    { '@type': 'ListItem', position: 2, name: 'Ghiduri', item: new URL(GUIDES_HREF, siteOrigin).href },
+    { '@type': 'ListItem', position: 3, name: guide.heading, item: pageUrl },
+  ],
+};
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: guide.heading,
+  description: guide.description,
+  inLanguage: 'ro-RO',
+  datePublished: guide.published,
+  dateModified: guide.updated,
+  mainEntityOfPage: pageUrl,
+  author: { '@id': `${SITE.url}/#localbusiness` },
+  publisher: { '@id': `${SITE.url}/#localbusiness` },
+  citation: guide.sources.map((s) => s.url),
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
+};
+
+const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4';
+---
+
+<BaseLayout title={guide.title} description={guide.description} ogType="article">
+  <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(articleSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+
+  <article class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+    <nav aria-label="Breadcrumb" class="text-xs uppercase tracking-widest text-yp-white/60 mb-6 flex flex-wrap items-center">
+      <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
+      <span class="mx-2" aria-hidden="true">/</span>
+      <a href={GUIDES_HREF} class="inline-block py-2 hover:text-yp-yellow transition-colors">Ghiduri</a>
+      <span class="mx-2" aria-hidden="true">/</span>
+      <span class="text-yp-white">{guide.title}</span>
+    </nav>
+
+    <header class="max-w-3xl">
+      <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{guide.heading}</h1>
+      <p class="mt-3 text-sm text-yp-white/60">
+        You Protect, Satu Mare · Actualizat pe <time datetime={guide.updated}>{formatGuideDate(guide.updated)}</time>
+      </p>
+      <div class="mt-6 border-l-2 border-yp-yellow pl-4">
+        <p class="text-xs uppercase tracking-[0.16em] text-yp-yellow">Pe scurt</p>
+        <p class="mt-2 text-lg text-yp-white/90 leading-relaxed">{answer}</p>
+      </div>
+    </header>
+
+    <div class="guide-body mt-12 max-w-3xl space-y-12 text-yp-white/80 leading-relaxed">
+      <slot />
+    </div>
+
+    <section class="mt-14 max-w-3xl" aria-labelledby="intrebari">
+      <h2 id="intrebari" class={sectionTitle}>Întrebări frecvente</h2>
+      <dl class="space-y-6">
+        {faq.map((item) => (
+          <div>
+            <dt class="text-yp-white font-medium">{item.q}</dt>
+            <dd class="mt-2 text-yp-white/75 leading-relaxed">
+              {item.a}
+              {item.link && (
+                <a href={item.link.href} class="block w-fit py-2 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="mt-14 max-w-3xl" aria-labelledby="surse">
+      <h2 id="surse" class={sectionTitle}>Surse</h2>
+      <ul class="space-y-1 text-sm">
+        {guide.sources.map((s) => (
+          <li>
+            <a href={s.url} rel="noopener" class="inline-block py-1.5 text-yp-white/75 underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{s.label}</a>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-3 text-sm text-yp-white/60">
+        Ghidul te ajută să înțelegi standardele; nu înlocuiește evaluarea riscurilor de la locul tău de muncă.
+      </p>
+    </section>
+
+    <nav class="mt-14 pt-8 border-t border-yp-white/10" aria-label="Alte ghiduri">
+      <h2 class={sectionTitle}>Alte ghiduri</h2>
+      <ul class="grid md:grid-cols-2 gap-3">
+        {others.map((g) => (
+          <li>
+            <a href={guideHref(g)} class="block h-full border border-yp-white/15 p-4 hover:border-yp-yellow transition-colors">
+              <span class="block text-yp-white font-medium">{g.heading}</span>
+              <span class="block mt-1 text-sm text-yp-white/60">{g.summary}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </article>
+
+  <GlobalPreFooterCTA
+    heading="Vrei o recomandare pentru echipa ta?"
+    subheading="Spune-ne ce face echipa și unde lucrează. Îți recomandăm echipamentul potrivit și primești ofertă pentru cantitățile tale."
+    buttonText="Programează o discuție"
+    secondaryButtonText="Cere ofertă"
+    secondaryButtonLink="/cere-oferta/"
+  />
+</BaseLayout>
+
+<style is:global>
+  .guide-body h2 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  @media (min-width: 768px) {
+    .guide-body h2 {
+      font-size: 1.875rem;
+    }
+  }
+  .guide-body h3 {
+    color: #fff;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .guide-body p + p {
+    margin-top: 1rem;
+  }
+  /* Legăturile din text: clasa e pusă explicit, ca listele și butoanele să-și păstreze stilul lor. */
+  .guide-link {
+    color: #e3fc02;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .guide-link:hover {
+    color: #fff;
+  }
+</style>

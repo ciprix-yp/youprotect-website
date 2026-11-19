@@ -300,3 +300,20 @@
   - Modelele din afara catalogului: „întreabă-ne și verificăm dacă îl putem aduce”, fără promisiune.
 - Dacă You Protect apare pe lista de distribuitori a unei mărci (mesajele către producători), afirmația se poate
   întări, cu link la lista lor.
+
+## D-2026-11-19-03
+- Context: în prima măsurătoare ChatGPT (18.11.2026), la „Care e diferența dintre S1P și S3?”, „Ce clasă EN ISO 20471
+  îmi trebuie lângă drum?” și „Cât costă să echipezi un muncitor din construcții?” You Protect nu apărea.
+- Implementare: ghiduri la `/ghiduri/<slug>/` (date în `src/lib/guides.ts`, șablon `GuideLayout.astro`), cu răspunsul
+  pe scurt sus, întrebări frecvente, sursele la final și JSON-LD `Article`, `FAQPage`, `BreadcrumbList`.
+- Reguli de adevăr:
+  - Fiecare fapt despre un standard sau o lege are sursa pe pagină (verificate pe 19.11.2026):
+    - EN ISO 20345:2022: MASCOT, Atlas, Safety Jogger, Ejendals;
+    - EN ISO 20471: Centexbel, MASCOT;
+    - HG nr. 1.048/2006, republicată (Portal Legislativ): art. 10 (gratuit de la angajator), art. 14 (evaluarea),
+      anexa 3 (lucrările din construcții).
+  - Recomandările de clasă sunt atribuite cui le face (Centexbel); alegerea o face angajatorul, după evaluarea riscurilor.
+    Nu scriem că legea cere o anumită clasă: n-am găsit un act care să o facă.
+  - Fără prețuri și fără cifre de cost: ghidul de cost explică din ce se compune costul și trimite la calculator, care
+    lucrează cu prețurile vizitatorului. Testul blochează sumele în lei/euro în ghiduri.
+  - Modelele din catalog pomenite în ghiduri (clasa S3S/S7S, clasa EN ISO 20471) se generează din fișele de produs.
