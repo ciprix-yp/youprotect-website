@@ -12,6 +12,7 @@ import { jsonLd } from '../../lib/json-ld';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { guideHref, guidesForCategory } from '../../lib/guides';
 import { SITE } from '../../lib/site';
+import { btnPrimary, btnSecondary, breadcrumbNav, sectionTitle } from '../../lib/ui';
 
 interface Props {
   page: CategoryPage;
@@ -78,15 +79,14 @@ const faqSchema = {
   mainEntity: faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
 };
 
-const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4';
 ---
 
 <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
 <script type="application/ld+json" set:html={jsonLd(itemListSchema)} />
 <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
 
-<section class="max-w-6xl mx-auto px-4 py-8 md:py-12">
-  <nav aria-label="Breadcrumb" class="text-xs uppercase tracking-widest text-yp-white/60 mb-6 flex flex-wrap items-center">
+<section class="mx-auto max-w-7xl px-4 py-8 md:py-12">
+  <nav aria-label="Breadcrumb" class={breadcrumbNav}>
     <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
     <span class="mx-2" aria-hidden="true">/</span>
     <a href="/produse/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Catalog</a>
@@ -98,16 +98,16 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
     <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{page.heading}</h1>
     <p class="mt-4 text-base text-yp-white/80 leading-relaxed">{page.intro}</p>
     <p class="mt-3 text-sm text-yp-white/60">{modelsLabel(count)} de la {joinRo(brands)}. Prețul îl primești în ofertă, pentru cantitățile echipei tale.</p>
-    <div class="mt-6 flex flex-wrap gap-3">
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
       <a
         href="/cere-oferta/"
-        class="inline-flex items-center gap-2 bg-yp-yellow text-yp-black font-heading font-semibold px-6 py-3 rounded hover:bg-white transition-colors"
+        class={btnPrimary}
       >
         Cere ofertă
       </a>
       <a
         href="/programeaza-discutie/"
-        class="inline-flex items-center gap-2 border border-yp-white/25 text-yp-white px-6 py-3 rounded hover:border-yp-yellow hover:text-yp-yellow transition-colors"
+        class={btnSecondary}
       >
         Discută cu un consultant
       </a>
@@ -121,6 +121,15 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         <ProductCard {...toCardProps(e)} />
       </li>
     ))}
+    <li>
+      <div class="flex h-full flex-col justify-between gap-4 border border-dashed border-yp-white/25 p-4">
+        <div>
+          <p class="text-sm font-medium text-yp-white sm:text-base">Nu găsești modelul potrivit?</p>
+          <p class="mt-2 text-sm leading-relaxed text-yp-white/70">Scrie-ne ce îți trebuie și verificăm dacă îl putem aduce.</p>
+        </div>
+        <a href="/cere-oferta/" class="w-fit py-2 text-sm font-medium text-yp-yellow underline-offset-4 hover:underline">Cere ofertă</a>
+      </div>
+    </li>
   </ul>
 
   {guides.length > 0 && (
@@ -160,7 +169,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         {others.map((o) => (
           <li>
             <a href={`/produse/${o.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">
-              {o.heading}
+              {CATEGORIES[o.key]}
             </a>
           </li>
         ))}

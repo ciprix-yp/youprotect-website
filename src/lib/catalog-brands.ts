@@ -37,8 +37,8 @@ export const BRAND_PAGES: BrandPage[] = [
     brand: 'Sir Safety System',
     slug: 'sir-safety',
     name: 'Sir Safety',
-    heading: 'Sir Safety: haine de lucru și încălțăminte de protecție pentru firme',
-    title: 'Sir Safety în România: haine de lucru pentru firme',
+    heading: 'Sir Safety: haine de lucru și echipamente de protecție pentru firme',
+    title: 'Sir Safety în România: echipamente de protecție',
     about:
       'Sir Safety System e o firmă italiană cu sediul în Assisi, pornită în 1979 de Gino Sirci. Face haine de lucru și echipamente de protecție, inclusiv încălțăminte de protecție.',
     source: { label: 'sirsafety.com', url: 'https://sirsafety.com/about-us' },
