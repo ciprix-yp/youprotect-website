@@ -62,7 +62,9 @@
       "value": "Regulamentul (UE) 2016/425"
     }
   ],
-  "notes": [],
+  "notes": [
+    "Producător: Long Dar Plastic Co., Ltd (Taiwan). Sir Safety System vinde produsul cu codul FB1215 și declară că acesta corespunde modelului producătorului."
+  ],
   "certifications": [
     {
       "code": "EN 166 1F",
@@ -107,10 +109,10 @@
       "language": "en"
     },
     {
-      "type": "declaratie-conformitate",
-      "label": "Declarație de conformitate UE (în engleză)",
+      "type": "declaratie-corespondenta",
+      "label": "Declarație de corespondență Sir Safety (în italiană), cu declarația UE a producătorului",
       "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/FB1215_EN.pdf",
-      "language": "en"
+      "language": "it"
     }
   ],
   "faq": [

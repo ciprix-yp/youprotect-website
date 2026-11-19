@@ -148,12 +148,6 @@
       "label": "Fișă tehnică (în engleză)",
       "url": "https://www.sirsafety.com/assets/schede/MC1111C2_EN.pdf",
       "language": "en"
-    },
-    {
-      "type": "declaratie-conformitate",
-      "label": "Declarație de conformitate UE (în engleză)",
-      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MC1111C2_EN.pdf",
-      "language": "en"
     }
   ],
   "faq": [
@@ -202,6 +196,6 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-16"
+    "assembledAt": "2026-11-19"
   }
 }

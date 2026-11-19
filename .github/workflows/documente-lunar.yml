@@ -1,0 +1,30 @@
+# Lunar: verifică linkurile către fișele tehnice și declarațiile din catalog (scripts/catalog/check-documents.mjs).
+# Pe 19.11.2026, patru declarații Sir Safety de pe site întorceau HTML sau 404. Dacă un link se strică, job-ul pică
+# și GitHub trimite notificarea; fișa se reface cu scripts/catalog/extract_sirsafety.py --declarations-only.
+name: documente-lunar
+
+on:
+  schedule:
+    - cron: "0 7 2 * *" # pe 2 ale lunii, 07:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .node-version
+
+      - name: Documentele din catalog sunt PDF-uri
+        run: node scripts/catalog/check-documents.mjs

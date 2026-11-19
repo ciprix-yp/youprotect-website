@@ -2,6 +2,8 @@
 
 Usage:
   uv run --no-project --with pypdf python -I scripts/catalog/extract_sirsafety.py <out_dir> <CODE> [<CODE> ...]
+  uv run --no-project --with pypdf python -I scripts/catalog/extract_sirsafety.py --declarations-only <out_dir> <CODE> ...
+    (verifică doar declarațiile din JSON-urile existente: PDF real, conformitate sau corespondență + producător)
 
 For every base code (e.g. MC2051) it:
   1. finds the product page through the site's own search (GET /ricerca/risultati?search=CODE);
@@ -140,7 +142,50 @@ def datasheet(code, colour):
     return {"url": url, "text": re.sub(r"[ \t]+", " ", text).strip()}
 
 
+def declaration(url):
+    """Verifică declarația: e un PDF și ce fel de declarație e.
+
+    Sir Safety are două feluri: declarația UE de conformitate emisă de ei („conformity”) și, la produsele fabricate de
+    alții, o „dichiarazione di corrispondenza” în italiană cu declarația UE a producătorului atașată („correspondence”,
+    cu numele producătorului). Unele linkuri de pe sirsafety.com întorc o pagină HTML sau 404 în loc de PDF (MC1111,
+    MC3014 pe 19.11.2026): atunci întoarce None și fișa de pe site nu mai pune linkul.
+    """
+    from pypdf import PdfReader  # instalat de uv (--with pypdf)
+
+    try:
+        data = fetch(url, binary=True)
+    except Exception:  # noqa: BLE001  (404 sau eroare de rețea: fără link)
+        return None
+    if not data.startswith(b"%PDF"):
+        return None
+    first = re.sub(r"\s+", " ", PdfReader(io.BytesIO(data)).pages[0].extract_text() or "")
+    if "CORRISPONDENZA" in first.upper():
+        m = re.search(r"Fabbricato da (.+?) Indicato", first)
+        return {"url": url, "kind": "correspondence", "manufacturer": m.group(1).strip() if m else None}
+    return {"url": url, "kind": "conformity", "manufacturer": None}
+
+
+def refresh_declarations(out_dir, codes):
+    """--declarations-only: reface doar câmpul `declaration` în JSON-urile existente, fără să re-extragă restul."""
+    failed = False
+    for code in codes:
+        path = out_dir / f"{code}.json"
+        facts = json.loads(path.read_text(encoding="utf-8"))
+        primary = facts["colours"][0]["code"] if facts["colours"] else None
+        if primary == "" and facts["datasheet"] and "00_EN.pdf" in facts["datasheet"]["url"]:
+            primary = "00"  # hamuri și lonje: PDF-urile păstrează sufixul „00”
+        doc = f"{BASE}/assets/dichiarazioni-conformita/{code}{primary}_EN.pdf" if primary is not None else None
+        facts["declaration"] = declaration(doc) if doc in facts["pdfLinks"] else None
+        facts["declarationUrl"] = facts["declaration"]["url"] if facts["declaration"] else None
+        path.write_text(json.dumps(facts, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        d = facts["declaration"]
+        print(f"ok {code}: DoC {d['kind'] + (' ' + (d['manufacturer'] or '')[:40] if d['manufacturer'] else '') if d else 'NU'}")
+    sys.exit(1 if failed else 0)
+
+
 def main(argv):
+    if argv and argv[0] == "--declarations-only":
+        refresh_declarations(Path(argv[1]), [c.strip().upper() for c in argv[2:]])
     out_dir = Path(argv[0])
     codes = [c.strip().upper() for c in argv[1:]]
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -157,7 +202,12 @@ def main(argv):
             primary = facts["colours"][0]["code"] if facts["colours"] else None
             facts["datasheet"] = datasheet(code, primary) if primary is not None else None
             doc = f"{BASE}/assets/dichiarazioni-conformita/{code}{primary}_EN.pdf" if primary is not None else None
-            facts["declarationUrl"] = doc if doc in facts["pdfLinks"] else None
+            facts["declaration"] = declaration(doc) if doc in facts["pdfLinks"] else None
+            facts["declarationUrl"] = facts["declaration"]["url"] if facts["declaration"] else None
+            # Hamurile și lonjele au poza și PDF-urile cu sufixul „00” și lista de culori goală în fișă: „00” înseamnă
+            # „fără culoare”. Le tratăm ca produsele fără variante (cod gol); URL-urile rămân cele cu „00”.
+            if [c["code"] for c in facts["colours"]] == ["00"] and not facts["colours"][0]["name"]:
+                facts["colours"][0]["code"] = ""
             facts["source"] = {"site": BASE, "fetchedAt": date.today().isoformat()}
         except Exception as exc:  # noqa: BLE001
             print(f"!! {code}: {exc}", file=sys.stderr)
