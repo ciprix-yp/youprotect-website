@@ -117,6 +117,14 @@ def assemble(source, text, maps, public_dir):
         core = re.match(r"(EN(?: ISO| IEC)? \d+(?:-\d+)*|IEC \d+(?:-\d+)*|OEKO-TEX)", cert["code"])
         if not core or squash(core.group(1)) not in sheet:
             raise AssemblyError(f"certificarea {cert['code']!r} nu apare în fișa tehnică")
+    # Pe site trecem doar standardele pe care le listează și declarația de conformitate (D-2026-11-19-10).
+    decl_std = (source.get("declaration") or {}).get("standards") or []
+    for cert in text["certifications"]:
+        core = re.match(r"(EN(?: ISO| IEC)? \d+(?:-\d+)*)", cert["code"])
+        # Excepție justificată: standardul e în declarația mai nouă din portalul B2B (ex. MC4125, EN 14058).
+        confirmed = text.get("confirmedOutsidePublicDeclaration", {})
+        if decl_std and core and core.group(1) not in decl_std and core.group(1) not in confirmed:
+            raise AssemblyError(f"certificarea {cert['code']!r} nu apare în declarația de conformitate ({', '.join(decl_std)})")
     if text.get("weight") and squash(text["weight"]).replace(" ", "") not in sheet.replace(" ", ""):
         raise AssemblyError(f"gramajul {text['weight']!r} nu apare în fișa tehnică")
 
