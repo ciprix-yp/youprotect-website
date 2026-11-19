@@ -300,8 +300,8 @@ Format task:
 - Accesorii de protecție (19.11.2026): 9 produse Sir Safety în `review` (căști, viziere, ochelari, mănuși, antifoane),
   4 categorii noi (D-2026-11-19-05). Publicate pe 19.11.2026, fără „Testare fără riscuri” în afară de Genio
   (D-2026-11-19-06).
-- Protecție respiratorie, la cădere și combinezoane (19.11.2026): 13 produse în `review` (D-2026-11-19-08). Next action:
-  owner-ul le verifică în `/preview/produse/` și le publică; întrebările pentru Sir Safety din D-2026-11-19-06/-07/-08.
+- Protecție respiratorie, la cădere și combinezoane (19.11.2026): 13 produse publicate (D-2026-11-19-08, -09). Next action:
+  întrebările pentru Sir Safety din D-2026-11-19-06/-07/-08.
 - Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); a doua măsurătoare ChatGPT în decembrie;
   volumele din Keyword Planner; ghidul „cum alegi haine de lucru care rezistă” (întrebarea 8 din `ai-prompts.json`).
 

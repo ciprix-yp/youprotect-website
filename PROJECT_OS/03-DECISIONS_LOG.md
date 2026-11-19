@@ -395,3 +395,9 @@
 - De cerut de la Sir Safety: instrucțiunile de utilizare pentru hamuri, lonje, măști și combinezoane (categoria III);
   la FA1441, care limită de utilizare e corectă („50 TLV” sau factorul de protecție operațional 30); dacă Virus 8500
   există și în mărimea S (pagina web spune S–3XL, fișa M–3XL); închiderea la Chemical Bio MC3422.
+
+## D-2026-11-19-09
+- Owner-ul (19.11.2026) a aprobat publicarea celor 13 produse din D-2026-11-19-08 și a confirmat că „Testare fără
+  riscuri” nu se aplică la măști, filtre, hamuri, lonje și combinezoane.
+- Catalogul are 48 de produse publicate; paginile noi de categorie: /produse/masti-de-protectie/,
+  /produse/hamuri-de-siguranta/, /produse/combinezoane-de-protectie/.
