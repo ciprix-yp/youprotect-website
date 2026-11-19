@@ -3,10 +3,10 @@
 // oficială; modelele, categoriile, certificările și zonele de logo se generează din fișele de produs.
 import type { CollectionEntry } from 'astro:content';
 import ProductCard from './ProductCard.astro';
+import { toCardProps } from '../../lib/product-card';
 import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
-import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
-import { cardSrc } from '../../lib/catalog-images.js';
+import { CATEGORIES, type CategoryKey } from '../../lib/catalog-taxonomy';
 import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
 import { riskFreeExclusions } from '../../lib/risk-free-scope';
 import type { BrandPage } from '../../lib/catalog-brands';
@@ -160,19 +160,10 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
             </a>
           )}
         </div>
-        <ul class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6" aria-label={`${group.label} ${page.name}`}>
+        <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4" aria-label={`${group.label} ${page.name}`}>
           {group.items.map((e) => (
             <li>
-              <ProductCard
-                id={e.id}
-                slug={e.id}
-                name={e.data.name}
-                categoryName={CATEGORIES[e.data.category]}
-                industry={e.data.industries.map((k) => INDUSTRIES[k]).join(', ')}
-                shortDescription={e.data.summary}
-                producatorName={e.data.supplier.brand}
-                thumbnailUrl={cardSrc(e.data.colours[0].images[0].src)}
-              />
+              <ProductCard {...toCardProps(e)} />
             </li>
           ))}
         </ul>
