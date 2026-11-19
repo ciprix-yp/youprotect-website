@@ -82,6 +82,48 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     plural: 'vestele de lucru',
     logo: true,
   },
+  // Căștile, mănușile, ochelarii și antifoanele: din vânzările You Protect (19.11.2026). Logo: nicio fișă n-are zone de
+  // logo de la producător.
+  {
+    key: 'casti-protectie',
+    slug: 'casti-de-protectie',
+    heading: 'Căști de protecție pentru firme',
+    title: 'Căști de protecție pentru firme',
+    intro:
+      'Căști de protecție pentru șantier, industrie și lucru la înălțime. Mai jos vezi standardele fiecărui model, așa cum le declară producătorul.',
+    plural: 'căștile de protecție',
+    logo: false,
+  },
+  {
+    key: 'manusi',
+    slug: 'manusi-de-protectie',
+    heading: 'Mănuși de protecție pentru firme',
+    title: 'Mănuși de protecție pentru firme',
+    intro:
+      'Mănuși de protecție pentru manipulare, montaj și lucrări electrice. Mai jos vezi nivelurile de protecție ale fiecărui model, așa cum le declară producătorul.',
+    plural: 'mănușile de protecție',
+    logo: false,
+  },
+  {
+    key: 'protectia-ochilor',
+    slug: 'ochelari-de-protectie',
+    heading: 'Ochelari și viziere de protecție',
+    title: 'Ochelari și viziere de protecție pentru firme',
+    intro:
+      'Ochelari și viziere de protecție pentru ochi și față, pentru șantier, ateliere și producție. Mai jos vezi standardele fiecărui model, așa cum le declară producătorul.',
+    plural: 'ochelarii și vizierele de protecție',
+    logo: false,
+  },
+  {
+    key: 'antifoane',
+    slug: 'antifoane',
+    heading: 'Antifoane pentru firme',
+    title: 'Antifoane pentru protecția auzului',
+    intro:
+      'Antifoane pentru echipele care lucrează lângă utilaje zgomotoase. Mai jos vezi atenuarea declarată de producător pentru fiecare model.',
+    plural: 'antifoanele',
+    logo: false,
+  },
 ];
 
 export function categoryPageFor(key: CategoryKey): CategoryPage | undefined {

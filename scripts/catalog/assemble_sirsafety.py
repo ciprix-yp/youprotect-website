@@ -48,11 +48,19 @@ def datasheet_sizes(text):
     j = text.find("In stock", i)
     if i < 0 or j < 0:
         return []
-    tokens = text[i + len("\nSIZES"):j].split()
+    chunk = text[i + len("\nSIZES"):j]
+    if chunk.split() == ["ONE", "SIZE"]:  # căști, ochelari, antifoane
+        return ["Mărime unică"]
     # Fișele scriu XX pentru XXL și 3X, 4X… pentru 3XL, 4XL…; pe site folosim 2XL, 3XL…
     norm = {"XX": "2XL", "XXL": "2XL"}
-    return [norm.get(t, re.sub(r"^(\d)X$", r"\1XL", t)) for t in tokens
-            if re.match(r"^(\d{2}|X{0,2}[SML]|XL|XX|\dX|\dXL)$", t)]
+    values = []
+    for t in chunk.split():
+        glove = re.match(r"^(X{0,2}[SML]|XL)-(\d{1,2})$", t)  # mănuși: „S-7” = mărimea S, numărul 7 (EN ISO 21420)
+        if glove:
+            values.append(f"{glove.group(1)} ({glove.group(2)})")
+        elif re.match(r"^(\d{1,2}|X{0,2}[SML]|XL|XX|\dX|\dXL)$", t):  # 1 cifră: mănuși (8 9 10 11)
+            values.append(norm.get(t, re.sub(r"^(\d)X$", r"\1XL", t)))
+    return values
 
 
 def colours(source, text, maps, public_dir):
@@ -63,6 +71,17 @@ def colours(source, text, maps, public_dir):
     result = []
     folder = public_dir / text["slug"]
     for c in ordered:
+        if c["code"] == "":
+            # Produs fără variante de culoare (ochelari, viziere, antifoane): o singură intrare, fără nume de culoare;
+            # fișa de produs nu mai arată blocul „Culori”.
+            main, thumb = folder / "PS.webp", folder / "PS-thumb.webp"
+            if CHECK_IMAGES and (not main.exists() or not thumb.exists()):
+                raise AssemblyError("lipsește poza (rulează fetch_images_sirsafety.py)")
+            base = f"/images/products/{text['slug']}"
+            result.append({"code": "", "name": "", "swatch": None,
+                           "images": [{"src": f"{base}/{main.name}", "thumb": f"{base}/{thumb.name}", "view": "PS"}],
+                           "spin": []})
+            continue
         en = c["name"] or names.get(c["code"])
         override = text.get("colourNames", {}).get(c["code"])  # ex. două nuanțe numite „GREEN” în sursă
         if not en:
@@ -95,7 +114,7 @@ def assemble(source, text, maps, public_dir):
     ds = source["datasheet"]["text"]
     sheet = squash(ds)
     for cert in text["certifications"]:
-        core = re.match(r"(EN(?: ISO| IEC)? \d+(?:-\d+)*|OEKO-TEX)", cert["code"])
+        core = re.match(r"(EN(?: ISO| IEC)? \d+(?:-\d+)*|IEC \d+(?:-\d+)*|OEKO-TEX)", cert["code"])
         if not core or squash(core.group(1)) not in sheet:
             raise AssemblyError(f"certificarea {cert['code']!r} nu apare în fișa tehnică")
     if text.get("weight") and squash(text["weight"]).replace(" ", "") not in sheet.replace(" ", ""):

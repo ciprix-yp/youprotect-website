@@ -1,0 +1,252 @@
+{
+  "status": "review",
+  "name": "Cască de protecție din ABS Sir Safety 901",
+  "category": "casti-protectie",
+  "industries": [
+    "constructii",
+    "energie"
+  ],
+  "summary": "Cască de protecție din ABS de înaltă rezistență, conformă EN 397 și electroizolantă după EN 50365 clasa 0, până la 1000 V c.a. și 1500 V c.c. Cântărește 375 g și stă stabil pe cap, cu suspensie textilă în șase puncte.",
+  "description": [
+    "Casca de protecție din ABS Sir Safety 901 e gândită pentru confort la purtare îndelungată: suspensia textilă în șase puncte distribuie uniform greutatea și presiunea pe cap, iar banda textilă pentru transpirație îți ține fruntea uscată. Mărimea o reglezi simplu, din rotița cu clichet reglabilă și pivotantă, pentru o circumferință a capului de 52–63 cm. Casca cântărește 375 g.",
+    "Te simți protejat: carcasa din ABS de înaltă rezistență te apără de obiectele care cad de sus și rezistă la impact, iar izolarea electrică te protejează de riscul de electrocutare la lucrul sub tensiune, până la 1000 V în curent alternativ și 1500 V în curent continuu. Are prindere pentru jugulară, pentru o poziție stabilă și când te miști sau înclini capul, și fante laterale pentru antifoane. Alegi culoarea potrivită pentru echipa ta dintre șapte variante, de la alb și galben fluorescent la roșu și albastru.",
+    "Pentru firmă, casca ABS 901 este conformă cu EN 397, standardul pentru căștile de protecție din industrie, și cu EN 50365 clasa 0, standardul pentru căștile electroizolante, și este EIP de categoria III, conform Regulamentului (UE) 2016/425. Producătorul o recomandă pentru construcții și lucrări de drumuri și pentru industria petrochimică. Se curăță cu detergent neutru sau dezinfectant și apă călduță, iar fișa tehnică îi dă o valabilitate de 5 ani de la data fabricației."
+  ],
+  "benefits": [
+    "Protecție electrică: izolată până la 1000 V c.a. și 1500 V c.c., conform EN 50365 clasa 0.",
+    "Rezistență la impact: carcasă din ABS de înaltă rezistență, conformă EN 397.",
+    "Presiune distribuită uniform: suspensie textilă în șase puncte.",
+    "Frunte uscată: bandă textilă pentru transpirație.",
+    "Potrivire rapidă: rotiță cu clichet, reglabilă și pivotantă, pentru o circumferință a capului de 52–63 cm.",
+    "Pregătită pentru accesorii: fante laterale pentru antifoane și prindere pentru jugulară."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "ABS de înaltă rezistență"
+    },
+    {
+      "label": "Greutate",
+      "value": "375 g"
+    },
+    {
+      "label": "Suspensie interioară",
+      "value": "Textilă, în 6 puncte"
+    },
+    {
+      "label": "Reglajul mărimii",
+      "value": "Rotiță cu clichet, reglabilă și pivotantă; circumferința capului 52–63 cm"
+    },
+    {
+      "label": "Jugulară",
+      "value": "Punct de prindere pentru jugulară"
+    },
+    {
+      "label": "Bandă pentru transpirație",
+      "value": "Textilă"
+    },
+    {
+      "label": "Izolare electrică",
+      "value": "Până la 1000 V c.a. și 1500 V c.c. (EN 50365 clasa 0)"
+    },
+    {
+      "label": "Accesorii",
+      "value": "Fante laterale pentru antifoane"
+    },
+    {
+      "label": "Valabilitate",
+      "value": "5 ani de la data fabricației"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "30"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [
+    "Casca ABS 901 are punct de prindere pentru jugulară; dacă ai nevoie de jugulară, spune-ne la cererea de ofertă."
+  ],
+  "certifications": [
+    {
+      "code": "EN 397",
+      "label": "Standardul european pentru căștile de protecție din industrie: casca te apără de obiectele care cad de sus, cu cerințe pentru absorbția șocului și rezistența la penetrare."
+    },
+    {
+      "code": "EN 50365, clasa 0",
+      "label": "Standardul european pentru căștile electroizolante folosite la instalațiile de joasă tensiune: casca împiedică trecerea curentului periculos prin cap. Clasa 0: conform fișei tehnice, casca ABS 901 e izolată până la 1000 V în curent alternativ și 1500 V în curent continuu."
+    }
+  ],
+  "care": [
+    "Curăță regulat toate componentele cu detergent neutru sau dezinfectant și apă călduță.",
+    "Evită contactul direct cu alcoolul sau solvenții: pot deteriora casca.",
+    "Păstrează casca într-un loc răcoros și uscat, departe de surse de căldură și ferită de lumină."
+  ],
+  "colours": [
+    {
+      "code": "H0",
+      "name": "portocaliu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/H0-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/H0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "N0",
+      "name": "albastru deschis",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/N0-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/N0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "K1",
+      "name": "alb",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/K1-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/K1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "P0",
+      "name": "albastru",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/P0-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/P0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "E0",
+      "name": "galben",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/E0-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/E0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "E1",
+      "name": "galben fluorescent",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/E1-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/E1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "L0",
+      "name": "roșu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-abs-sir-safety-901-md1223/L0-PS.webp",
+          "thumb": "/images/products/casca-protectie-abs-sir-safety-901-md1223/L0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "Mărime unică",
+    "values": [
+      "Mărime unică"
+    ],
+    "table": [],
+    "note": "Reglabilă din rotița cu clichet, pentru o circumferință a capului de 52–63 cm."
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MD1223H0_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MD1223H0_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce standarde respectă casca Sir Safety ABS 901 MD1223?",
+      "a": "EN 397 și EN 50365 clasa 0. Casca Sir Safety ABS 901 MD1223 e cască de protecție pentru industrie conform EN 397 și cască electroizolantă conform EN 50365 clasa 0, izolată până la 1000 V în curent alternativ și 1500 V în curent continuu. Este EIP de categoria III, conform Regulamentului (UE) 2016/425."
+    },
+    {
+      "q": "Pot lucra sub tensiune cu casca ABS 901?",
+      "a": "Da, până la 1000 V în curent alternativ și 1500 V în curent continuu. Fișa tehnică Sir Safety descrie casca ABS 901 MD1223 ca sigură pentru lucrul sub tensiune în aceste limite, cu protecție împotriva riscului de electrocutare, conform EN 50365 clasa 0."
+    },
+    {
+      "q": "Este comodă casca ABS 901 la purtare îndelungată?",
+      "a": "Da. Sir Safety a gândit casca ABS 901 MD1223 pentru confort la purtare îndelungată: suspensia textilă în șase puncte distribuie uniform presiunea pe cap, banda textilă îți ține fruntea uscată, iar casca cântărește 375 g."
+    },
+    {
+      "q": "Pot prinde antifoane și jugulară pe casca ABS 901?",
+      "a": "Da. Casca Sir Safety ABS 901 MD1223 are fante laterale pentru antifoane și punct de prindere pentru jugulară, care îi dă o poziție stabilă și când te miști sau înclini capul. Dacă ai nevoie și de antifoane sau jugulară, le treci în cererea de ofertă."
+    },
+    {
+      "q": "Cât timp e valabilă casca ABS 901 și cum se întreține?",
+      "a": "5 ani de la data fabricației, conform fișei tehnice. Casca Sir Safety ABS 901 MD1223 se curăță regulat cu detergent neutru sau dezinfectant și apă călduță, fără alcool sau solvenți, și se păstrează într-un loc răcoros și uscat, ferită de căldură și lumină."
+    },
+    {
+      "q": "De unde pot comanda cască de protecție Sir Safety ABS 901 în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, în una sau mai multe dintre cele șapte culori, iar casca ABS 901 MD1223 îți este livrată oriunde în România."
+    }
+  ],
+  "seo": {
+    "title": "Cască de protecție din ABS Sir Safety 901 MD1223",
+    "description": "Cască de protecție din ABS Sir Safety 901 MD1223: EN 397, electroizolantă clasa 0 până la 1000 V, suspensie textilă în 6 puncte. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MD1223",
+    "range": null,
+    "productUrl": "https://www.sirsafety.com/abs-901-helmet"
+  },
+  "reviewNotes": [
+    "Keyword „cască de protecție din ABS”, ca să nu concureze cu Everest MD1216 („cască electroizolantă”), deși și ABS 901 e EN 50365 clasa 0; protecția electrică apare în rezumat, descriere, certificări și FAQ.",
+    "Sursa scrie chin strap attachment (punct de prindere pentru jugulară) și nu spune dacă jugulara e inclusă. Am scris doar prinderea; de confirmat cu Sir Safety înainte să promitem jugulara în ofertă.",
+    "Reglajul: fișa scrie la Features „adjustable and pivotable ratchet” și la Details „adjustable and retractable dial”; am folosit „reglabilă și pivotantă”.",
+    "SHELF LIFE tradus ca valabilitate (5 ani de la data fabricației); fișa nu precizează dacă e durata de depozitare sau de utilizare.",
+    "Fișa listează construcții-drumuri și industria petrochimică; industrii alese: construcții, energie."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-19"
+  }
+}

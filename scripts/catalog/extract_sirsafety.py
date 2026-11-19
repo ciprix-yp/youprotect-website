@@ -107,6 +107,10 @@ def parse_page(code, url, page):
         if m:
             colours.append({"code": m.group(1), "name": None,
                             "image": f"{BASE}/assets/img/prodotti/{code}{m.group(1)}.png", "inStock": True})
+        elif re.search(rf"/assets/img/prodotti/{code}\.png", sec):
+            # Produs fără variante de culoare (ochelari, viziere, antifoane): poza și PDF-urile n-au sufix de culoare.
+            colours.append({"code": "", "name": None,
+                            "image": f"{BASE}/assets/img/prodotti/{code}.png", "inStock": True})
     return {
         "code": code,
         "url": url,
@@ -149,9 +153,10 @@ def main(argv):
         try:
             url, page = find_product_url(code)
             facts = parse_page(code, url, page)
+            # "" = produs fără variante de culoare; None = nicio poză găsită.
             primary = facts["colours"][0]["code"] if facts["colours"] else None
-            facts["datasheet"] = datasheet(code, primary) if primary else None
-            doc = f"{BASE}/assets/dichiarazioni-conformita/{code}{primary}_EN.pdf" if primary else None
+            facts["datasheet"] = datasheet(code, primary) if primary is not None else None
+            doc = f"{BASE}/assets/dichiarazioni-conformita/{code}{primary}_EN.pdf" if primary is not None else None
             facts["declarationUrl"] = doc if doc in facts["pdfLinks"] else None
             facts["source"] = {"site": BASE, "fetchedAt": date.today().isoformat()}
         except Exception as exc:  # noqa: BLE001

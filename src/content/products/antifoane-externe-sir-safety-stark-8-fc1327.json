@@ -1,0 +1,167 @@
+{
+  "status": "review",
+  "name": "Antifoane externe Sir Safety Stark 8",
+  "category": "antifoane",
+  "industries": [
+    "constructii",
+    "productie",
+    "logistica"
+  ],
+  "summary": "Antifoane externe cu SNR 32 dB conform EN 352-1, pentru medii cu zgomot de nivel mediu până la ridicat. Pernuțele moi și banda de cap căptușită și reglabilă rămân comode la purtare îndelungată.",
+  "description": [
+    "Antifoanele externe Sir Safety Stark 8 au pernuțe moi pentru urechi, gândite pentru purtare îndelungată, și spumă fonoizolantă de densitate mare. Banda de cap e căptușită și reglabilă: se adaptează ușor pe capete de mărimi diferite și stă stabil și comod. Antifoanele cântăresc 275 g.",
+    "Te simți protejat în zgomot: Stark 8 are SNR 32 dB, cu o atenuare de 34,8 dB la frecvențe înalte, 30,4 dB la frecvențe medii și 21 dB la frecvențe joase. Producătorul le-a gândit pentru locurile de muncă în care zgomotul ajunge la niveluri mari, ca să lucrezi protejat și confortabil.",
+    "Pentru firmă, antifoanele Stark 8 FC1327 sunt certificate EN 352-1 și sunt EIP de categoria III, conform Regulamentului (UE) 2016/425. Au mărime unică, așa că alegi un singur model pentru toată echipa. Producătorul le recomandă în construcții, logistică, industria ușoară și grea, industria alimentară, chimică-farmaceutică și petrochimică, agricultură, curățenie, spitale și servicii. Le cureți cu o cârpă umedă, fără solvenți, și le păstrezi ferite de impurități între utilizări."
+  ],
+  "benefits": [
+    "Zgomot atenuat: SNR 32 dB conform EN 352-1.",
+    "Valori clare pe frecvențe: 34,8 dB la înalte, 30,4 dB la medii, 21 dB la joase.",
+    "Comode la purtare îndelungată: pernuțe moi pentru urechi și bandă de cap căptușită.",
+    "Potrivire stabilă: banda reglabilă se adaptează pe capete de mărimi diferite.",
+    "Izolare fonică eficientă: spumă fonoizolantă de densitate mare.",
+    "Întreținere simplă: se curăță cu o cârpă umedă, fără solvenți."
+  ],
+  "specs": [
+    {
+      "label": "Tip",
+      "value": "Antifoane externe cu bandă de cap"
+    },
+    {
+      "label": "SNR",
+      "value": "32 dB"
+    },
+    {
+      "label": "Atenuare H / M / L",
+      "value": "34,8 dB / 30,4 dB / 21 dB"
+    },
+    {
+      "label": "Atenuare pe frecvențe (medie / abatere standard / APV)",
+      "value": "63 Hz: 18,9 / 3,9 / 14,9 dB; 125 Hz: 15,7 / 3,3 / 12,4 dB; 250 Hz: 22,7 / 2,4 / 20,3 dB; 500 Hz: 33,7 / 2,8 / 30,9 dB; 1000 Hz: 41,7 / 3,4 / 38,3 dB; 2000 Hz: 35,3 / 2,2 / 33,1 dB; 4000 Hz: 35,5 / 1,7 / 33,8 dB; 8000 Hz: 37,7 / 3,1 / 34,6 dB"
+    },
+    {
+      "label": "Izolare fonică",
+      "value": "Spumă fonoizolantă de densitate mare"
+    },
+    {
+      "label": "Bandă de cap",
+      "value": "Căptușită, reglabilă"
+    },
+    {
+      "label": "Pernuțe pentru urechi",
+      "value": "Moi, pentru purtare îndelungată"
+    },
+    {
+      "label": "Greutate",
+      "value": "275 g"
+    },
+    {
+      "label": "Nivel de zgomot",
+      "value": "Medii cu zgomot de nivel mediu până la ridicat"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [],
+  "certifications": [
+    {
+      "code": "EN 352-1 SNR 32 dB",
+      "label": "Standardul pentru antifoanele externe, cu cupe. SNR 32 dB este valoarea unică de atenuare a zgomotului; pe frecvențe, atenuarea este H 34,8 dB (înalte), M 30,4 dB (medii) și L 21 dB (joase)."
+    }
+  ],
+  "care": [
+    "Păstrează antifoanele într-un loc răcoros și uscat, departe de surse de căldură.",
+    "Ferește-le de impurități înainte de folosire și între utilizări, ca să nu ajungă impurități în canalul urechii.",
+    "Curăță-le cu o cârpă umedă și nu folosi solvenți."
+  ],
+  "colours": [
+    {
+      "code": "",
+      "name": "",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/antifoane-externe-sir-safety-stark-8-fc1327/PS.webp",
+          "thumb": "/images/products/antifoane-externe-sir-safety-stark-8-fc1327/PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "Mărime unică",
+    "values": [
+      "Mărime unică"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/FC1327_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/FC1327_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce atenuare au antifoanele Sir Safety Stark 8 FC1327?",
+      "a": "SNR 32 dB, conform EN 352-1. Antifoanele Sir Safety Stark 8 FC1327 atenuează 34,8 dB la frecvențe înalte (H), 30,4 dB la frecvențe medii (M) și 21 dB la frecvențe joase (L); valorile pe fiecare frecvență, de la 63 Hz la 8000 Hz, sunt la specificații."
+    },
+    {
+      "q": "Pentru ce nivel de zgomot sunt potrivite antifoanele Stark 8?",
+      "a": "Pentru medii cu zgomot de nivel mediu până la ridicat, după recomandarea Sir Safety. Antifoanele Stark 8 FC1327 au SNR 32 dB conform EN 352-1 și spumă fonoizolantă de densitate mare."
+    },
+    {
+      "q": "Sunt comode antifoanele Stark 8 la purtare îndelungată?",
+      "a": "Da. Antifoanele Sir Safety Stark 8 FC1327 au pernuțe moi pentru urechi și o bandă de cap căptușită și reglabilă, gândite de producător pentru purtare îndelungată. Cântăresc 275 g."
+    },
+    {
+      "q": "Ce mărime au antifoanele Stark 8?",
+      "a": "Mărime unică. Antifoanele Sir Safety Stark 8 FC1327 au banda de cap reglabilă, care se adaptează pe capete de mărimi diferite, așa că alegi un singur model pentru toată echipa."
+    },
+    {
+      "q": "Cum se întrețin antifoanele Stark 8?",
+      "a": "Cu o cârpă umedă, fără solvenți: așa cureți antifoanele Sir Safety Stark 8 FC1327. Le păstrezi într-un loc răcoros și uscat, departe de surse de căldură, și ferite de impurități înainte de folosire și între utilizări, ca să nu ajungă impurități în canalul urechii."
+    },
+    {
+      "q": "De unde pot comanda antifoane externe Sir Safety Stark 8 în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, iar noi livrăm antifoanele Sir Safety Stark 8 FC1327 oriunde în România."
+    }
+  ],
+  "seo": {
+    "title": "Antifoane externe Sir Safety Stark 8 FC1327",
+    "description": "Antifoane externe Sir Safety Stark 8 FC1327, SNR 32 dB: pernuțe moi, bandă de cap căptușită și reglabilă, mărime unică. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "FC1327",
+    "range": null,
+    "productUrl": "https://www.sirsafety.com/stark-8-earmuffs"
+  },
+  "reviewNotes": [
+    "Keyword „antifoane externe”, nu „antifoane”: „Antifoane” e numele categoriei, iar „externe” deosebește antifoanele cu cupe de dopurile de urechi. Slug ajustat la fel: antifoane-externe-sir-safety-stark-8-fc1327 (în loc de antifoane-sir-safety-stark-8-fc1327; produsul nu e publicat încă).",
+    "Omis din sursă: „reducing auditory fatigue and improving concentration”, „reducing the risk of permanent damage”, „enhancing focus on the job” și „ideal solution”: efecte nemăsurate sau superlative, interzise de ghid.",
+    "Explicațiile SNR (valoare unică de atenuare) și H/M/L (frecvențe înalte, medii, joase) vin din ce acoperă în general EN 352-1, nu din fișă; fișa dă doar valorile.",
+    "Fișa nu spune din ce material sunt cupele sau banda; textul vorbește doar de spuma fonoizolantă de densitate mare, banda căptușită și reglabilă și pernuțele moi.",
+    "Tabelul pe frecvențe (medie / abatere standard / APV) e copiat din fișă, cu virgulă zecimală; de verificat vizual la review.",
+    "Industrii: FIELDS OF USE include și FOOD - CLEANING - HOSPITAL; se poate adăuga „alimentar” dacă vrem produsul și acolo.",
+    "Omis: QUANTITY PER CARTON 20."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-19"
+  }
+}

@@ -70,8 +70,9 @@ def main(argv):
         out.mkdir(parents=True, exist_ok=True)
         n = 0
         for c in source["colours"]:
-            if not COLOUR_RE.match(c["code"]):
+            if c["code"] and not COLOUR_RE.match(c["code"]):
                 continue
+            stem = f"{c['code']}-PS" if c["code"] else "PS"  # "" = produs fără variante de culoare
             try:
                 raw = download(c["image"], cache_dir / f"{code}{c['code']}.png")
                 img = Image.open(io.BytesIO(raw))
@@ -79,8 +80,8 @@ def main(argv):
                 if img.format not in ("PNG", "JPEG", "WEBP"):
                     raise ValueError(f"format neașteptat: {img.format}")
                 img = img.convert("RGBA")
-                save_webp(img, out / f"{c['code']}-PS.webp", 1200, 82)
-                save_webp(img, out / f"{c['code']}-PS-thumb.webp", 240, 75)
+                save_webp(img, out / f"{stem}.webp", 1200, 82)
+                save_webp(img, out / f"{stem}-thumb.webp", 240, 75)
                 n += 1
             except Exception as exc:  # noqa: BLE001
                 print(f"!! {code} {c['code']}: {exc}", file=sys.stderr)
