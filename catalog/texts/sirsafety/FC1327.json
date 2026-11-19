@@ -1,7 +1,8 @@
 {
   "model": "FC1327",
   "slug": "antifoane-externe-sir-safety-stark-8-fc1327",
-  "status": "review",
+  "status": "published",
+  "riskFreeTesting": false,
   "keyword": "antifoane externe",
   "name": "Antifoane externe Sir Safety Stark 8",
   "category": "antifoane",

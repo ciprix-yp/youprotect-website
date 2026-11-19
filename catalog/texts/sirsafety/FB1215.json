@@ -1,11 +1,15 @@
 {
   "model": "FB1215",
   "slug": "viziera-protectie-sir-safety-ghost-fb1215",
-  "status": "review",
+  "status": "published",
+  "riskFreeTesting": false,
   "keyword": "vizieră de protecție",
   "name": "Vizieră de protecție Sir Safety Ghost cu ecran transparent",
   "category": "protectia-ochilor",
-  "industries": ["constructii", "productie"],
+  "industries": [
+    "constructii",
+    "productie"
+  ],
   "primaryColour": "",
   "summary": "Vizieră de protecție cu ecran transparent înalt de 20 cm, certificată EN 166 1F, cu semicalotă căptușită și bandă elastică reglabilă. Îți acoperă fața și stă stabil pe cap.",
   "description": [
@@ -28,16 +32,46 @@
     }
   ],
   "specs": [
-    { "label": "Tip", "value": "Vizieră cu semicalotă căptușită, prinsă pe cap cu bandă elastică" },
-    { "label": "Ecran", "value": "Transparent (FS802)" },
-    { "label": "Înălțimea ecranului", "value": "20 cm" },
-    { "label": "Prindere", "value": "Bandă elastică reglabilă" },
-    { "label": "Clasa optică", "value": "1, conform EN 166" },
-    { "label": "Rezistență la impact", "value": "F (impact cu energie redusă)" },
-    { "label": "Marcaj pe ecran", "value": "1 F CE" },
-    { "label": "Marcaj pe suport", "value": "EN 166 F CE" },
-    { "label": "Bucăți per cutie", "value": "60" },
-    { "label": "Conformitate", "value": "Regulamentul (UE) 2016/425" }
+    {
+      "label": "Tip",
+      "value": "Vizieră cu semicalotă căptușită, prinsă pe cap cu bandă elastică"
+    },
+    {
+      "label": "Ecran",
+      "value": "Transparent (FS802)"
+    },
+    {
+      "label": "Înălțimea ecranului",
+      "value": "20 cm"
+    },
+    {
+      "label": "Prindere",
+      "value": "Bandă elastică reglabilă"
+    },
+    {
+      "label": "Clasa optică",
+      "value": "1, conform EN 166"
+    },
+    {
+      "label": "Rezistență la impact",
+      "value": "F (impact cu energie redusă)"
+    },
+    {
+      "label": "Marcaj pe ecran",
+      "value": "1 F CE"
+    },
+    {
+      "label": "Marcaj pe suport",
+      "value": "EN 166 F CE"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "60"
+    },
+    {
+      "label": "Conformitate",
+      "value": "Regulamentul (UE) 2016/425"
+    }
   ],
   "notes": [],
   "care": [

@@ -1,11 +1,15 @@
 {
   "model": "MD1223",
   "slug": "casca-protectie-abs-sir-safety-901-md1223",
-  "status": "review",
+  "status": "published",
+  "riskFreeTesting": false,
   "keyword": "cască de protecție din ABS",
   "name": "Cască de protecție din ABS Sir Safety 901",
   "category": "casti-protectie",
-  "industries": ["constructii", "energie"],
+  "industries": [
+    "constructii",
+    "energie"
+  ],
   "primaryColour": "H0",
   "summary": "Cască de protecție din ABS de înaltă rezistență, conformă EN 397 și electroizolantă după EN 50365 clasa 0, până la 1000 V c.a. și 1500 V c.c. Cântărește 375 g și stă stabil pe cap, cu suspensie textilă în șase puncte.",
   "description": [
@@ -33,16 +37,46 @@
     }
   ],
   "specs": [
-    { "label": "Greutate", "value": "375 g" },
-    { "label": "Suspensie interioară", "value": "Textilă, în 6 puncte" },
-    { "label": "Reglajul mărimii", "value": "Rotiță cu clichet, reglabilă și pivotantă; circumferința capului 52–63 cm" },
-    { "label": "Jugulară", "value": "Punct de prindere pentru jugulară" },
-    { "label": "Bandă pentru transpirație", "value": "Textilă" },
-    { "label": "Izolare electrică", "value": "Până la 1000 V c.a. și 1500 V c.c. (EN 50365 clasa 0)" },
-    { "label": "Accesorii", "value": "Fante laterale pentru antifoane" },
-    { "label": "Valabilitate", "value": "5 ani de la data fabricației" },
-    { "label": "Bucăți per cutie", "value": "30" },
-    { "label": "Categorie EIP", "value": "III, conform Regulamentului (UE) 2016/425" }
+    {
+      "label": "Greutate",
+      "value": "375 g"
+    },
+    {
+      "label": "Suspensie interioară",
+      "value": "Textilă, în 6 puncte"
+    },
+    {
+      "label": "Reglajul mărimii",
+      "value": "Rotiță cu clichet, reglabilă și pivotantă; circumferința capului 52–63 cm"
+    },
+    {
+      "label": "Jugulară",
+      "value": "Punct de prindere pentru jugulară"
+    },
+    {
+      "label": "Bandă pentru transpirație",
+      "value": "Textilă"
+    },
+    {
+      "label": "Izolare electrică",
+      "value": "Până la 1000 V c.a. și 1500 V c.c. (EN 50365 clasa 0)"
+    },
+    {
+      "label": "Accesorii",
+      "value": "Fante laterale pentru antifoane"
+    },
+    {
+      "label": "Valabilitate",
+      "value": "5 ani de la data fabricației"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "30"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425"
+    }
   ],
   "notes": [
     "Casca ABS 901 are punct de prindere pentru jugulară; dacă ai nevoie de jugulară, spune-ne la cererea de ofertă."

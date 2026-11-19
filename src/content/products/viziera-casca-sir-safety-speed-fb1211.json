@@ -1,5 +1,5 @@
 {
-  "status": "review",
+  "status": "published",
   "name": "Vizieră transparentă pentru cască Sir Safety Speed",
   "category": "protectia-ochilor",
   "industries": [
@@ -169,5 +169,6 @@
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
     "assembledAt": "2026-11-19"
-  }
+  },
+  "riskFreeTesting": false
 }

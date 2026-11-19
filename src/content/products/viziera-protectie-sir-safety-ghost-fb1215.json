@@ -1,5 +1,5 @@
 {
-  "status": "review",
+  "status": "published",
   "name": "Vizieră de protecție Sir Safety Ghost cu ecran transparent",
   "category": "protectia-ochilor",
   "industries": [
@@ -163,5 +163,6 @@
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
     "assembledAt": "2026-11-19"
-  }
+  },
+  "riskFreeTesting": false
 }

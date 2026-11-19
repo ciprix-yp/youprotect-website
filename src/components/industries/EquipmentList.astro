@@ -1,0 +1,38 @@
+---
+// Lista „ce echipament trebuie” de pe paginile de industrie. Un element duce la pagina lui de categorie din catalog doar
+// dacă pagina există (cel puțin două produse publicate, src/lib/catalog-categories.ts); altfel rămâne text simplu.
+import { getCollection } from 'astro:content';
+import { activeCategoryPages } from '../../lib/catalog-categories';
+import type { CategoryKey } from '../../lib/catalog-taxonomy';
+
+interface Props {
+  items: { text: string; category?: CategoryKey }[];
+}
+
+const published = (await getCollection('products', ({ data }) => data.status === 'published')).map((e) => e.data);
+const active = activeCategoryPages(published);
+const hrefFor = (key?: CategoryKey) => {
+  const page = key ? active.find((c) => c.key === key) : undefined;
+  return page ? `/produse/${page.slug}/` : undefined;
+};
+---
+
+<ul class="space-y-3 text-neutral-300" data-aos="fade-up" data-aos-delay="150">
+  {
+    Astro.props.items.map((item) => {
+      const href = hrefFor(item.category);
+      return (
+        <li>
+          •{' '}
+          {href ? (
+            <a href={href} class="text-neutral-200 underline underline-offset-4 decoration-yp-yellow/60 hover:text-yp-yellow transition-colors">
+              {item.text}
+            </a>
+          ) : (
+            item.text
+          )}
+        </li>
+      );
+    })
+  }
+</ul>

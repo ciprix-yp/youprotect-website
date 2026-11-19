@@ -112,7 +112,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         Discută cu un consultant
       </a>
     </div>
-    <RiskFreeTesting variant="inline" class="mt-6" />
+    {products.every((e) => e.data.riskFreeTesting) && <RiskFreeTesting variant="inline" class="mt-6" />}
   </header>
 
   <ul class="mt-10 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6" aria-label={`Modele: ${CATEGORIES[page.key]}`}>

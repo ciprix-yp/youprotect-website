@@ -298,7 +298,9 @@ Format task:
 - Titluri și descrieri (19.11.2026): 6 titluri și 10 descrieri scurtate sub limite (D-2026-11-19-04).
   `scripts/seo/check-meta.mjs` le verifică în CI după build; `tests/seo-meta.test.mjs`.
 - Accesorii de protecție (19.11.2026): 9 produse Sir Safety în `review` (căști, viziere, ochelari, mănuși, antifoane),
-  4 categorii noi (D-2026-11-19-05). Next action: owner-ul verifică în `/preview/produse/` și le publică.
+  4 categorii noi (D-2026-11-19-05). Publicate pe 19.11.2026, fără „Testare fără riscuri” în afară de Genio
+  (D-2026-11-19-06). Next action: întrebările pentru Sir Safety din D-2026-11-19-06; apoi semimăștile FFP3 și filtrele,
+  hamurile și lonjele, combinezoanele chimice (vândute, lipsă din catalog).
 - Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); a doua măsurătoare ChatGPT în decembrie;
   volumele din Keyword Planner; ghidul „cum alegi haine de lucru care rezistă” (întrebarea 8 din `ai-prompts.json`).
 

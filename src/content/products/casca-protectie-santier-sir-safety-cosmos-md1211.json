@@ -1,5 +1,5 @@
 {
-  "status": "review",
+  "status": "published",
   "name": "Cască de protecție pentru șantier Sir Safety Cosmos",
   "category": "casti-protectie",
   "industries": [
@@ -232,5 +232,6 @@
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
     "assembledAt": "2026-11-19"
-  }
+  },
+  "riskFreeTesting": false
 }

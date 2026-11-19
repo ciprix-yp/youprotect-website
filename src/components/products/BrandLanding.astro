@@ -7,7 +7,8 @@ import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
 import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
 import { cardSrc } from '../../lib/catalog-images.js';
-import { modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
+import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
+import { riskFreeExclusions } from '../../lib/risk-free-scope';
 import type { BrandPage } from '../../lib/catalog-brands';
 import { PERSONALIZATION_PAGE, productsWithLogoZones } from '../../lib/personalization';
 import { jsonLd } from '../../lib/json-ld';
@@ -25,6 +26,8 @@ interface Props {
 const { page, entries, others, categoryPages } = Astro.props;
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
 const products = [...entries].sort((a, b) => roCollator.compare(a.data.name, b.data.name));
+// Ce produse ale mărcii nu intră în „Testare fără riscuri” (căști, ochelari, mănuși electroizolante…).
+const notTestable = riskFreeExclusions(products.map((e) => e.data));
 const count = products.length;
 const href = `/produse/${page.slug}/`;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
@@ -57,7 +60,9 @@ const faq = [
   },
   {
     q: `Pot testa produsele ${page.name} înainte să echipez toată firma?`,
-    a: RISK_FREE_TESTING.text,
+    a: notTestable.length
+      ? `${RISK_FREE_TESTING.text} Nu intră în testare: ${joinRo(notTestable)}.`
+      : RISK_FREE_TESTING.text,
     link: { href: RISK_FREE_TESTING.href, label: 'Condițiile testării' },
   },
   {
@@ -118,7 +123,8 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
     <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{page.heading}</h1>
     <p class="mt-4 text-base text-yp-white/80 leading-relaxed">
       You Protect vinde produse {page.name} firmelor și livrează în toată România. Primești ofertă pentru cantitățile echipei tale,
-      poți testa produsele înainte de comanda mare, iar hainele le poți personaliza cu logo-ul firmei.
+      poți testa produsele înainte de comanda mare{notTestable.length > 0 && ', în condițiile programului'}, iar hainele le poți
+      personaliza cu logo-ul firmei.
     </p>
     <p class="mt-3 text-sm text-yp-white/60 leading-relaxed">
       {page.about} Sursa: <a href={page.source.url} rel="noopener" class="underline underline-offset-4 hover:text-yp-yellow">{page.source.label}</a>.
