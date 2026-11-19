@@ -59,7 +59,8 @@ const products = defineCollection({
       .nullable(),
     documents: z.array(
       z.object({
-        type: z.enum(['fisa-tehnica', 'declaratie-conformitate']),
+        // declaratie-corespondenta: Sir Safety pentru produsele fabricate de alții, cu declarația UE a producătorului.
+        type: z.enum(['fisa-tehnica', 'declaratie-conformitate', 'declaratie-corespondenta']),
         label: z.string(),
         url: httpsUrl,
         language: z.string(),

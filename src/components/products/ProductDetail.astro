@@ -45,7 +45,8 @@ const productSchema = {
   name: p.name,
   description: p.summary,
   image: p.colours.flatMap((c) => c.images.map((img) => new URL(img.src, siteOrigin).href)).slice(0, 10),
-  brand: { '@type': 'Brand', name: p.supplier.name },
+  // Marca produsului (Sir Safety System, MASCOT, Climax), nu furnizorul de la care cumpărăm.
+  brand: { '@type': 'Brand', name: p.supplier.brand.replace('®', '') },
   mpn: p.supplier.model,
   category: categoryLabel,
 };

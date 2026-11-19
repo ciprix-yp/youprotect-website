@@ -357,3 +357,20 @@
 - De confirmat cu Sir Safety, fără să blocheze publicarea (textele urmează fișa tehnică): standardul viziera Speed
   FB1211 (EN 166 pe pagină, EN ISO 16321-1 în fișă), tensiunea de rezistență MA1814 (1,0 kV pe pagină, 10 kV în fișă),
   dacă Everest vine cu vizieră și dacă ABS 901 și Cosmos vin cu jugulară, instrucțiunile de utilizare pentru MA1814.
+
+## D-2026-11-19-07
+- Context: pe 19.11.2026, la verificarea declarațiilor Sir Safety:
+  - patru linkuri de pe site (MC1111, MC1113, MC3012, MC3014) întorceau o pagină HTML sau 404 în loc de PDF; pagina
+    Sir Safety a produsului trimite tot acolo, deci documentul lipsește la sursă;
+  - trei produse sunt fabricate de alții, iar Sir Safety are pentru ele o „dichiarazione di corrispondenza” (în
+    italiană) cu declarația UE a producătorului: MA1814 (SECURA B.C., Polonia), FB1215 (Long Dar Plastic, Taiwan),
+    FA1530 și FA1535 (Productos Climax, Spania). Pe fișă scria „Declarație de conformitate UE (în engleză)”.
+- Implementare:
+  - `extract_sirsafety.py` verifică declarația (PDF real, conformitate sau corespondență + producător);
+    `--declarations-only` o reface fără să re-extragă restul. Fără PDF, fișa nu mai pune linkul.
+  - `assemble_sirsafety.py`: eticheta documentului după tip (`declaratie-corespondenta`); la produsele fabricate de
+    alții, textul trebuie să numească producătorul (verificat față de declarație) și fișa primește nota „Producător: …”.
+    Marca poate fi a producătorului (`brand`, ex. Climax). JSON-LD `brand` = marca produsului, nu furnizorul.
+  - `scripts/catalog/check-documents.mjs` verifică toate documentele din catalog; rulează lunar
+    (`.github/workflows/documente-lunar.yml`) și pică dacă un link nu dă PDF.
+- De cerut de la Sir Safety: declarațiile pentru MC1111, MC1113, MC3012 și MC3014.

@@ -49,7 +49,7 @@ def datasheet_sizes(text):
     if i < 0 or j < 0:
         return []
     chunk = text[i + len("\nSIZES"):j]
-    if chunk.split() == ["ONE", "SIZE"]:  # căști, ochelari, antifoane
+    if chunk.split()[:2] == ["ONE", "SIZE"]:  # căști, ochelari, antifoane, hamuri; la lonje urmează lungimea („ONE SIZE 1,8”)
         return ["Mărime unică"]
     # Fișele scriu XX pentru XXL și 3X, 4X… pentru 3XL, 4XL…; pe site folosim 2XL, 3XL…
     norm = {"XX": "2XL", "XXL": "2XL"}
@@ -129,9 +129,23 @@ def assemble(source, text, maps, public_dir):
 
     documents = [{"type": "fisa-tehnica", "label": "Fișă tehnică (în engleză)", "url": source["datasheet"]["url"],
                   "language": "en"}]
-    if source.get("declarationUrl"):
+    # `declaration` vine din extract_sirsafety.py: linkul e un PDF verificat; fără el, fișa nu pune linkul.
+    decl = source.get("declaration")
+    notes = list(text.get("notes", []))
+    if decl and decl["kind"] == "conformity":
         documents.append({"type": "declaratie-conformitate", "label": "Declarație de conformitate UE (în engleză)",
-                          "url": source["declarationUrl"], "language": "en"})
+                          "url": decl["url"], "language": "en"})
+    elif decl and decl["kind"] == "correspondence":
+        # Produs fabricat de altcineva: Sir Safety declară că articolul lor corespunde modelului producătorului.
+        maker = text.get("manufacturer")
+        if not maker or not decl["manufacturer"] or squash(maker["name"]) not in squash(decl["manufacturer"]):
+            raise AssemblyError("produsul e fabricat de altcineva: completează „manufacturer” {name, country} "
+                                f"ca în declarația de corespondență ({decl['manufacturer']!r})")
+        documents.append({"type": "declaratie-corespondenta",
+                          "label": "Declarație de corespondență Sir Safety (în italiană), cu declarația UE a producătorului",
+                          "url": decl["url"], "language": "it"})
+        notes.append(f"Producător: {maker['name']} ({maker['country']}). Sir Safety System vinde produsul cu codul "
+                     f"{source['code']} și declară că acesta corespunde modelului producătorului.")
     series = next((line.strip() for line in ds.splitlines()[1:3] if line.strip().endswith("SERIES")), None)
     return {
         "status": text["status"],
@@ -142,7 +156,7 @@ def assemble(source, text, maps, public_dir):
         "description": text["description"],
         "benefits": text["benefits"],
         "specs": specs,
-        "notes": text.get("notes", []),
+        "notes": notes,
         # Codul rămâne cel din fișă (verificat mai sus); doar „Class 3” se afișează în română, ca la MASCOT.
         "certifications": [{"code": re.sub(r"\s+Class\s+(\d)", r", clasa \1", c["code"]), "label": c.get("label")}
                            for c in text["certifications"]],
@@ -156,7 +170,8 @@ def assemble(source, text, maps, public_dir):
         "seo": text["seo"],
         "supplier": {
             "name": "Sir Safety",
-            "brand": "Sir Safety System",
+            # Marca produsului: Sir Safety System, sau a producătorului când Sir Safety vinde modelul lui (ex. Climax).
+            "brand": text.get("brand", "Sir Safety System"),
             "model": source["code"],
             "range": series.title() if series else None,
             "productUrl": source["url"],

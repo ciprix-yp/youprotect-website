@@ -11,6 +11,10 @@
     "constructii",
     "productie"
   ],
+  "manufacturer": {
+    "name": "SECURA B.C. Sp. z o.o",
+    "country": "Polonia"
+  },
   "primaryColour": "E0",
   "summary": "Mănuși electroizolante clasa 0 din latex natural, certificate IEC 60903, pentru instalații cu tensiune nominală de până la 1000 V c.a. și 1500 V c.c. Te simți protejat: sunt testate la o tensiune de probă de 5 kV.",
   "description": [
