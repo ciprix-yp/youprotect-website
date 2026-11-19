@@ -3,6 +3,7 @@
 // mărcile și certificările se generează din fișele de produs, ca să rămână adevărate când se schimbă catalogul.
 import type { CollectionEntry } from 'astro:content';
 import ProductCard from './ProductCard.astro';
+import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
 import { CATEGORIES, INDUSTRIES } from '../../lib/catalog-taxonomy';
 import { cardSrc } from '../../lib/catalog-images.js';
@@ -129,32 +130,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
     ))}
   </ul>
 
-  <section class="mt-14" aria-labelledby="certificari">
-    <h2 id="certificari" class={sectionTitle}>Certificările fiecărui model</h2>
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm text-left text-yp-white/80 border-collapse">
-        <thead>
-          <tr class="border-b border-yp-white/20 text-yp-white">
-            <th scope="col" class="py-3 pr-4 font-medium">Model</th>
-            <th scope="col" class="py-3 pr-4 font-medium">Marcă</th>
-            <th scope="col" class="py-3 font-medium">Certificări declarate de producător</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((e) => (
-            <tr class="border-b border-yp-white/10 align-top">
-              <th scope="row" class="py-3 pr-4 font-normal">
-                <a href={`/produse/${e.id}/`} class="text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{e.data.name}</a>
-              </th>
-              <td class="py-3 pr-4 whitespace-nowrap">{e.data.supplier.brand}</td>
-              <td class="py-3">{e.data.certifications.map((c) => c.code).join(' · ') || '—'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <p class="mt-3 text-xs text-yp-white/50">Ce înseamnă fiecare marcaj găsești pe fișa produsului.</p>
-  </section>
+  <CertificationsTable products={products} headingClass={sectionTitle} />
 
   <section class="mt-14 max-w-3xl" aria-labelledby="intrebari">
     <h2 id="intrebari" class={sectionTitle}>Întrebări frecvente</h2>

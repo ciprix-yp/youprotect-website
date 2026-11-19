@@ -1,0 +1,224 @@
+---
+// Pagina de marcă din catalog (/produse/<slug>/). Cine e producătorul vine din src/lib/catalog-brands.ts, cu sursa
+// oficială; modelele, categoriile, certificările și zonele de logo se generează din fișele de produs.
+import type { CollectionEntry } from 'astro:content';
+import ProductCard from './ProductCard.astro';
+import CertificationsTable from './CertificationsTable.astro';
+import RiskFreeTesting from '../global/RiskFreeTesting.astro';
+import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
+import { cardSrc } from '../../lib/catalog-images.js';
+import { modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
+import type { BrandPage } from '../../lib/catalog-brands';
+import { PERSONALIZATION_PAGE, productsWithLogoZones } from '../../lib/personalization';
+import { jsonLd } from '../../lib/json-ld';
+import { RISK_FREE_TESTING, SITE } from '../../lib/site';
+
+interface Props {
+  page: BrandPage;
+  entries: CollectionEntry<'products'>[];
+  /** Celelalte pagini de marcă, pentru legăturile de la final. */
+  others: BrandPage[];
+  /** Paginile de categorie publicate, ca titlurile grupurilor să ducă la ele. */
+  categoryPages: CategoryPage[];
+}
+
+const { page, entries, others, categoryPages } = Astro.props;
+const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
+const products = [...entries].sort((a, b) => roCollator.compare(a.data.name, b.data.name));
+const count = products.length;
+const href = `/produse/${page.slug}/`;
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+
+// Grupate pe categorii, în ordinea din taxonomie.
+const groups = (Object.keys(CATEGORIES) as CategoryKey[])
+  .map((key) => ({
+    key,
+    label: CATEGORIES[key],
+    categoryPage: categoryPages.find((c) => c.key === key),
+    items: products.filter((e) => e.data.category === key),
+  }))
+  .filter((g) => g.items.length > 0);
+
+const withLogoZones = productsWithLogoZones(products);
+const categorySummary = groups.map((g) => `${g.label.toLowerCase()} (${g.items.length})`).join(', ');
+const logoAnswer =
+  withLogoZones.length > 0
+    ? `Da. Pentru ${modelsLabel(withLogoZones.length)} ${page.name}, producătorul dă zonele de logo și dimensiunile maxime; le vezi pe fișa fiecărui produs. Personalizarea o facem prin parteneri, prin broderie, serigrafie sau transfer termic.`
+    : `Da. Personalizarea o facem prin parteneri, prin broderie, serigrafie sau transfer termic. Locul și mărimea logo-ului pe hainele ${page.name} le stabilim împreună la ofertă.`;
+
+const faq = [
+  {
+    q: `Cine vinde ${page.name} în România?`,
+    a: `You Protect, din Vetiș, județul Satu Mare, vinde produse ${page.name} firmelor și livrează în toată România. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}.`,
+  },
+  {
+    q: `Ce produse ${page.name} găsesc la You Protect?`,
+    a: `În catalog sunt ${modelsLabel(count)}: ${categorySummary}. Dacă cauți alt model ${page.name}, întreabă-ne și verificăm dacă îl putem aduce.`,
+  },
+  {
+    q: `Pot testa produsele ${page.name} înainte să echipez toată firma?`,
+    a: RISK_FREE_TESTING.text,
+    link: { href: RISK_FREE_TESTING.href, label: 'Condițiile testării' },
+  },
+  {
+    q: `Pot pune logo-ul firmei pe hainele ${page.name}?`,
+    a: logoAnswer,
+    link: { href: PERSONALIZATION_PAGE.href, label: PERSONALIZATION_PAGE.linkLabel },
+  },
+  {
+    q: `De unde e ${page.name}?`,
+    a: page.about,
+  },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Acasă', item: siteOrigin.href },
+    { '@type': 'ListItem', position: 2, name: 'Catalog', item: new URL('/produse/', siteOrigin).href },
+    { '@type': 'ListItem', position: 3, name: page.name, item: new URL(href, siteOrigin).href },
+  ],
+};
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `Produse ${page.name} la You Protect`,
+  numberOfItems: count,
+  itemListElement: products.map((e, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: e.data.name,
+    url: new URL(`/produse/${e.id}/`, siteOrigin).href,
+  })),
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
+};
+
+const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4';
+---
+
+<script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
+<script type="application/ld+json" set:html={jsonLd(itemListSchema)} />
+<script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+
+<section class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+  <nav aria-label="Breadcrumb" class="text-xs uppercase tracking-widest text-yp-white/60 mb-6 flex flex-wrap items-center">
+    <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
+    <span class="mx-2" aria-hidden="true">/</span>
+    <a href="/produse/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Catalog</a>
+    <span class="mx-2" aria-hidden="true">/</span>
+    <span class="text-yp-white">{page.name}</span>
+  </nav>
+
+  <header class="max-w-3xl">
+    <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{page.heading}</h1>
+    <p class="mt-4 text-base text-yp-white/80 leading-relaxed">
+      You Protect vinde produse {page.name} firmelor și livrează în toată România. Primești ofertă pentru cantitățile echipei tale,
+      poți testa produsele înainte de comanda mare, iar hainele le poți personaliza cu logo-ul firmei.
+    </p>
+    <p class="mt-3 text-sm text-yp-white/60 leading-relaxed">
+      {page.about} Sursa: <a href={page.source.url} rel="noopener" class="underline underline-offset-4 hover:text-yp-yellow">{page.source.label}</a>.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a
+        href="/cere-oferta/"
+        class="inline-flex items-center gap-2 bg-yp-yellow text-yp-black font-heading font-semibold px-6 py-3 rounded hover:bg-white transition-colors"
+      >
+        Cere ofertă
+      </a>
+      <a
+        href="/programeaza-discutie/"
+        class="inline-flex items-center gap-2 border border-yp-white/25 text-yp-white px-6 py-3 rounded hover:border-yp-yellow hover:text-yp-yellow transition-colors"
+      >
+        Discută cu un consultant
+      </a>
+    </div>
+    <RiskFreeTesting variant="inline" class="mt-6" />
+  </header>
+
+  <div class="mt-12 space-y-12">
+    {groups.map((group) => (
+      <section aria-labelledby={`grup-${group.key}`}>
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 mb-4">
+          <h2 id={`grup-${group.key}`} class="text-xl md:text-2xl font-light text-yp-white">
+            {group.label} {page.name}
+            <span class="text-sm text-yp-white/50">· {modelsLabel(group.items.length)}</span>
+          </h2>
+          {group.categoryPage && (
+            <a href={`/produse/${group.categoryPage.slug}/`} class="inline-block py-2 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
+              Toate modelele din categorie
+            </a>
+          )}
+        </div>
+        <ul class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6" aria-label={`${group.label} ${page.name}`}>
+          {group.items.map((e) => (
+            <li>
+              <ProductCard
+                id={e.id}
+                slug={e.id}
+                name={e.data.name}
+                categoryName={CATEGORIES[e.data.category]}
+                industry={e.data.industries.map((k) => INDUSTRIES[k]).join(', ')}
+                shortDescription={e.data.summary}
+                producatorName={e.data.supplier.brand}
+                thumbnailUrl={cardSrc(e.data.colours[0].images[0].src)}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  <p class="mt-10 max-w-3xl text-sm text-yp-white/70 leading-relaxed">
+    Catalogul de pe site e o selecție. Dacă cauți alt model {page.name},
+    <a href="/cere-oferta/" class="text-yp-yellow underline underline-offset-4 hover:text-yp-white">scrie-ne în cererea de ofertă</a>
+    și verificăm dacă îl putem aduce.
+  </p>
+
+  <CertificationsTable products={products} headingClass={sectionTitle} />
+
+  <section class="mt-14 max-w-3xl" aria-labelledby="intrebari">
+    <h2 id="intrebari" class={sectionTitle}>Întrebări frecvente</h2>
+    <dl class="space-y-6">
+      {faq.map((item) => (
+        <div>
+          <dt class="text-yp-white font-medium">{item.q}</dt>
+          <dd class="mt-2 text-yp-white/75 leading-relaxed">
+            {item.a}
+            {item.link && (
+              <a href={item.link.href} class="block w-fit py-2 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
+            )}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <nav class="mt-14 pt-8 border-t border-yp-white/10" aria-label="Alte mărci">
+    <h2 class={sectionTitle}>Alte mărci și categorii</h2>
+    <ul class="flex flex-wrap gap-2">
+      {others.map((o) => (
+        <li>
+          <a href={`/produse/${o.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">
+            {o.name}
+          </a>
+        </li>
+      ))}
+      {categoryPages.map((c) => (
+        <li>
+          <a href={`/produse/${c.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">
+            {c.heading}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href="/produse/" class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">Tot catalogul</a>
+      </li>
+    </ul>
+  </nav>
+</section>
