@@ -13,7 +13,14 @@ const products = readdirSync(join(ROOT, 'src/content/products'))
   .map((n) => ({ id: n.replace(/\.json$/, ''), ...JSON.parse(readFileSync(join(ROOT, 'src/content/products', n), 'utf8')) }))
   .map((p) => ({ ...p, riskFreeTesting: p.riskFreeTesting ?? true }));
 
-const EXCLUDED_CATEGORIES = ['casti-protectie', 'protectia-ochilor', 'antifoane'];
+const EXCLUDED_CATEGORIES = [
+  'casti-protectie',
+  'protectia-ochilor',
+  'antifoane',
+  'protectia-respiratorie',
+  'protectie-cadere',
+  'combinezoane',
+];
 
 test('căștile, ochelarii, vizierele și antifoanele nu intră în testare', () => {
   const wrong = products.filter((p) => EXCLUDED_CATEGORIES.includes(p.category) && p.riskFreeTesting).map((p) => p.id);

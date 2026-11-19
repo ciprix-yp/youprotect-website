@@ -124,6 +124,36 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     plural: 'antifoanele',
     logo: false,
   },
+  {
+    key: 'protectia-respiratorie',
+    slug: 'masti-de-protectie',
+    heading: 'Măști de protecție respiratorie',
+    title: 'Măști de protecție respiratorie pentru firme',
+    intro:
+      'Semimăști și filtre pentru protecția căilor respiratorii. Mai jos vezi standardele și clasele fiecărui model, așa cum le declară producătorul.',
+    plural: 'măștile și filtrele de protecție',
+    logo: false,
+  },
+  {
+    key: 'protectie-cadere',
+    slug: 'hamuri-de-siguranta',
+    heading: 'Hamuri și lonje de siguranță',
+    title: 'Hamuri și lonje de siguranță pentru firme',
+    intro:
+      'Hamuri și lonje pentru lucrul la înălțime. Mai jos vezi standardele fiecărui model, așa cum le declară producătorul.',
+    plural: 'hamurile și lonjele de siguranță',
+    logo: false,
+  },
+  {
+    key: 'combinezoane',
+    slug: 'combinezoane-de-protectie',
+    heading: 'Combinezoane de protecție chimică',
+    title: 'Combinezoane de protecție chimică pentru firme',
+    intro:
+      'Combinezoane pentru lucrul cu particule, stropi și substanțe periculoase. Mai jos vezi tipurile de protecție declarate de producător pentru fiecare model.',
+    plural: 'combinezoanele de protecție',
+    logo: false,
+  },
 ];
 
 export function categoryPageFor(key: CategoryKey): CategoryPage | undefined {

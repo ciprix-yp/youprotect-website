@@ -374,3 +374,24 @@
   - `scripts/catalog/check-documents.mjs` verifică toate documentele din catalog; rulează lunar
     (`.github/workflows/documente-lunar.yml`) și pică dacă un link nu dă PDF.
 - De cerut de la Sir Safety: declarațiile pentru MC1111, MC1113, MC3012 și MC3014.
+
+## D-2026-11-19-08
+- Context: restul articolelor vândute care lipseau din catalog (owner-ul a aprobat pe 19.11.2026).
+- Produse noi (status `review`, doar în `/preview/produse/`):
+  - protecție respiratorie: semimasca FFP3 FA1441 (Sir Safety), semimasca Climax 800 FA1530 și filtrul Climax 757-N
+    ABEK1P3 R D FA1535 (marca Climax, fabricate de Productos Climax, Spania; D-2026-11-19-07);
+  - protecție la cădere: hamul Sokoi 14 FD1143, lonjele FD1532 (în Y, din chingă), FD1570, FD1575, FD1576 (frânghie
+    Kernmantel de 12 mm, 1,80 m, diferă doar prin carabiniere);
+  - combinezoane de protecție chimică: Chemstat MC3443, Chemtex MC3442, Chemical Bio MC3422, Virus 8500 MC3439,
+    Virus 8700 MC3441 (de unică folosință, după fișe).
+- Categorii noi: `protectia-respiratorie` (/produse/masti-de-protectie/), `protectie-cadere`
+  (/produse/hamuri-de-siguranta/), `combinezoane` (/produse/combinezoane-de-protectie/).
+- „Testare fără riscuri” nu se aplică nici acestor grupe, după logica din D-2026-11-19-06 (EIP de categoria III, nu se
+  returnează după folosire); de confirmat de owner la aprobare. `tests/risk-free-scope.test.mjs` acoperă categoriile.
+- Paginile de industrie: Construcții are hamuri și lonje, măști pentru praf; Producție are măști și filtre, combinezoane.
+- Reguli de adevăr: fișa tehnică are prioritate față de pagina web (lonja FD1575 nu e „de poziționare”, ci EN 354;
+  hamul FD1143 are centură în talie); nicio lonjă nu e descrisă ca oprind singură căderea; fără sfaturi de utilizare
+  pe care sursa nu le dă.
+- De cerut de la Sir Safety: instrucțiunile de utilizare pentru hamuri, lonje, măști și combinezoane (categoria III);
+  la FA1441, care limită de utilizare e corectă („50 TLV” sau factorul de protecție operațional 30); dacă Virus 8500
+  există și în mărimea S (pagina web spune S–3XL, fișa M–3XL); închiderea la Chemical Bio MC3422.
