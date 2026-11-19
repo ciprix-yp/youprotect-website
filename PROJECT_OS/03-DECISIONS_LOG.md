@@ -327,3 +327,18 @@
 - Descrierile pomenesc doar ce e în catalog: încălțăminte S3S/S7S, haine reflectorizante, geci, pantaloni, salopete,
   tricouri, personalizare cu logo. Căștile, mănușile, antifoanele și ochelarii nu sunt în catalog, deci nu apar în
   descrieri.
+
+## D-2026-11-19-05
+- Context: paginile de industrie pomeneau căști, mănuși, antifoane și ochelari, dar catalogul n-avea niciunul. You Protect le
+  poate aduce (confirmat de owner pe 19.11.2026), iar exportul de vânzări arată ce s-a vândut deja.
+- Produse noi (Sir Safety, status `review`, doar în `/preview/produse/`): căștile Everest MD1216, ABS 901 MD1223 și Cosmos
+  MD1211; viziera Speed FB1211 (pentru Everest) și viziera Ghost FB1215; ochelarii Azoto FB1328; mănușile Genio MA1427 și
+  Electro clasa 0 MA1814; antifoanele Stark 8 FC1327. Din export intră în repo doar codurile; cantitățile și clienții nu.
+- Categorii noi: `casti-protectie`, `manusi`, `protectia-ochilor`, `antifoane`. Paginile lor de categorie pornesc singure
+  de la două produse publicate (`antifoane` are unul, deci încă nu).
+- Pipeline: produsele fără variante de culoare au o singură intrare cu codul gol (poza `PS.webp`, PDF-urile `{COD}_EN.pdf`),
+  iar fișa nu mai arată blocul „Culori”. Mărimile: „ONE SIZE” → „Mărime unică”, mănuși „S-7” → „S (7)” și „8 9 10 11”.
+  Cele 12 produse Sir Safety existente se re-asamblează identic.
+- Reguli de adevăr: textele urmează fișa tehnică acolo unde pagina web o contrazice (FB1211: EN ISO 16321-1, nu EN 166;
+  MA1814: 10 kV, nu 1,0 kV) și notează conflictul în `reviewNotes`. Fără sfaturi de utilizare pe care sursa nu le dă.
+- Paginile de industrie: sub lista de echipamente, „Ce e pe listă și nu găsești încă în catalog putem aduce la cerere”.

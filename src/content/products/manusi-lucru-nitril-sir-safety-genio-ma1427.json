@@ -1,0 +1,170 @@
+{
+  "status": "review",
+  "name": "Mănuși de lucru cu nitril Sir Safety Genio",
+  "category": "manusi",
+  "industries": [
+    "constructii",
+    "logistica",
+    "productie"
+  ],
+  "summary": "Mănuși de lucru cu nitril în palmă, certificate EN 388 (3121X), cu priză sigură pe suprafețe uscate, ude sau uleioase. Tricotul fin, fără cusături, respiră și te lasă să lucrezi precis.",
+  "description": [
+    "Mănușile de lucru cu nitril Sir Safety Genio sunt tricotate din poliester de înaltă performanță (HPP), cu structură extrafină, în finețe 13 G. Tricotul fără cusături e comod pe mână și respiră bine, iar mănușile sunt robuste, dar flexibile: simți ce atingi și faci mișcări precise, cu dexteritate de nivel 5. Stratul de nitril din palmă îți dă o priză sigură pe suprafețe uscate, ude sau uleioase, iar manșeta din tricot elastic se așază pe încheietură.",
+    "Te simți sigur pe ce ții în mână: nitrilul din palmă rezistă bine la abraziune, iar tricotul HPP are o rezistență mecanică bună. Lucrezi liniștit și cu piese unse, pentru că mănușile Genio sunt făcute să fie folosite și în prezența moderată a uleiurilor și grăsimilor.",
+    "Pentru firmă, mănușile Genio MA1427 sunt certificate EN 388 pentru riscuri mecanice, cu nivelurile 3121X, respectă cerințele generale EN ISO 21420 și sunt EIP de categoria II, conform Regulamentului (UE) 2016/425. Producătorul le recomandă în construcții și lucrări de drumuri, logistică, industria ușoară, lucrul la înălțime, agricultură, grădinărit și silvicultură, precum și în servicii. Le cureți cu o perie cu peri moi, fără alcool, solvenți sau benzină, și le lași să se usuce în aer liber."
+  ],
+  "benefits": [
+    "Priză sigură: nitrilul din palmă ține pe suprafețe uscate, ude sau uleioase.",
+    "Mișcări precise: tricot fin de 13 G, flexibil, cu dexteritate de nivel 5.",
+    "Comod pe mână: tricot fără cusături, care respiră bine.",
+    "Palmă rezistentă la frecare: nivelul 3 la abraziune, conform EN 388.",
+    "Se așază pe încheietură: manșetă din tricot elastic.",
+    "Folosire și cu uleiuri: potrivite pentru prezența moderată a uleiurilor și grăsimilor."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Poliester de înaltă performanță (HPP), cu structură extrafină"
+    },
+    {
+      "label": "Tip",
+      "value": "Mănușă textilă cu acoperire de nitril în palmă"
+    },
+    {
+      "label": "Finețea tricotului",
+      "value": "13 G"
+    },
+    {
+      "label": "Construcție",
+      "value": "Tricot fără cusături"
+    },
+    {
+      "label": "Acoperire",
+      "value": "Nitril, în palmă"
+    },
+    {
+      "label": "Manșetă",
+      "value": "Tricot elastic"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 5, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "II, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [
+    "Producătorul declară mănușile Genio potrivite pentru prezența moderată a uleiurilor și grăsimilor.",
+    "Rezistența la tăiere este de nivel 1 conform EN 388, iar testul de tăiere după metoda ISO nu a fost efectuat (X)."
+  ],
+  "certifications": [
+    {
+      "code": "EN 388 3121X",
+      "label": "Protecție la riscuri mecanice. Fiecare cifră este nivelul obținut la un test: abraziune 3 (din 4), tăiere 1 (din 5), rupere 2 (din 4), perforare 1 (din 4). X: testul de tăiere după metoda ISO nu a fost efectuat."
+    },
+    {
+      "code": "EN ISO 21420",
+      "label": "Cerințele generale pentru mănușile de protecție: materiale care nu dăunează pielii, mărimi, dexteritate, marcaj și informații pentru utilizator."
+    }
+  ],
+  "care": [
+    "Păstrează mănușile într-un loc răcoros și uscat, departe de surse de căldură și ferite de lumină.",
+    "Curăță-le cu o perie cu peri moi, niciodată cu alcool, solvenți sau benzină.",
+    "Lasă-le să se usuce în aer liber, niciodată direct pe o sursă de căldură."
+  ],
+  "colours": [
+    {
+      "code": "K1",
+      "name": "alb",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/manusi-lucru-nitril-sir-safety-genio-ma1427/K1-PS.webp",
+          "thumb": "/images/products/manusi-lucru-nitril-sir-safety-genio-ma1427/K1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "S (7)–XL (10)",
+    "values": [
+      "S (7)",
+      "M (8)",
+      "L (9)",
+      "XL (10)"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MA1427K1_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MA1427K1_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce nivel de protecție au mănușile Sir Safety Genio MA1427?",
+      "a": "EN 388 3121X, pentru riscuri mecanice: mănușile Sir Safety Genio MA1427 au nivelul 3 la abraziune, 1 la tăiere, 2 la rupere și 1 la perforare, iar testul de tăiere după metoda ISO nu a fost efectuat (X). Respectă și cerințele generale EN ISO 21420 și sunt EIP de categoria II."
+    },
+    {
+      "q": "Mănușile Genio țin bine pe suprafețe ude sau uleioase?",
+      "a": "Da. Stratul de nitril din palma mănușilor Sir Safety Genio MA1427 asigură o priză sigură pe suprafețe uscate, ude sau uleioase. Producătorul le declară potrivite pentru lucrul în prezența moderată a uleiurilor și grăsimilor."
+    },
+    {
+      "q": "Pot lucra precis cu mănușile Genio?",
+      "a": "Da. Mănușile Sir Safety Genio MA1427 au dexteritate de nivel 5 și sunt tricotate fin, în finețe 13 G, din poliester HPP. Sunt robuste, dar flexibile, și îți păstrează sensibilitatea la atingere."
+    },
+    {
+      "q": "Ce mărimi au mănușile Genio?",
+      "a": "Patru mărimi: S, M, L și XL, care corespund numerelor 7, 8, 9 și 10. Mănușile Sir Safety Genio MA1427 le alegi pe mărimea mâinii, pentru fiecare om din echipă."
+    },
+    {
+      "q": "Cum se întrețin mănușile Genio?",
+      "a": "Cu o perie cu peri moi, niciodată cu alcool, solvenți sau benzină: așa cureți mănușile Sir Safety Genio MA1427. Le lași să se usuce în aer liber, nu direct pe o sursă de căldură, și le păstrezi într-un loc răcoros și uscat, ferite de lumină."
+    },
+    {
+      "q": "De unde pot comanda mănuși de lucru cu nitril Sir Safety Genio în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, iar noi livrăm mănușile Sir Safety Genio MA1427 oriunde în România."
+    }
+  ],
+  "seo": {
+    "title": "Mănuși de lucru cu nitril Sir Safety Genio MA1427",
+    "description": "Mănuși de lucru cu nitril Sir Safety Genio MA1427: priză sigură pe suprafețe ude sau uleioase, tricot fin care respiră. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MA1427",
+    "range": null,
+    "productUrl": "https://www.sirsafety.com/genio-glove"
+  },
+  "reviewNotes": [
+    "Keyword „mănuși de lucru cu nitril”, nu „mănuși de protecție”: „Mănuși de protecție” e numele categoriei, iar varianta cu nitril descrie produsul (mănușă textilă cu acoperire de nitril) fără să concureze cu pagina de categorie. Slug ajustat la fel: manusi-lucru-nitril-sir-safety-genio-ma1427 (în loc de manusi-protectie-sir-safety-genio-ma1427; produsul nu e publicat încă).",
+    "Marcajul „EN 388 3121X” e compus din nivelurile din fișă (Abrasion 3, Cut 1, Tear 2, Puncture 1, ISO Cutting X), în ordinea obișnuită a marcajului; fișa nu dă ediția standardului EN 388.",
+    "Explicațiile din etichete (scara fiecărui test EN 388, X = netestat, conținutul EN ISO 21420) și „pe o scară de la 1 la 5” la dexteritate vin din ce acoperă în general standardele, nu din fișă; fișa dă doar „DEXTERITY 5”.",
+    "Omis: fișa spune că mănușile „reduce hand fatigue”; ghidul interzice efecte nemăsurate („mai puțină oboseală”).",
+    "„Excellent grip and sensitivity” de pe pagina web e redat fără superlativ: priză sigură, simți ce atingi.",
+    "Fișa nu spune pe ce zonă exactă e stratul de nitril dincolo de „on the palm”; textul spune doar „în palmă”. Culoarea K1 n-are nume pe pagina web; fișa o numește WHITE (alb), textul nu descrie culori.",
+    "Omis: QUANTITY PER CARTON 120, fără unitate (perechi sau bucăți); de confirmat cu Sir Safety dacă vrem să-l afișăm.",
+    "Industrii: construcții și logistică din FIELDS OF USE, producție pentru LIGHT INDUSTRY. Agricultură, lucru la înălțime și servicii (TERTIARY - TRADES) apar în text, dar nu au corespondent în lista de industrii a site-ului."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-19"
+  }
+}

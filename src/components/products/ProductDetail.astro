@@ -24,6 +24,8 @@ const categoryPage = preview ? undefined : activeCategoryPages(published.map((e)
 const categoryHref = categoryPage ? `/produse/${categoryPage.slug}/` : null;
 const brandPage = preview ? undefined : activeBrandPages(published.map((e) => e.data)).find((b) => b.brand === p.supplier.brand);
 const primary = p.colours[0];
+// Ochelarii, vizierele și antifoanele n-au variante de culoare: o singură intrare cu codul gol (assemble_sirsafety.py).
+const hasColourVariants = !(p.colours.length === 1 && primary.code === '');
 const mainImage = primary.images[0].src;
 // Formularul arată produsul și îl trimite cu cererea (MultiStepForm, câmpul „produs”).
 const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
@@ -111,7 +113,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         <img
           id="gallery-main"
           src={mainImage}
-          alt={`${p.name}, ${primary.name}`}
+          alt={primary.name ? `${p.name}, ${primary.name}` : p.name}
           width="1000"
           height="1000"
           class="w-full h-full object-contain p-6"
@@ -156,6 +158,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         </ul>
       )}
 
+      {hasColourVariants && (
       <div>
         <h2 class={sectionTitle}>Culori prezentate ({p.colours.length})</h2>
         <div class="flex flex-wrap gap-2" role="group" aria-label="Alege culoarea">
@@ -176,6 +179,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
           <p class="mt-2 text-xs text-yp-white/50">{otherColoursLabel}</p>
         )}
       </div>
+      )}
 
       <div>
         <h2 class={sectionTitle}>Mărimi</h2>

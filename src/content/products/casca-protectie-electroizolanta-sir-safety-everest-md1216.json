@@ -1,0 +1,246 @@
+{
+  "status": "review",
+  "name": "Cască de protecție electroizolantă Sir Safety Everest",
+  "category": "casti-protectie",
+  "industries": [
+    "constructii",
+    "energie"
+  ],
+  "summary": "Cască electroizolantă din polietilenă de înaltă densitate, conformă EN 397 și EN 50365, izolată până la 1000 V c.a. și 1500 V c.c. Stă fix pe cap, cu jugulară în patru puncte, și rezistă la frig, până la -30 °C.",
+  "description": [
+    "Casca electroizolantă Sir Safety Everest e gândită pentru confort și stabilitate: suspensia textilă în șase puncte distribuie uniform presiunea pe cap, iar banda textilă lată pentru transpirație îți ține fruntea uscată. Mărimea o reglezi rapid din rotița cu clichet, pentru o circumferință a capului de 52–63 cm. Jugulara cu prindere în patru puncte și suport pentru bărbie ține casca pe poziție și când te miști mult.",
+    "Te simți protejat: carcasa din polietilenă de înaltă densitate te apără de obiectele care cad de sus, rezistă la impact și își păstrează rezistența la temperaturi scăzute, până la -30 °C. Izolarea electrică te protejează de riscul de electrocutare la lucrul sub tensiune, până la 1000 V în curent alternativ și 1500 V în curent continuu. Fantele laterale îți permit să prinzi antifoane, iar viziera transparentă Speed FB1211, gândită de Sir Safety pentru acest model, îți apără și ochii. Alegi dintre șase culori, inclusiv galben și portocaliu fluorescent.",
+    "Pentru firmă, casca Everest este conformă cu EN 397, standardul pentru căștile de protecție din industrie, și cu EN 50365, standardul pentru căștile electroizolante, și este EIP de categoria III, conform Regulamentului (UE) 2016/425. Producătorul o recomandă pentru construcții și lucrări de drumuri, industria petrochimică și lucrul la înălțime. Se curăță simplu, cu detergent neutru sau dezinfectant și apă călduță, iar fișa tehnică îi dă o valabilitate de 3 ani de la data fabricației."
+  ],
+  "benefits": [
+    "Protecție electrică: izolată până la 1000 V c.a. și 1500 V c.c., conform EN 50365.",
+    "Stabilă și comodă: suspensie textilă în șase puncte, care distribuie uniform presiunea pe cap.",
+    "Stă pe poziție și în mișcare: jugulară cu prindere în patru puncte și suport pentru bărbie.",
+    "Frunte uscată: bandă textilă lată pentru transpirație.",
+    "Rezistentă la frig: carcasă din polietilenă de înaltă densitate, până la -30 °C.",
+    "Se completează ușor: fante laterale pentru antifoane și viziera Speed FB1211, gândită pentru Everest."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Polietilenă de înaltă densitate (HDPE)"
+    },
+    {
+      "label": "Greutate",
+      "value": "465 g"
+    },
+    {
+      "label": "Suspensie interioară",
+      "value": "Textilă, în 6 puncte"
+    },
+    {
+      "label": "Reglajul mărimii",
+      "value": "Rotiță cu clichet, circumferința capului 52–63 cm"
+    },
+    {
+      "label": "Jugulară",
+      "value": "Cu prindere în 4 puncte și suport pentru bărbie"
+    },
+    {
+      "label": "Bandă pentru transpirație",
+      "value": "Textilă, lată"
+    },
+    {
+      "label": "Izolare electrică",
+      "value": "Până la 1000 V c.a. și 1500 V c.c."
+    },
+    {
+      "label": "Rezistență la temperaturi scăzute",
+      "value": "Până la -30 °C"
+    },
+    {
+      "label": "Accesorii",
+      "value": "Fante laterale pentru antifoane; viziera Speed FB1211"
+    },
+    {
+      "label": "Valabilitate",
+      "value": "3 ani de la data fabricației"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "20"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425"
+    }
+  ],
+  "notes": [
+    "Fișa tehnică indică o valabilitate de 3 ani de la data fabricației."
+  ],
+  "certifications": [
+    {
+      "code": "EN 397",
+      "label": "Standardul european pentru căștile de protecție din industrie: casca te apără de obiectele care cad de sus, cu cerințe pentru absorbția șocului și rezistența la penetrare."
+    },
+    {
+      "code": "EN 50365",
+      "label": "Standardul european pentru căștile electroizolante folosite la instalațiile de joasă tensiune: casca împiedică trecerea curentului periculos prin cap. Conform fișei tehnice, casca Everest e izolată până la 1000 V în curent alternativ și 1500 V în curent continuu."
+    }
+  ],
+  "care": [
+    "Curăță regulat toate componentele cu detergent neutru sau dezinfectant și apă călduță.",
+    "Evită contactul direct cu alcoolul sau solvenții: pot deteriora casca.",
+    "Păstrează casca într-un loc răcoros și uscat, departe de surse de căldură și ferită de lumină."
+  ],
+  "colours": [
+    {
+      "code": "N0",
+      "name": "albastru deschis",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/N0-PS.webp",
+          "thumb": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/N0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "H0",
+      "name": "portocaliu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/H0-PS.webp",
+          "thumb": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/H0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "H1",
+      "name": "portocaliu fluorescent",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/H1-PS.webp",
+          "thumb": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/H1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "K1",
+      "name": "alb",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/K1-PS.webp",
+          "thumb": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/K1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "E0",
+      "name": "galben",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/E0-PS.webp",
+          "thumb": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/E0-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "E1",
+      "name": "galben fluorescent",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/E1-PS.webp",
+          "thumb": "/images/products/casca-protectie-electroizolanta-sir-safety-everest-md1216/E1-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "Mărime unică",
+    "values": [
+      "Mărime unică"
+    ],
+    "table": [],
+    "note": "Reglabilă din rotița cu clichet, pentru o circumferință a capului de 52–63 cm."
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://www.sirsafety.com/assets/schede/MD1216H0_EN.pdf",
+      "language": "en"
+    },
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în engleză)",
+      "url": "https://www.sirsafety.com/assets/dichiarazioni-conformita/MD1216H0_EN.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce protecție electrică oferă casca Sir Safety Everest MD1216?",
+      "a": "Izolare electrică până la 1000 V în curent alternativ și 1500 V în curent continuu. Casca Sir Safety Everest MD1216 este conformă cu EN 50365, standardul pentru căștile electroizolante, și cu EN 397, standardul pentru căștile de protecție din industrie, iar fișa tehnică o descrie ca sigură pentru lucrul sub tensiune în aceste limite."
+    },
+    {
+      "q": "Stă fixă pe cap casca Everest când te miști?",
+      "a": "Da. Casca Sir Safety Everest MD1216 are jugulară cu prindere în patru puncte și suport pentru bărbie, care o ține pe poziție și în situații dinamice, plus suspensie textilă în șase puncte, care distribuie uniform presiunea pe cap. Mărimea se reglează din rotița cu clichet, între 52 și 63 cm."
+    },
+    {
+      "q": "Rezistă casca Everest la frig?",
+      "a": "Da, până la -30 °C. Casca Sir Safety Everest MD1216 e din polietilenă de înaltă densitate, iar fișa tehnică o declară rezistentă la temperaturi scăzute, până la -30 °C."
+    },
+    {
+      "q": "Pot prinde antifoane sau o vizieră pe casca Everest?",
+      "a": "Da. Casca Sir Safety Everest MD1216 are fante laterale pentru prinderea antifoanelor, iar viziera transparentă Speed FB1211 e gândită de Sir Safety special pentru acest model. Dacă ai nevoie și de antifoane, le treci în cererea de ofertă și îți spunem ce se potrivește."
+    },
+    {
+      "q": "Cât timp e valabilă casca Everest și cum se întreține?",
+      "a": "3 ani de la data fabricației, conform fișei tehnice. Casca Sir Safety Everest MD1216 se curăță regulat cu detergent neutru sau dezinfectant și apă călduță, fără alcool sau solvenți, și se păstrează într-un loc răcoros și uscat, ferită de căldură și lumină."
+    },
+    {
+      "q": "De unde pot comanda cască electroizolantă Sir Safety Everest în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, iar casca Everest MD1216 îți este livrată oriunde în România. Dacă vrei și viziera Speed FB1211, o treci în aceeași cerere."
+    }
+  ],
+  "seo": {
+    "title": "Cască electroizolantă Sir Safety Everest MD1216",
+    "description": "Cască electroizolantă Sir Safety Everest MD1216, EN 397 și EN 50365: izolată până la 1000 V, jugulară în 4 puncte, rezistă la -30 °C. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "Sir Safety",
+    "brand": "Sir Safety System",
+    "model": "MD1216",
+    "range": null,
+    "productUrl": "https://www.sirsafety.com/everest-helmet"
+  },
+  "reviewNotes": [
+    "Keyword cască electroizolantă (fără „de protecție”): așa încape în seo.title cu brandul, modelul și codul (max. 50). H1-ul păstrează „Cască de protecție electroizolantă”. ABS 901 MD1223 e și ea EN 50365 clasa 0, dar are keyword-ul „cască de protecție din ABS”, ca paginile să nu concureze.",
+    "Fișa tehnică scrie EN 50365 fără clasă (la ABS 901 MD1223 scrie Class 0); am lăsat EN 50365 fără clasă.",
+    "-30 °C: sursa o dă ca rezistență la temperaturi scăzute; fișa nu spune dacă e marcajul opțional de temperatură din EN 397. Nu am legat-o de standard; de verificat pe marcajul căștii sau în declarația de conformitate.",
+    "Circumferința 52–63: pagina web dă intervalul fără unitate (fișa nu îl dă deloc); am scris cm, ca la ABS 901 MD1223, unde fișa scrie 52-63 cm.",
+    "Viziera Speed FB1211: fișa ei o numește accesoriu de schimb (replacement accessory) pentru MD1216, iar sursele Everest nu spun dacă casca se livrează cu vizieră. Am scris doar că se poate monta; de confirmat cu Sir Safety ce conține livrarea.",
+    "SHELF LIFE tradus ca valabilitate (3 ani de la data fabricației); fișa nu precizează dacă e durata de depozitare sau de utilizare.",
+    "Fișa listează construcții-drumuri, industria petrochimică și lucrul la înălțime; industrii alese: construcții, energie.",
+    "Antifoane: sursa spune doar că are fante laterale pentru antifoane, fără modele compatibile. Nu am numit niciun model; în FAQ scrie că îi spunem clientului ce se potrivește, la cererea de ofertă (de confirmat că You Protect poate face recomandarea)."
+  ],
+  "source": {
+    "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
+    "assembledAt": "2026-11-19"
+  }
+}
