@@ -1,6 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
+import { DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../src/lib/quote-categories.js';
 import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
 
@@ -67,6 +68,8 @@ function normalizeAnswer(value) {
  * Validează corpul cererii ({ intent, data }) și întoarce cererea curățată.
  * @returns {{ ok: true, lead: object } | { ok: false, error: string }}
  */
+export { DETAILS_MAX_LENGTH };
+
 export function parseLead(payload) {
   const intent = payload?.intent;
   const data = payload?.data;
@@ -98,6 +101,12 @@ export function parseLead(payload) {
       label: QUESTION_LABELS[intent][key],
       answer: other ? `${answer} (Specificat: ${other})` : answer,
     });
+  }
+  // Câmpul liber de la contact (doar cererea de ofertă): cantități, mărimi, coduri. Răspuns nou în contract,
+  // anunțat CRM-ului (Prospector) pe 19.11.2026: question „detalii”, text de cel mult DETAILS_MAX_LENGTH caractere.
+  if (intent === 'quote') {
+    const details = normalizeString(data.detalii, DETAILS_MAX_LENGTH);
+    if (details) answers.push({ question: 'detalii', label: 'Cantități, mărimi, coduri', answer: details });
   }
   // Categoria din /cere-oferta/?categorie=<slug> (cardurile de pe homepage). Doar slug-uri din listă.
   const category = intent === 'quote' ? quoteCategoryLabel(data.categorie) : null;

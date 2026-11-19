@@ -267,3 +267,27 @@ test('crm: token prea scurt în configurație -> refuză tot', async () => {
   const res = await crmGet({ request: new Request('https://youprotect.ro/api/crm/leads', { headers: { Authorization: 'Bearer scurt' } }), env });
   assert.equal(res.status, 401);
 });
+
+test('parseLead: „detalii” (cantități, mărimi, coduri) doar la cererea de ofertă, tăiat la 1000 de caractere', async () => {
+  const { DETAILS_MAX_LENGTH } = await import('../server/leads.js');
+  const quote = parseLead({ ...valid, data: { ...valid.data, detalii: '  20 de perechi, 40–46\n10 căști  ' } });
+  assert.deepEqual(quote.lead.answers.find((a) => a.question === 'detalii'), {
+    question: 'detalii',
+    label: 'Cantități, mărimi, coduri',
+    answer: '20 de perechi, 40–46\n10 căști',
+  });
+  const long = parseLead({ ...valid, data: { ...valid.data, detalii: 'x'.repeat(5000) } });
+  assert.equal(long.lead.answers.find((a) => a.question === 'detalii').answer.length, DETAILS_MAX_LENGTH);
+  assert.equal(parseLead({ ...valid, data: { ...valid.data, detalii: '   ' } }).lead.answers.some((a) => a.question === 'detalii'), false);
+  assert.equal(parseLead({ ...valid, data: { ...valid.data, detalii: 42 } }).lead.answers.some((a) => a.question === 'detalii'), false);
+  const consultation = parseLead({ intent: 'consultation', data: { ...valid.data, detalii: 'ceva' } });
+  assert.equal(consultation.lead.answers.some((a) => a.question === 'detalii'), false);
+});
+
+test('parseLead: venit de pe o fișă de produs, fără „Produse vizate” (q3)', () => {
+  const { q3, ...withoutQ3 } = valid.data;
+  const r = parseLead({ ...valid, data: withoutQ3 });
+  assert.equal(r.ok, true);
+  assert.equal(r.lead.product, 'tricou-polo-mascot-bandol-51587');
+  assert.equal(r.lead.answers.some((a) => a.question === 'q3'), false);
+});

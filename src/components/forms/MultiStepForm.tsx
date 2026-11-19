@@ -3,6 +3,7 @@ import { isValidCUI } from '../../lib/cui.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../../lib/quote-categories.js';
 import { SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
+import { DETAILS_MAX_LENGTH } from '../../lib/lead-limits.js';
 import { flagLead, track } from '../../lib/track';
 
 type Intent = 'consultation' | 'quote';
@@ -52,12 +53,13 @@ const inputClass =
 
 export default function MultiStepForm({ intent, products = {} }: MultiStepFormProps) {
   const isForm1 = intent === 'consultation';
-  const steps = isForm1 ? FORM_1_STEPS : FORM_2_STEPS;
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [product, setProduct] = useState<string | null>(null);
+  // Cine vine de pe o fișă de produs (?produs=<slug>) nu mai e întrebat ce produse are în vedere.
+  const steps = isForm1 ? FORM_1_STEPS : product ? FORM_2_STEPS.filter((s) => s !== 'q3') : FORM_2_STEPS;
   const [category, setCategory] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -77,6 +79,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     q6: '',
     q7: '',
     personalizare: '',
+    detalii: '',
     q_other: {},
   });
 
@@ -173,7 +176,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   };
 
   const stepHeading = (title: string, description?: string) => (
-    <div className="text-center md:text-left mb-8">
+    <div className="text-left mb-8">
       <h2 ref={headingRef} tabIndex={-1} className="text-2xl md:text-3xl font-medium text-white mb-2 focus:outline-none">
         {title}
       </h2>
@@ -221,6 +224,22 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           {field('phone', 'Telefon', { type: 'tel', inputMode: 'tel', autoComplete: 'tel', placeholder: '0722 123 456' })}
           {field('email', 'Email', { type: 'email', inputMode: 'email', autoComplete: 'email', placeholder: 'ion@exemplu.ro' })}
         </div>
+        {!isForm1 && (
+          <div>
+            <label htmlFor="f-detalii" className="block text-sm font-medium text-neutral-300 mb-1">
+              Cantități, mărimi, coduri (opțional)
+            </label>
+            <textarea
+              id="f-detalii"
+              rows={3}
+              maxLength={DETAILS_MAX_LENGTH}
+              className={inputClass}
+              value={formData.detalii}
+              onChange={(e) => updateField('detalii', e.target.value)}
+              placeholder="Ex.: 20 de perechi de bocanci, mărimile 40–46; 30 de geci reflectorizante M–2XL"
+            />
+          </div>
+        )}
       </div>
       <p className="text-sm text-neutral-400 leading-relaxed">
         Folosim datele doar ca să-ți răspundem la cerere. Detalii în{' '}
