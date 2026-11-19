@@ -7,11 +7,11 @@
     "productie",
     "logistica"
   ],
-  "summary": "Ochelari de protecție din policarbonat transparent, certificați EN 166 și EN 170, ușori și potriviți pentru purtare continuă. Rama transparentă nu-ți întrerupe câmpul vizual și recunoști bine culorile.",
+  "summary": "Ochelari de protecție din policarbonat transparent, certificați EN 166, cu filtru UV 2C-1,2, ușori și potriviți pentru purtare continuă. Rama transparentă nu-ți întrerupe câmpul vizual și recunoști bine culorile.",
   "description": [
     "Ochelarii de protecție Sir Safety Azoto sunt făcuți integral din policarbonat transparent, cu rama tot transparentă, ca nimic să nu-ți întrerupă câmpul vizual. Sunt ușori și practici, iar producătorul îi declară potriviți pentru purtare continuă. Lentila are clasa optică 1 și lasă să treacă între 74,4 % și 99,9 % din lumină, așa că vezi luminos în jurul tău.",
     "Te simți protejat: lentila rezistă la impact cu energie redusă, testată cu o bilă de oțel de 6 mm la 45 m/s, și filtrează radiațiile ultraviolete, păstrând o recunoaștere bună a culorilor. Designul complet transparent e discret pe față, iar rama se poate dezinfecta cu un dezinfectant obișnuit, ca ochelarii Azoto să rămână curați.",
-    "Pentru firmă, ochelarii Azoto FB1328 sunt certificați EN 166 (rezistență la impact F, clasa optică 1) și EN 170 (filtru UV 2C-1,2) și sunt echipament individual de protecție de categoria II, conform Regulamentului (UE) 2016/425. Vin într-o singură mărime, deci nu ții evidența mărimilor pe echipă. Sir Safety îi recomandă pentru construcții și lucrări de drumuri, industria ușoară și grea, logistică, lucrul la înălțime, agricultură, industria alimentară, curățenie și spitale."
+    "Pentru firmă, ochelarii Azoto FB1328 sunt certificați EN 166 (rezistență la impact F, clasa optică 1) cu lentila marcată ca filtru UV 2C-1,2 (scala din EN 170), și sunt echipament individual de protecție de categoria II, conform Regulamentului (UE) 2016/425. Vin într-o singură mărime, deci nu ții evidența mărimilor pe echipă. Sir Safety îi recomandă pentru construcții și lucrări de drumuri, industria ușoară și grea, logistică, lucrul la înălțime, agricultură, industria alimentară, curățenie și spitale."
   ],
   "benefits": [
     "Câmp vizual neîntrerupt: ochelari integral din policarbonat transparent, cu ramă transparentă.",
@@ -67,15 +67,13 @@
       "value": "II, conform Regulamentului (UE) 2016/425"
     }
   ],
-  "notes": [],
+  "notes": [
+    "Declarația UE de conformitate listează EN 166:2001; codul de filtru UV 2C-1,2 e marcajul lentilei, pe scala din EN 170, conform fișei tehnice."
+  ],
   "certifications": [
     {
       "code": "EN 166 1F",
-      "label": "Cerințe generale pentru protecția ochilor. 1: clasa optică 1, potrivită pentru purtare continuă. F: lentila rezistă la impact cu energie redusă, testată cu o bilă de oțel de 6 mm la 45 m/s."
-    },
-    {
-      "code": "EN 170 2C-1,2",
-      "label": "Filtru pentru radiații ultraviolete. 2C: filtru UV cu recunoaștere bună a culorilor. 1,2: numărul de scală al lentilei; la ochelarii Azoto, lentila lasă să treacă între 74,4 % și 99,9 % din lumină."
+      "label": "Cerințe generale pentru protecția ochilor. 1: clasa optică 1, potrivită pentru purtare continuă. F: lentila rezistă la impact cu energie redusă, testată cu o bilă de oțel de 6 mm la 45 m/s. Lentila e marcată și ca filtru UV 2C-1,2, pe scala din EN 170: protejează de radiațiile ultraviolete și păstrează o recunoaștere bună a culorilor."
     }
   ],
   "care": [
@@ -125,7 +123,7 @@
   "faq": [
     {
       "q": "Ce certificări au ochelarii de protecție Sir Safety Azoto FB1328?",
-      "a": "Ochelarii Sir Safety Azoto FB1328 sunt certificați EN 166 1F și EN 170 2C-1,2. F înseamnă că lentila rezistă la impact cu energie redusă, testată cu o bilă de oțel de 6 mm la 45 m/s, 1 este clasa optică, potrivită pentru purtare continuă, iar 2C-1,2 este filtrul UV cu recunoaștere bună a culorilor."
+      "a": "Ochelarii Sir Safety Azoto FB1328 sunt certificați EN 166 1F, iar lentila e marcată ca filtru UV 2C-1,2 (scala din EN 170). F înseamnă că lentila rezistă la impact cu energie redusă, testată cu o bilă de oțel de 6 mm la 45 m/s, 1 este clasa optică, potrivită pentru purtare continuă, iar 2C-1,2 este filtrul UV cu recunoaștere bună a culorilor."
     },
     {
       "q": "Pot purta ochelarii Azoto FB1328 în mod continuu?",
@@ -160,13 +158,13 @@
     "productUrl": "https://www.sirsafety.com/azoto-chiaro-safety-glasses-clear-lens"
   },
   "reviewNotes": [
-    "Pagina web și fișa tehnică spun același lucru (EN 166 F, clasa optică 1, EN 170 2C-1,2, transmisie 74,4–99,9 %); niciun conflict.",
     "„UV 380” e preluat exact din fișă (PERFORMANCE); de obicei înseamnă filtrare UV până la 380 nm, dar fișa nu precizează, așa că nu l-am explicat.",
     "Marcajul de pe lentilă e trecut exact ca în fișă („2C-1.2 SIR 1 F CE”, cu punct); în certificări și în text am scris 2C-1,2, ca în secțiunea de standarde a fișei.",
     "Sursa nu declară tratament anti-aburire sau anti-zgâriere (marcajul lentilei nu are N sau K) și nici purtare peste ochelari de vedere; n-am pomenit nimic despre ele. Dacă un client întreabă, de confirmat cu Sir Safety.",
     "Sursa nu dă greutatea ochelarilor, doar „lightweight”; am scris „ușori”, fără cifră.",
     "„Industria alimentară” apare în domeniile din fișă (FOOD - CLEANING - HOSPITAL); se poate adăuga industria „alimentar” în industries dacă vrem ochelarii și pe acea pagină. Am păstrat lista primită (construcții, producție, logistică).",
-    "Bucăți per cutie (144) e cantitatea de ambalare a producătorului, nu o cantitate minimă de comandă."
+    "Bucăți per cutie (144) e cantitatea de ambalare a producătorului, nu o cantitate minimă de comandă.",
+    "19.11.2026: EN 170 scos din certificări, pentru că declarația UE de conformitate (portalul B2B) listează doar EN 166; marcajul 2C-1,2 rămâne, ca marcaj al lentilei."
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",

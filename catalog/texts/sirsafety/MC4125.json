@@ -48,6 +48,9 @@
       "label": "Țesătura exterioară principală, testată pentru substanțe nocive."
     }
   ],
+  "confirmedOutsidePublicDeclaration": {
+    "EN 14058": "Listat în declarația UE de conformitate în română din portalul B2B Sir Safety (19.11.2026); declarația publică în engleză e mai veche."
+  },
   "specs": [
     {
       "label": "Umplutură",

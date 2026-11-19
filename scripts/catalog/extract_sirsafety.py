@@ -158,11 +158,16 @@ def declaration(url):
         return None
     if not data.startswith(b"%PDF"):
         return None
-    first = re.sub(r"\s+", " ", PdfReader(io.BytesIO(data)).pages[0].extract_text() or "")
+    pages = [re.sub(r"\s+", " ", p.extract_text() or "") for p in PdfReader(io.BytesIO(data)).pages]
+    first = pages[0] if pages else ""
     if "CORRISPONDENZA" in first.upper():
         m = re.search(r"Fabbricato da (.+?) Indicato", first)
-        return {"url": url, "kind": "correspondence", "manufacturer": m.group(1).strip() if m else None}
-    return {"url": url, "kind": "conformity", "manufacturer": None}
+        return {"url": url, "kind": "correspondence", "manufacturer": m.group(1).strip() if m else None, "standards": []}
+    # Standardele din declarație: asamblarea refuză o certificare care nu e aici (MC3422 avea EN 13034 doar în fișă).
+    # „EN 1149- 5” apare rupt pe rând în unele PDF-uri: lipim cratima.
+    text = re.sub(r"-\s+(\d)", r"-\1", " ".join(pages))
+    standards = sorted(set(re.findall(r"\b(EN(?: ISO| IEC)? \d{3,5}(?:-\d+)*|IEC \d{4,5}(?:-\d+)*)", text)))
+    return {"url": url, "kind": "conformity", "manufacturer": None, "standards": standards}
 
 
 def refresh_declarations(out_dir, codes):
