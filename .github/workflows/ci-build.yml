@@ -32,3 +32,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Titluri și descrieri (lungime, duplicate)
+        run: node scripts/seo/check-meta.mjs dist

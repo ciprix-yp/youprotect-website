@@ -317,3 +317,13 @@
   - Fără prețuri și fără cifre de cost: ghidul de cost explică din ce se compune costul și trimite la calculator, care
     lucrează cu prețurile vizitatorului. Testul blochează sumele în lei/euro în ghiduri.
   - Modelele din catalog pomenite în ghiduri (clasa S3S/S7S, clasa EN ISO 20471) se generează din fișele de produs.
+
+## D-2026-11-19-04
+- Context: 6 titluri treceau de 64 de caractere și 10 descrieri de 160, deci Google le tăia în rezultate.
+- Limite: titlul complet (cu „| You Protect”) cel mult 64 de caractere, descrierea între 70 și 160, fără duplicate.
+  `scripts/seo/check-meta.mjs` le verifică pe `dist/` în CI, după build; build-ul pică dacă o pagină iese din ele.
+- Cuvintele din titluri vin din Search Console (august–noiembrie 2026): acasă „echipamente de protecție” și
+  „haine de lucru”, la logistică „depozit”. Keyword Planner rămâne de adăugat când vine CSV-ul.
+- Descrierile pomenesc doar ce e în catalog: încălțăminte S3S/S7S, haine reflectorizante, geci, pantaloni, salopete,
+  tricouri, personalizare cu logo. Căștile, mănușile, antifoanele și ochelarii nu sunt în catalog, deci nu apar în
+  descrieri.
