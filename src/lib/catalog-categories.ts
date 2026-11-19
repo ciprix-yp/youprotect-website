@@ -15,6 +15,8 @@ export interface CategoryPage {
   intro: string;
   /** Cum se numesc produsele în întrebările frecvente („bocancii și pantofii de protecție”). */
   plural: string;
+  /** Se pot personaliza cu logo. Încălțămintea nu: nicio fișă nu are zone de logo de la producător. */
+  logo: boolean;
 }
 
 // O pagină de categorie apare doar de la două produse publicate în sus: o pagină cu un singur produs ar fi subțire.
@@ -29,6 +31,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     intro:
       'Bocanci, ghete și pantofi de protecție pentru echipele din construcții, producție și logistică. Mai jos vezi clasa fiecărui model conform EN ISO 20345, așa cum o declară producătorul.',
     plural: 'bocancii, ghetele și pantofii de protecție',
+    logo: false,
   },
   {
     key: 'reflectorizante',
@@ -38,6 +41,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     intro:
       'Geci și haine de avertizare pentru cine lucrează lângă drum, utilaje sau vehicule. Mai jos vezi clasa fiecărui model conform EN ISO 20471, așa cum o declară producătorul.',
     plural: 'hainele reflectorizante',
+    logo: true,
   },
   {
     key: 'geci-jachete',
@@ -47,6 +51,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     intro:
       'Geci și jachete de lucru pentru frig, ploaie și vânt, pentru echipe care lucrează afară sau în hale. Mai jos vezi ce protecție declară producătorul pentru fiecare model.',
     plural: 'gecile și jachetele de lucru',
+    logo: true,
   },
   {
     key: 'pantaloni',
@@ -56,6 +61,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     intro:
       'Pantaloni de lucru, pantaloni cu pieptar și salopete pentru construcții, producție și logistică. Mai jos vezi certificările fiecărui model.',
     plural: 'pantalonii și salopetele de lucru',
+    logo: true,
   },
   {
     key: 'tricouri-polo',
@@ -65,6 +71,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     intro:
       'Tricouri și tricouri polo pentru echipă, de purtat singure sau sub geacă, cu logo-ul firmei. Mai jos vezi certificările fiecărui model.',
     plural: 'tricourile și tricourile polo',
+    logo: true,
   },
   {
     key: 'veste',
@@ -73,6 +80,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     title: 'Veste de lucru pentru firme',
     intro: 'Veste de lucru care țin trunchiul la cald și lasă brațele libere. Mai jos vezi certificările fiecărui model.',
     plural: 'vestele de lucru',
+    logo: true,
   },
 ];
 

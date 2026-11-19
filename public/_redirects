@@ -22,6 +22,10 @@
 /products/*                /produse/                      301
 /collections/*             /produse/                      301
 
+# Adrese scurte pentru personalizare (19.11.2026).
+/personalizare             /haine-de-lucru-personalizate/  301
+/personalizare/            /haine-de-lucru-personalizate/  301
+
 # Produsele demo din Directus (scos din uz pe 11.11.2026) -> catalog.
 /produse/antifoane-externe-x5    /produse/  301
 /produse/antifoane-externe-x5/   /produse/  301

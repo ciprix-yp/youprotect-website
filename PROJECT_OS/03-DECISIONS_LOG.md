@@ -271,3 +271,16 @@
   - Valorile stau într-un singur loc, `PERSONALIZATION_ANSWERS` din `src/lib/quote-categories.js`, folosit de formular și de server. Serverul ignoră orice altă valoare.
   - În `answers`: `{question: "personalizare", label: "Personalizare cu logo", answer: "Da" | "Nu" | "Nu știu încă"}`, după răspunsul la produse. CRM-ul îl afișează fără nicio schimbare.
   - În `structured`, când îl facem: `personalizare: "da" | "nu" | "nu_stiu"`.
+
+## D-2026-11-19-01
+- Context: auditul de cuvinte cheie (18.11.2026) cerea o pagină pentru „haine de lucru personalizate cu logo” și
+  „uniforme de lucru pentru firme”. În prima măsurătoare ChatGPT, întrebarea despre uniforme cu logo din Carei a rămas
+  fără You Protect. Decizia lui Ciprian: personalizarea o externalizăm.
+- Implementare:
+  - Pagina `/haine-de-lucru-personalizate/`: spune deschis că personalizarea se face prin parteneri.
+  - Fără cantități minime sau termene pe site; le dăm în ofertă. Testul blochează cifrele urmate de „bucăți” sau „zile”.
+  - Tehnicile (broderie, serigrafie, transfer termic) sunt descrise prin ce sunt, fără promisiuni de durabilitate.
+  - Zonele de logo, dimensiunile maxime și limitele EN ISO 20471 vin din câmpul `personalization` al fișelor,
+    adică din datele producătorului.
+- Corectură: pe pagina de încălțăminte, întrebarea „Pot personaliza bocancii… cu logo? Da.” nu avea acoperire (nicio
+  fișă de încălțăminte nu are zone de logo). `CategoryPage.logo` o scoate acolo; testul verifică regula.

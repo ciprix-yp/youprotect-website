@@ -1,0 +1,274 @@
+---
+// Personalizarea cu logo, prin parteneri (decizia lui Ciprian din 18.11.2026). Fără cantități minime sau termene pe
+// site: le dăm în ofertă. Zonele de logo și limitele EN ISO 20471 se generează din fișele de produs
+// (src/lib/personalization.ts), ca să rămână adevărate când se schimbă catalogul.
+import { getCollection } from "astro:content";
+import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
+import { CATEGORIES, type CategoryKey } from "../lib/catalog-taxonomy";
+import { joinRo } from "../lib/catalog-categories";
+import { LOGO_TECHNIQUES, PERSONALIZATION_PAGE, productsWithHiVisLimit, productsWithLogoZones, zonesLabel } from "../lib/personalization";
+import { jsonLd } from "../lib/json-ld";
+import { SITE } from "../lib/site";
+
+const published = await getCollection("products", ({ data }) => data.status === "published");
+const withZones = productsWithLogoZones(published);
+const withHiVisLimit = productsWithHiVisLimit(published);
+const brandsWithZones = [...new Set(withZones.map((e) => e.data.supplier.brand))].sort();
+
+// Grupate pe categorii, în ordinea din taxonomie.
+const groups = (Object.keys(CATEGORIES) as CategoryKey[])
+  .map((key) => ({ key, label: CATEGORIES[key], items: withZones.filter((e) => e.data.category === key) }))
+  .filter((g) => g.items.length > 0);
+
+const hiVisExample = withHiVisLimit[0];
+const faq = [
+  {
+    q: "Pe ce haine de lucru pot pune logo-ul firmei?",
+    a: "Pe tricouri, tricouri polo, hanorace, geci, veste, pantaloni și salopete din catalogul You Protect. Pentru modelele la care producătorul dă zonele de logo, le vezi pe această pagină, cu dimensiunile maxime. Pentru celelalte, locul și mărimea le stabilim la ofertă.",
+  },
+  {
+    q: "Cine face personalizarea?",
+    a: "Partenerii noștri, prin broderie, serigrafie sau transfer termic. Tu ai o singură ofertă și un singur interlocutor: You Protect.",
+  },
+  {
+    q: "De la câte bucăți se poate face personalizarea?",
+    a: "Depinde de produs și de tehnica aleasă. Îți spunem în ofertă, înainte să comanzi.",
+  },
+  {
+    q: "În cât timp primesc hainele cu logo?",
+    a: "Termenul depinde de produse, de cantitate și de tehnică. Îl primești în ofertă și îl știi înainte să comanzi.",
+  },
+  {
+    q: "În ce format trimit logo-ul?",
+    a: "Ideal ca fișier vectorial: PDF, AI, EPS sau SVG. Dacă ai doar o imagine, de exemplu PNG sau JPG, trimite-o și îți spunem dacă se poate folosi.",
+  },
+  ...(hiVisExample
+    ? [
+        {
+          q: "Pot pune logo pe o geacă reflectorizantă fără să pierd certificarea EN ISO 20471?",
+          a: `Da, dacă logo-ul rămâne în limita dată de producător pentru acel model. De exemplu, la ${hiVisExample.data.name}: ${hiVisExample.data.personalization!.hiVisNote}`,
+        },
+      ]
+    : []),
+  {
+    q: "De unde comand uniforme de lucru cu logo în Satu Mare?",
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar livrarea se face în toată România.`,
+  },
+];
+
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+const pageUrl = new URL(PERSONALIZATION_PAGE.href, siteOrigin).href;
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Acasă", item: siteOrigin.href },
+    { "@type": "ListItem", position: 2, name: "Haine de lucru personalizate", item: pageUrl },
+  ],
+};
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Personalizarea hainelor de lucru cu logo",
+  serviceType: "Personalizare haine de lucru: broderie, serigrafie, transfer termic",
+  provider: { "@id": `${SITE.url}/#localbusiness` },
+  areaServed: { "@type": "Country", name: "România" },
+  url: pageUrl,
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
+
+const steps = [
+  {
+    title: "Alegi hainele",
+    text: "Din catalog sau cu recomandarea noastră, după ce face echipa ta și unde lucrează.",
+  },
+  {
+    title: "Ne trimiți logo-ul",
+    text: "Ideal ca fișier vectorial (PDF, AI, EPS sau SVG). Dacă ai doar o imagine, trimite-o și îți spunem dacă se poate folosi.",
+  },
+  {
+    title: "Stabilim locul, mărimea și tehnica",
+    text: "Pentru fiecare produs, în zonele indicate de producător. Tehnica o alegem după material și după logo.",
+  },
+  {
+    title: "Primești oferta completă",
+    text: "Produse, mărimi, personalizare, preț și termen, într-un singur document. Comandăm doar după ce o confirmi.",
+  },
+];
+
+const eyebrow = "text-xs uppercase tracking-[0.16em] text-yp-yellow mb-3";
+const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight";
+---
+
+<InnerPageLayout
+  title={PERSONALIZATION_PAGE.title}
+  description={PERSONALIZATION_PAGE.description}
+  heroTitle="Haine de lucru personalizate cu logo"
+  heroSubtitle="Tricouri, tricouri polo, hanorace, geci, veste și pantaloni de lucru cu logo-ul firmei tale. Personalizarea o facem prin parteneri, iar locul, mărimea și tehnica le stabilim cu tine, în ofertă."
+  breadcrumb="Haine personalizate"
+  ctaHeading="Vrei hainele echipei cu logo-ul firmei?"
+  ctaSubheading="Spune-ne ce produse ai în vedere și câți oameni ai. Primești oferta cu personalizarea inclusă."
+  ctaButtonText="Programează o discuție"
+  ctaSecondaryButtonText="Cere ofertă"
+  ctaSecondaryButtonLink="/cere-oferta/"
+  ctaMicrocopy="Fără obligații. În formularul de ofertă ne spui și dacă vrei produsele cu logo."
+>
+  <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(serviceSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+
+  <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="cum-functioneaza">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class={eyebrow}>Cum funcționează</p>
+      <h2 id="cum-functioneaza" class={sectionHeading}>De la logo la echipa îmbrăcată, <span class="font-semibold text-yp-yellow">în patru pași</span></h2>
+      <ol class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {steps.map((step, i) => (
+          <li class="border border-white/10 rounded-[4px] p-6 bg-white/5">
+            <span class="block text-yp-yellow font-heading text-2xl font-semibold" aria-hidden="true">{i + 1}</span>
+            <h3 class="mt-3 text-lg font-medium text-white">{step.title}</h3>
+            <p class="mt-2 text-neutral-400 font-light leading-relaxed">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-8 text-neutral-300">
+        Nu știi încă ce haine să alegi? <a href="/produse/" class="text-yp-yellow underline underline-offset-4 hover:text-white">Vezi catalogul</a>
+        sau <a href="/programeaza-discutie/" class="text-yp-yellow underline underline-offset-4 hover:text-white">vorbește cu un consultant</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28 bg-[#050505]" aria-labelledby="tehnici">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class={eyebrow}>Tehnici</p>
+      <h2 id="tehnici" class={sectionHeading}>Broderie, serigrafie sau transfer termic</h2>
+      <p class="mt-4 max-w-3xl text-lg text-neutral-300 font-light leading-relaxed">
+        Personalizarea o facem prin parteneri. Care tehnică se potrivește depinde de material, de produs și de logo, așa că
+        ți-o recomandăm în ofertă, pentru fiecare produs în parte.
+      </p>
+      <dl class="mt-10 grid md:grid-cols-3 gap-6">
+        {LOGO_TECHNIQUES.map((t) => (
+          <div class="border border-white/10 rounded-[4px] p-6 bg-white/5">
+            <dt class="text-lg font-medium text-white">{t.name}</dt>
+            <dd class="mt-2 text-neutral-400 font-light leading-relaxed">{t.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  {groups.length > 0 && (
+    <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="zone-logo">
+      <div class="max-w-7xl mx-auto px-6">
+        <p class={eyebrow}>Pe fiecare model</p>
+        <h2 id="zone-logo" class={sectionHeading}>Unde poți pune logo-ul</h2>
+        <p class="mt-4 max-w-3xl text-lg text-neutral-300 font-light leading-relaxed">
+          Zonele și dimensiunile maxime de mai jos sunt cele date de {joinRo(brandsWithZones)} pentru fiecare model. Pentru
+          celelalte haine din catalog, locul și mărimea logo-ului le stabilim la ofertă.
+        </p>
+        <div class="mt-10 space-y-10">
+          {groups.map((group) => (
+            <div>
+              <h3 class="text-sm uppercase tracking-[0.16em] text-white/60 mb-4">{group.label}</h3>
+              <div class="grid md:grid-cols-2 gap-3">
+                {group.items.map((e) => {
+                  const p = e.data.personalization!;
+                  return (
+                    <details class="group border border-white/10 rounded-[4px] bg-white/5 open:bg-white/[0.07]">
+                      <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-5 py-4 min-h-11">
+                        <span class="text-white font-medium">{e.data.name}</span>
+                        <span class="flex items-center gap-2 text-sm text-neutral-400 whitespace-nowrap">
+                          {zonesLabel(p.placements.length)}
+                          <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </span>
+                      </summary>
+                      <div class="px-5 pb-5">
+                        <ul class="divide-y divide-white/10 border-y border-white/10">
+                          {p.placements.map((pl) => (
+                            <li class="flex justify-between gap-4 py-2 text-sm">
+                              <span class="text-white/90">{pl.position}</span>
+                              {pl.maxSize && <span class="text-white/60 whitespace-nowrap">max. {pl.maxSize}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                        {p.special && <p class="mt-3 text-sm text-white/70">Alte poziții, la cerere.</p>}
+                        {p.hiVisNote && <p class="mt-3 text-sm text-white/70">{p.hiVisNote}</p>}
+                        <a href={`/produse/${e.id}/`} class="inline-block mt-2 py-2 text-sm text-yp-yellow underline underline-offset-4 hover:text-white">
+                          Vezi fișa produsului
+                        </a>
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {withHiVisLimit.length > 0 && (
+    <section class="py-20 lg:py-28 bg-[#050505]" aria-labelledby="reflectorizante">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-3xl">
+          <p class={eyebrow}>Haine reflectorizante</p>
+          <h2 id="reflectorizante" class={sectionHeading}>Logo pe hainele reflectorizante, fără să pierzi certificarea</h2>
+          <p class="mt-4 text-lg text-neutral-300 font-light leading-relaxed">
+            Standardul EN ISO 20471 cere, pentru fiecare clasă de vizibilitate, o suprafață minimă de material fluorescent și
+            reflectorizant. Logo-ul acoperă o parte din ea, așa că producătorul dă o limită pentru fiecare model. Ținem cont de
+            ea când stabilim mărimea logo-ului.
+          </p>
+          <ul class="mt-8 space-y-4">
+            {withHiVisLimit.map((e) => (
+              <li class="border-l-2 border-yp-yellow pl-4">
+                <a href={`/produse/${e.id}/`} class="text-white font-medium underline underline-offset-4 decoration-white/30 hover:text-yp-yellow">{e.data.name}</a>
+                <p class="mt-1 text-neutral-400 font-light leading-relaxed">{e.data.personalization!.hiVisNote}</p>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 text-sm text-neutral-400">
+            Vezi toate modelele în <a href="/produse/imbracaminte-reflectorizanta/" class="text-yp-yellow underline underline-offset-4 hover:text-white">îmbrăcămintea reflectorizantă</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="testare">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl">
+        <p class={eyebrow}>Înainte de comanda mare</p>
+        <h2 id="testare" class={sectionHeading}>Testezi hainele cu logo, pe oamenii tăi</h2>
+        <p class="mt-4 text-lg text-neutral-300 font-light leading-relaxed">
+          În programul de testare, produsele se personalizează cu logo-ul firmei, ca la o comandă obișnuită. Echipa poartă
+          hainele pe care le-ar purta și după comandă, iar tu vezi cum arată și cum rezistă înainte să echipezi toată firma.
+        </p>
+        <RiskFreeTesting variant="inline" class="mt-6" />
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28 bg-[#050505]" aria-labelledby="intrebari">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl">
+        <p class={eyebrow}>Întrebări frecvente</p>
+        <h2 id="intrebari" class={sectionHeading}>Despre personalizare</h2>
+        <dl class="mt-10 space-y-8">
+          {faq.map((item) => (
+            <div>
+              <dt class="text-lg text-white font-medium">{item.q}</dt>
+              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+</InnerPageLayout>
