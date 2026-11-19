@@ -18,6 +18,10 @@ import { track } from '../../lib/track';
 // verificăm ipoteza la el în echipă; cererea intră în inbox-ul de cereri (D1 → Prospector) ca cerere de ofertă.
 
 type CategoryId = keyof typeof TCO_CATEGORIES;
+/** „căști de protecție și ochelari de protecție” */
+const joinRo = (items: string[]) => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} și ${items[items.length - 1]}`);
+const capitalize = (s: string) => s.charAt(0).toLocaleUpperCase('ro') + s.slice(1);
+
 type Inputs = typeof TCO_DEFAULTS & { categories: string[]; prices: Record<string, number>; qualityPrices: Record<string, number> };
 
 const STEPS = ['echipa', 'produse', 'ipoteze', 'rezultat', 'contact', 'gata'] as const;
@@ -108,6 +112,12 @@ function PriceInput({ id, label, value, onChange }: { id: string; label: string;
 export default function TCOCalculator() {
   const [step, setStep] = useState(0);
   const [inputs, setInputs] = useState<Inputs>({ ...TCO_DEFAULTS, categories: [...TCO_DEFAULTS.categories] });
+  // Căștile și ochelarii nu intră în testare: pentru ele oferim direct oferta (TCO_CATEGORIES.riskFreeTesting).
+  const testable = inputs.categories.filter((c) => TCO_CATEGORIES[c as keyof typeof TCO_CATEGORIES]?.riskFreeTesting);
+  const notTestable = inputs.categories
+    .filter((c) => !TCO_CATEGORIES[c as keyof typeof TCO_CATEGORIES]?.riskFreeTesting)
+    .map((c) => TCO_CATEGORIES[c as keyof typeof TCO_CATEGORIES].label.toLocaleLowerCase('ro'));
+  const offersTesting = testable.length > 0;
   const [contact, setContact] = useState({ name: '', company: '', email: '', phone: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -433,19 +443,32 @@ export default function TCOCalculator() {
           </details>
 
           <div className="rounded-md border border-white/15 p-5">
-            <p className="font-medium text-white mb-1">Verificăm ipoteza la tine în echipă</p>
-            <p className="text-sm text-neutral-300 leading-relaxed mb-4">
-              {RISK_FREE_TESTING.short}{' '}
-              <a href={RISK_FREE_TESTING.href} className="text-yp-yellow underline underline-offset-4 hover:text-white whitespace-nowrap">
-                {RISK_FREE_TESTING.linkLabel}
-              </a>
-            </p>
+            {offersTesting ? (
+              <>
+                <p className="font-medium text-white mb-1">Verificăm ipoteza la tine în echipă</p>
+                <p className="text-sm text-neutral-300 leading-relaxed mb-4">
+                  {RISK_FREE_TESTING.short}{' '}
+                  <a href={RISK_FREE_TESTING.href} className="text-yp-yellow underline underline-offset-4 hover:text-white whitespace-nowrap">
+                    {RISK_FREE_TESTING.linkLabel}
+                  </a>
+                  {notTestable.length > 0 && <> {capitalize(joinRo(notTestable))} nu intră în testare; pentru ele îți facem direct oferta.</>}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-medium text-white mb-1">Îți facem oferta pornind de la rezultat</p>
+                <p className="text-sm text-neutral-300 leading-relaxed mb-4">
+                  {capitalize(joinRo(notTestable))} nu intră în testarea fără riscuri. Îți trimitem oferta cu prețuri pentru
+                  cantitățile echipei tale.
+                </p>
+              </>
+            )}
             <button
               type="button"
               onClick={next}
               className="w-full bg-yp-yellow text-yp-black px-6 py-3 min-h-[44px] rounded font-medium text-sm hover:bg-white transition-colors"
             >
-              Vreau produse pentru testare
+              {offersTesting ? 'Vreau produse pentru testare' : 'Vreau oferta'}
             </button>
           </div>
         </div>
@@ -453,7 +476,7 @@ export default function TCOCalculator() {
 
       {id === 'contact' && (
         <div className="space-y-6">
-          {heading('Unde te contactăm?', 'Îți propunem produsele pentru testare, pornind de la rezultatul tău.')}
+          {heading('Unde te contactăm?', offersTesting ? 'Îți propunem produsele pentru testare, pornind de la rezultatul tău.' : 'Îți trimitem oferta, pornind de la rezultatul tău.')}
           <div className="space-y-4">
             {contactField('name', 'Nume și prenume', { type: 'text', autoComplete: 'name', placeholder: 'Ion Popescu' })}
             {contactField('company', 'Firma', { type: 'text', autoComplete: 'organization', placeholder: 'Exemplu SRL' })}
@@ -483,7 +506,7 @@ export default function TCOCalculator() {
 
       {id === 'gata' && (
         <div className="text-center py-4">
-          {heading('Am primit datele', 'Te contactăm în cel mult 48 de ore ca să alegem împreună produsele pentru testare.')}
+          {heading('Am primit datele', offersTesting ? 'Te contactăm în cel mult 48 de ore ca să alegem împreună produsele pentru testare.' : 'Te contactăm în cel mult 48 de ore cu oferta.')}
           <a href="/produse/" className="text-yp-yellow underline underline-offset-4 hover:text-white text-sm">
             Până atunci, vezi catalogul
           </a>

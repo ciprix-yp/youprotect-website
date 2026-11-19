@@ -2,7 +2,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Testimonials from "../components/home/Testimonials.astro";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
+import CategoryTiles from "../components/products/CategoryTiles.astro";
+import { getCollection } from "astro:content";
+import { modelsLabel } from "../lib/catalog-categories";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
+
+const publishedCount = (await getCollection("products", ({ data }) => data.status === "published")).length;
 ---
 
 <BaseLayout
@@ -585,158 +590,18 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
       </div>
     </div>
   </section>
-  <!-- BLOC 5: Categorii de Produse -->
-  <section class="py-24 bg-yp-black border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="mb-16">
-        <h2
-          class="text-3xl lg:text-4xl font-light text-white mb-6"
-          data-aos="fade-up"
-        >
+  <!-- BLOC 5: Categorii de produse, generate din catalog (CategoryTiles) -->
+  <section class="py-16 md:py-20 bg-yp-black border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <h2 class="max-w-3xl font-heading text-3xl font-light leading-tight text-white lg:text-4xl">
           Echipamente individuale de protecție și haine de lucru pentru echipe tehnice
         </h2>
-        <div
-          class="w-12 h-1 bg-yp-yellow"
-          data-aos="fade-right"
-          data-aos-delay="100"
-        >
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Categoria 1 -->
-        <a
-          href="/produse/"
-          class="group block bg-[#0f0f0f] border border-white/10 p-8 hover:border-yp-yellow/50 transition-all duration-300"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <h3
-            class="text-xl font-medium text-white mb-3 group-hover:text-yp-yellow transition-colors"
-          >
-            Haine de lucru
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Salopete, pantaloni, jachete și uniforme de lucru alese pentru confort, durabilitate și imagine coerentă în teren.
-          </p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-yp-yellow">
-            Vezi produsele
-            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </span>
-        </a>
-
-        <!-- Categoria 2: fără produse în catalog încă, duce la cererea de ofertă cu categoria aleasă -->
-        <a
-          href="/cere-oferta/?categorie=manusi"
-          class="group block bg-[#0f0f0f] border border-white/10 p-8 hover:border-yp-yellow/50 transition-all duration-300"
-          data-aos="fade-up"
-          data-aos-delay="200"
-        >
-          <h3
-            class="text-xl font-medium text-white mb-3 group-hover:text-yp-yellow transition-colors"
-          >
-            Mănuși de protecție
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Soluții adaptate activității și nivelului de risc, pentru protecție, aderență și libertate de mișcare.
-          </p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-yp-yellow">
-            Cere ofertă
-            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </span>
-        </a>
-
-        <!-- Categoria 3: fără produse în catalog încă, duce la cererea de ofertă cu categoria aleasă -->
-        <a
-          href="/cere-oferta/?categorie=casti"
-          class="group block bg-[#0f0f0f] border border-white/10 p-8 hover:border-yp-yellow/50 transition-all duration-300"
-          data-aos="fade-up"
-          data-aos-delay="300"
-        >
-          <h3
-            class="text-xl font-medium text-white mb-3 group-hover:text-yp-yellow transition-colors"
-          >
-            Căști de protecție
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Echipamente pentru protecția capului în șantiere, zone industriale și medii unde siguranța nu lasă loc de compromis.
-          </p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-yp-yellow">
-            Cere ofertă
-            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </span>
-        </a>
-
-        <!-- Categoria 4: fără produse în catalog încă, duce la cererea de ofertă cu categoria aleasă -->
-        <a
-          href="/cere-oferta/?categorie=ochelari"
-          class="group block bg-[#0f0f0f] border border-white/10 p-8 hover:border-yp-yellow/50 transition-all duration-300"
-          data-aos="fade-up"
-          data-aos-delay="400"
-        >
-          <h3
-            class="text-xl font-medium text-white mb-3 group-hover:text-yp-yellow transition-colors"
-          >
-            Ochelari de protecție
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Modele concepute pentru vizibilitate bună, confort și protecție reală în medii cu risc mecanic sau chimic.
-          </p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-yp-yellow">
-            Cere ofertă
-            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </span>
-        </a>
-
-        <!-- Categoria 5: fără produse în catalog încă, duce la cererea de ofertă cu categoria aleasă -->
-        <a
-          href="/cere-oferta/?categorie=lucru-la-inaltime"
-          class="group block bg-[#0f0f0f] border border-white/10 p-8 hover:border-yp-yellow/50 transition-all duration-300"
-          data-aos="fade-up"
-          data-aos-delay="500"
-        >
-          <h3
-            class="text-xl font-medium text-white mb-3 group-hover:text-yp-yellow transition-colors"
-          >
-            Lucru la înălțime
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Hamuri, centuri și sisteme anticădere alese pentru siguranță, conformitate și utilizare corectă.
-          </p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-yp-yellow">
-            Cere ofertă
-            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </span>
-        </a>
-
-        <!-- Vezi Tot -->
-        <a
-          href="/produse/"
-          class="group flex flex-col justify-center items-center bg-yp-yellow border border-transparent p-8 hover:bg-yp-yellow/90 transition-all duration-300 text-center rounded-[4px] shadow-xl relative"
-          data-aos="fade-up"
-          data-aos-delay="600"
-        >
-          <span
-            class="w-12 h-12 rounded-full border border-yp-black/20 flex items-center justify-center mb-4 group-hover:bg-white/20 transition-colors text-yp-black"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg
-            >
-          </span>
-          <span class="text-yp-black font-semibold text-lg mb-2"
-            >Vezi catalogul</span
-          >
-          <span class="text-yp-black/70 text-sm">Explorezi selecția, iar dacă vrei ajutor, alegem împreună ce se potrivește echipei tale.</span>
+        <a href="/produse/" class="shrink-0 py-2 text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white">
+          Vezi tot catalogul ({modelsLabel(publishedCount)})
         </a>
       </div>
+      <CategoryTiles />
     </div>
   </section>
 

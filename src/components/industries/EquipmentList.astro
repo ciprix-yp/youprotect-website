@@ -11,21 +11,23 @@ interface Props {
 
 const published = (await getCollection('products', ({ data }) => data.status === 'published')).map((e) => e.data);
 const active = activeCategoryPages(published);
+// Categoria cu pagină duce la pagina ei; cea cu un singur model, la catalogul filtrat; cea fără modele rămâne text.
 const hrefFor = (key?: CategoryKey) => {
-  const page = key ? active.find((c) => c.key === key) : undefined;
-  return page ? `/produse/${page.slug}/` : undefined;
+  if (!key) return undefined;
+  const page = active.find((c) => c.key === key);
+  if (page) return `/produse/${page.slug}/`;
+  return published.some((p) => p.category === key) ? `/produse/?categorie=${key}#modele` : undefined;
 };
 ---
 
-<ul class="space-y-3 text-neutral-300" data-aos="fade-up" data-aos-delay="150">
+<ul class="list-disc space-y-3 pl-5 text-neutral-300 marker:text-yp-yellow">
   {
     Astro.props.items.map((item) => {
       const href = hrefFor(item.category);
       return (
         <li>
-          •{' '}
           {href ? (
-            <a href={href} class="text-neutral-200 underline underline-offset-4 decoration-yp-yellow/60 hover:text-yp-yellow transition-colors">
+            <a href={href} class="block w-fit py-1 text-neutral-200 underline underline-offset-4 decoration-yp-yellow/60 hover:text-yp-yellow transition-colors">
               {item.text}
             </a>
           ) : (
