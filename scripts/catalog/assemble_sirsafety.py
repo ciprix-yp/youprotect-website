@@ -199,6 +199,8 @@ def main(argv):
             print(f"!! {text['model']}: {exc}", file=sys.stderr)
             failed = True
             continue
+        if text.get("riskFreeTesting") is False:  # „Testare fără riscuri” nu se aplică (D-2026-11-19-06)
+            entry = {**entry, "riskFreeTesting": False}
         (out_dir / f"{text['slug']}.json").write_text(
             json.dumps(entry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"ok {text['model']} -> {text['slug']}.json | culori {len(entry['colours'])} | "

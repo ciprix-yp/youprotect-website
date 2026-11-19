@@ -1,11 +1,16 @@
 {
   "model": "FB1328",
   "slug": "ochelari-protectie-sir-safety-azoto-fb1328",
-  "status": "review",
+  "status": "published",
+  "riskFreeTesting": false,
   "keyword": "ochelari de protecție",
   "name": "Ochelari de protecție Sir Safety Azoto cu lentilă transparentă",
   "category": "protectia-ochilor",
-  "industries": ["constructii", "productie", "logistica"],
+  "industries": [
+    "constructii",
+    "productie",
+    "logistica"
+  ],
   "primaryColour": "",
   "summary": "Ochelari de protecție din policarbonat transparent, certificați EN 166 și EN 170, ușori și potriviți pentru purtare continuă. Rama transparentă nu-ți întrerupe câmpul vizual și recunoști bine culorile.",
   "description": [
@@ -33,16 +38,46 @@
     }
   ],
   "specs": [
-    { "label": "Lentilă", "value": "Transparentă, din policarbonat" },
-    { "label": "Ramă", "value": "Complet transparentă, din policarbonat" },
-    { "label": "Transmisia luminii", "value": "Între 74,4 % și 99,9 %" },
-    { "label": "Protecție UV", "value": "UV 380" },
-    { "label": "Rezistență la impact", "value": "F: bilă de oțel de 6 mm la 45 m/s" },
-    { "label": "Clasa optică", "value": "1, conform EN 166" },
-    { "label": "Marcaj pe lentilă", "value": "2C-1.2 SIR 1 F CE" },
-    { "label": "Marcaj pe ramă", "value": "SIR EN166 F CE" },
-    { "label": "Bucăți per cutie", "value": "144" },
-    { "label": "Categorie EIP", "value": "II, conform Regulamentului (UE) 2016/425" }
+    {
+      "label": "Lentilă",
+      "value": "Transparentă, din policarbonat"
+    },
+    {
+      "label": "Ramă",
+      "value": "Complet transparentă, din policarbonat"
+    },
+    {
+      "label": "Transmisia luminii",
+      "value": "Între 74,4 % și 99,9 %"
+    },
+    {
+      "label": "Protecție UV",
+      "value": "UV 380"
+    },
+    {
+      "label": "Rezistență la impact",
+      "value": "F: bilă de oțel de 6 mm la 45 m/s"
+    },
+    {
+      "label": "Clasa optică",
+      "value": "1, conform EN 166"
+    },
+    {
+      "label": "Marcaj pe lentilă",
+      "value": "2C-1.2 SIR 1 F CE"
+    },
+    {
+      "label": "Marcaj pe ramă",
+      "value": "SIR EN166 F CE"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "144"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "II, conform Regulamentului (UE) 2016/425"
+    }
   ],
   "notes": [],
   "care": [

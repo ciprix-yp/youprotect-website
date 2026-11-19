@@ -1,11 +1,15 @@
 {
   "model": "FB1211",
   "slug": "viziera-casca-sir-safety-speed-fb1211",
-  "status": "review",
+  "status": "published",
+  "riskFreeTesting": false,
   "keyword": "vizieră pentru cască",
   "name": "Vizieră transparentă pentru cască Sir Safety Speed",
   "category": "protectia-ochilor",
-  "industries": ["constructii", "energie"],
+  "industries": [
+    "constructii",
+    "energie"
+  ],
   "primaryColour": "",
   "summary": "Vizieră pentru cască din policarbonat transparent, conformă EN ISO 16321-1, gândită special pentru casca Sir Safety Everest MD1216. Se montează ușor și o muți rapid din poziția de lucru în cea de repaus.",
   "description": [
@@ -28,16 +32,46 @@
     }
   ],
   "specs": [
-    { "label": "Lentilă", "value": "Transparentă, din policarbonat" },
-    { "label": "Compatibilitate", "value": "Casca Sir Safety Everest MD1216" },
-    { "label": "Montaj", "value": "Inserții de prindere premontate" },
-    { "label": "Poziții", "value": "Lucru și repaus, cu prinderi laterale" },
-    { "label": "Filtru", "value": "UL1.2, conform EN ISO 16321-1" },
-    { "label": "Clasa optică", "value": "1, conform EN ISO 16321-1" },
-    { "label": "Nivel de impact", "value": "CT, conform EN ISO 16321-1" },
-    { "label": "Valabilitate", "value": "1 an de la data fabricației" },
-    { "label": "Bucăți per cutie", "value": "40" },
-    { "label": "Categorie EIP", "value": "II, conform Regulamentului (UE) 2016/425" }
+    {
+      "label": "Lentilă",
+      "value": "Transparentă, din policarbonat"
+    },
+    {
+      "label": "Compatibilitate",
+      "value": "Casca Sir Safety Everest MD1216"
+    },
+    {
+      "label": "Montaj",
+      "value": "Inserții de prindere premontate"
+    },
+    {
+      "label": "Poziții",
+      "value": "Lucru și repaus, cu prinderi laterale"
+    },
+    {
+      "label": "Filtru",
+      "value": "UL1.2, conform EN ISO 16321-1"
+    },
+    {
+      "label": "Clasa optică",
+      "value": "1, conform EN ISO 16321-1"
+    },
+    {
+      "label": "Nivel de impact",
+      "value": "CT, conform EN ISO 16321-1"
+    },
+    {
+      "label": "Valabilitate",
+      "value": "1 an de la data fabricației"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "40"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "II, conform Regulamentului (UE) 2016/425"
+    }
   ],
   "notes": [
     "Viziera Speed FB1211 e gândită pentru casca Everest MD1216; producătorul nu indică alte căști compatibile.",

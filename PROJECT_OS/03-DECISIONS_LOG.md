@@ -342,3 +342,18 @@
 - Reguli de adevăr: textele urmează fișa tehnică acolo unde pagina web o contrazice (FB1211: EN ISO 16321-1, nu EN 166;
   MA1814: 10 kV, nu 1,0 kV) și notează conflictul în `reviewNotes`. Fără sfaturi de utilizare pe care sursa nu le dă.
 - Paginile de industrie: sub lista de echipamente, „Ce e pe listă și nu găsești încă în catalog putem aduce la cerere”.
+
+## D-2026-11-19-06
+- Owner-ul (19.11.2026): „Testare fără riscuri” nu se aplică la căști, ochelari, viziere, antifoane și mănuși
+  electroizolante; rămâne la haine, încălțăminte și mănușile de lucru (Genio). O cască ține ani, deci 90 de zile nu arată
+  cât rezistă, iar echipamentul electroizolant nu se testează cu returnare.
+- Implementare: câmpul `riskFreeTesting` pe fișa de produs (implicit true). Caseta lipsește de pe fișele excluse și de pe
+  paginile de categorie unde nu toate produsele intră; pagina de marcă și condițiile programului listează ce nu intră,
+  generat din catalog (`src/lib/risk-free-scope.ts`). `tests/risk-free-scope.test.mjs` pică dacă o cască, ochelari,
+  viziere, antifoane sau mănuși electroizolante intră fără excludere.
+- Owner-ul confirmă că poate recomanda antifoanele potrivite pentru casca Everest (FAQ-ul de pe fișă).
+- Cele 9 accesorii (D-2026-11-19-05) sunt publicate. Paginile de categorie noi: căști, mănuși, ochelari și viziere.
+  Listele de pe paginile de industrie duc la paginile de categorie care există (`EquipmentList.astro`).
+- De confirmat cu Sir Safety, fără să blocheze publicarea (textele urmează fișa tehnică): standardul viziera Speed
+  FB1211 (EN 166 pe pagină, EN ISO 16321-1 în fișă), tensiunea de rezistență MA1814 (1,0 kV pe pagină, 10 kV în fișă),
+  dacă Everest vine cu vizieră și dacă ABS 901 și Cosmos vin cu jugulară, instrucțiunile de utilizare pentru MA1814.

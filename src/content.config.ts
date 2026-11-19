@@ -39,6 +39,9 @@ const products = defineCollection({
       )
       .min(1),
     otherColoursCount: z.number().int().min(0),
+    // „Testare fără riscuri” se aplică produsului (src/lib/risk-free-scope.ts); false la căști, ochelari, viziere,
+    // antifoane și mănuși electroizolante.
+    riskFreeTesting: z.boolean().default(true),
     sizes: z.object({
       summary: z.string(),
       values: z.array(z.string()).min(1),

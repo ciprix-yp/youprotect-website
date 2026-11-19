@@ -3,8 +3,16 @@
 // Ideea: clientul cumpără produsele de test, le măsurăm împreună față de ce folosește acum, iar banii se întorc integral
 // doar dacă AMBELE condiții sunt îndeplinite: costul pe zi de purtare nu e mai bun ȘI clientul nu e mulțumit.
 // Costul pe zi de purtare e aceeași măsură ca în calculator (src/lib/tco.js). Textele scurte sunt în RISK_FREE_TESTING.
+import { getCollection } from "astro:content";
 import LegalPage from "../components/legal/LegalPage.astro";
+import { joinRo } from "../lib/catalog-categories";
+import { riskFreeExclusions } from "../lib/risk-free-scope";
 import { SITE } from "../lib/site";
+
+// Ce nu intră în program se generează din catalog (câmpul riskFreeTesting, D-2026-11-19-06).
+const notTestable = riskFreeExclusions(
+  (await getCollection("products", ({ data }) => data.status === "published")).map((e) => e.data),
+);
 ---
 
 <LegalPage
@@ -74,6 +82,7 @@ import { SITE } from "../lib/site";
 
   <h2>Ce nu intră în garanție</h2>
   <ul>
+    {notTestable.length > 0 && <li>{joinRo(notTestable)}: nu intră în program, le comanzi direct;</li>}
     <li>comenzile făcute după testare;</li>
     <li>produsele care nu ne sunt returnate, cele deteriorate intenționat sau folosite în alt scop decât cel din protocol;</li>
     <li>testările fără protocol semnat sau fără accesul la date stabilit în el.</li>

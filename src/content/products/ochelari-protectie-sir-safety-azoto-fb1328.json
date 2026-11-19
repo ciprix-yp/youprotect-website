@@ -1,5 +1,5 @@
 {
-  "status": "review",
+  "status": "published",
   "name": "Ochelari de protecție Sir Safety Azoto cu lentilă transparentă",
   "category": "protectia-ochilor",
   "industries": [
@@ -171,5 +171,6 @@
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
     "assembledAt": "2026-11-19"
-  }
+  },
+  "riskFreeTesting": false
 }

@@ -1,11 +1,15 @@
 {
   "model": "MD1216",
   "slug": "casca-protectie-electroizolanta-sir-safety-everest-md1216",
-  "status": "review",
+  "status": "published",
+  "riskFreeTesting": false,
   "keyword": "cască electroizolantă",
   "name": "Cască de protecție electroizolantă Sir Safety Everest",
   "category": "casti-protectie",
-  "industries": ["constructii", "energie"],
+  "industries": [
+    "constructii",
+    "energie"
+  ],
   "primaryColour": "N0",
   "summary": "Cască electroizolantă din polietilenă de înaltă densitate, conformă EN 397 și EN 50365, izolată până la 1000 V c.a. și 1500 V c.c. Stă fix pe cap, cu jugulară în patru puncte, și rezistă la frig, până la -30 °C.",
   "description": [
@@ -33,17 +37,50 @@
     }
   ],
   "specs": [
-    { "label": "Greutate", "value": "465 g" },
-    { "label": "Suspensie interioară", "value": "Textilă, în 6 puncte" },
-    { "label": "Reglajul mărimii", "value": "Rotiță cu clichet, circumferința capului 52–63 cm" },
-    { "label": "Jugulară", "value": "Cu prindere în 4 puncte și suport pentru bărbie" },
-    { "label": "Bandă pentru transpirație", "value": "Textilă, lată" },
-    { "label": "Izolare electrică", "value": "Până la 1000 V c.a. și 1500 V c.c." },
-    { "label": "Rezistență la temperaturi scăzute", "value": "Până la -30 °C" },
-    { "label": "Accesorii", "value": "Fante laterale pentru antifoane; viziera Speed FB1211" },
-    { "label": "Valabilitate", "value": "3 ani de la data fabricației" },
-    { "label": "Bucăți per cutie", "value": "20" },
-    { "label": "Categorie EIP", "value": "III, conform Regulamentului (UE) 2016/425" }
+    {
+      "label": "Greutate",
+      "value": "465 g"
+    },
+    {
+      "label": "Suspensie interioară",
+      "value": "Textilă, în 6 puncte"
+    },
+    {
+      "label": "Reglajul mărimii",
+      "value": "Rotiță cu clichet, circumferința capului 52–63 cm"
+    },
+    {
+      "label": "Jugulară",
+      "value": "Cu prindere în 4 puncte și suport pentru bărbie"
+    },
+    {
+      "label": "Bandă pentru transpirație",
+      "value": "Textilă, lată"
+    },
+    {
+      "label": "Izolare electrică",
+      "value": "Până la 1000 V c.a. și 1500 V c.c."
+    },
+    {
+      "label": "Rezistență la temperaturi scăzute",
+      "value": "Până la -30 °C"
+    },
+    {
+      "label": "Accesorii",
+      "value": "Fante laterale pentru antifoane; viziera Speed FB1211"
+    },
+    {
+      "label": "Valabilitate",
+      "value": "3 ani de la data fabricației"
+    },
+    {
+      "label": "Bucăți per cutie",
+      "value": "20"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425"
+    }
   ],
   "notes": [
     "Fișa tehnică indică o valabilitate de 3 ani de la data fabricației."

@@ -1,5 +1,5 @@
 {
-  "status": "review",
+  "status": "published",
   "name": "Mănuși electroizolante clasa 0 Sir Safety Electro",
   "category": "manusi",
   "industries": [
@@ -168,5 +168,6 @@
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
     "assembledAt": "2026-11-19"
-  }
+  },
+  "riskFreeTesting": false
 }
