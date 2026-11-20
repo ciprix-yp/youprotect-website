@@ -431,3 +431,17 @@
 - Documentul e cel generat de Sir Safety: unele diacritice lipsesc din fontul lor („DECLARAIE”). Nu le modificăm.
 - `tests/local-documents.test.mjs`: fiecare document local există, e PDF, are sub 500 KB și e folosit de o fișă;
   `check-documents.mjs` verifică lunar și documentele locale.
+
+## D-2026-11-20-01
+- Owner-ul (20.11.2026): Portwest e furnizor actual, produsele lui trebuie importate în catalog. A dat acces la contul
+  Portwest (logare cu numărul de cont; credențialele în Keychain, `PORTWEST_ACCOUNT` / `PORTWEST_PASSWORD`, doar local).
+- Harta linkurilor de marketing: `catalog/sources/portwest.md`. Descărcare automată:
+  `scripts/catalog/fetch_portwest.py` → `.catalog-work/portwest/` (ignorat de git).
+- Ce avem: descrieri și caracteristici în română (~1.850 de modele), certificări (organism, număr de certificat,
+  standarde), materiale și întreținere, coduri de bare, variante cu poze de 1100 px, plus pe fiecare model declarația UE
+  de conformitate și fișa tehnică în română, publice pe documents.portwest.com.
+- Pozele: condițiile Media Hub Portwest permit clienților folosirea materialelor doar pentru marketingul și vânzarea
+  produselor Portwest. Le folosim doar pe fișele și paginile produselor Portwest.
+- Documentele Portwest se găzduiesc local, nu se leagă direct: serverul lor întoarce uneori PDF-uri trunchiate.
+- Prețurile contractuale, stocul și lichidările rămân în afara repo-ului (public); scriptul refuză acele adrese, iar din
+  Daily Data păstrează doar coloanele de produs.
