@@ -8,7 +8,8 @@ import { activeCategoryPages } from '../../lib/catalog-categories';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { activeBrandPages } from '../../lib/catalog-brands';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
-import { btnPrimary, btnSecondary, breadcrumbNav, labelTitle, sectionTitle } from '../../lib/ui';
+import QuoteListButton from './QuoteListButton.astro';
+import { btnPrimary, breadcrumbNav, labelTitle, sectionTitle } from '../../lib/ui';
 
 interface Props {
   entry: CollectionEntry<'products'>;
@@ -29,6 +30,7 @@ const primary = p.colours[0];
 const hasColourVariants = !(p.colours.length === 1 && primary.code === '');
 const mainImage = primary.images[0].src;
 // Formularul arată produsul și îl trimite cu cererea (MultiStepForm, câmpul „produs”).
+// Cu lista de ofertă plină, formularul arată și produsele din listă (le poate scoate de acolo).
 const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
 const hasMeasures = p.sizes.table.some((row) => row.measure);
 const hasLeg = p.sizes.table.some((row) => row.leg);
@@ -208,9 +210,20 @@ const singleImage = primary.images.length <= 1;
         </div>
       )}
 
-      <div class="flex flex-col gap-3 sm:flex-row">
-        <a href={offerHref} class={btnPrimary}>Cere ofertă</a>
-        <a href="/programeaza-discutie/" class={btnSecondary}>Programează o discuție</a>
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <a href={offerHref} class={btnPrimary}>Cere ofertă</a>
+          {!preview && <QuoteListButton slug={slug} name={p.name} location="fisa-produs" variant="secondary" />}
+        </div>
+        {/* Lista de ofertă (scripts/quote-list.ts): rândul apare doar când lista are ceva. */}
+        <p data-quote-summary hidden class="text-sm text-yp-white/70">
+          Ai <span data-quote-summary-count></span> în lista de ofertă.
+          <a href="/cere-oferta/" class="ml-1 inline-flex min-h-11 items-center font-medium text-yp-yellow underline underline-offset-4 hover:text-yp-white md:min-h-0">Vezi lista</a>
+        </p>
+        <p class="text-sm text-yp-white/60">
+          Vrei să vorbim întâi?
+          <a href="/programeaza-discutie/" class="ml-1 inline-flex min-h-11 items-center text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow md:min-h-0">Programează o discuție</a>
+        </p>
       </div>
 
       {p.documents.length > 0 && (

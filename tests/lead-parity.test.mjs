@@ -41,11 +41,12 @@ test('calculatorul: capetele sliderelor vin din TCO_LIMITS, nu sunt scrise de m�
   assert.doesNotMatch(read('src/components/calculator/TCOCalculator.tsx'), /\b(min|max)=\{\d+\}/);
 });
 
-test('cheile din sessionStorage și linkul WhatsApp pentru echipe mici sunt definite o singură dată', () => {
+test('cheile din browser și linkul WhatsApp pentru echipe mici sunt definite o singură dată', () => {
   for (const file of SRC) {
     if (file.endsWith('session-keys.js')) continue;
     const text = readFileSync(file, 'utf8');
     assert.doesNotMatch(text, /['"]yp_(booking_prefill|lead)['"]/, file);
+    if (!file.endsWith('quote-list.js')) assert.doesNotMatch(text, /['"]yp_quote_list['"]/, file);
     if (!file.endsWith('whatsapp.ts')) assert.doesNotMatch(text, /Am o echipă de 1–4 persoane și aș vrea/, file);
   }
 });

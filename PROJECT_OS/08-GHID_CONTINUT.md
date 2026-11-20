@@ -139,6 +139,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
     stânga). Cu „reduce motion” rămâne doar fade-ul, fără deplasare; tranzițiile între pagini sunt oprite.
   - Între pagini: fade de 200 ms, iar poza produsului trece din card în fișă și înapoi (`data-vt-photo` pe card,
     `#gallery-well` în fișă, `src/scripts/fluid.ts`). Un nume de tranziție apare o singură dată pe pagină.
+    Scripturile de pe toate paginile stau în pagină, nu în fișiere separate: altfel rulează în timpul tranziției și
+    Chrome o sare (D-2026-11-20-14; `scripts/check-inline-scripts.mjs` verifică în CI).
   - Titlurile: `h1` cu literele strânse cu 0,02em, `h2` cu 0,01em; textul mic rămâne cu spațierea normală.
   - La derulare (20.11.2026, după feedback-ul că pe telefon paginile păreau statice): progresul vine din poziția
     paginii (`animation-timeline`), nu dintr-un cronometru, deci urmărește degetul, nu întârzie conținutul și merge

@@ -13,6 +13,14 @@ const googleReviews = {
   },
 };
 
+// Scripturile de pe fiecare pagină (BaseLayout, Header, Footer, Analytics) stau în pagină, oricât de mari ar fi. Ca fișier
+// separat se descarcă după HTML și pot rula în timpul tranziției dintre pagini (global.css, @view-transition); atunci
+// Chrome sare tranziția, iar poza nu mai trece din card în fișa produsului (PR #80 și lista de ofertă, 20.11.2026,
+// D-2026-11-20-14). Astro le pune în pagină doar dacă nu importă nimic: un import comun cu alt script le scoate oricum
+// (scripts/check-inline-scripts.mjs verifică după build). Restul resurselor păstrează limita Vite de 4 KB.
+const LAYOUT_SCRIPT = /\/(BaseLayout|Header|Footer|Analytics)\.astro_astro_type_script_/;
+export const inlineLayoutScripts = (filePath) => (LAYOUT_SCRIPT.test(`/${filePath}`) ? true : undefined);
+
 // Tailwind rulează prin postcss.config.mjs.
 export default defineConfig({
   // Astro 7 a schimbat implicitul în 'jsx', care șterge spațiile dintre elementele inline
@@ -31,5 +39,6 @@ export default defineConfig({
     })
   ],
   output: 'static',
+  vite: { build: { assetsInlineLimit: inlineLayoutScripts } },
   site: 'https://youprotect.ro'
 });

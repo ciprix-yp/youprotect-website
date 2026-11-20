@@ -2,6 +2,7 @@
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
 import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../src/lib/lead-limits.js';
+import { QUOTE_LIST_MAX, isProductSlug } from '../src/lib/quote-list.js';
 import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
 import { LEAD_QUESTIONS } from '../src/lib/lead-questions.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../src/lib/quote-categories.js';
@@ -12,8 +13,8 @@ export { DETAILS_MAX_LENGTH, HONEYPOT_FIELD };
 export const MAX_BODY_BYTES = 20_000;
 const MAX_ANSWER_LENGTH = 300;
 const MAX_ANSWER_ITEMS = 8;
-const PRODUCT_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+){1,15}$/;
 export const LEAD_TAG = 'website';
+export const SITE_URL = 'https://youprotect.ro';
 
 // Întrebările fiecărui formular (src/lib/lead-questions.js, aceleași ca pașii din MultiStepForm.tsx). Orice alt câmp
 // trimis de client e ignorat.
@@ -61,6 +62,15 @@ function normalizeAnswer(value) {
     return items.length ? items.join('; ') : null;
   }
   return normalizeString(value, MAX_ANSWER_LENGTH);
+}
+
+/** Adresa paginii unui produs. @param {string} slug */
+export const productUrl = (slug) => `${SITE_URL}/produse/${slug}/`;
+
+/** Slug-urile valide din `produse` (listă) și `produs` (unul), fără dubluri, cel mult QUOTE_LIST_MAX. */
+function productList(data) {
+  const raw = [data.produs, ...(Array.isArray(data.produse) ? data.produse.slice(0, QUOTE_LIST_MAX * 2) : [])];
+  return [...new Set(raw.filter(isProductSlug))].slice(0, QUOTE_LIST_MAX);
 }
 
 /**
@@ -118,12 +128,27 @@ export function parseLead(payload) {
     answers.unshift(...tcoAnswers(inputs, computeTco(inputs)));
   }
 
-  const productSlug = normalizeString(data.produs, 120);
-  const product = productSlug && PRODUCT_SLUG_REGEX.test(productSlug) ? productSlug : null;
+  // Produsele: lista de ofertă (`produse`, src/lib/quote-list.js) sau un singur produs (`produs`, paginile vechi din
+  // cache). `product` rămâne primul produs, ca înainte; de la două produse în sus, lista întreagă pleacă și ca răspuns
+  // „produse” (adresele paginilor, câte una pe rând), anunțat CRM-ului (Prospector) pe 20.11.2026. Serverul nu știe
+  // catalogul: un slug inventat dă doar o adresă care nu există.
+  const products = productList(data);
+  if (products.length > 1) {
+    answers.unshift({ question: 'produse', label: 'Produse din lista de ofertă', answer: products.map(productUrl).join('\n') });
+  }
 
   return {
     ok: true,
-    lead: { intent, name, email, phone, company, cui: rawCui ? normalizeCUI(rawCui) : null, product, answers },
+    lead: {
+      intent,
+      name,
+      email,
+      phone,
+      company,
+      cui: rawCui ? normalizeCUI(rawCui) : null,
+      product: products[0] ?? null,
+      answers,
+    },
   };
 }
 
@@ -159,7 +184,7 @@ export const SYNCED_RETENTION_DAYS = 30;
 const oneLine = (s) => String(s ?? '').replace(/[\r\n\t\u0000-\u001f]+/g, ' ').trim();
 
 /** Emailul de notificare: doar text (nu HTML), ca datele trimise de vizitator să nu poată injecta marcaj. */
-export function leadEmail(lead, siteUrl = 'https://youprotect.ro') {
+export function leadEmail(lead) {
   const test = lead.environment !== 'production';
   const subject = oneLine(
     `${test ? '[TEST] ' : ''}[${LEAD_TAG}] ${INTENT_LABELS[lead.intent]}: ${lead.company}`.slice(0, 180),
@@ -173,10 +198,18 @@ export function leadEmail(lead, siteUrl = 'https://youprotect.ro') {
     `Telefon: ${lead.phone ?? '-'}`,
     `Email: ${lead.email}`,
   ];
-  if (lead.product) lines.push(`Produs: ${siteUrl}/produse/${lead.product}/`);
-  if (lead.answers.length) {
+  // Lista de ofertă: fiecare produs pe rândul lui; altfel, produsul singur (sau niciunul).
+  const list = lead.answers.find((a) => a.question === 'produse');
+  if (list) {
+    const urls = list.answer.split('\n');
+    lines.push('', `Produse (${urls.length}):`, ...urls.map((url) => `- ${url}`));
+  } else if (lead.product) {
+    lines.push(`Produs: ${productUrl(lead.product)}`);
+  }
+  const answers = lead.answers.filter((a) => a !== list);
+  if (answers.length) {
     lines.push('', 'Răspunsuri:');
-    for (const a of lead.answers) lines.push(`- ${a.label}: ${a.answer}`);
+    for (const a of answers) lines.push(`- ${a.label}: ${a.answer}`);
   }
   lines.push('', `Trimisă: ${lead.createdAt}`, `Pagina: ${lead.sourceUrl ?? '-'}`, `ID: ${lead.id}`);
   lines.push('', 'Răspunde direct la acest email ca să-i scrii persoanei (Reply-To).');

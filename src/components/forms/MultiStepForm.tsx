@@ -23,7 +23,8 @@ type Option = { label: string; hasOther?: boolean };
 
 interface MultiStepFormProps {
   intent: Intent;
-  // slug -> nume, pentru produsele publicate. Formularul acceptă ?produs=<slug> doar dacă slug-ul e aici.
+  // slug -> nume, pentru produsele publicate. Formularul acceptă ?produs=<slug> și produsele din lista de ofertă doar
+  // dacă slug-ul e aici.
   products?: Record<string, string>;
 }
 
@@ -34,6 +35,12 @@ const FORM_1_STEPS = [...LEAD_QUESTIONS.consultation, 'contact'];
 const FORM_2_STEPS = [...LEAD_QUESTIONS.quote, 'contact'];
 
 const PHONE = { href: `tel:${SITE.telephone}`, label: SITE.telephoneDisplay };
+
+// Lista de ofertă vine prin window.ypQuoteList (src/scripts/quote-list.ts), nu prin import: un import comun ar scoate
+// scriptul din BaseLayout din pagină (src/lib/quote-list.js explică de ce). Fără listă (script blocat), formularul
+// merge ca înainte, cu produsul din adresă.
+const quoteList = () => window.ypQuoteList;
+const productsLabel = (n: number) => quoteList()?.label(n) ?? `${n} produse`;
 
 
 // Variantele de la „Ce produse ai în vedere?” în care intră categoriile de pe homepage (?categorie=<slug>).
@@ -61,9 +68,10 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const [isSubmitting, setIsSubmitting] = useState(false);
   // null = fără eroare; message = mesajul serverului pentru vizitator (sau null: textul general cu telefonul).
   const [submitError, setSubmitError] = useState<{ message: string | null } | null>(null);
-  const [product, setProduct] = useState<string | null>(null);
-  // Cine vine de pe o fișă de produs (?produs=<slug>) nu mai e întrebat ce produse are în vedere.
-  const steps = isForm1 ? FORM_1_STEPS : product ? FORM_2_STEPS.filter((s) => s !== 'q3') : FORM_2_STEPS;
+  // Produsele cererii: cel de pe fișa de unde vine vizitatorul (?produs=<slug>), primul, apoi lista de ofertă.
+  const [items, setItems] = useState<string[]>([]);
+  // Cine vine cu produse alese nu mai e întrebat ce produse are în vedere.
+  const steps = isForm1 ? FORM_1_STEPS : items.length ? FORM_2_STEPS.filter((s) => s !== 'q3') : FORM_2_STEPS;
   const [category, setCategory] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -89,12 +97,24 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Produsul de pe care vine vizitatorul (/cere-oferta/?produs=<slug>), doar dacă e în catalog,
-  // sau categoria de pe homepage (/cere-oferta/?categorie=<slug>), doar dacă e în listă.
+  // Produsul de pe care vine vizitatorul (/cere-oferta/?produs=<slug>) și lista de ofertă (src/lib/quote-list.js), doar
+  // produsele din catalog, sau categoria de pe homepage (/cere-oferta/?categorie=<slug>), doar dacă e în listă.
+  // Produsul din adresă nu intră în lista salvată: e doar în cererea de acum.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('produs');
-    if (slug && Object.hasOwn(products, slug)) setProduct(slug);
+    if (intent === 'quote') {
+      const load = () => {
+        const api = quoteList();
+        const chosen = [...new Set([slug, ...(api?.read() ?? [])])].filter(
+          (s): s is string => typeof s === 'string' && Object.hasOwn(products, s),
+        );
+        setItems(chosen.slice(0, api?.max ?? 1));
+      };
+      load();
+      // Formularul se poate încărca înaintea scriptului paginii: citim lista din nou când scriptul anunță că e gata.
+      if (!quoteList()) window.addEventListener('yp:quote-list', load, { once: true });
+    }
     const categorySlug = params.get('categorie');
     if (intent === 'quote' && categorySlug && quoteCategoryLabel(categorySlug)) {
       setCategory(categorySlug);
@@ -149,26 +169,29 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     setCurrentStep((prev) => prev + 1);
   };
 
-  // „Scoate” de lângă produsul sau categoria cu care a venit vizitatorul.
-  // - Produsul: întrebarea „Ce produse ai în vedere?” (q3) reapare în listă. Dacă vizitatorul a trecut deja de locul
-  //   ei și n-a răspuns, îl ducem la ea; altfel rămâne pe întrebarea la care era (înainte, indexul rămânea același,
-  //   iar q3 nu mai era pusă niciodată).
+  // „Scoate” de lângă un produs (îl scoate și din lista salvată) sau de lângă categoria cu care a venit vizitatorul.
+  // - Ultimul produs: întrebarea „Ce produse ai în vedere?” (q3) reapare în listă. Dacă vizitatorul a trecut deja de
+  //   locul ei și n-a răspuns, îl ducem la ea; altfel rămâne pe întrebarea la care era (înainte, indexul rămânea
+  //   același, iar q3 nu mai era pusă niciodată).
   // - Categoria: scoatem și varianta pe care a bifat-o ea la „Ce produse ai în vedere?”.
-  const removeContext = () => {
-    if (product) {
-      const currentId = steps[currentStep];
-      const next = FORM_2_STEPS;
-      const q3Index = next.indexOf('q3');
-      const currentIndex = Math.max(next.indexOf(currentId), 0);
-      setProduct(null);
-      if (currentIndex > q3Index && (formData.q3 as string[]).length === 0) {
-        setStepDirection('back');
-        setCurrentStep(q3Index);
-      } else {
-        setCurrentStep(currentIndex);
-      }
-      return;
+  const removeItem = (slug: string) => {
+    quoteList()?.remove(slug);
+    const rest = items.filter((s) => s !== slug);
+    setItems(rest);
+    if (rest.length) return;
+    const currentId = steps[currentStep];
+    const next = FORM_2_STEPS;
+    const q3Index = next.indexOf('q3');
+    const currentIndex = Math.max(next.indexOf(currentId), 0);
+    if (currentIndex > q3Index && (formData.q3 as string[]).length === 0) {
+      setStepDirection('back');
+      setCurrentStep(q3Index);
+    } else {
+      setCurrentStep(currentIndex);
     }
+  };
+
+  const removeCategory = () => {
     const option = category ? CATEGORY_OPTION[category] : undefined;
     setCategory(null);
     if (option) updateField('q3', (formData.q3 as string[]).filter((item) => item !== option));
@@ -187,7 +210,12 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     try {
       const result = await postLead({
         intent,
-        data: { ...formData, produs: product ?? undefined, categorie: category ?? undefined, [HONEYPOT_FIELD]: honeypot || undefined },
+        data: {
+          ...formData,
+          produse: items.length ? items : undefined,
+          categorie: category ?? undefined,
+          [HONEYPOT_FIELD]: honeypot || undefined,
+        },
       });
       if (!result.ok) {
         setSubmitError({ message: result.message });
@@ -195,6 +223,8 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
         return;
       }
       flagLead(intent);
+      // Cererea a plecat cu produsele din listă: lista se golește (antetul nu mai arată produse de cerut).
+      if (items.length) quoteList()?.clear();
 
       if (intent === 'consultation') {
         try {
@@ -540,20 +570,52 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       ref={containerRef}
       className="max-w-xl mx-auto w-full bg-[#111] rounded-[8px] border border-white/5 p-6 md:p-8 shadow-2xl relative overflow-hidden scroll-mt-28"
     >
-      {(product || category) && (
-        <div className="mb-8 flex items-center justify-between gap-3 rounded-md border border-yp-yellow/30 bg-yp-yellow/5 px-4 py-3">
+      {items.length > 0 ? (
+        <div className="mb-8 rounded-md border border-yp-yellow/30 bg-yp-yellow/5 px-4 py-3">
           <p className="text-sm text-neutral-300">
-            Ceri ofertă pentru:{' '}
-            <span className="text-white font-medium">{product ? products[product] : quoteCategoryLabel(category)}</span>
+            {items.length === 1 ? 'Ceri ofertă pentru:' : `Ceri ofertă pentru ${productsLabel(items.length)}:`}
           </p>
-          <button
-            type="button"
-            onClick={removeContext}
-            className="shrink-0 min-h-[44px] min-w-[44px] text-neutral-400 hover:text-white text-sm underline"
-          >
-            Scoate
-          </button>
+          <ul className="mt-1 divide-y divide-white/10">
+            {items.map((slug) => (
+              <li key={slug} className="flex items-center justify-between gap-3">
+                <span className="py-2 text-sm font-medium leading-snug text-white">{products[slug]}</span>
+                <button
+                  type="button"
+                  onClick={() => removeItem(slug)}
+                  aria-label={`Scoate din cerere: ${products[slug]}`}
+                  className="shrink-0 min-h-[44px] min-w-[44px] text-neutral-400 hover:text-white text-sm underline"
+                >
+                  Scoate
+                </button>
+              </li>
+            ))}
+          </ul>
+          {currentStep === 0 && quoteList() && items.length < (quoteList()?.max ?? 0) && (
+            <a
+              href="/produse/"
+              // Produsul venit din adresă intră și el în listă, ca să-l regăsească la întoarcere.
+              onClick={() => items.forEach((s) => quoteList()?.add(s))}
+              className="mt-1 inline-flex min-h-[44px] items-center text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white"
+            >
+              Adaugă alte produse din catalog
+            </a>
+          )}
         </div>
+      ) : (
+        category && (
+          <div className="mb-8 flex items-center justify-between gap-3 rounded-md border border-yp-yellow/30 bg-yp-yellow/5 px-4 py-3">
+            <p className="text-sm text-neutral-300">
+              Ceri ofertă pentru: <span className="text-white font-medium">{quoteCategoryLabel(category)}</span>
+            </p>
+            <button
+              type="button"
+              onClick={removeCategory}
+              className="shrink-0 min-h-[44px] min-w-[44px] text-neutral-400 hover:text-white text-sm underline"
+            >
+              Scoate
+            </button>
+          </div>
+        )
       )}
 
       <div className="mb-10">

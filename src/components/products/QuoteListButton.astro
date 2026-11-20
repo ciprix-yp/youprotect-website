@@ -1,0 +1,42 @@
+---
+// „Adaugă la ofertă”: pune produsul în lista de ofertă. Clicul, starea și anunțul le face src/scripts/quote-list.ts:
+// după adăugare butonul primește data-state="in", textul vizibil se schimbă din CSS (grupul „quote”), iar aria-label
+// spune ce face următorul tap („Scoate din lista de ofertă”).
+// - secondary: butonul de lângă „Cere ofertă”, pe fișa produsului;
+// - card: legătura mică de jos, de pe cardurile din catalog (peste linkul întins pe tot cardul, deci z-10).
+import { btnSecondary } from '../../lib/ui';
+
+interface Props {
+  slug: string;
+  name: string;
+  /** Unde e butonul, pentru măsurare (fără date despre vizitator). */
+  location: string;
+  variant: 'secondary' | 'card';
+}
+
+const { slug, name, location, variant } = Astro.props;
+const look =
+  variant === 'secondary'
+    ? `${btnSecondary} gap-2 data-[state=in]:border-yp-yellow/60 data-[state=in]:text-yp-yellow`
+    : 'relative z-10 inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-medium text-yp-yellow underline-offset-4 hover:underline data-[state=in]:text-yp-white/80 sm:text-sm';
+const icon = variant === 'secondary' ? 'h-4 w-4' : 'h-3.5 w-3.5 sm:h-4 sm:w-4';
+---
+
+<button
+  type="button"
+  data-quote-add={slug}
+  data-quote-name={name}
+  data-quote-location={location}
+  data-state="out"
+  aria-label={`Adaugă la ofertă: ${name}`}
+  class:list={['group/quote', look]}
+>
+  <svg class:list={[icon, 'shrink-0 group-data-[state=in]/quote:hidden']} fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+  </svg>
+  <svg class:list={[icon, 'hidden shrink-0 group-data-[state=in]/quote:block']} fill="none" stroke="currentColor" stroke-width="2.25" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+  </svg>
+  <span class="group-data-[state=in]/quote:hidden">Adaugă la ofertă</span>
+  <span class="hidden group-data-[state=in]/quote:inline">{variant === 'card' ? 'Adăugat' : 'Adăugat la ofertă'}</span>
+</button>

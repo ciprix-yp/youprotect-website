@@ -39,3 +39,7 @@ jobs:
 
       - name: Titluri și descrieri (lungime, duplicate)
         run: node scripts/seo/check-meta.mjs dist
+
+      # Scripturile de pe fiecare pagină rămân în pagină: din fișier separat, Chrome sărea tranziția dintre pagini.
+      - name: Scripturi în pagină (tranziții)
+        run: node scripts/check-inline-scripts.mjs dist

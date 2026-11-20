@@ -382,3 +382,46 @@ test('parseLead: venit de pe o fișă de produs, fără „Produse vizate” (q3
   assert.equal(r.lead.product, 'tricou-polo-mascot-bandol-51587');
   assert.equal(r.lead.answers.some((a) => a.question === 'q3'), false);
 });
+
+test('parseLead: lista de ofertă — primul produs rămâne `product`, lista pleacă și ca răspuns „produse”', () => {
+  const { produs, ...rest } = valid.data;
+  const list = ['tricou-polo-mascot-bandol-51587', 'geaca-iarna-reflectorizanta-mascot-accelerate-safe-19035'];
+  const r = parseLead({ ...valid, data: { ...rest, produse: [...list, list[0], 'Rău!', '<script>', 42, null] } });
+  assert.equal(r.ok, true);
+  assert.equal(r.lead.product, list[0]);
+  assert.deepEqual(r.lead.answers[0], {
+    question: 'produse',
+    label: 'Produse din lista de ofertă',
+    answer: list.map((s) => `https://youprotect.ro/produse/${s}/`).join('\n'),
+  });
+  // Un singur produs: ca înainte, fără răspunsul „produse”.
+  const one = parseLead({ ...valid, data: { ...rest, produse: [list[1]] } });
+  assert.equal(one.lead.product, list[1]);
+  assert.equal(one.lead.answers.some((a) => a.question === 'produse'), false);
+  // Paginile vechi trimit `produs`; nu e listă: ignorat.
+  assert.equal(parseLead({ ...valid, data: { ...rest, produse: 'tricou-polo-mascot-bandol-51587' } }).lead.product, null);
+});
+
+test('parseLead: lista de ofertă are cel mult 15 produse și încape în răspunsul din CRM (2000 de caractere)', () => {
+  const longSlug = (i) => `${'a'.repeat(97)}-${String(i).padStart(2, '0')}`;
+  const slugs = Array.from({ length: 40 }, (_, i) => longSlug(i));
+  assert.ok(slugs.every((s) => s.length === 100));
+  const r = parseLead({ ...valid, data: { ...valid.data, produs: undefined, produse: slugs } });
+  const answer = r.lead.answers.find((a) => a.question === 'produse').answer;
+  assert.equal(answer.split('\n').length, 15);
+  assert.ok(answer.length <= 2000, `${answer.length} caractere`);
+  // Slug-urile peste 100 de caractere nu trec.
+  assert.equal(parseLead({ ...valid, data: { ...valid.data, produs: `a-${'b'.repeat(100)}` } }).lead.product, null);
+});
+
+test('email: lista de ofertă, câte un produs pe rând, nu și printre răspunsuri', () => {
+  const list = ['tricou-polo-mascot-bandol-51587', 'geaca-iarna-reflectorizanta-mascot-accelerate-safe-19035'];
+  const lead = { ...parseLead({ ...valid, data: { ...valid.data, produs: undefined, produse: list } }).lead,
+    id: 'id', createdAt: '2026-11-20T00:00:00Z', environment: 'production', sourceUrl: null };
+  const { text } = leadEmail(lead);
+  assert.match(text, /Produse \(2\):\n- https:\/\/youprotect\.ro\/produse\/tricou-polo-mascot-bandol-51587\/\n- https:\/\/youprotect\.ro\/produse\/geaca-/);
+  assert.doesNotMatch(text, /Produse din lista de ofertă/);
+  assert.doesNotMatch(text, /^Produs: /m);
+  // Un singur produs: rândul „Produs:” de până acum.
+  assert.match(leadEmail({ ...lead, ...parseLead(valid).lead }).text, /^Produs: https:\/\/youprotect\.ro\/produse\/tricou-polo-mascot-bandol-51587\/$/m);
+});

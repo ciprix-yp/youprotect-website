@@ -3,9 +3,11 @@
 // Verificat în browser pe 18.11.2026: fără acord, site-ul nu setează cookie-uri. Cu Google Analytics configurat,
 // alegerea din banner se păstrează în localStorage („yp_consent”), iar cookie-urile _ga apar doar după „Accept”.
 // Cal.com poate seta __cf_bm, doar pe /confirmare/?intent=consultation.
+// Lista de ofertă („Adaugă la ofertă”) se păstrează în localStorage (QUOTE_LIST_KEY), doar după ce vizitatorul adaugă.
 // Dacă adaugi un script terț (pixel, chat), actualizează pagina și bannerul.
 import LegalPage from "../components/legal/LegalPage.astro";
 import { ANALYTICS, SITE } from "../lib/site";
+import { QUOTE_LIST_DAYS, QUOTE_LIST_KEY } from "../lib/quote-list.js";
 
 const { ga4Id, cloudflareWebAnalytics, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
 const gaMonths = Math.round(gaCookieMaxAgeDays / 30.4);
@@ -18,7 +20,7 @@ const gaSuffix = ga4Id ? ga4Id.replace(/^G-/, "") : "";
   description={ga4Id
     ? "Ce cookie-uri folosește youprotect.ro: Google Analytics doar cu acordul tău, fără cookie-uri de marketing."
     : "youprotect.ro nu folosește cookie-uri de analiză sau de marketing. Află ce cookie-uri pot apărea și de unde."}
-  updated="18 noiembrie 2026"
+  updated="20 noiembrie 2026"
 >
   <p>
     Cookie-urile sunt fișiere mici pe care un site le salvează în browserul tău. Pe scurt:
@@ -60,6 +62,14 @@ const gaSuffix = ga4Id ? ga4Id.replace(/^G-/, "") : "";
       </p>
     )
   }
+
+  <p>
+    <strong>Lista de ofertă</strong>: produsele pe care le adaugi cu „Adaugă la ofertă” se păstrează în browser
+    (localStorage, cheia <code>{QUOTE_LIST_KEY}</code>), ca să le găsești în formularul de ofertă. Lista rămâne doar pe
+    dispozitivul tău: ajunge la noi abia când trimiți cererea, iar atunci se golește. Dacă nu o trimiți, expiră după
+    {QUOTE_LIST_DAYS} de zile fără nicio schimbare și se șterge la următoarea ta vizită. O ceri tu, deci nu are nevoie
+    de acord.
+  </p>
 
   {
     cloudflareWebAnalytics && (

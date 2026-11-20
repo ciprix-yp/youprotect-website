@@ -246,6 +246,14 @@ Format task:
     formularul și automatizăm (cu `structured` și slug-uri stabile, convenite cu Prospector). Pe 18.11.2026 s-a adăugat
     o singură întrebare: personalizarea cu logo (D-2026-11-18-05).
 
+### CONV-004
+- Status: `IN_PROGRESS` (lista de ofertă: PR deschis 21.11.2026; pagina de Contact: urmează)
+- Owner: `Claude`
+- Scope: Funcțiile lipsă din auditul din 20.11.2026, aprobate de owner pe 20.11.2026:
+  - **Lista de ofertă cu mai multe produse** — implementată (D-2026-11-20-14). De urmărit după publicare: câte cereri
+    vin cu mai multe produse (răspunsul `produse` în CRM) și evenimentul GA `quote_list_add`, după ce GA are ID-ul corect.
+  - **Pagina de Contact și linkul din meniu** — pasul următor.
+
 ### PERF-001
 - Status: `DONE` (18.11.2026, PR #40 și PR-ul cu cardurile din catalog)
 - Owner: `Claude`
