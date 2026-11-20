@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import MultiStepForm from "../components/forms/MultiStepForm";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
+import { whatsappHref } from "../lib/whatsapp";
 
 // Produsele publicate, pentru /cere-oferta/?produs=<slug> (link-ul „Cere ofertă” de pe fișa de produs).
 const products = Object.fromEntries(
@@ -23,6 +24,10 @@ const products = Object.fromEntries(
         </h1>
         <p class="text-lg md:text-xl text-neutral-400">
           Durează cam 2 minute. Din răspunsurile tale pregătim o ofertă potrivită echipei, fără zeci de mesaje de clarificare.
+        </p>
+        <p class="mt-3 text-sm text-neutral-400">
+          Preferi să ne scrii direct?
+          <a href={whatsappHref(undefined, "Bună! Aș vrea o ofertă pentru echipamente de protecție.")} target="_blank" rel="noopener noreferrer" data-track-location="formular-whatsapp" class="inline-block py-2 font-medium text-yp-yellow underline underline-offset-4 hover:text-white">Scrie-ne pe WhatsApp, la 0742 226 127</a>
         </p>
         <RiskFreeTesting variant="inline" class="mt-6 max-w-xl mx-auto text-left" />
       </div>
