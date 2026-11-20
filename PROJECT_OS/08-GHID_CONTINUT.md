@@ -117,7 +117,9 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
   caractere pe rând).
 - Butoane: înălțime 48 px (`h-12`), fără săgeți. Același nume pentru aceeași acțiune: „Cere ofertă”, „Programează o
   discuție”, „Vezi catalogul”.
-- Fără etichete mici în majuscule deasupra titlurilor, fără cuvinte colorate în titluri, fără animații la derulare.
+- Fără etichete mici în majuscule deasupra titlurilor, fără cuvinte colorate în titluri, fără animații declanșate la
+  derulare cu cronometru (tip AOS). Mișcarea la derulare e permisă doar legată de poziția paginii (clasele `sd-*`, vezi
+  „Mișcare” mai jos).
 - Text: paragrafele în greutate normală; `font-light` doar la titluri. Iconițe SVG, nu emoji.
 - Grile: rânduri pline (`CategoryTiles` alege numărul de coloane; dala de final de pe paginile de categorie apare doar
   unde completează un rând).
@@ -138,3 +140,9 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
   - Între pagini: fade de 200 ms, iar poza produsului trece din card în fișă și înapoi (`data-vt-photo` pe card,
     `#gallery-well` în fișă, `src/scripts/fluid.ts`). Un nume de tranziție apare o singură dată pe pagină.
   - Titlurile: `h1` cu literele strânse cu 0,02em, `h2` cu 0,01em; textul mic rămâne cu spațierea normală.
+  - La derulare (20.11.2026, după feedback-ul că pe telefon paginile păreau statice): progresul vine din poziția
+    paginii (`animation-timeline`), nu dintr-un cronometru, deci urmărește degetul, nu întârzie conținutul și merge
+    și înapoi. Clase în `global.css`: `sd-hero-media`/`sd-hero-content` (hero), `sd-media` (pozele se așază),
+    `sd-step` (linia pasului se trage), `sd-check` (bifele apar pe rând), `sd-expand` (blocul galben se lărgește),
+    `sd-rise` și `.card-3d` (cardurile urcă, doar pe ecranele tactile; cu mouse-ul se înclină). Textul rămâne pe loc.
+    Proprietățile se scriu separat, nu cu prescurtarea `animation` (`tests/scroll-animations.test.mjs`).

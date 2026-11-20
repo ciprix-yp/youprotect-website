@@ -553,3 +553,13 @@
   clasele `animate-in` moarte (pluginul lor nu era instalat).
 - Respins: secțiunile fixate la derulare și animațiile la scroll de pe apple.com (încetinesc un cumpărător care caută
   un produs anume; sunt ce am scos odată cu AOS) și o bibliotecă de animații „spring” (site-ul nu are gesturi de tras).
+
+## D-2026-11-20-10
+- Owner-ul (20.11.2026, după PR #76): pe telefon restul paginilor încă par statice. Pe telefon nu există hover, deci
+  efectele 3D nu se văd. Revizuim regula „fără animații la derulare” din D-2026-11-20-09: rămân interzise animațiile
+  declanșate cu cronometru (AOS), dar adăugăm mișcare legată de poziția paginii (scroll-driven animations, Chrome,
+  Edge, Safari 26+): poza din hero în paralaxă și textul care se stinge sub header, pozele care se așază, linia pașilor
+  care se trage, bifele pe rând, blocul galben care se lărgește până la margini, cardurile care urcă (doar pe ecranele
+  tactile). Fără efect cu „reduce motion” sau în browserele fără suport.
+- Bug prins la build: minificatorul CSS lipea `animation-timeline` în prescurtarea `animation`, iar browserul arunca
+  regula fără eroare; test nou `tests/scroll-animations.test.mjs`.
