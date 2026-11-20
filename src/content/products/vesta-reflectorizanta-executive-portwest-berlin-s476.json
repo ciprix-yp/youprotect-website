@@ -1,0 +1,204 @@
+{
+  "status": "review",
+  "name": "Vestă reflectorizantă executive Portwest Berlin",
+  "category": "reflectorizante",
+  "industries": [
+    "constructii",
+    "logistica"
+  ],
+  "summary": "Vestă reflectorizantă executive clasa 2 EN ISO 20471, ușoară, cu 7 buzunare și suport dublu pentru ecuson. Ești văzut, iar telefonul, pixul și stația radio stau la îndemână.",
+  "description": [
+    "Vesta reflectorizantă Portwest Berlin S476 e ușoară, din tricot 100 % poliester de 124 g/m², și îți dă buzunarele unei geci în zilele în care o geacă ar fi prea caldă. O închizi cu fermoar, iar telefonul, pixul, cheile și stația radio au fiecare locul lor: 7 buzunare, buclă pentru radio și bandă cu inel în D.",
+    "Te simți protejat pentru că ești văzut: clasa 2 EN ISO 20471 cere suprafețe minime de material fluorescent și reflectorizant, pentru vizibilitate ziua și noaptea, în lumina farurilor. Cardul de acces sau ecusonul stă la vedere în suportul transparent dublu, pe verticală sau pe orizontală, iar echipa ta arată organizată și profesionistă.",
+    "Pentru firmă, Berlin S476 e certificată EN ISO 20471 clasa 2, cu certificatul de examinare UE de tip VN605 152068.5, emis de OETI (organism notificat 0534), iar vizibilitatea e certificată pentru 50 de spălări. Poți pune logoul firmei pe fondul fluorescent, în suprafața pe care o lasă standardul, și poți testa vestele cu echipa ta înainte de comanda mare, în condițiile programului „Testare fără riscuri”."
+  ],
+  "benefits": [
+    "Ești văzut: clasa 2 EN ISO 20471, certificată pentru 50 de spălări.",
+    "Ușoară: tricot 100 % poliester de 124 g/m², pentru zilele în care o geacă e prea caldă.",
+    "Totul la îndemână: 7 buzunare, printre care unul pentru telefon și pix.",
+    "Ecusonul la vedere: suport transparent dublu, pentru card pe verticală sau pe orizontală.",
+    "Stația radio și cheile prinse: buclă pentru radio și bandă cu inel în D.",
+    "Mărimi pentru toată echipa: de la XS la 7XL, la culoarea galben."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Tricot 100 % poliester"
+    },
+    {
+      "label": "Gramaj",
+      "value": "124 g/m²"
+    },
+    {
+      "label": "Închidere",
+      "value": "Fermoar în față"
+    },
+    {
+      "label": "Buzunare",
+      "value": "7: buzunare pe piept, buzunar pentru telefon și pix, două buzunare jos, cu clapă, și două buzunare laterale"
+    },
+    {
+      "label": "Ecuson",
+      "value": "Suport transparent dublu, pentru card pe verticală sau pe orizontală"
+    },
+    {
+      "label": "Prinderi",
+      "value": "Buclă pentru stația radio; bandă cu inel în D pentru chei sau card"
+    },
+    {
+      "label": "Benzi reflectorizante",
+      "value": "Orizontale, în jurul corpului, și verticale, peste umeri"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "VN605 152068.5, emis de OETI (organism notificat 0534)"
+    }
+  ],
+  "notes": [
+    "Vizibilitatea EN ISO 20471 clasa 2 este certificată pentru maximum 50 de spălări.",
+    "Mărimile diferă după culoare: galben XS–7XL, portocaliu XS–5XL, roșu S–3XL."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 20471 clasa 2",
+      "label": "Îmbrăcăminte de avertizare cu vizibilitate ridicată, ziua și noaptea, în lumina farurilor. Clasa 2 este nivelul din mijloc (de la 1 la 3) și cere cel puțin 0,50 m² de material fluorescent și 0,13 m² de material reflectorizant."
+    }
+  ],
+  "care": [
+    "Spală la maximum 40 °C, la program moderat.",
+    "Nu folosi înălbitor.",
+    "Nu o usca în uscător.",
+    "Las-o să se usuce atârnată.",
+    "Nu o călca.",
+    "Nu o curăța chimic.",
+    "Spal-o de cel mult 50 de ori: atât este certificată vizibilitatea."
+  ],
+  "colours": [
+    {
+      "code": "YE",
+      "name": "galben",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/YE-PS.webp",
+          "thumb": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/YE-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "OR",
+      "name": "portocaliu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/OR-PS.webp",
+          "thumb": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/OR-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "RE",
+      "name": "roșu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/RE-PS.webp",
+          "thumb": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/RE-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "XS–7XL",
+    "values": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL",
+      "7XL"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/vesta-reflectorizanta-executive-portwest-berlin-s476/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/vesta-reflectorizanta-executive-portwest-berlin-s476/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce clasă de vizibilitate are vesta Portwest Berlin S476?",
+      "a": "Clasa 2 conform EN ISO 20471. Clasa 2 cere cel puțin 0,50 m² de material fluorescent și 0,13 m² de material reflectorizant; la cea mai mică mărime, XS, vesta Portwest Berlin S476 are 0,52 m² de fond fluorescent și 0,13 m² de bandă reflectorizantă, după ghidul Portwest. Vizibilitatea e certificată pentru 50 de spălări."
+    },
+    {
+      "q": "Ce buzunare are vesta Berlin S476?",
+      "a": "Șapte. Vesta Portwest Berlin S476 are buzunare pe piept, un buzunar pentru telefon și pix, două buzunare jos, cu clapă, și două buzunare laterale, plus suport transparent dublu pentru ecuson, buclă pentru stația radio și bandă cu inel în D pentru chei sau card."
+    },
+    {
+      "q": "Este vesta S476 potrivită când e prea cald pentru o geacă?",
+      "a": "Da. Vesta Portwest Berlin S476 e ușoară, din tricot de poliester de 124 g/m², iar Portwest o descrie tocmai pentru situațiile în care o geacă ar fi prea caldă, cu buzunarele pe care altfel le-ai avea doar la geacă."
+    },
+    {
+      "q": "Pot pune logoul firmei pe vesta reflectorizantă S476?",
+      "a": "Da, pe o suprafață mică. Ca vesta Berlin S476 să rămână clasa 2 EN ISO 20471, logoul nu poate reduce fondul fluorescent sub 0,50 m² și nu acoperă benzile reflectorizante. Ghidul Portwest pentru zona imprimabilă dă 0,02 m² de fond disponibil pentru logo la mărimea XS și 0,04 m² la mărimea S. Zona exactă o stabilești cu You Protect la ofertă."
+    },
+    {
+      "q": "Ce mărimi și culori are vesta Berlin S476?",
+      "a": "Vesta Portwest Berlin S476 se găsește în galben, de la XS la 7XL, în portocaliu, de la XS la 5XL, și în roșu, de la S la 3XL."
+    },
+    {
+      "q": "De unde pot comanda vesta reflectorizantă Portwest Berlin în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, cu logoul firmei, și poți testa vesta Berlin S476 înainte de comanda mare, în condițiile programului „Testare fără riscuri”."
+    }
+  ],
+  "seo": {
+    "title": "Vestă reflectorizantă clasa 2 Portwest S476",
+    "description": "Vestă reflectorizantă Portwest Berlin S476, clasa 2 EN ISO 20471: ușoară, cu 7 buzunare și suport pentru ecuson. Ofertă cu logo de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "S476",
+    "range": null,
+    "productUrl": "https://portwest.com/products/view/S476"
+  },
+  "reviewNotes": [
+    "Fără categoria EIP: declarația scrie Cat. III, dar productionSurveillance e null (nu apare organismul care supraveghează producția, modulul C2 sau D). De cerut de la Portwest.",
+    "Traduceri Portwest interpretate: „Doua buzunare posterioare cu clapeta” e, după desenul din tabelul de mărimi, două buzunare cu clapă jos, pe față (spatele nu are buzunare); „Fermoar lateral pentru acces facil”: desenul arată fermoarul în față, așa că am scris „fermoar în față”. De confirmat.",
+    "Defalcarea celor 7 buzunare nu e dată în sursă; textul enumeră tipurile din caracteristici, fără să le numere separat.",
+    "Omis: punga de vânzare cu amănuntul, „Marcat UKCA”, „Certificare CE”.",
+    "Omise din certificări (doar în reviewNotes, conform briefului): ANSI/ISEA 107 Tipul R Clasa 2 (SUA) și RIS 3279 TOM Numărul 2 (căi ferate UK, numai portocaliu).",
+    "declaration.certificate e trunchiat la „VN605” și notifiedBody e null în datele parsate; textul declarației dă certificatul VN605 152068.5, emis de OETI (0534). Am folosit textul declarației. Fișa mai listează Intertek (0362), certificat LECFI00382678, probabil pentru UKCA; omis.",
+    "Culoarea roșie (RE): EN ISO 20471 admite roșu fluorescent, dar nici fișa, nici declarația nu spun pe ce culori e certificatul. De confirmat cu Portwest că RE e acoperit de clasa 2.",
+    "Suprafețele minime ale clasei 2 (0,50 m² / 0,13 m²) vin din standard; valorile pe mărime (XS: 0,52 m² fond, 0,02 m² liber pentru logo, 0,13 m² bandă; S: 0,54 / 0,04 / 0,14 m²) din „High Visibility Printed Area Guide 2026 v2” al Portwest (CDN, 20.11.2026).",
+    "Așezarea benzilor (orizontale și peste umeri) vine din desenul din tabelul de mărimi („Hi-Vis Two Band Vest”), nu din text.",
+    "Omis: superlativele din descrierea Portwest despre design și „articol unic”."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  }
+}

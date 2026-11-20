@@ -1,4 +1,5 @@
-// „Testare fără riscuri” nu se aplică la căști, ochelari, viziere, antifoane și mănuși electroizolante (D-2026-11-19-06).
+// „Testare fără riscuri” nu se aplică la căști, ochelari, viziere, antifoane și mănuși electroizolante (D-2026-11-19-06),
+// nici la echipamentul de sudură și la mănușile de protecție chimică (D-2026-11-20-02).
 // Testul prinde un produs nou din aceste grupe care ar intra în catalog fără `"riskFreeTesting": false`.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -29,6 +30,12 @@ test('căștile, ochelarii, vizierele și antifoanele nu intră în testare', ()
 
 test('mănușile electroizolante nu intră în testare', () => {
   const wrong = products.filter((p) => /electroizolant/i.test(p.name) && p.riskFreeTesting).map((p) => p.id);
+  assert.deepEqual(wrong, []);
+});
+
+// D-2026-11-20-02: nici echipamentul de sudură (haine ignifuge, mănuși) și nici mănușile de protecție chimică.
+test('echipamentul de sudură și mănușile de protecție chimică nu intră în testare', () => {
+  const wrong = products.filter((p) => /sudur|ignifug|chimic/i.test(p.name) && p.riskFreeTesting).map((p) => p.id);
   assert.deepEqual(wrong, []);
 });
 

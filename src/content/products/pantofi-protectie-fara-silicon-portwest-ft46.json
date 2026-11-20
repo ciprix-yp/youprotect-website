@@ -1,0 +1,172 @@
+{
+  "status": "review",
+  "name": "Pantofi de protecție fără silicon Portwest CompositeLite ESD",
+  "category": "incaltaminte",
+  "industries": [
+    "productie"
+  ],
+  "summary": "Pantofi de protecție fără silicon, S1PS și ESD, cu față din plasă care respiră și talpă din cauciuc antiderapantă. Te simți protejat fără metal, într-un pantof sport sobru, negru.",
+  "description": [
+    "Pantofii de protecție fără silicon Portwest FT46 îmbină confortul cu flexibilitatea: fața din plasă cu structură KPU injectată direct respiră și rămâne rezistentă, gulerul căptușit adaugă confort, iar branțul are amortizare. Călcâiul absoarbe energia la fiecare pas.",
+    "Te simți protejat fără metal: bombeul din fibră de sticlă îți apără degetele, iar inserția nemetalică din talpă te apără de perforare (tip PS, testată cu cui de 3 mm). Talpa exterioară din cauciuc e rezistentă la alunecare, iar designul negru, de pantof sport, arată sobru și îngrijit.",
+    "Pentru firmă, pantofii FT46 sunt declarați fără silicon, deci se potrivesc în producție, vopsitorii, electronică și la manipularea sticlei, acolo unde siliconul creează probleme. Sunt certificați S1PS conform EN ISO 20345:2022+A1:2024, cu marcajele ESD, SR și FO, și sunt conformi cu IEC 61340-5-1:2016. Poți testa pantofii cu echipa ta, în condiții reale de lucru, înainte de decizia finală."
+  ],
+  "benefits": [
+    "Fără silicon: potriviți în vopsitorii, electronică și la manipularea sticlei.",
+    "Picior aerisit: fața din plasă cu structură KPU respiră.",
+    "Calci sigur: talpă exterioară din cauciuc, rezistentă la alunecare (SR) și la uleiuri și combustibili (FO).",
+    "Protecție fără metal: bombeu din fibră de sticlă și inserție anti-perforare de tip PS.",
+    "Potriviți în zone ESD: conformi cu IEC 61340-5-1:2016.",
+    "Confort la purtare: guler căptușit, branț cu amortizare și absorbție de energie la călcâi."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Plasă cu structură KPU"
+    },
+    {
+      "label": "Model",
+      "value": "Pantof sport"
+    },
+    {
+      "label": "Bombeu",
+      "value": "Fibră de sticlă, nemetalic"
+    },
+    {
+      "label": "Protecție la perforare",
+      "value": "Inserție nemetalică, testată cu cui de 3 mm (tip PS)"
+    },
+    {
+      "label": "Talpă",
+      "value": "EVA/cauciuc, talpa exterioară din cauciuc"
+    },
+    {
+      "label": "Fără silicon",
+      "value": "Da, declarat de Portwest"
+    },
+    {
+      "label": "Detectoare de metale",
+      "value": "Nemagnetic, fără nichel și fără materiale feroase"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "ITASLNB24023792, emis de Intertek Italia S.p.A. (organism notificat nr. 2575)"
+    }
+  ],
+  "notes": [
+    "Clasa S1PS nu cere rezistența feței la apă, iar Portwest nu o declară pentru fața din plasă a pantofilor FT46."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 20345:2022+A1:2024 S1PS ESD SR FO",
+      "label": "Clasa S1PS: bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi și protecție nemetalică la perforare testată cu cui de 3 mm (tip PS). ESD: disipă sarcinile electrostatice, pentru zone cu componente electronice sensibile. SR: rezistență la alunecare pe pardoseală ceramică cu glicerină. FO: talpă rezistentă la uleiuri și combustibili."
+    },
+    {
+      "code": "IEC 61340-5-1:2016",
+      "label": "Protecția componentelor electronice împotriva descărcărilor electrostatice: încălțămintea se poate folosi în zonele protejate ESD."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "BK",
+      "name": "negru",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/pantofi-protectie-fara-silicon-portwest-ft46/BK-PS.webp",
+          "thumb": "/images/products/pantofi-protectie-fara-silicon-portwest-ft46/BK-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "36–48",
+    "values": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/pantofi-protectie-fara-silicon-portwest-ft46/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/pantofi-protectie-fara-silicon-portwest-ft46/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce clasă de protecție au pantofii Portwest FT46?",
+      "a": "Pantofii Portwest FT46 au clasa S1PS conform EN ISO 20345:2022+A1:2024, cu marcajele ESD, SR și FO. S1PS înseamnă bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi și protecție nemetalică la perforare testată cu cui de 3 mm."
+    },
+    {
+      "q": "Sunt pantofii Portwest FT46 fără silicon?",
+      "a": "Da. Portwest declară pantofii FT46 fără silicon, potriviți în producție, vopsitorii, electronică și la manipularea sticlei, unde siliconul creează probleme."
+    },
+    {
+      "q": "Pot purta pantofii Portwest FT46 în zone ESD?",
+      "a": "Da. Pantofii Portwest FT46 sunt conformi cu IEC 61340-5-1:2016 și au marcajul ESD, deci îi poți folosi în zone cu componente electronice sensibile la descărcări electrostatice."
+    },
+    {
+      "q": "Ce diferență este între pantofii Portwest FT46 și FC32?",
+      "a": "Pantofii Portwest FT46 și FC32 au aceeași clasă, S1PS cu ESD, SR și FO. FT46 are fața din plasă cu structură KPU, care respiră, talpă exterioară din cauciuc și e declarat fără silicon. FC32 are fața tricotată dintr-o bucată, talpă PU/PU și imprimeu reflectorizant."
+    },
+    {
+      "q": "Ce mărimi sunt disponibile pentru pantofii FT46?",
+      "a": "Pantofii Portwest FT46 se găsesc în mărimile 36–48, în culoarea negru."
+    },
+    {
+      "q": "De unde pot comanda pantofi de protecție fără silicon Portwest FT46 în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa și poți testa pantofii FT46 în condiții reale de lucru înainte de decizia finală."
+    }
+  ],
+  "seo": {
+    "title": "Pantofi de protecție fără silicon Portwest FT46",
+    "description": "Pantofi de protecție fără silicon Portwest FT46: față din plasă care respiră, talpă din cauciuc antiderapantă, ESD. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "FT46",
+    "range": "CompositeLite™ ESD",
+    "productUrl": "https://portwest.com/products/view/FT46"
+  },
+  "reviewNotes": [
+    "Descrierea RO scrie „componentă intermediară antiderapantă”, traducere greșită; EN: „anti-penetration composite midsole”. Protecția la perforare am descris-o după marcajul PS.",
+    "„Fără silicon” e o caracteristică declarată de Portwest, fără test sau standard citat; de cerut dovada dacă un client din vopsitorie o cere.",
+    "Omis: „flexibilitate extremă” și „pe parcursul zilei de lucru” (superlativ și durată de purtare nemăsurată, interzise de ghid).",
+    "Talpa: materiale „EVA / Cauciuc”; caracteristicile spun talpă exterioară din cauciuc. Rolul EVA nu e descris.",
+    "„Reduce oboseala picioarelor” (branțul) omis: efect nemăsurat, interzis de ghid; am spus doar „branț cu amortizare”.",
+    "Declarația scrie Cat. III, dar nu numește supravegherea producției (modulul C2 sau D); nu am pomenit categoria EIP.",
+    "Greutățile din datele Portwest (coloana Weight) par a fi ale perechii ambalate; nu le-am folosit. De cerut greutatea unui pantof, mărimea 42.",
+    "Industrie (producție) propusă de noi; Portwest pomenește producția, vopsirea, electronica și sticla."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  }
+}

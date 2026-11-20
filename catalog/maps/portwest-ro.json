@@ -1,0 +1,24 @@
+{
+  "_note": "Traduceri pentru numele de culori din datele Portwest (variante.csv, coloana Colour). Asamblarea se oprește dacă lipsește o valoare.",
+  "colours": {
+    "Black": "negru",
+    "Black/Green": "negru/verde",
+    "Black/Grey": "negru/gri",
+    "Black/Orange": "negru/portocaliu",
+    "Black/Zoom Grey": "negru/gri",
+    "Bottle Green": "verde închis",
+    "Brown": "maro",
+    "Green": "verde",
+    "Navy": "bleumarin",
+    "Navy/Royal": "bleumarin/albastru regal",
+    "Orange": "portocaliu",
+    "Orange/Black": "portocaliu/negru",
+    "Orange/Navy": "portocaliu/bleumarin",
+    "Red": "roșu",
+    "Red/Black": "roșu/negru",
+    "Royal Blue": "albastru regal",
+    "Yellow": "galben",
+    "Yellow/Black": "galben/negru",
+    "Yellow/Navy": "galben/bleumarin"
+  }
+}

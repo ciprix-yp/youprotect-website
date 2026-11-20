@@ -1,0 +1,202 @@
+{
+  "status": "review",
+  "name": "Salopetă ignifugă de sudură Portwest Bizweld Work",
+  "category": "pantaloni",
+  "industries": [
+    "productie",
+    "energie"
+  ],
+  "summary": "Salopetă ignifugă de sudură din bumbac 100 %, certificată EN ISO 11612, EN ISO 11611 clasa 1 și IEC 61482-2 pentru arc electric. Bretelele și talia elastice se așază pe corp, iar cu geaca BZ739 echipa arată unitar.",
+  "description": [
+    "Salopeta ignifugă de sudură Portwest Bizweld Work e din bumbac 100 %, de 280 g/m², și acoperă partea de jos a corpului și pieptul. Bretelele și talia sunt elastice, bretelele se reglează, iar Portwest o descrie cu design ergonomic, gândit pentru libertate de mișcare, confort și respirabilitate. Lungimea crăcilor se poate extinde, ca salopeta să cadă bine și la oamenii mai înalți.",
+    "Te simți protejat la sudură și lângă surse de căldură: salopeta e certificată pentru propagare limitată a flăcării, pentru căldură convectivă, radiantă și de contact și pentru stropi de metal topit, iar la arcul electric are ELIM 8 cal/cm² și ATPV 11 cal/cm². Imprimeul reflectorizant îți crește vizibilitatea, iar cusăturile în culoare contrastantă și fermoarul din alamă îi dau un aspect îngrijit. Cu geaca Bizweld Work BZ739, din aceeași gamă, echipa arată unitar.",
+    "Pentru firmă, Bizweld Work BZ444 are aceleași trei certificări ca geaca BZ739: EN ISO 11612, EN ISO 11611 clasa 1 și IEC 61482-2, cu certificatul de examinare UE de tip 2777/27710-01/E00-00, emis de SATRA Technology Europe Ltd. Cusăturile ranforsate îi cresc durabilitatea, iar buzunarul mare cu clapă de pe piept, buzunarele laterale, buzunarul de la spate și cel pentru metru țin uneltele la îndemână. O speli la 40 °C."
+  ],
+  "benefits": [
+    "Protejat la căldură și flacără: certificată EN ISO 11612 (A1+A2, B1, C1, E3, F1).",
+    "Făcută pentru sudură: EN ISO 11611 clasa 1, pentru tehnici cu puțini stropi și căldură radiantă redusă.",
+    "Protecție la arcul electric: IEC 61482-2, cu ELIM 8 cal/cm² și ATPV 11 cal/cm².",
+    "Stă bine pe corp: bretele elastice reglabile și talie elastică.",
+    "Lungimea se adaptează: crăcile se pot extinde de la 31 la 33 de inchi.",
+    "Uneltele la îndemână: buzunar mare cu clapă pe piept, buzunare laterale, buzunar la spate și buzunar pentru metru."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "100 % bumbac (țesătură Bizweld Work)"
+    },
+    {
+      "label": "Gramaj",
+      "value": "280 g/m²"
+    },
+    {
+      "label": "Bretele",
+      "value": "Elastice, reglabile"
+    },
+    {
+      "label": "Talie",
+      "value": "Elastică, inclusiv în spate"
+    },
+    {
+      "label": "Fermoar",
+      "value": "Din alamă"
+    },
+    {
+      "label": "Buzunare",
+      "value": "Buzunar mare pe piept, cu clapă; două buzunare laterale; buzunar la spate, pe șold, cu clapă; buzunar pentru metru"
+    },
+    {
+      "label": "Alte detalii",
+      "value": "Cusături ranforsate, în culoare contrastantă; imprimeu reflectorizant"
+    },
+    {
+      "label": "Protecție UV",
+      "value": "UPF 40, declarat de Portwest"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/27710-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat 2777)"
+    }
+  ],
+  "notes": [
+    "Salopeta nu este îmbrăcăminte de avertizare: imprimeul reflectorizant îți crește vizibilitatea, dar nici varianta portocalie nu este certificată EN ISO 20471.",
+    "Valorile ELIM și ATPV privesc efectele termice ale arcului electric, nu protecția împotriva electrocutării.",
+    "Salopeta acoperă picioarele și pieptul; pentru brațe și spate o porți cu geaca Bizweld Work BZ739, certificată pe aceleași standarde."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 11612 (A1+A2, B1, C1, E3, F1)",
+      "label": "Protecție împotriva căldurii și a flăcării. A1+A2: propagare limitată a flăcării, testată cu aprindere pe suprafață (A1) și pe margine (A2). B1: căldură convectivă, nivelul 1 din 3. C1: căldură radiantă, nivelul 1 din 4. E3: stropi de fier topit, nivelul 3 din 3, cel mai înalt. F1: căldură de contact, nivelul 1 din 3. Lipsește codul D: protecția la stropi de aluminiu topit nu este declarată."
+    },
+    {
+      "code": "EN ISO 11611 clasa 1 (A1+A2)",
+      "label": "Îmbrăcăminte de protecție pentru sudură și procedee conexe. Clasa 1: pentru tehnici și situații cu mai puțini stropi și căldură radiantă mai redusă; clasa 2 este pentru cele mai periculoase. A1+A2: propagare limitată a flăcării, testată cu aprindere pe suprafață și pe margine."
+    },
+    {
+      "code": "IEC 61482-2 (ELIM 8 cal/cm², ATPV 11 cal/cm²)",
+      "label": "Protecție împotriva efectelor termice ale arcului electric, testată cu arc deschis după IEC 61482-1-1. ELIM 8 cal/cm²: energia incidentă sub care, la toate încercările, căldura transmisă a rămas sub pragul unei arsuri de gradul II, fără ca materialul să se rupă. ATPV 11 cal/cm²: energia incidentă la care probabilitatea unei arsuri de gradul II ajunge la 50 %. Valorile nu privesc protecția împotriva electrocutării."
+    }
+  ],
+  "care": [
+    "Spală la maximum 40 °C.",
+    "Nu folosi înălbitor.",
+    "Nu o usca în uscător.",
+    "Las-o să se usuce atârnată.",
+    "Calc-o la maximum 150 °C.",
+    "Nu o curăța chimic."
+  ],
+  "colours": [
+    {
+      "code": "NV",
+      "name": "bleumarin",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/salopeta-ignifuga-sudura-portwest-bizweld-bz444/NV-PS.webp",
+          "thumb": "/images/products/salopeta-ignifuga-sudura-portwest-bizweld-bz444/NV-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "OR",
+      "name": "portocaliu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/salopeta-ignifuga-sudura-portwest-bizweld-bz444/OR-PS.webp",
+          "thumb": "/images/products/salopeta-ignifuga-sudura-portwest-bizweld-bz444/OR-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "S–5XL",
+    "values": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL"
+    ],
+    "table": [],
+    "note": "Lungimea interioară a piciorului este de 79 cm la toate mărimile și se poate extinde de la 31 la 33 de inchi (circa 79–84 cm)."
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/salopeta-ignifuga-sudura-portwest-bizweld-bz444/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/salopeta-ignifuga-sudura-portwest-bizweld-bz444/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce protecție are salopeta ignifugă Portwest Bizweld BZ444?",
+      "a": "Salopeta Portwest Bizweld Work BZ444 e certificată pe trei standarde: EN ISO 11612 (A1+A2, B1, C1, E3, F1) pentru căldură și flacără, EN ISO 11611 clasa 1 (A1+A2) pentru sudură și IEC 61482-2 pentru efectele termice ale arcului electric, cu ELIM 8 cal/cm² și ATPV 11 cal/cm². Certificatul de examinare UE de tip, 2777/27710-01/E00-00, e emis de SATRA Technology Europe Ltd."
+    },
+    {
+      "q": "Pentru ce fel de sudură e potrivită salopeta Bizweld BZ444?",
+      "a": "Salopeta Bizweld BZ444 e potrivită pentru tehnicile de sudură cu puțini stropi și căldură radiantă redusă, adică clasa 1 conform EN ISO 11611. Standardul dă ca exemple sudura cu gaz, TIG, MIG cu curent mic, sudura în puncte și sudura MMA cu electrod rutilic. Pentru tehnicile cu mulți stropi, cum ar fi MAG sau MMA cu electrod bazic, standardul recomandă clasa 2."
+    },
+    {
+      "q": "Se potrivește salopeta BZ444 cu geaca Bizweld BZ739?",
+      "a": "Da. Salopeta Bizweld Work BZ444 și geaca BZ739 sunt din aceeași gamă, Bizweld Work, din același bumbac de 280 g/m², cu aceleași certificări și același certificat UE de tip, și se găsesc în aceleași culori, bleumarin și portocaliu. Împreună protejează și partea de sus, și partea de jos a corpului."
+    },
+    {
+      "q": "Pot pune logoul firmei pe salopeta ignifugă BZ444?",
+      "a": "Da, cu materiale potrivite pentru haine ignifuge, ca salopeta Bizweld BZ444 să-și păstreze protecția. Conform ghidului Portwest pentru logouri pe îmbrăcămintea ignifugă multi-normă, logourile mai mici de 10 cm² nu cer teste suplimentare. La cele mai mari, broderia se face cu ață ignifugă, iar ecusoanele și transferurile termice trebuie să fie certificate EN ISO 14116, indicele 3. Metoda și zona le stabilești cu You Protect la ofertă."
+    },
+    {
+      "q": "Ce mărimi are salopeta Bizweld BZ444?",
+      "a": "Salopeta Portwest Bizweld BZ444 se găsește în mărimile S–5XL, în bleumarin și portocaliu. Lungimea interioară a piciorului e de 79 cm la toate mărimile și se poate extinde de la 31 la 33 de inchi."
+    },
+    {
+      "q": "De unde pot comanda salopeta ignifugă de sudură Portwest Bizweld în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa și poți pune în aceeași cerere salopeta Bizweld BZ444 și geaca Bizweld BZ739, din aceeași gamă."
+    }
+  ],
+  "seo": {
+    "title": "Salopetă ignifugă de sudură Portwest BZ444",
+    "description": "Salopetă ignifugă de sudură Portwest BZ444: EN ISO 11612, EN ISO 11611 clasa 1 și arc electric, cu bretele elastice. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "BZ444",
+    "range": "Bizweld™ Work",
+    "productUrl": "https://portwest.com/products/view/BZ444"
+  },
+  "reviewNotes": [
+    "Fără categoria EIP: declarația scrie Cat. III, dar productionSurveillance e null (nu apare organismul care supraveghează producția, modulul C2 sau D). De cerut de la Portwest; hainele ignifuge și pentru arc electric sunt de regulă categoria III.",
+    "Explicațiile codurilor vin din standarde, nu din fișă: nivelurile EN ISO 11612 (B 1–3, C 1–4, E 1–3, F 1–3), A1/A2, clasele EN ISO 11611, ELIM/ATPV (IEC 61482-1-1). Exemplele de tehnici de sudură din FAQ vin din anexa A a EN ISO 11611 (ghid de alegere), verificate în surse secundare.",
+    "Certificatul din feed (certificari.csv) scrie EN 61482-2 / EN 61482-1-1; declarația și fișa scriu IEC 61482-2. Am folosit IEC, ca în declarație.",
+    "UPF 40 („blochează 98 % din razele UV”) și OEKO-TEX® STANDARD 100 apar doar în caracteristicile din feed, nu în fișa tehnică sau în declarație. UPF 40 e la specs, ca declarat de Portwest, fără procentul de 98 % și fără standard de test; OEKO-TEX l-am omis (fără număr de certificat). De confirmat cu Portwest.",
+    "Regulile pentru logo vin din ghidul public Portwest „How to Safely Add Logos to FR Multi-Norm Workwear” (CDN Portwest, citit pe 20.11.2026): sub 10 cm² fără teste suplimentare; peste, ață ignifugă la broderie, ecusoane și transferuri certificate EN ISO 14116 indice 3.",
+    "Omis din sursă: „funcționalitate superbă”, „durată de viață mai lungă” (comparație), „Model nou”, „Certificare CE”.",
+    "Varianta portocalie (OR) nu are EN ISO 20471 în declarație; textul spune deschis că nu ține loc de îmbrăcăminte de avertizare.",
+    "Numele Portwest e trunchiat în sursă („Pantaloni cu pieptar gama”); am folosit tabelul de mărimi („Bizweld Work FR Bib and Brace”) și descrierea (pantaloni cu bretele și pieptar), redate ca salopetă.",
+    "Buzunare: descrierea enumeră 5 (mare pe piept cu clapă, două laterale, pe șold la spate cu clapă, pentru riglă), caracteristicile spun „6 buzunare”. Textul enumeră doar ce scrie descrierea, fără număr.",
+    "Lungimea interioară de 79 cm vine din tabelul de mărimi; extinderea de la 31 la 33 de inchi din caracteristici („Lungime extensibilă”); conversia în cm (circa 79–84 cm) e a mea. De confirmat cum se face extinderea (tiv desfăcut?).",
+    "Unde e fermoarul din alamă nu spune sursa; în specs apare doar „din alamă”."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  },
+  "riskFreeTesting": false
+}

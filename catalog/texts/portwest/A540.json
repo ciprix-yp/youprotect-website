@@ -1,0 +1,100 @@
+{
+  "model": "A540",
+  "slug": "manusi-sudura-portwest-a540",
+  "status": "review",
+  "keyword": "mănuși de sudură",
+  "name": "Mănuși de sudură Portwest Ultra",
+  "category": "manusi",
+  "industries": ["productie", "constructii"],
+  "primaryColour": "BR",
+  "summary": "Mănuși de sudură din piele bovină, certificate EN 12477 tip A și EN 407 (412X4X), cu cusături din aramidă și căptușeală fleece. Te simți protejat la flacără și la stropi mici de metal topit.",
+  "description": [
+    "Mănușile de sudură Portwest Ultra sunt făcute pentru sudori: pielea bovină îți apără mâinile, iar căptușeala fleece te protejează de căldură și de frig și face mănușa comodă pe mână. Au dexteritate de nivel 2 din 5: sunt mănuși de tip A după EN 12477, unde protecția trece înaintea mișcărilor fine.",
+    "Te simți protejat lângă flacără și metal topit: mănușile au nivelul 4 la comportarea la flacără și nivelul 4 la stropi mici de metal topit, conform EN 407. Palma și degetul mare sunt întărite, iar cusăturile din aramidă, întărite pe palme și degete, cresc durabilitatea și rezistă la arsuri.",
+    "Pentru firmă, mănușile Ultra A540 sunt certificate EN 12477 tip A pentru sudură, EN 407 pentru căldură și flacără, cu marcajul 412X4X, și EN 388 pentru riscuri mecanice, cu marcajul 4243X. Respectă cerințele generale EN ISO 21420. Modelul are certificat UE de tip nr. 2777/21744-01/E00-00, emis de SATRA Technology Europe Ltd, organism notificat."
+  ],
+  "benefits": [
+    "Protecție la sudură: EN 12477 tip A, varianta cu protecție mai mare.",
+    "Rezistă la flacără și la stropi de metal topit: nivelul 4 la ambele, conform EN 407.",
+    "Cusături rezistente: fir de aramidă, întărit pe palme și degete.",
+    "Zone întărite: palma și degetul mare.",
+    "Comode pe mână: căptușeala fleece te apără de căldură și de frig.",
+    "Rezistente la uzură: EN 388 4243X, cu nivelul 4 la abraziune și la rupere."
+  ],
+  "material": "Piele bovină, bumbac și poliester",
+  "certifications": [
+    {
+      "code": "EN 12477:2001, tip A",
+      "label": "Mănuși de protecție pentru sudori. Tipul A: protecție mai mare, dexteritate mai mică. Tipul B, cu dexteritate mai mare, e cel recomandat când ai nevoie de mișcări fine, ca la sudura TIG."
+    },
+    {
+      "code": "EN 407:2020 (412X4X)",
+      "label": "Protecție la căldură și flacără. Fiecare caracter este rezultatul unui test: comportarea la flacără 4 (din 4), căldură de contact 1 (din 4, adică 100 °C), căldură convectivă 2 (din 4), căldură radiantă X, stropi mici de metal topit 4 (din 4), cantități mari de metal topit X. X: testul nu a fost efectuat."
+    },
+    {
+      "code": "EN 388:2016+A1:2018 (4243X)",
+      "label": "Protecție la riscuri mecanice. Fiecare caracter este nivelul obținut la un test: abraziune 4 (din 4), tăiere 2 (din 5), rupere 4 (din 4), perforare 3 (din 4). X: testul de tăiere după metoda ISO 13997 nu a fost efectuat."
+    },
+    {
+      "code": "EN ISO 21420:2020",
+      "label": "Cerințele generale pentru mănușile de protecție: materiale care nu dăunează pielii, mărimi, dexteritate, marcaj și informații pentru utilizator. Dexteritate: nivelul 2 (din 5)."
+    }
+  ],
+  "specs": [
+    { "label": "Tip", "value": "Mănușă de sudură din piele bovină" },
+    { "label": "Căptușeală", "value": "Fleece" },
+    { "label": "Cusături", "value": "Fir de aramidă, întărite pe palme și degete" },
+    { "label": "Întărituri", "value": "Palmă și deget mare" },
+    { "label": "Dexteritate", "value": "Nivel 2, pe o scară de la 1 la 5" },
+    { "label": "Certificat UE de tip", "value": "2777/21744-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)" }
+  ],
+  "notes": [
+    "Dexteritatea e de nivel 2 din 5: pentru lucrări care cer mișcări fine, ca sudura TIG, EN 12477 recomandă mănuși de tip B.",
+    "Căldura radiantă și cantitățile mari de metal topit nu au fost testate (X la EN 407), iar la căldura de contact nivelul e 1 din 4."
+  ],
+  "care": [],
+  "colourNames": {},
+  "sizeNote": null,
+  "faq": [
+    {
+      "q": "Ce tip de mănuși de sudură sunt Portwest Ultra A540?",
+      "a": "Tipul A conform EN 12477: mănușile de sudură Portwest Ultra A540 sunt varianta cu protecție mai mare și dexteritate mai mică. Pentru sudura TIG, unde ai nevoie de mișcări fine, standardul recomandă tipul B."
+    },
+    {
+      "q": "Ce protecție la flacără și metal topit au mănușile Ultra A540?",
+      "a": "Nivelul 4 la flacără și nivelul 4 la stropi mici de metal topit, conform EN 407 (412X4X): așa sunt certificate mănușile Portwest Ultra A540. Au și nivelul 1 la căldură de contact și nivelul 2 la căldură convectivă; căldura radiantă și cantitățile mari de metal topit nu au fost testate."
+    },
+    {
+      "q": "Cât de precis pot lucra cu mănușile Ultra A540?",
+      "a": "Dexteritate de nivel 2, pe o scară de la 1 la 5, conform EN ISO 21420: mănușile Portwest Ultra A540 pun protecția înaintea mișcărilor fine. Căptușeala fleece le face comode pe mână și te apără de căldură și de frig."
+    },
+    {
+      "q": "Ce protecție mecanică au mănușile Ultra A540?",
+      "a": "EN 388 4243X: mănușile Portwest Ultra A540 au nivelul 4 la abraziune, 2 la tăiere, 4 la rupere și 3 la perforare. Palma și degetul mare sunt întărite, iar cusăturile din aramidă cresc durabilitatea."
+    },
+    {
+      "q": "Ce mărimi au mănușile Ultra A540?",
+      "a": "Trei mărimi: L, XL și 2XL. Mănușile de sudură Portwest Ultra A540 se fac în maro."
+    },
+    {
+      "q": "De unde pot comanda mănuși de sudură Portwest Ultra în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, iar noi livrăm mănușile Portwest Ultra A540 oriunde în România."
+    }
+  ],
+  "seo": {
+    "title": "Mănuși de sudură Portwest A540",
+    "description": "Mănuși de sudură Portwest Ultra A540: EN 12477 tip A, nivel 4 la flacără și la stropi de metal topit, cusături din aramidă. Ofertă de la You Protect."
+  },
+  "reviewNotes": [
+    "Categoria EIP omisă: declarația scrie „Cat. III”, dar nu are supravegherea producției de către un organism notificat (productionSurveillance null).",
+    "Fără „Testare fără riscuri” (riskFreeTesting: false, din brief).",
+    "Lăsat afară: ANSI/ISEA 105:2016 tăiere A2, standard SUA.",
+    "EN 12477 tip A/B și codurile EN 407 (ordinea testelor, scalele, 100 °C la nivelul 1 de căldură de contact) sunt explicate după standarde; fișa doar listează codurile. Recomandarea tipului B pentru TIG vine din EN 12477, nu din fișă.",
+    "Sursa listează „Piele bovina” de două ori (probabil două tipuri de piele, ex. față și șpalt) și nu spune unde e fiecare; am scris doar „piele bovină”. Bumbacul și poliesterul nu sunt atribuite; probabil sunt căptușeala fleece, neafirmat în text.",
+    "„Captuseala de blana” din caracteristici e traducerea automată pentru fleece; am urmat descrierea („Captusite cu Fleece”).",
+    "Numele „Ultra” vine din numele Portwest („Manusi Sudura Ultra”); slug-ul din brief nu îl conține.",
+    "Omis: superlativele despre calitatea materialelor („premium”, „durabilitate supremă/maximă”) și „rezistență îmbunătățită la ardere” (comparație fără reper), redată prin nivelurile EN 407. Fișa nu dă lungimea manșetei.",
+    "Industriile (producție, construcții) vin din brief; sursa spune doar „pentru sudori profesioniști”."
+  ],
+  "riskFreeTesting": false
+}

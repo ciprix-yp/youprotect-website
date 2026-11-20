@@ -1,0 +1,119 @@
+{
+  "model": "FD25",
+  "slug": "bocanci-protectie-s7l-portwest-compositelite-fd25",
+  "status": "review",
+  "keyword": "bocanci de protecție S7L",
+  "name": "Bocanci de protecție S7L Portwest CompositeLite",
+  "category": "incaltaminte",
+  "industries": [
+    "constructii",
+    "productie",
+    "energie"
+  ],
+  "primaryColour": "BK",
+  "summary": "Bocanci de protecție S7L cu membrană impermeabilă care respiră, protecție metatarsală și talpă rezistentă la 300 °C. Te simți protejat de la vârf până la gleznă și calci sigur pe scări.",
+  "description": [
+    "Bocancii de protecție S7L Portwest CompositeLite îți țin picioarele uscate: pielea integrală rezistentă la apă are o membrană impermeabilă care respiră, iar limba pliată rezistă mai bine la pătrunderea apei. Fermoarul de pe partea interioară te ajută să-i încalți și să-i descalți repede, gulerul căptușit adaugă confort, iar linia superioară înclinată se potrivește mai bine piciorului și îl lasă flexibil. Branțul are amortizare, iar călcâiul absoarbe șocurile la fiecare pas.",
+    "Te simți protejat: bombeul compozit îți apără degetele, protecția metatarsală nemetalică acoperă partea de sus a labei piciorului, iar glezna are zone de protecție. Capacul din TPU de la vârf rezistă la zgârieturi și abraziune, așa că bocancii arată îngrijit, iar talpa din PU și cauciuc te ține sigur pe pardoseli alunecoase și pe treptele scărilor.",
+    "Pentru firmă, bocancii FD25 sunt certificați S7L conform EN ISO 20345:2022+A1:2024, cu marcajele HRO, M, CI, LG, SC, AN, SR și FO: talpă rezistentă la căldură de contact până la 300 °C, izolată la frig și rezistentă la uleiuri și combustibili. Sunt nemagnetici, fără nichel și materiale feroase, potriviți unde se trece prin detectoare de metale, iar ranforsarea rigidă din arcul tălpii îi sprijină pe cei care sapă. Poți testa bocancii cu echipa ta, în condiții reale de lucru, înainte de decizia finală."
+  ],
+  "benefits": [
+    "Picioare uscate: piele rezistentă la apă, membrană impermeabilă care respiră și limbă pliată.",
+    "Încălțat rapid: fermoar pe partea interioară a bocancului.",
+    "Protecție de la vârf la gleznă: bombeu compozit, protecție metatarsală nemetalică (M) și protecție pentru gleznă (AN).",
+    "Calci sigur: talpă PU/cauciuc rezistentă la alunecare (SR), cu aderență pe scări (LG).",
+    "Rezistă la condiții grele: talpă rezistentă la căldură de contact de 300 °C (HRO), la uleiuri (FO) și izolată la frig (CI).",
+    "Potriviți la detectoarele de metale: nemagnetici, fără nichel și fără materiale feroase."
+  ],
+  "material": "Piele integrală, rezistentă la apă",
+  "certifications": [
+    {
+      "code": "EN ISO 20345:2022+A1:2024 S7L HRO M CI LG SC AN SR FO",
+      "label": "Clasa S7L: bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi, față rezistentă la apă, talpă cu crampoane, protecție nemetalică la perforare testată cu cui de 4,5 mm (tip PL) și bocanc rezistent la apă în întregime. HRO: talpă rezistentă la căldură de contact (300 °C). M: protecție metatarsală. CI: talpă izolată împotriva frigului. LG: aderență pe treptele scărilor. SC: capac de protecție la vârf rezistent la abraziune. AN: protecție pentru gleznă. SR: rezistență la alunecare pe pardoseală ceramică cu glicerină. FO: talpă rezistentă la uleiuri și combustibili."
+    }
+  ],
+  "specs": [
+    {
+      "label": "Model",
+      "value": "Bocanc de înălțime medie, cu fermoar pe partea interioară"
+    },
+    {
+      "label": "Membrană",
+      "value": "Impermeabilă și respirabilă"
+    },
+    {
+      "label": "Bombeu",
+      "value": "Compozit, nemetalic"
+    },
+    {
+      "label": "Protecție la perforare",
+      "value": "Lamelă compozită, testată cu cui de 4,5 mm (tip PL)"
+    },
+    {
+      "label": "Protecție metatarsală",
+      "value": "Nemetalică, integrată în față"
+    },
+    {
+      "label": "Talpă",
+      "value": "PU/cauciuc, dublă densitate, rezistentă la căldură de contact de 300 °C"
+    },
+    {
+      "label": "Arc plantar",
+      "value": "Ranforsare rigidă, pentru sprijin la săpat"
+    },
+    {
+      "label": "Detectoare de metale",
+      "value": "Nemagnetic, fără nichel și fără materiale feroase"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "DK-PPE001556 i01, emis de TÜV SÜD Danmark (organism notificat nr. 2443)"
+    }
+  ],
+  "notes": [
+    "Protecția la perforare a bocancilor FD25 e de tip PL, testată cu cui de 4,5 mm; tipul PS se testează cu cui de 3 mm."
+  ],
+  "care": [],
+  "colourNames": {},
+  "sizeNote": null,
+  "faq": [
+    {
+      "q": "Ce clasă de protecție au bocancii Portwest FD25?",
+      "a": "Bocancii Portwest CompositeLite FD25 au clasa S7L conform EN ISO 20345:2022+A1:2024, cu marcajele HRO, M, CI, LG, SC, AN, SR și FO. S7L înseamnă bombeu de protecție, protecție nemetalică la perforare testată cu cui de 4,5 mm (tip PL) și bocanc rezistent la apă în întregime. Certificatul UE de tip este DK-PPE001556 i01, emis de TÜV SÜD Danmark."
+    },
+    {
+      "q": "Țin bocancii Portwest FD25 picioarele uscate?",
+      "a": "Da. Bocancii Portwest FD25 au clasa S7L, deci sunt rezistenți la apă în întregime, nu doar la față. Pielea rezistentă la apă, membrana impermeabilă care respiră și limba pliată opresc apa."
+    },
+    {
+      "q": "Au bocancii FD25 protecție metatarsală?",
+      "a": "Da. Bocancii Portwest FD25 au protecție metatarsală nemetalică integrată în față (marcajul M), care apără partea de sus a labei piciorului, plus protecție pentru gleznă (AN) și capac la vârf rezistent la abraziune (SC)."
+    },
+    {
+      "q": "Pot purta bocancii FD25 pe suprafețe fierbinți sau pe frig?",
+      "a": "Da, în limitele certificate. Bocancii Portwest FD25 au talpă rezistentă la căldură de contact până la 300 °C (HRO) și talpă izolată împotriva frigului (CI)."
+    },
+    {
+      "q": "Ce mărimi sunt disponibile pentru bocancii FD25?",
+      "a": "Bocancii Portwest FD25 se găsesc în mărimile 36–48, în culoarea negru."
+    },
+    {
+      "q": "De unde pot comanda bocanci de protecție S7L Portwest FD25 în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa și poți testa bocancii FD25 în condiții reale de lucru înainte de decizia finală."
+    }
+  ],
+  "seo": {
+    "title": "Bocanci de protecție S7L Portwest FD25",
+    "description": "Bocanci de protecție S7L Portwest FD25: rezistenți la apă, protecție metatarsală, talpă HRO, aderență pe scări. Ofertă pentru firme de la You Protect."
+  },
+  "reviewNotes": [
+    "Organismul notificat: numele (TÜV SÜD Danmark) vine din fișa tehnică; declarația dă doar adresa și numărul 2443. Certificatul DK-PPE001556 i01 apare în declarație.",
+    "„Izolate pentru medii reci și calde”: am spus doar ce e marcat (CI, HRO); HI (izolare la căldură) nu e în marcaj, deci nu am promis izolare la căldură.",
+    "Descrierea pomenește „zone de protecție pentru contrafort”; nu le-am pus separat (nu au marcaj).",
+    "„Fără metal” (textul colecției CompositeLite) l-am spus prudent: nemagnetic, fără nichel și materiale feroase, cum scrie la caracteristici; fermoarul nu e descris.",
+    "„Reduce oboseala picioarelor” (branțul) omis: efect nemăsurat, interzis de ghid; am spus doar „branț cu amortizare”.",
+    "Declarația scrie Cat. III, dar nu numește supravegherea producției (modulul C2 sau D); nu am pomenit categoria EIP.",
+    "Greutățile din datele Portwest (coloana Weight) par a fi ale perechii ambalate; nu le-am folosit. De cerut greutatea unui pantof, mărimea 42.",
+    "Industrii (construcții, producție, energie) propuse de noi; Portwest nu indică industrii."
+  ]
+}

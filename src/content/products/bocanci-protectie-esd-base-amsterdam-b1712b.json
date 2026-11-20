@@ -1,0 +1,186 @@
+{
+  "status": "review",
+  "name": "Bocanci de protecție ESD Base Amsterdam",
+  "category": "incaltaminte",
+  "industries": [
+    "constructii",
+    "productie",
+    "logistica"
+  ],
+  "summary": "Bocanci de protecție ESD cu clasa S3S, fără metal, cu talpă izolată la frig și aderență pe scări. Te simți protejat, iar designul sport Run@Work, negru cu portocaliu, arată modern.",
+  "description": [
+    "Bocancii de protecție ESD Base Amsterdam fac parte din colecția Run@Work, inspirată din alergare. Călcâiul absoarbe șocurile la fiecare pas, pe o talpă AirTech Anti-Fatigue cu strat TPU-Skin și talpă intermediară din TPU. Căptușeala e din țesătură tehnică 3D, fața din piele rezistă la pătrunderea apei, iar talpa izolată împotriva frigului (CI) te ajută în zilele reci.",
+    "Te simți protejat fără metal: bombeul SlimCap rezistă la impact de 200 J, iar inserția nemetalică din talpă te apără de perforare, testată cu cui de 3 mm. Capacul din TPU de la vârf ferește bocancii de zgârieturi, așa că arată îngrijit, iar designul îndrăzneț, negru cu portocaliu, te face să arăți modern.",
+    "Pentru firmă, bocancii Amsterdam B1712B sunt certificați S3S conform EN ISO 20345:2022, cu marcajele ESD, CI, LG, FO și SR: se potrivesc în zone cu componente electronice sensibile, pe scări, pe pardoseli alunecoase și acolo unde se lucrează cu uleiuri și combustibili. Îi produce BASE Protection, producător italian, iar declarația UE de conformitate e semnată în numele Portwest. Poți testa bocancii cu echipa ta, în condiții reale de lucru, înainte de decizia finală."
+  ],
+  "benefits": [
+    "Pas amortizat: călcâi cu absorbție de energie și talpă AirTech Anti-Fatigue cu strat TPU-Skin.",
+    "Calci sigur: talpă rezistentă la alunecare (SR), la uleiuri și combustibili (FO), cu aderență pe scări (LG).",
+    "Protecție fără metal: bombeu SlimCap de 200 J și inserție anti-perforare testată cu cui de 3 mm.",
+    "Potriviți în zone ESD: disipă sarcinile electrostatice care pot strica componentele electronice.",
+    "Izolați pe frig: talpă cu izolare împotriva frigului (CI).",
+    "Picior ferit de apă: fața din piele rezistă la pătrunderea și absorbția apei."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Piele"
+    },
+    {
+      "label": "Model",
+      "value": "Bocanc"
+    },
+    {
+      "label": "Căptușeală",
+      "value": "Țesătură tehnică 3D"
+    },
+    {
+      "label": "Bombeu",
+      "value": "SlimCap, nemetalic, rezistent la impact de 200 J"
+    },
+    {
+      "label": "Protecție la perforare",
+      "value": "Inserție nemetalică, testată cu cui de 3 mm (tip PS)"
+    },
+    {
+      "label": "Talpă intermediară",
+      "value": "TPU"
+    },
+    {
+      "label": "Talpă",
+      "value": "AirTech Anti-Fatigue + TPU-Skin"
+    },
+    {
+      "label": "Protecție la vârf",
+      "value": "Capac din TPU împotriva zgârieturilor"
+    },
+    {
+      "label": "Rezistență la frig",
+      "value": "Până la -17 °C, conform producătorului (marcajul CI)"
+    },
+    {
+      "label": "Lățime calapod",
+      "value": "10,5 pentru femei și 12 pentru bărbați, pe scara producătorului"
+    },
+    {
+      "label": "Colecție",
+      "value": "Run@Work, BASE Protection"
+    }
+  ],
+  "notes": [
+    "Producător: BASE Protection Srl (Italia). Declarația UE de conformitate e semnată în numele Portwest, care vinde produsul în gama sa."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 20345:2022 S3S ESD CI LG FO SR",
+      "label": "Clasa S3S: bombeu de protecție (200 J), călcâi închis, proprietăți antistatice, absorbție de energie la călcâi, față rezistentă la apă, talpă cu crampoane și protecție nemetalică la perforare testată cu cui de 3 mm (tip PS). ESD: disipă sarcinile electrostatice, pentru zone cu componente electronice sensibile. CI: talpă izolată împotriva frigului. LG: aderență pe treptele scărilor. FO: talpă rezistentă la uleiuri și combustibili. SR: rezistență la alunecare pe pardoseală ceramică cu glicerină."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "BKO",
+      "name": "negru/portocaliu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/bocanci-protectie-esd-base-amsterdam-b1712b/BKO-PS.webp",
+          "thumb": "/images/products/bocanci-protectie-esd-base-amsterdam-b1712b/BKO-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "35–48",
+    "values": [
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/bocanci-protectie-esd-base-amsterdam-b1712b/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/bocanci-protectie-esd-base-amsterdam-b1712b/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce clasă de protecție au bocancii Base Amsterdam B1712B?",
+      "a": "Bocancii Base Amsterdam B1712B au clasa S3S conform EN ISO 20345:2022, cu marcajele ESD, CI, LG, FO și SR. S3S înseamnă bombeu de protecție, față rezistentă la apă, talpă cu crampoane și protecție nemetalică la perforare testată cu cui de 3 mm. ESD: potriviți în zone cu componente electronice sensibile; CI: talpă izolată împotriva frigului; LG: aderență pe scări; FO: talpă rezistentă la uleiuri și combustibili; SR: rezistență la alunecare."
+    },
+    {
+      "q": "Au bocancii Base Amsterdam B1712B componente metalice?",
+      "a": "Nu. Producătorul declară bocancii Base Amsterdam B1712B produs nemetalic: bombeul SlimCap, rezistent la impact de 200 J, și inserția anti-perforare, testată cu cui de 3 mm, nu sunt din metal."
+    },
+    {
+      "q": "Pot purta bocancii Base Amsterdam pe frig?",
+      "a": "Da. Bocancii Base Amsterdam B1712B au marcajul CI, adică talpă izolată împotriva frigului, iar producătorul declară rezistență la frig până la -17 °C."
+    },
+    {
+      "q": "Ce mărimi sunt disponibile pentru bocancii Base Amsterdam?",
+      "a": "Bocancii Base Amsterdam B1712B se găsesc în mărimile 35–48, în culoarea negru/portocaliu. Producătorul indică lățimea calapodului 10,5 pentru femei și 12 pentru bărbați, pe scara proprie."
+    },
+    {
+      "q": "Cine produce bocancii Base Amsterdam B1712B?",
+      "a": "BASE Protection Srl, producător italian de încălțăminte de protecție. Bocancii Base Amsterdam B1712B fac parte din colecția Run@Work, iar declarația UE de conformitate e semnată în numele Portwest, care îi vinde în gama sa."
+    },
+    {
+      "q": "De unde pot comanda bocanci de protecție ESD Base Amsterdam în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa și poți testa bocancii Amsterdam B1712B în condiții reale de lucru înainte de decizia finală."
+    }
+  ],
+  "seo": {
+    "title": "Bocanci de protecție ESD Base Amsterdam B1712B",
+    "description": "Bocanci de protecție ESD Base Amsterdam B1712B, S3S fără metal: talpă izolată la frig, aderență pe scări, SR și FO. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Base Protection",
+    "model": "B1712B",
+    "range": "Run@Work",
+    "productUrl": "https://portwest.com/products/view/B1712B"
+  },
+  "reviewNotes": [
+    "Nume: denumirea, materialele, fișa și declarația spun Amsterdam; fișierul zilnic Portwest (variante-base.csv) și descrierea Portwest (RO și EN) spun „Dublin” la același cod B1712B. Am folosit Amsterdam, cum s-a cerut; de confirmat cu Portwest.",
+    "Descrierea Portwest (cea care spune Dublin) se contrazice cu materialele: RO „partea superioară din țesătură tehnică”, EN „waxy leather”, materiale „Piele Integrala Spaltuita”. Am omis ce apare doar acolo: căptușeala SmellStop anti-miros, inserția Fresh'n Flex Plus, HIFLAP, Dry'n Air Comfort Cub3, grosimea de 6,5 mm a bombeului SlimCap. Am folosit doar materialele, fișa și caracteristicile.",
+    "Material: fișa scrie „Piele Integrala Spaltuita” (integrală și șpăltuită se exclud); am scris doar „Piele”. De confirmat tipul pielii.",
+    "Caracteristicile spun „talpă exterioară din cauciuc”, materialele spun „AirTech Anti-Fatigue + Tpu-Skin”; nu am pomenit cauciucul.",
+    "ESD apare în marcaj, dar declarația nu listează IEC 61340-5-1 (spre deosebire de modelele Portwest ESD); de confirmat standardul după care s-a testat.",
+    "Declarația nu numește certificatul UE de tip și nici organismul notificat; fișa dă doar numărul N° F-113-07901-24. Nu l-am pus pe pagină. Declarația scrie Cat. III, dar nu numește supravegherea producției (modulul C2 sau D); nu am pomenit categoria EIP.",
+    "Colecția din sursă e „Run@Work Pre-comandă”; asamblorul o afișează ca gamă (supplier.range). De confirmat disponibilitatea și termenul înainte de ofertă; nu am pomenit pre-comanda în text.",
+    "Lățimea calapodului (10,5 femei, 12 bărbați) vine din caracteristici; sursa nu spune care mărimi au care lățime.",
+    "„Rezistență la frig până la -17 °C” e formularea producătorului, pusă la specificații; CI e izolarea tălpii împotriva frigului, nu o temperatură minimă de utilizare.",
+    "Bocanc peste gleznă: confirmat de poza Portwest și de „work boot” din descrierea EN. Greutățile din datele Portwest (coloana Weight) par a fi ale perechii ambalate; nu le-am folosit. De cerut greutatea unui pantof, mărimea 42.",
+    "Industrii (construcții, producție, logistică) propuse de noi; Portwest nu indică industrii."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  }
+}

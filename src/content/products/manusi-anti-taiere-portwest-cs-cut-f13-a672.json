@@ -1,0 +1,182 @@
+{
+  "status": "review",
+  "name": "Mănuși anti-tăiere Portwest CS Cut F13",
+  "category": "manusi",
+  "industries": [
+    "productie",
+    "constructii",
+    "logistica"
+  ],
+  "summary": "Mănuși anti-tăiere cu nivelul F la tăiere, conform EN 388 (4X44F), din tricot de 13 G care respiră, cu spumă de nitril în palmă. Lucrezi precis, iar eticheta reflectorizantă te face mai vizibil în lumină slabă.",
+  "description": [
+    "Mănușile anti-tăiere Portwest CS Cut F13 au un tricot de 13 G care respiră și se potrivește precis pe mână, cu dexteritate de nivel 5. Palma e acoperită cu spumă de nitril, pentru aderență pe suprafețe ude sau uscate. Poți folosi majoritatea ecranelor tactile fără să dai mănușile jos.",
+    "Te simți protejat când lucrezi cu margini tăioase: mănușile ating nivelul F la tăiere după metoda ISO 13997, cel mai înalt pe scara A–F. Zona degetului mare e întărită, pentru protecție și durabilitate în plus, iar mănușa rezistă la căldură de contact de până la 100 °C. Eticheta reflectorizantă face mănușile mai ușor de văzut în lumină slabă.",
+    "Pentru firmă, mănușile CS Cut F13 A672 sunt certificate EN 388 pentru riscuri mecanice, cu marcajul 4X44F, și EN 407 pentru căldura de contact, nivelul 1. Respectă cerințele generale EN ISO 21420, iar fișa tehnică le declară certificate OEKO-TEX® STANDARD 100. Mărimile merg de la XS la 3XL, așa că echipezi toată echipa cu același model. Poți testa mănușile cu echipa ta înainte de comanda mare, în condițiile programului „Testare fără riscuri”."
+  ],
+  "benefits": [
+    "Protecție la tăiere de nivel F: cel mai înalt nivel după ISO 13997, conform EN 388.",
+    "Mișcări precise: tricot de 13 G, cu dexteritate de nivel 5.",
+    "Priză sigură: spumă de nitril în palmă, pe suprafețe ude sau uscate.",
+    "Deget mare întărit: protecție și durabilitate în plus.",
+    "Lucrezi pe ecran tactil: mănușile merg cu majoritatea dispozitivelor touchscreen.",
+    "Rezistă la căldură de contact: până la 100 °C, nivelul 1 conform EN 407."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Tricot din HPPE, nailon, fibră de sticlă, fibră de oțel, elastan și elastic, cu spumă de nitril în palmă"
+    },
+    {
+      "label": "Tip",
+      "value": "Mănușă anti-tăiere tricotată, cu acoperire de nitril în palmă"
+    },
+    {
+      "label": "Finețea tricotului",
+      "value": "13 G"
+    },
+    {
+      "label": "Acoperire",
+      "value": "Spumă de nitril, în palmă"
+    },
+    {
+      "label": "Deget mare",
+      "value": "Întărit"
+    },
+    {
+      "label": "Ecran tactil",
+      "value": "Compatibile cu majoritatea dispozitivelor"
+    },
+    {
+      "label": "Vizibilitate",
+      "value": "Etichetă reflectorizantă"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 5, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "OEKO-TEX®",
+      "value": "STANDARD 100, conform fișei tehnice"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/26500-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)"
+    }
+  ],
+  "notes": [
+    "Protecția la căldură e doar la contact, până la 100 °C (EN 407, nivelul 1). Testele pentru comportarea la flacără și pentru stropii de metal topit nu au fost efectuate, deci nu sunt mănuși pentru sudură.",
+    "Compatibilitatea cu ecranele tactile e declarată pentru majoritatea dispozitivelor, nu pentru toate."
+  ],
+  "certifications": [
+    {
+      "code": "EN 388:2016+A1:2018 (4X44F)",
+      "label": "Protecție la riscuri mecanice. Fiecare caracter este rezultatul unui test: abraziune 4 (din 4), tăiere cu lama circulară X, rupere 4 (din 4), perforare 4 (din 4), tăiere după metoda ISO 13997 F (cel mai înalt nivel, pe scara A–F). X: testul nu a fost efectuat sau nu se aplică; pentru tăiere contează nivelul F."
+    },
+    {
+      "code": "EN 407:2020 (X1XXXX)",
+      "label": "Protecție la căldură. 1: căldură de contact, nivelul 1 (din 4), adică 100 °C. X: testele pentru comportarea la flacără, căldura convectivă, căldura radiantă și stropii de metal topit, mici sau mari, nu au fost efectuate."
+    },
+    {
+      "code": "EN ISO 21420:2020",
+      "label": "Cerințele generale pentru mănușile de protecție: materiale care nu dăunează pielii, mărimi, dexteritate, marcaj și informații pentru utilizator. Dexteritate: nivelul 5 (din 5)."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "K8",
+      "name": "negru",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/manusi-anti-taiere-portwest-cs-cut-f13-a672/K8-PS.webp",
+          "thumb": "/images/products/manusi-anti-taiere-portwest-cs-cut-f13-a672/K8-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "XS–3XL",
+    "values": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/manusi-anti-taiere-portwest-cs-cut-f13-a672/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/manusi-anti-taiere-portwest-cs-cut-f13-a672/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce nivel de protecție la tăiere au mănușile Portwest CS Cut F13 A672?",
+      "a": "Nivelul F, cel mai înalt după metoda ISO 13997: mănușile Portwest CS Cut F13 A672 sunt certificate EN 388 cu marcajul 4X44F. Au și nivelul 4 la abraziune, 4 la rupere și 4 la perforare, iar testul de tăiere cu lama circulară e marcat X (neefectuat sau neaplicabil)."
+    },
+    {
+      "q": "Pot lucra precis cu mănușile CS Cut F13?",
+      "a": "Da. Mănușile Portwest CS Cut F13 A672 au dexteritate de nivel 5, pe o scară de la 1 la 5, conform EN ISO 21420. Tricotul de 13 G respiră și se potrivește precis pe mână, iar majoritatea ecranelor tactile răspund fără să dai mănușile jos."
+    },
+    {
+      "q": "Țin mănușile CS Cut F13 pe suprafețe ude?",
+      "a": "Da. Spuma de nitril din palma mănușilor Portwest CS Cut F13 A672 îți dă aderență pe suprafețe ude sau uscate."
+    },
+    {
+      "q": "Rezistă mănușile CS Cut F13 A672 la căldură?",
+      "a": "Doar la căldură de contact, până la 100 °C. Mănușile Portwest CS Cut F13 A672 au nivelul 1 la căldură de contact conform EN 407 (X1XXXX); la flacără, căldură convectivă sau radiantă și metal topit nu au fost testate."
+    },
+    {
+      "q": "Ce mărimi au mănușile CS Cut F13 A672?",
+      "a": "Șapte mărimi, de la XS la 3XL: XS, S, M, L, XL, 2XL și 3XL. Mănușile Portwest CS Cut F13 A672 se fac în negru."
+    },
+    {
+      "q": "De unde pot comanda mănuși anti-tăiere Portwest CS Cut F13 în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa și poți testa mănușile CS Cut F13 A672 înainte de comanda mare, în condițiile programului „Testare fără riscuri”."
+    }
+  ],
+  "seo": {
+    "title": "Mănuși anti-tăiere Portwest A672",
+    "description": "Mănuși anti-tăiere Portwest CS Cut F13 A672: nivel F la tăiere, tricot de 13 G care respiră, priză sigură cu nitril. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "A672",
+    "range": null,
+    "productUrl": "https://portwest.com/products/view/A672"
+  },
+  "reviewNotes": [
+    "Categoria EIP omisă: declarația scrie „Cat. III”, dar nu are supravegherea producției de către un organism notificat (productionSurveillance null).",
+    "Lăsate afară: ANSI/ISEA 105:2016 (tăiere A6, perforare 4, abraziune 6), standarde SUA.",
+    "OEKO-TEX® STANDARD 100 apare doar în caracteristicile din fișă, fără număr de certificat, și nu e în declarație: e în text și specs, nu la certificări. De cerut numărul certificatului de la Portwest.",
+    "X la tăierea cu lama circulară e explicat ca „neefectuat sau neaplicabil” (formularea standardului); sursa nu spune motivul. „Cel mai înalt pe scara A–F” vine din standard.",
+    "100 °C la EN 407 nivelul 1 apare și în fișă („căldurii de contact de până la 100°C”).",
+    "Numele: „CS Cut F13”, fără „Nitril” din numele Portwest („CS Cut F13 Nitril”), ca în brief.",
+    "„Căptușeala de calibru 13” din sursă este tricotul de bază (liner); în text am scris „tricot de 13 G”.",
+    "Industriile (producție, construcții, logistică) vin din brief; sursa nu listează domenii de utilizare.",
+    "Omis: superlativele din descriere („protecție maximă”, „vizibilitate radicală”, „caracteristici premium”), punga de vânzare cu amănuntul, ambalarea (12/144)."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  }
+}

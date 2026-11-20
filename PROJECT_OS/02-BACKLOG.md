@@ -305,6 +305,12 @@ Format task:
 - Next action: verificarea indexării în 3–5 zile (`gsc.mjs inspect`); a doua măsurătoare ChatGPT în decembrie;
   volumele din Keyword Planner; ghidul „cum alegi haine de lucru care rezistă” (întrebarea 8 din `ai-prompts.json`).
 
+- Portwest (20.11.2026): accesul la contul Portwest e documentat (`catalog/sources/portwest.md`,
+  `scripts/catalog/fetch_portwest.py`, D-2026-11-20-01); 20 de modele importate în `review` (D-2026-11-20-02). Next
+  action: aprobarea owner-ului și publicarea, cu pagina de marcă Portwest și intro-urile de categorie actualizate.
+  De întrebat Portwest: de ce declarațiile scriu „Cat. III” fără modulul C2/D (genunchiere, veste, mănuși de frig).
+- MASCOT linia de birou (20.11.2026): owner-ul a cerut „colecția Office” = FRONTLINE Corporate Casual + M by Mascot.
+  Cămășile grupate pe linii, cu croielile ca variante pe aceeași fișă. Next action: importul, după Portwest.
 ---
 
 ## Next Sprint (S2)

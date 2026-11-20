@@ -445,3 +445,20 @@
 - Documentele Portwest se găzduiesc local, nu se leagă direct: serverul lor întoarce uneori PDF-uri trunchiate.
 - Prețurile contractuale, stocul și lichidările rămân în afara repo-ului (public); scriptul refuză acele adrese, iar din
   Daily Data păstrează doar coloanele de produs.
+
+## D-2026-11-20-02
+- Owner-ul (20.11.2026) a aprobat importul a 20 de modele Portwest: cele 9 vândute deja (SmartBill trece doar codul
+  modelului: B1712B, FD25, FC32, FT46, FE05, BZ739, BZ444, S476, F476) și 11 noi, alese pe golurile catalogului, fără să
+  concureze direct cu MASCOT și Sir Safety: reflectorizante în afară de geci (T501, T180, PW327), depozit frigorific
+  (CS10, CS11, A751), mănuși pe tipuri de risc (A672 tăiere, A727 impact, A540 sudură, A812 chimice) și genunchiere (KP40).
+- „Testare fără riscuri”: da la haine, încălțăminte, mănuși anti-tăiere, anti-impact și de frig, genunchiere; nu la
+  echipamentul de sudură (BZ739, BZ444, A540) și la mănușile de protecție chimică (A812). Testul
+  `tests/risk-free-scope.test.mjs` prinde un produs nou din aceste grupe fără `riskFreeTesting: false`.
+- Sursa de adevăr: declarația UE de conformitate și fișa tehnică Portwest în română (documents.portwest.com),
+  găzduite pe site. `assemble_portwest.py` oprește asamblarea dacă un standard din text nu e în declarație.
+- Categoria EIP: toate declarațiile Portwest scriu „Cat. III”, și la genunchiere sau veste reflectorizante, dar doar
+  A812 pomenește supravegherea producției de către un organism notificat (modulul D), obligatorie la categoria III. Pe
+  site trecem categoria III doar unde declarația pomenește modulul C2/D. De întrebat Portwest.
+- B1712B e fabricat de BASE Protection Srl (Italia), cu declarația semnată în numele Portwest: marca pe site e
+  „Base Protection”, cu producătorul trecut pe fișă.
+- Categorie nouă: „Genunchiere” (KP40).

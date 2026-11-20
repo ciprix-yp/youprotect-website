@@ -1,0 +1,190 @@
+{
+  "status": "review",
+  "name": "Mănuși de protecție chimică Portwest Nitrosafe Plus",
+  "category": "manusi",
+  "industries": [
+    "productie",
+    "alimentar"
+  ],
+  "summary": "Mănuși de protecție chimică din nitril, certificate EN ISO 374-1 tip A pentru 10 substanțe testate și EN ISO 374-5 pentru micro-organisme și virusuri. Subțiri, de 0,38 mm, simți ce atingi.",
+  "description": [
+    "Mănușile de protecție chimică Portwest Nitrosafe Plus sunt din nitril, ușoare și subțiri, de 0,38 mm, așa că simți ce atingi și lucrezi cu dexteritate de nivel 5. Modelul texturat, antialunecare, îți dă priză pe suprafețe ude sau uscate, iar căptușeala le face comode pe mână. Au 330 mm lungime.",
+    "Te simți protejat când lucrezi cu chimicale: mănușile sunt testate și certificate pentru 10 substanțe uzuale în industrie, de la metanol și toluen la acid sulfuric 96 % și formaldehidă 37 %, și pentru micro-organisme și virusuri. Nu conțin silicon, deci se potrivesc la vopsire, în electronică și la manipularea sticlei, unde siliconul face probleme. Nu conțin nici proteine solubile, ceea ce ajută la reducerea riscului de reacții alergice, conform producătorului.",
+    "Pentru firmă, mănușile Nitrosafe Plus A812 sunt EIP de categoria III, conform Regulamentului (UE) 2016/425, cu producția supravegheată de organismul notificat SGS FIMKO OY (modulul D). Sunt certificate EN ISO 374-1 tip A, EN ISO 374-5, ISO 18889 G2 pentru lucrul cu pesticide și EN 388, cu certificat UE de tip nr. 2777/10079-06/E09-01, emis de SATRA Technology Europe Ltd. Producătorul le recomandă pentru curățenie industrială, laboratoare, asamblare ușoară, industria aerospațială, chimică, petrolieră și alimentară."
+  ],
+  "benefits": [
+    "Protecție chimică certificată: EN ISO 374-1 tip A, cu 10 substanțe testate.",
+    "Protecție la micro-organisme: EN ISO 374-5, inclusiv pentru virusuri.",
+    "Simți ce atingi: nitril de 0,38 mm, cu dexteritate de nivel 5.",
+    "Priză pe ud sau uscat: model texturat, antialunecare.",
+    "Fără silicon: potrivite la vopsire, în electronică și la manipularea sticlei.",
+    "Comode pe mână: căptușeală la interior."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Nitril și bumbac"
+    },
+    {
+      "label": "Tip",
+      "value": "Mănușă din nitril pentru protecție chimică, căptușită"
+    },
+    {
+      "label": "Grosime",
+      "value": "0,38 mm"
+    },
+    {
+      "label": "Lungime",
+      "value": "330 mm"
+    },
+    {
+      "label": "Suprafață",
+      "value": "Model texturat, antialunecare"
+    },
+    {
+      "label": "Fără silicon",
+      "value": "Da"
+    },
+    {
+      "label": "AQL",
+      "value": "1,5"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 5, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425; producție supravegheată de SGS FIMKO OY (modulul D)"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/10079-06/E09-01, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)"
+    }
+  ],
+  "notes": [
+    "Protecția chimică e certificată doar pentru cele 10 substanțe din cod (AFJKLMNOPT). Pentru alte substanțe sau pentru amestecuri, cere datele de permeație înainte de folosire.",
+    "Timpii de străpungere sunt măsurați în laborator, pe substanțe pure; la locul de muncă, temperatura, frecarea și degradarea materialului pot scurta protecția.",
+    "La rupere, mănușile au nivelul 0 conform EN 388: nu sunt făcute pentru riscuri mecanice mari."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 374-1:2016+A1:2018, tip A (AFJKLMNOPT)",
+      "label": "Protecție la substanțe chimice. Tipul A: timp de străpungere de cel puțin 30 de minute (nivelul 2) pentru fiecare substanță din cod, la cel puțin 6 substanțe. Literele sunt substanțele testate: A metanol, F toluen, J n-heptan, K hidroxid de sodiu 40 %, L acid sulfuric 96 %, M acid nitric 65 %, N acid acetic 99 %, O hidroxid de amoniu 25 %, P peroxid de hidrogen 30 %, T formaldehidă 37 %."
+    },
+    {
+      "code": "EN ISO 374-5:2016 (micro-organisme și virusuri)",
+      "label": "Protecție la micro-organisme: mănușile au trecut testul de penetrare pentru bacterii și ciuperci. Virus: au trecut și testul de penetrare pentru virusuri."
+    },
+    {
+      "code": "ISO 18889:2019, G2",
+      "label": "Mănuși pentru operatorii care lucrează cu pesticide. G2 este nivelul pentru situațiile cu risc mai mare de expunere, inclusiv manipularea pesticidelor concentrate; G1 e doar pentru pesticide diluate, cu risc scăzut."
+    },
+    {
+      "code": "EN 388:2016+A1:2018 (4101X)",
+      "label": "Protecție la riscuri mecanice. Fiecare caracter este nivelul obținut la un test: abraziune 4 (din 4), tăiere 1 (din 5), rupere 0, perforare 1 (din 4). 0: sub nivelul minim al testului. X: testul de tăiere după metoda ISO 13997 nu a fost efectuat."
+    },
+    {
+      "code": "EN ISO 21420:2020",
+      "label": "Cerințele generale pentru mănușile de protecție: materiale care nu dăunează pielii, mărimi, dexteritate, marcaj și informații pentru utilizator. Dexteritate: nivelul 5 (din 5)."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "GN",
+      "name": "verde",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/manusi-protectie-chimica-portwest-nitrosafe-plus-a812/GN-PS.webp",
+          "thumb": "/images/products/manusi-protectie-chimica-portwest-nitrosafe-plus-a812/GN-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "XS–2XL",
+    "values": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/manusi-protectie-chimica-portwest-nitrosafe-plus-a812/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/manusi-protectie-chimica-portwest-nitrosafe-plus-a812/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "De ce substanțe chimice te protejează mănușile Portwest Nitrosafe Plus A812?",
+      "a": "De cele 10 substanțe din marcajul EN ISO 374-1 tip A (AFJKLMNOPT): metanol, toluen, n-heptan, hidroxid de sodiu 40 %, acid sulfuric 96 %, acid nitric 65 %, acid acetic 99 %, hidroxid de amoniu 25 %, peroxid de hidrogen 30 % și formaldehidă 37 %. Pentru fiecare, mănușile Portwest Nitrosafe Plus A812 au un timp de străpungere de cel puțin 30 de minute. Pentru alte substanțe, cere datele înainte de folosire."
+    },
+    {
+      "q": "Protejează mănușile Nitrosafe Plus A812 și de bacterii sau virusuri?",
+      "a": "Da. Mănușile Portwest Nitrosafe Plus A812 sunt certificate EN ISO 374-5:2016 pentru micro-organisme (bacterii și ciuperci) și pentru virusuri."
+    },
+    {
+      "q": "Pot folosi mănușile Nitrosafe Plus A812 la lucrul cu pesticide?",
+      "a": "Da. Mănușile Portwest Nitrosafe Plus A812 sunt certificate ISO 18889:2019, nivelul G2, pentru operatorii care lucrează cu pesticide, inclusiv în situațiile cu risc mai mare de expunere, cum e manipularea pesticidelor concentrate."
+    },
+    {
+      "q": "Pot lucra precis cu mănușile Nitrosafe Plus?",
+      "a": "Da. Mănușile Portwest Nitrosafe Plus A812 au dexteritate de nivel 5, pe o scară de la 1 la 5, conform EN ISO 21420. Nitrilul de 0,38 mm îți lasă sensibilitatea la atingere, iar modelul texturat îți dă priză pe ud sau uscat."
+    },
+    {
+      "q": "Ce mărimi au mănușile Nitrosafe Plus A812?",
+      "a": "Șase mărimi, de la XS la 2XL: XS, S, M, L, XL și 2XL. Mănușile Portwest Nitrosafe Plus A812 se fac în verde, au 0,38 mm grosime și 330 mm lungime."
+    },
+    {
+      "q": "De unde pot comanda mănuși de protecție chimică Portwest Nitrosafe Plus în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, iar noi livrăm mănușile Portwest Nitrosafe Plus A812 oriunde în România."
+    }
+  ],
+  "seo": {
+    "title": "Mănuși de protecție chimică Portwest A812",
+    "description": "Mănuși de protecție chimică Portwest Nitrosafe Plus A812: EN ISO 374-1 tip A, nitril de 0,38 mm, priză pe ud. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "A812",
+    "range": null,
+    "productUrl": "https://portwest.com/products/view/A812"
+  },
+  "reviewNotes": [
+    "Categoria III scrisă: declarația are modulul D, cu producția supravegheată de SGS FIMKO OY (sursa nu dă numărul organismului).",
+    "Fără „Testare fără riscuri” (riskFreeTesting: false, din brief).",
+    "Alimentar păstrat: fișa spune „Potrivit pentru a fi folosit în industriile chimică, petrol și alimentară” și „Siguranță alimentară CE”. Declarația UE nu citează Regulamentul (CE) 1935/2004 și sursa nu are o declarație de contact cu alimentele; textul spune doar „industria alimentară”, nu „contact cu alimentele”. De cerut declarația de la Portwest înainte să promitem contact direct cu alimente.",
+    "Literele EN ISO 374-1 (substanțele), pragul tipului A (cel puțin 30 de minute, nivelul 2, la cel puțin 6 substanțe) și explicația EN ISO 374-5 vin din standarde; nivelurile exacte de permeație pe fiecare substanță nu sunt în sursă. De cerut tabelul de permeație de la Portwest.",
+    "ISO 18889 G2 explicat după standard (G1 pesticide diluate, G2 risc mai mare, inclusiv concentrate); de confirmat formularea. Codul începe cu „ISO”, nu cu EN/EN ISO: dacă asamblarea Portwest acceptă doar coduri EN (ca asamblarea Sir Safety), trebuie extinsă sau certificarea mutată la specs.",
+    "Notele despre laborator vs. locul de muncă și „cere datele pentru alte substanțe” vin din informațiile cerute de EN ISO 374-1, nu din fișa Portwest.",
+    "„Fără proteine solubile ... reducerea riscului de reacție alergică” e afirmația producătorului; păstrată cu „conform producătorului”.",
+    "Bumbacul e probabil căptușeala; sursa spune doar „Captuseala pentru confort” și „Materiale: Nitril, Bumbac”. AQL 1,5 lăsat fără explicație.",
+    "Omis: „Ultra-sensibile” (redat ca „simți ce atingi”), „Mai mult decât o mănușă de nitril”, punga de vânzare cu amănuntul, ambalarea (12/216)."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  },
+  "riskFreeTesting": false
+}

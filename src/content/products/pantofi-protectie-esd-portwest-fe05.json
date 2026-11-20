@@ -1,0 +1,191 @@
+{
+  "status": "review",
+  "name": "Pantofi de protecție ESD S3S Portwest CompositeLite",
+  "category": "incaltaminte",
+  "industries": [
+    "productie",
+    "logistica",
+    "constructii"
+  ],
+  "summary": "Pantofi de protecție ESD cu clasa S3S, închidere rapidă cu cablu metalic și față textilă rezistentă la apă. Te simți protejat și ești mai vizibil, cu imprimeu reflectorizant.",
+  "description": [
+    "Pantofii de protecție ESD Portwest FE05 se închid repede: șireturile din cablu metalic fixează sigur piciorul și se desfac rapid. Gulerul căptușit și branțul cu amortizare adaugă confort, călcâiul absoarbe energia la fiecare pas, iar fața textilă, rezistentă la apă, oprește pătrunderea apei.",
+    "Te simți protejat: bombeul compozit îți apără degetele, iar lamela compozită din talpă te apără de perforare (tip PS, testată cu cui de 3 mm). Protecția de la vârf rezistă la abraziune, partea din spate din TPU îți susține călcâiul, iar imprimeul reflectorizant te face mai vizibil. În negru cu verde sau negru cu gri, pantofii arată îngrijit și modern.",
+    "Pentru firmă, pantofii FE05 sunt certificați S3S conform EN ISO 20345:2022 și sunt conformi cu IEC 61340-5-1:2016, deci îi poți folosi în zone cu componente electronice sensibile. Talpa PU/PU cu dublă densitate e antiderapantă și rezistentă la uleiuri și combustibili, după cum declară Portwest. Poți testa pantofii cu echipa ta, în condiții reale de lucru, înainte de decizia finală."
+  ],
+  "benefits": [
+    "Închidere rapidă: șireturi din cablu metalic, cu eliberare rapidă.",
+    "Picior ferit de apă: fața textilă rezistă la pătrunderea apei.",
+    "Calci sigur: talpă PU/PU cu dublă densitate, antiderapantă și rezistentă la uleiuri și combustibili.",
+    "Protecție pentru degete și talpă: bombeu compozit și lamelă anti-perforare de tip PS.",
+    "Potriviți în zone ESD: conformi cu IEC 61340-5-1:2016.",
+    "Mai vizibil: imprimeu reflectorizant."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Material textil rezistent la uzură"
+    },
+    {
+      "label": "Model",
+      "value": "Pantof jos"
+    },
+    {
+      "label": "Închidere",
+      "value": "Șireturi din cablu metalic, cu eliberare rapidă"
+    },
+    {
+      "label": "Bombeu",
+      "value": "Compozit"
+    },
+    {
+      "label": "Protecție la perforare",
+      "value": "Lamelă compozită, testată cu cui de 3 mm (tip PS)"
+    },
+    {
+      "label": "Talpă",
+      "value": "PU/PU, dublă densitate"
+    },
+    {
+      "label": "Protecție la vârf",
+      "value": "Capac din TPU, rezistent la abraziune"
+    },
+    {
+      "label": "Călcâi",
+      "value": "Parte din spate din TPU, pentru susținere"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "0598/PPE/25/4616, emis de SGS Fimko Oy (organism notificat nr. 0598)"
+    }
+  ],
+  "notes": [
+    "Denumirea Portwest a modelului include marcajele SR și FO, dar declarația UE de conformitate listează doar EN ISO 20345:2022 S3S. Dacă ai nevoie de SR sau FO confirmate, spune-ne în cererea de ofertă."
+  ],
+  "certifications": [
+    {
+      "code": "EN ISO 20345:2022 S3S",
+      "label": "Clasa S3S: bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi, față rezistentă la apă, talpă cu crampoane și protecție nemetalică la perforare testată cu cui de 3 mm (tip PS)."
+    },
+    {
+      "code": "IEC 61340-5-1:2016",
+      "label": "Protecția componentelor electronice împotriva descărcărilor electrostatice: încălțămintea se poate folosi în zonele protejate ESD."
+    }
+  ],
+  "care": [],
+  "colours": [
+    {
+      "code": "BGN",
+      "name": "negru/verde",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/pantofi-protectie-esd-portwest-fe05/BGN-PS.webp",
+          "thumb": "/images/products/pantofi-protectie-esd-portwest-fe05/BGN-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "BGY",
+      "name": "negru/gri",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/pantofi-protectie-esd-portwest-fe05/BGY-PS.webp",
+          "thumb": "/images/products/pantofi-protectie-esd-portwest-fe05/BGY-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "37–48",
+    "values": [
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/pantofi-protectie-esd-portwest-fe05/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/pantofi-protectie-esd-portwest-fe05/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce clasă de protecție au pantofii Portwest FE05?",
+      "a": "Pantofii Portwest FE05 au clasa S3S conform EN ISO 20345:2022: bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi, față rezistentă la apă, talpă cu crampoane și protecție nemetalică la perforare testată cu cui de 3 mm. Sunt și ESD, conform IEC 61340-5-1:2016."
+    },
+    {
+      "q": "Pot purta pantofii Portwest FE05 în zone ESD?",
+      "a": "Da. Pantofii Portwest FE05 sunt conformi cu IEC 61340-5-1:2016, deci îi poți folosi în zone cu componente electronice sensibile la descărcări electrostatice."
+    },
+    {
+      "q": "Cum se închid pantofii Portwest FE05?",
+      "a": "Cu șireturi din cablu metalic. Pantofii Portwest FE05 au un sistem de închidere cu cablu metalic, care fixează sigur piciorul și se desface rapid."
+    },
+    {
+      "q": "Sunt pantofii Portwest FE05 rezistenți la apă?",
+      "a": "Da, la față. Pantofii Portwest FE05 au fața rezistentă la pătrunderea apei, cerință a clasei S3S. Nu sunt certificați rezistenți la apă în întregime, cum sunt modelele S7."
+    },
+    {
+      "q": "Ce mărimi și culori sunt disponibile pentru pantofii FE05?",
+      "a": "Pantofii Portwest FE05 se găsesc în mărimile 37–48, în două culori: negru/verde și negru/gri."
+    },
+    {
+      "q": "De unde pot comanda pantofi de protecție ESD Portwest FE05 în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa și poți testa pantofii FE05 în condiții reale de lucru înainte de decizia finală."
+    }
+  ],
+  "seo": {
+    "title": "Pantofi de protecție ESD S3S Portwest FE05",
+    "description": "Pantofi de protecție ESD Portwest FE05, S3S: închidere rapidă cu cablu, față rezistentă la apă, talpă antiderapantă. Ofertă pentru firme de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "FE05",
+    "range": "CompositeLite™",
+    "productUrl": "https://portwest.com/products/view/FE05"
+  },
+  "reviewNotes": [
+    "Declarația listează doar „EN ISO 20345:2022 S3S” (fără SR, FO), deși denumirea modelului din declarație și din fișă e „S3S ESD SR FO”. La certificări am pus doar S3S; SR și FO apar ca descriere a tălpii și în notes. De confirmat cu Portwest dacă certificatul acoperă SR și FO.",
+    "Închiderea: fișa descrie „wire lace” cu eliberare rapidă, fără rotiță; poza Portwest pare să arate o rotiță. Nu am pomenit rotița; de confirmat înainte s-o adăugăm.",
+    "Omis: „material textil rezistent la tăieturi de nivel A” (descriere): nu există marcaj CR sau standard în declarație.",
+    "Nu am scris „fără metal” (textul colecției CompositeLite): șireturile sunt din cablu metalic.",
+    "„Rezistență excelentă la alunecare” redusă la „antiderapantă” (fără superlativ).",
+    "„Reduce oboseala picioarelor” (branțul) omis: efect nemăsurat, interzis de ghid; am spus doar „branț cu amortizare”.",
+    "Declarația scrie Cat. III, dar nu numește supravegherea producției (modulul C2 sau D); nu am pomenit categoria EIP.",
+    "Greutățile din datele Portwest (coloana Weight) par a fi ale perechii ambalate; nu le-am folosit. De cerut greutatea unui pantof, mărimea 42.",
+    "Industrii (producție, logistică, construcții) propuse de noi; Portwest nu indică industrii."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  }
+}

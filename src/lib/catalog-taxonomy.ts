@@ -16,6 +16,7 @@ export const CATEGORIES = {
   'protectia-respiratorie': 'Protecția respiratorie',
   'protectie-cadere': 'Protecție la cădere',
   combinezoane: 'Combinezoane de protecție',
+  genunchiere: 'Genunchiere',
 } as const;
 
 export const INDUSTRIES = {
