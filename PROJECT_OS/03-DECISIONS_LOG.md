@@ -540,3 +540,16 @@
   - `tests/tco.test.mjs` cu valori calculate de mână; formatul vechi al cererilor (o singură frecvență) e acceptat.
 - Rezumatul pentru CRM: `calc_categorii` include bucățile și frecvența pe categorie, `calc_inlocuire` dispare,
   `calc_prag` = pragul din prețuri, `calc_prag_admin` nou.
+
+## D-2026-11-20-09
+- Owner-ul (20.11.2026): fluiditate ca la Apple. Nu există un skill oficial Apple; am instalat (copiat, fără `npx`)
+  `apple-design` și `review-animations` din emilkowalski/skills (MIT, făcute pentru web, după prezentările WWDC
+  „Designing Fluid Interfaces”), după ce le-am citit integral.
+- Aplicat: tranziții între pagini (fade + poza produsului din card în fișă și înapoi, prin View Transitions; merg în
+  Chrome, Edge, Safari 18.2+, iar în rest navigarea rămâne normală), preîncărcarea paginii la hover, curbe și durate
+  comune, meniul mobil și pașii formularului animate pe același drum, fade la schimbarea pozei din galerie, `:active`
+  pe iPhone, header solid pentru „reduce transparency”, litere strânse la titluri. Scoase: `transition-all`,
+  zoom-urile lente la hover (0,7–1 s) pe poze neclicabile, logo-ul care creștea, colțurile decorative care se umflau,
+  clasele `animate-in` moarte (pluginul lor nu era instalat).
+- Respins: secțiunile fixate la derulare și animațiile la scroll de pe apple.com (încetinesc un cumpărător care caută
+  un produs anume; sunt ce am scos odată cu AOS) și o bibliotecă de animații „spring” (site-ul nu are gesturi de tras).

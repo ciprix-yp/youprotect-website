@@ -18,6 +18,9 @@ export default defineConfig({
   // Astro 7 a schimbat implicitul în 'jsx', care șterge spațiile dintre elementele inline
   // scrise pe rânduri diferite. Păstrăm comportamentul de până acum ca să nu se lipească cuvinte.
   compressHTML: true,
+  // Pagina se descarcă de cum pui mouse-ul pe link (sau focusul, din tastatură): la click apare imediat, iar tranziția
+  // dintre pagini (global.css) pornește fără așteptare. Doar HTML-ul paginii, fără să o randeze (fluiditate, 20.11.2026).
+  prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [
     googleReviews,
     react(),

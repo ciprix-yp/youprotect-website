@@ -126,3 +126,15 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
   telefon se apasă la atingere. Pozele de produs stau pe `.img-well` (fond gri cald, `mix-blend-multiply`).
   Suprafețe: `bg-yp-surface`, `shadow-card`; colțuri: cardurile `rounded-xl`, butoanele și casetele `rounded-lg`.
 - Telefon: orice element atins cu degetul are cel puțin 44 px (`min-h-11`), în afară de linkurile din mijlocul frazei.
+- Mișcare (20.11.2026, după ghidul Apple; skill-urile `apple-design` și `review-animations`): mișcarea are un rost
+  (arată ce s-a schimbat sau răspunde la o acțiune), e scurtă și se poate întrerupe.
+  - Curbele: `ease-out-strong` pentru ce apare sau răspunde, `ease-drawer` pentru ce se mută pe ecran (Tailwind și
+    `--ease-out`/`--ease-drawer` în `global.css`). Durate: 150 ms (culori, apăsare), 200–300 ms (meniu, pași,
+    hover pe poze); peste 300 ms doar tranzițiile mari (poza care trece între pagini, caruselul).
+  - Fără `transition-all` (numești proprietățile), fără zoom sau mișcare la hover pe ce nu e clicabil, fără hover
+    pe telefon (`hoverOnlyWhenSupported`). Butoanele se apasă vizibil (`active:scale-[0.98]`).
+  - Ce intră pe un drum iese pe același drum (meniul coboară și urcă; pasul următor vine din dreapta, „Înapoi” din
+    stânga). Cu „reduce motion” rămâne doar fade-ul, fără deplasare; tranzițiile între pagini sunt oprite.
+  - Între pagini: fade de 200 ms, iar poza produsului trece din card în fișă și înapoi (`data-vt-photo` pe card,
+    `#gallery-well` în fișă, `src/scripts/fluid.ts`). Un nume de tranziție apare o singură dată pe pagină.
+  - Titlurile: `h1` cu literele strânse cu 0,02em, `h2` cu 0,01em; textul mic rămâne cu spațierea normală.

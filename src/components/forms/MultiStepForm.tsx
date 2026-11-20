@@ -56,6 +56,8 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const isForm1 = intent === 'consultation';
 
   const [currentStep, setCurrentStep] = useState(0);
+  // Direcția ultimei mutări între pași: pasul nou intră din dreapta (înainte) sau din stânga (înapoi). La încărcare, fără animație.
+  const [stepDirection, setStepDirection] = useState<'forward' | 'back' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [product, setProduct] = useState<string | null>(null);
@@ -138,10 +140,14 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     // Măsurare: unde se opresc vizitatorii (doar numele pasului, nu răspunsul).
     if (currentStep === 0) track('form_start', { form: intent });
     track('form_step', { form: intent, step: steps[currentStep], step_number: currentStep + 1 });
+    setStepDirection('forward');
     setCurrentStep((prev) => prev + 1);
   };
 
-  const prevStep = () => setCurrentStep((prev) => prev - 1);
+  const prevStep = () => {
+    setStepDirection('back');
+    setCurrentStep((prev) => prev - 1);
+  };
 
   const submitForm = async () => {
     if (!validateStep()) return;
@@ -208,7 +214,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   );
 
   const renderContactStep = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6">
       {stepHeading(
         isForm1 ? 'Cum te contactăm?' : 'Unde îți trimitem oferta?',
         isForm1
@@ -255,7 +261,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   );
 
   const optionButtonClass = (selected: boolean, disabled = false) =>
-    `w-full text-left p-4 rounded-md border transition-all duration-200 flex items-center gap-3 ${
+    `w-full text-left p-4 rounded-md border transition-colors duration-150 flex items-center gap-3 ${
       selected
         ? 'border-yp-yellow bg-yp-yellow/5'
         : disabled
@@ -264,7 +270,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     }`;
 
   const otherInput = (fieldId: string) => (
-    <div className="mt-3 ml-2 animate-in fade-in">
+    <div className="mt-3 ml-2 reveal-in">
       <label htmlFor={`f-${fieldId}-other`} className="sr-only">
         Detalii
       </label>
@@ -286,7 +292,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     description?: string,
     note?: React.ReactNode,
   ) => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6">
       {stepHeading(question, description)}
       <div className="space-y-3" role="radiogroup" aria-label={question}>
         {options.map((opt) => {
@@ -348,7 +354,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const renderMultiSelect = (fieldId: string, question: string, options: Option[], maxSelect?: number) => {
     const selectedOptions = (formData[fieldId] as string[]) || [];
     return (
-      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="space-y-6">
         {stepHeading(question, maxSelect ? `Alege cel mult ${maxSelect} variante.` : 'Alege toate variantele potrivite.')}
         <div className="space-y-3" role="group" aria-label={question}>
           {options.map((opt) => {
@@ -518,11 +524,13 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           aria-valuemax={100}
           aria-valuenow={progressPercent}
         >
-          <div className="h-full bg-yp-yellow rounded-full transition-all duration-500 ease-out" style={{ width: `${progressPercent}%` }} />
+          <div className="h-full bg-yp-yellow rounded-full transition-[width] duration-300 ease-out-strong" style={{ width: `${progressPercent}%` }} />
         </div>
       </div>
 
-      <div className="min-h-[300px]">{renderStepContent()}</div>
+      <div key={currentStep} className={`min-h-[300px] ${stepDirection ? `step-in-${stepDirection}` : ''}`}>
+        {renderStepContent()}
+      </div>
 
       {submitError && (
         <div role="alert" className="mt-6 rounded-md border border-red-400/40 bg-red-400/5 px-4 py-3 text-sm text-neutral-200">
@@ -540,7 +548,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
             type="button"
             onClick={prevStep}
             disabled={isSubmitting}
-            className="px-6 py-3 min-h-[44px] rounded text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition-all"
+            className="px-6 py-3 min-h-[44px] rounded text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition active:scale-[0.98]"
           >
             Înapoi
           </button>
@@ -552,7 +560,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           type="button"
           onClick={isLastStep ? submitForm : nextStep}
           disabled={isSubmitting}
-          className="bg-yp-yellow text-yp-black px-8 py-3 min-h-[44px] rounded font-medium text-sm flex items-center gap-2 hover:bg-white transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          className="bg-yp-yellow text-yp-black px-8 py-3 min-h-[44px] rounded font-medium text-sm flex items-center gap-2 hover:bg-white transition active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">

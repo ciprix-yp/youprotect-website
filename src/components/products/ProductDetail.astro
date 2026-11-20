@@ -111,7 +111,7 @@ const singleImage = primary.images.length <= 1;
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
     <!-- Galerie (fixă la derulare pe desktop) -->
     <div class="min-w-0 md:sticky md:top-24 md:self-start">
-      <div class="img-well aspect-square overflow-hidden rounded-2xl border border-white/[0.08] flex items-center justify-center">
+      <div id="gallery-well" class="img-well aspect-square overflow-hidden rounded-2xl border border-white/[0.08] flex items-center justify-center">
         <img
           id="gallery-main"
           src={mainImage}
@@ -415,9 +415,27 @@ const singleImage = primary.images.length <= 1;
   const isSafeSrc = (src: unknown): src is string =>
     typeof src === 'string' && (src.startsWith('/images/products/') || src.startsWith('https://'));
 
+  // Poza nouă apare cu un fade scurt, după ce s-a încărcat (nu o clipire albă). La click-uri rapide câștigă ultimul.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let lastRequest = 0;
+  function showImage(src: string) {
+    if (!main || main.getAttribute('src') === src) return;
+    const request = ++lastRequest;
+    const swap = () => {
+      if (request !== lastRequest) return;
+      main.src = src;
+      if (!reduceMotion.matches) {
+        main.animate([{ opacity: 0.3 }, { opacity: 1 }], { duration: 180, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+      }
+    };
+    const next = new Image();
+    next.src = src;
+    next.decode().then(swap, swap);
+  }
+
   function selectThumb(button: HTMLElement) {
     if (!main) return;
-    if (isSafeSrc(button.dataset.src)) main.src = button.dataset.src;
+    if (isSafeSrc(button.dataset.src)) showImage(button.dataset.src);
     thumbs?.querySelectorAll('.thumb').forEach((t) => t.setAttribute('aria-current', String(t === button)));
   }
 
@@ -459,7 +477,7 @@ const singleImage = primary.images.length <= 1;
       }
       if (!images.length || !main) return;
       document.querySelectorAll('.swatch').forEach((s) => s.setAttribute('aria-pressed', String(s === swatch)));
-      main.src = images[0].src;
+      showImage(images[0].src);
       main.alt = `${document.querySelector('h1')?.textContent ?? ''}, ${swatch.dataset.name ?? ''}`;
       renderThumbs(images);
     });
