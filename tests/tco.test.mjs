@@ -71,7 +71,15 @@ test('tco: validare și formatul vechi (o singură frecvență pentru toate)', (
   const bad = parseTcoInputs({ ...base, categories: ['manusi'], months: { manusi: 7 }, qty: { manusi: 999 }, prices: { manusi: 0 } });
   assert.equal(bad.months.manusi, 1); // frecvență necunoscută → exemplul categoriei
   assert.equal(bad.qty.manusi, 50); // limita
-  assert.equal(bad.prices.manusi, 1); // serverul nu primește niciodată 0; pagina nu lasă să treci cu un preț sub 1 leu
+  assert.equal(bad.prices.manusi, 0.01); // serverul nu primește niciodată 0; pagina nu lasă să treci cu un preț sub 0,01 lei
+});
+
+test('tco: prețurile păstrează banii (2 zecimale), nu se rotunjesc la lei întregi', () => {
+  const input = parseTcoInputs({ ...base, categories: ['manusi'], prices: { manusi: 4.5 }, qualityPrices: { manusi: 0.354 }, months: { manusi: 1 }, qty: { manusi: 1 } });
+  assert.equal(input.prices.manusi, 4.5);
+  assert.equal(input.qualityPrices.manusi, 0.35);
+  const answers = tcoAnswers(input, computeTco(input));
+  assert.match(answers.find((a) => a.question === 'calc_categorii').answer, /Mănuși de protecție: 4,5 → 0,35 lei\/buc\./);
 });
 
 test('tco: durata în română („de” la 20+, săptămâni sub o lună)', () => {

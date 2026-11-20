@@ -12,6 +12,7 @@ import { modelsLabel } from '../../lib/catalog-categories';
 import { activeBrandPages } from '../../lib/catalog-brands';
 import { toCardProps } from '../../lib/product-card';
 import { jsonLd } from '../../lib/json-ld';
+import { searchKey } from '../../lib/search.js';
 
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
 const categoryOrder = Object.keys(CATEGORIES) as CategoryKey[];
@@ -136,7 +137,7 @@ const filterOption =
               id="catalog-search"
               placeholder="Ex.: bocanci, cască, S3"
               autocomplete="off"
-              class="w-full rounded-lg border border-yp-white/25 bg-yp-gray/40 px-3 py-2.5 text-sm text-yp-white placeholder:text-yp-white/50 focus:border-yp-yellow focus:outline-none"
+              class="w-full rounded-lg border border-yp-white/25 bg-yp-gray/40 px-3 py-2.5 text-base text-yp-white placeholder:text-yp-white/50 md:text-sm focus:border-yp-yellow focus:outline-none"
             />
           </div>
           <div>
@@ -184,7 +185,7 @@ const filterOption =
             </button>
             <label class="flex items-center gap-2 text-sm text-yp-white/75">
               Ordine
-              <select id="catalog-sort" class="h-11 rounded-lg border border-yp-white/25 bg-yp-black px-2 text-sm text-yp-white focus:border-yp-yellow focus:outline-none">
+              <select id="catalog-sort" class="h-11 rounded-lg border border-yp-white/25 bg-yp-black px-2 text-base text-yp-white md:text-sm focus:border-yp-yellow focus:outline-none">
                 <option value="category">pe categorii</option>
                 <option value="az">alfabetică</option>
               </select>
@@ -201,7 +202,7 @@ const filterOption =
               data-category={e.data.category}
               data-industries={`|${e.data.industries.join('|')}|`}
               data-brand={toCardProps(e).brand}
-              data-search={`${e.data.name} ${CATEGORIES[e.data.category]} ${e.data.supplier.brand} ${e.data.certifications.map((c) => c.code).join(' ')}`.toLocaleLowerCase('ro-RO')}
+              data-search={searchKey(`${e.data.name} ${CATEGORIES[e.data.category]} ${e.data.supplier.brand} ${e.data.supplier.model} ${e.data.certifications.map((c) => c.code).join(' ')}`)}
             >
               <ProductCard {...toCardProps(e)} />
             </li>
@@ -263,15 +264,25 @@ const filterOption =
         state.category = fromUrl;
       }
 
+      // Aceeași cheie ca src/lib/search.js (searchKey), cu care s-a construit data-search la build.
+      const searchKey = (s) =>
+        String(s ?? '')
+          .normalize('NFD')
+          .replace(/\p{M}/gu, '')
+          .toLocaleLowerCase('ro-RO')
+          .replace(/[^\p{L}\p{N}]+/gu, ' ')
+          .trim();
+
       const refresh = () => {
-        const q = state.query.trim().toLocaleLowerCase('ro-RO');
+        const q = searchKey(state.query);
+        const words = q.split(' ').filter(Boolean);
         let visible = 0;
         for (const item of items) {
           const show =
             (state.category === 'all' || item.dataset.category === state.category) &&
             (state.industry === 'all' || item.dataset.industries.includes(`|${state.industry}|`)) &&
             (state.brand === 'all' || item.dataset.brand === state.brand) &&
-            (!q || item.dataset.search.includes(q));
+            words.every((word) => item.dataset.search.includes(word));
           item.hidden = !show;
           if (show) visible += 1;
         }

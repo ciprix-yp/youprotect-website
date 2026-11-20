@@ -15,6 +15,8 @@ import {
 } from '../../lib/tco.js';
 import { track } from '../../lib/track';
 import { HONEYPOT_FIELD } from '../../lib/honeypot.js';
+import { EMAIL_REGEX } from '../../lib/lead-limits.js';
+import { postLead } from '../../lib/post-lead.js';
 import Honeypot from '../forms/Honeypot';
 
 // Calculatorul de cost real (lead magnet). Calculul e în src/lib/tco.js, comun cu serverul.
@@ -171,7 +173,7 @@ export default function TCOCalculator() {
   const [honeypot, setHoneypot] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(false);
+  const [submitError, setSubmitError] = useState<{ message: string | null } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
@@ -208,7 +210,7 @@ export default function TCOCalculator() {
     if (STEPS[step] === 'produse' && invalidPrices.length > 0) {
       const names = invalidPrices.map((c) => TCO_CATEGORIES[c as CategoryId].label.toLocaleLowerCase('ro'));
       setErrors({
-        categories: `Pune prețurile pe bucată, între 1 leu și 5.000 de lei, la ${joinRo(names)}.`,
+        categories: `Pune prețurile pe bucată, între 0,01 și 5.000 de lei, la ${joinRo(names)}.`,
       });
       return;
     }
@@ -229,23 +231,24 @@ export default function TCOCalculator() {
     const e: Record<string, string> = {};
     if (!contact.name.trim()) e.name = 'Scrie numele tău.';
     if (!contact.company.trim()) e.company = 'Scrie numele firmei.';
-    if (!/^\S+@\S+\.\S+$/.test(contact.email.trim())) e.email = 'Scrie o adresă de email validă, de forma nume@firma.ro.';
+    if (!EMAIL_REGEX.test(contact.email.trim())) e.email = 'Scrie o adresă de email validă, de forma nume@firma.ro.';
     setErrors(e);
-    if (Object.keys(e).length || !parsed) return;
+    const invalid = Object.keys(e);
+    if (invalid.length) requestAnimationFrame(() => document.getElementById(`c-${invalid[0]}`)?.focus());
+    if (invalid.length || !parsed) return;
     setSubmitting(true);
-    setSubmitError(false);
+    setSubmitError(null);
     try {
-      const response = await fetch('/api/submit-lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent: 'quote', data: { ...contact, calculator: parsed, [HONEYPOT_FIELD]: honeypot || undefined } }),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const result = await postLead({ intent: 'quote', data: { ...contact, calculator: parsed, [HONEYPOT_FIELD]: honeypot || undefined } });
+      if (!result.ok) {
+        setSubmitError({ message: result.message });
+        return;
+      }
       window.dispatchEvent(new CustomEvent('yp:lead', { detail: { form: 'calculator' } }));
       setStep(STEPS.indexOf('gata'));
     } catch (err) {
       console.error(err);
-      setSubmitError(true);
+      setSubmitError({ message: null });
     } finally {
       setSubmitting(false);
     }
@@ -637,11 +640,15 @@ export default function TCOCalculator() {
           </p>
           {submitError && (
             <div role="alert" className="rounded-md border border-red-400/40 bg-red-400/5 px-4 py-3 text-sm text-neutral-200">
-              Nu am putut trimite datele. Încearcă din nou peste un minut sau sună-ne la{' '}
-              <a href={`tel:${SITE.telephone}`} className="underline text-white whitespace-nowrap">
-                {SITE.telephoneDisplay}
-              </a>
-              .
+              {submitError.message ?? (
+                <>
+                  Nu am putut trimite datele. Încearcă din nou peste un minut sau sună-ne la{' '}
+                  <a href={`tel:${SITE.telephone}`} className="underline text-white whitespace-nowrap">
+                    {SITE.telephoneDisplay}
+                  </a>
+                  .
+                </>
+              )}
             </div>
           )}
         </div>
