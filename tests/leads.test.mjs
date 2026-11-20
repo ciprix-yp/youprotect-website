@@ -280,8 +280,22 @@ test('parseLead: „detalii” (cantități, mărimi, coduri) doar la cererea de
   assert.equal(long.lead.answers.find((a) => a.question === 'detalii').answer.length, DETAILS_MAX_LENGTH);
   assert.equal(parseLead({ ...valid, data: { ...valid.data, detalii: '   ' } }).lead.answers.some((a) => a.question === 'detalii'), false);
   assert.equal(parseLead({ ...valid, data: { ...valid.data, detalii: 42 } }).lead.answers.some((a) => a.question === 'detalii'), false);
-  const consultation = parseLead({ intent: 'consultation', data: { ...valid.data, detalii: 'ceva' } });
-  assert.equal(consultation.lead.answers.some((a) => a.question === 'detalii'), false);
+  // La programare, câmpul liber are altă etichetă (D-2026-11-20-06).
+  const consultation = parseLead({ intent: 'consultation', data: { ...valid.data, detalii: 'schimbăm furnizorul' } });
+  assert.deepEqual(consultation.lead.answers.find((a) => a.question === 'detalii'), {
+    question: 'detalii',
+    label: 'Despre ce vrea să vorbim',
+    answer: 'schimbăm furnizorul',
+  });
+});
+
+test('parseLead: programarea trimite doar rolul, echipa și domeniul (fără vechile întrebări de sondaj)', () => {
+  const r = parseLead({
+    intent: 'consultation',
+    data: { ...valid.data, q1: 'Achiziții / Aprovizionare', q2: '16–40 persoane', q3: 'Construcții', q4: ['x'], q5: ['y'], q6: 'z' },
+  });
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.lead.answers.map((a) => a.question), ['q1', 'q2', 'q3']);
 });
 
 test('parseLead: venit de pe o fișă de produs, fără „Produse vizate” (q3)', () => {

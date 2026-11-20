@@ -92,6 +92,38 @@ export const GUIDES: Guide[] = [
     updated: '2026-11-19',
     sources: [HG_1048],
   },
+  {
+    slug: 'haine-de-lucru-care-rezista',
+    title: 'Cum alegi haine de lucru care rezistă mai mult',
+    description:
+      'Ce verifici ca hainele de lucru ale echipei să reziste: spălarea industrială după EN ISO 15797, țesătura și gramajul, întăriturile și ce certifică OEKO-TEX®.',
+    heading: 'Cum alegi haine de lucru care rezistă la purtare și la spălare',
+    summary:
+      'Cum verifici dacă hainele rezistă la spălarea industrială, ce îți spun țesătura, gramajul și întăriturile și ce nu-ți spune eticheta OEKO-TEX®.',
+    categories: ['pantaloni', 'geci-jachete', 'tricouri-polo', 'bluze-hanorace'],
+    published: '2026-11-20',
+    updated: '2026-11-20',
+    sources: [
+      {
+        label: 'EVS: EN ISO 15797:2018, procedeele de spălare industrială pentru testarea hainelor de lucru',
+        url: 'https://www.evs.ee/en/evs-en-iso-15797-2018',
+      },
+      { label: 'MASCOT: ProWash® și EN ISO 15797', url: 'https://www.mascotworkwear.com/en/prowash' },
+      { label: 'MASCOT: categoriile de spălare și întreținere industrială', url: 'https://www.mascotworkwear.com/en/care' },
+      { label: 'MASCOT: materialele hainelor de lucru', url: 'https://www.mascotworkwear.com/en/fabrics' },
+      { label: 'MASCOT: întărituri din CORDURA®', url: 'https://www.mascotworkwear.com/en/cordura' },
+      {
+        label: 'MASCOT: cum faci hainele de lucru să țină mai mult',
+        url: 'https://www.mascotworkwear.com/en/make-your-workwear-last-longer',
+      },
+      { label: 'OEKO-TEX®: STANDARD 100', url: 'https://www.oeko-tex.com/en/our-standards/oeko-tex-standard-100' },
+      {
+        label: 'EVS: EN ISO 13688:2013, cerințe generale pentru îmbrăcămintea de protecție',
+        url: 'https://www.evs.ee/en/evs-en-iso-13688-2013',
+      },
+      HG_1048,
+    ],
+  },
 ];
 
 export function guideHref(guide: Guide): string {

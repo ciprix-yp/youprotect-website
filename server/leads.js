@@ -14,7 +14,7 @@ export const LEAD_TAG = 'website';
 
 // Întrebările fiecărui formular (MultiStepForm.tsx). Orice alt câmp trimis de client e ignorat.
 export const QUESTIONS = {
-  consultation: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'],
+  consultation: ['q1', 'q2', 'q3'],
   quote: ['q1', 'q2', 'q3', 'personalizare', 'q4', 'q5', 'q6', 'q7'],
 };
 
@@ -27,9 +27,6 @@ export const QUESTION_LABELS = {
     q1: 'Rol în firmă',
     q2: 'Câți colegi',
     q3: 'Domeniu',
-    q4: 'Ce s-a schimbat recent',
-    q5: 'Ce ar trebui să fie mai clar',
-    q6: 'Ce ar face discuția utilă',
   },
   quote: {
     q1: 'Câți colegi',
@@ -44,6 +41,7 @@ export const QUESTION_LABELS = {
 };
 
 export const INTENT_LABELS = { quote: 'Cerere de ofertă', consultation: 'Programare discuție' };
+const DETAILS_LABELS = { quote: 'Cantități, mărimi, coduri', consultation: 'Despre ce vrea să vorbim' };
 
 export function normalizeString(value, maxLength = null) {
   if (typeof value !== 'string') return null;
@@ -102,11 +100,12 @@ export function parseLead(payload) {
       answer: other ? `${answer} (Specificat: ${other})` : answer,
     });
   }
-  // Câmpul liber de la contact (doar cererea de ofertă): cantități, mărimi, coduri. Răspuns nou în contract,
-  // anunțat CRM-ului (Prospector) pe 19.11.2026: question „detalii”, text de cel mult DETAILS_MAX_LENGTH caractere.
-  if (intent === 'quote') {
-    const details = normalizeString(data.detalii, DETAILS_MAX_LENGTH);
-    if (details) answers.push({ question: 'detalii', label: 'Cantități, mărimi, coduri', answer: details });
+  // Câmpul liber de la contact: la ofertă cantități, mărimi, coduri; la programare despre ce vrea clientul să vorbim.
+  // Răspuns în contract, anunțat CRM-ului (Prospector) pe 19.11.2026 (ofertă) și 20.11.2026 (programare): question
+  // „detalii”, text de cel mult DETAILS_MAX_LENGTH caractere.
+  const details = normalizeString(data.detalii, DETAILS_MAX_LENGTH);
+  if (details) {
+    answers.push({ question: 'detalii', label: DETAILS_LABELS[intent], answer: details });
   }
   // Categoria din /cere-oferta/?categorie=<slug> (cardurile de pe homepage). Doar slug-uri din listă.
   const category = intent === 'quote' ? quoteCategoryLabel(data.categorie) : null;

@@ -74,6 +74,16 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     logo: true,
   },
   {
+    key: 'bluze-hanorace',
+    slug: 'bluze-si-hanorace-de-lucru',
+    heading: 'Bluze și hanorace de lucru pentru firme',
+    title: 'Bluze și hanorace de lucru pentru firme',
+    intro:
+      'Hanorace și pulovere pentru echipă, de purtat peste tricou sau sub geacă, cu logo-ul firmei. Mai jos vezi materialul și certificările fiecărui model.',
+    plural: 'bluzele și hanoracele de lucru',
+    logo: true,
+  },
+  {
     key: 'camasi',
     slug: 'camasi-corporate',
     heading: 'Cămăși corporate pentru firme',

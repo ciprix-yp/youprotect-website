@@ -502,3 +502,16 @@
     (ColdStore CS10/CS11, Apacha A751);
   - produsele demo vechi (Directus) redirecționează la categoria cea mai apropiată, nu la catalog.
 - Nu scriem că showroom-ul primește fără programare și nici că toate produsele sunt expuse: nu avem confirmarea.
+
+## D-2026-11-20-06
+- Owner-ul (20.11.2026) a aprobat pașii 9–13 din lista „ce a mai rămas”:
+  - formularul „Programează o discuție”: din 7 pași în 4 (rol, câți colegi, domeniu, contact); cele trei întrebări de
+    sondaj (q4–q6) au fost înlocuite cu un câmp opțional „Despre ce vrei să vorbim?”, trimis ca `detalii` (CRM-ul
+    Prospector a confirmat că nu depinde de q4–q6 și afișează `detalii`);
+  - footer: textul „Furnizor… premium… investiție de imagine” înlocuit cu mesajul nou (costul real, showroom, livrare);
+  - pagină de categorie nouă: /produse/bluze-si-hanorace-de-lucru/;
+  - ghid nou: /ghiduri/haine-de-lucru-care-rezista/ (EN ISO 15797, categoriile de întreținere MASCOT, CORDURA,
+    OEKO-TEX, EN ISO 13688, HG nr. 1.048/2006), cu modelele din catalog generate din fișe;
+  - scene ilustrative generate cu OpenAI gpt-image-2 pentru Construcții, Logistică, Producție și Personalizare
+    (`scripts/images/generate-scenes.mjs`): fără logo-uri sau texte reale, echipament purtat corect, imagini decorative
+    (alt=""), niciodată prezentate ca echipa sau clienții You Protect.
