@@ -5,15 +5,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Testimonials from "../components/home/Testimonials.astro";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import CategoryTiles from "../components/products/CategoryTiles.astro";
-import { getCollection } from "astro:content";
-import { modelsLabel } from "../lib/catalog-categories";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
 import { RISK_FREE_TESTING, SITE } from "../lib/site";
 import { btnPrimary, btnSecondary, pageContainer } from "../lib/ui";
 import { jsonLd } from "../lib/json-ld";
 
-const publishedCount = (await getCollection("products", ({ data }) => data.status === "published")).length;
-const models = modelsLabel(publishedCount);
 
 const sectionHeading = "font-heading text-3xl font-light leading-tight text-white lg:text-4xl";
 const textLink = "inline-flex min-h-11 items-center text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white";
@@ -171,8 +167,8 @@ const faqSchema = {
           Echipamente de protecție și haine de lucru alese după costul real, nu după preț
         </h1>
         <p class="mt-5 max-w-2xl text-base leading-relaxed text-yp-white/80 sm:text-lg">
-          {models} de la MASCOT, Portwest, Sir Safety și alte mărci, pe care le poți personaliza cu logo-ul firmei și le
-          livrăm în toată România. Le vezi și le probezi în showroom-ul nostru din Vetiș, Satu Mare.
+          Lucrăm cu MASCOT, Portwest, Sir Safety și alte mărci. Hainele le poți personaliza cu logo-ul firmei, livrăm în
+          toată România, iar în showroom-ul nostru din Vetiș, Satu Mare, vezi și probezi produsele înainte de comandă.
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <a href="/programeaza-discutie/" class={btnPrimary}>Programează o discuție</a>
