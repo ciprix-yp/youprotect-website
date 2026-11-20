@@ -47,7 +47,8 @@ export const TCO_CATEGORIES = {
 
 export const TCO_LIMITS = {
   employees: { min: 5, max: 500 },
-  price: { min: 1, max: 5000 },
+  // Prețuri cu bani (2 zecimale): mănușile de unică folosință sau dopurile de urechi costă sub un leu (audit, 20.11.2026).
+  price: { min: 0.01, max: 5000 },
   qty: { min: 1, max: 50 },
   months: INTERVAL_MONTHS,
   durability: { min: 1, max: 3, step: 0.25 },
@@ -99,7 +100,7 @@ export function parseTcoInputs(raw) {
     }
     return out;
   };
-  const price = (v) => (isNum(v) ? clamp(Math.round(v), TCO_LIMITS.price) : null);
+  const price = (v) => (isNum(v) ? clamp(Math.round(v * 100) / 100, TCO_LIMITS.price) : null);
 
   return {
     domain: DOMAINS.includes(raw.domain) ? raw.domain : '',
@@ -160,6 +161,8 @@ export const formatFactor = (n) => new Intl.NumberFormat('ro-RO', { maximumFract
 
 const lei = (n) => `${new Intl.NumberFormat('ro-RO', { maximumFractionDigits: 0 }).format(Math.round(n))} lei`;
 export const formatLei = lei;
+/** Prețul pe bucată, cu bani: „4,5”, „0,35”, „1.250”. */
+export const formatUnitPrice = (n) => new Intl.NumberFormat('ro-RO', { maximumFractionDigits: 2 }).format(n);
 
 // „1 lună”, „12 luni”, „24 de luni”: „de” după numerele întregi cu ultimele două cifre 00 sau 20–99.
 const plural = new Intl.PluralRules('ro-RO');
@@ -181,7 +184,7 @@ export function tcoAnswers(input, result) {
   const cats = input.categories
     .map((id) => {
       const qty = input.qty[id] === 1 ? '1 buc./om' : `${input.qty[id]} buc./om`;
-      return `${TCO_CATEGORIES[id].label}: ${input.prices[id]} → ${input.qualityPrices[id]} lei/buc., ${qty}, ${intervalLabel(input.months[id])}`;
+      return `${TCO_CATEGORIES[id].label}: ${formatUnitPrice(input.prices[id])} → ${formatUnitPrice(input.qualityPrices[id])} lei/buc., ${qty}, ${intervalLabel(input.months[id])}`;
     })
     .join('; ');
   return [

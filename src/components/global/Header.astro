@@ -1,5 +1,15 @@
 ---
-const currentPath = Astro.url.pathname;
+// Linkul activ din meniu: adresele au „/” la final (/despre-noi/), deci comparăm fără el. Înainte, „Despre noi” și
+// „Cum lucrăm” nu apăreau niciodată active. aria-current spune și cititoarelor de ecran unde ești.
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const NAV = [
+  { href: '/', label: 'Acasă', page: path === '/', section: false },
+  { href: '/despre-noi/', label: 'Despre noi', page: path === '/despre-noi', section: false },
+  { href: '/cum-lucram/', label: 'Cum lucrăm', page: path === '/cum-lucram', section: false },
+  { href: '/produse/', label: 'Catalog', page: path === '/produse', section: path.startsWith('/produse/') },
+];
+const current = (item: (typeof NAV)[number]) => (item.page ? 'page' : item.section ? 'true' : undefined);
+const tone = (item: (typeof NAV)[number]) => (item.page || item.section ? 'text-yp-yellow' : 'text-yp-white hover:text-yp-yellow');
 ---
 
 <header
@@ -23,31 +33,12 @@ const currentPath = Astro.url.pathname;
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden md:flex items-center gap-8">
-        <a
-          href="/"
-          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === "/" ? "text-yp-yellow" : ""}`}
-        >
-          Acasă
-        </a>
-        <a
-          href="/despre-noi/"
-          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === "/despre-noi" ? "text-yp-yellow" : ""}`}
-        >
-          Despre noi
-        </a>
-        <a
-          href="/cum-lucram/"
-          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath === "/cum-lucram" ? "text-yp-yellow" : ""}`}
-        >
-          Cum lucrăm
-        </a>
-        <a
-          href="/produse/"
-          class={`text-yp-white hover:text-yp-yellow transition-colors ${currentPath.startsWith("/produse") ? "text-yp-yellow" : ""}`}
-        >
-          Catalog
-        </a>
+      <nav class="hidden md:flex items-center gap-8" aria-label="Meniu principal">
+        {NAV.map((item) => (
+          <a href={item.href} aria-current={current(item)} class={`${tone(item)} transition-colors`}>
+            {item.label}
+          </a>
+        ))}
       </nav>
 
       <!-- CTA Button (Desktop) -->
@@ -88,31 +79,12 @@ const currentPath = Astro.url.pathname;
     id="mobile-menu"
     class="hidden md:hidden bg-yp-black border-t border-yp-gray/50"
   >
-    <nav class="px-4 py-6 space-y-4">
-      <a
-        href="/"
-        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === "/" ? "text-yp-yellow" : ""}`}
-      >
-        Acasă
-      </a>
-      <a
-        href="/despre-noi/"
-        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === "/despre-noi" ? "text-yp-yellow" : ""}`}
-      >
-        Despre noi
-      </a>
-      <a
-        href="/cum-lucram/"
-        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath === "/cum-lucram" ? "text-yp-yellow" : ""}`}
-      >
-        Cum lucrăm
-      </a>
-      <a
-        href="/produse/"
-        class={`block text-yp-white hover:text-yp-yellow transition-colors py-2 ${currentPath.startsWith("/produse") ? "text-yp-yellow" : ""}`}
-      >
-        Catalog
-      </a>
+    <nav class="px-4 py-6 space-y-2" aria-label="Meniu principal">
+      {NAV.map((item) => (
+        <a href={item.href} aria-current={current(item)} class={`flex min-h-11 items-center ${tone(item)} transition-colors`}>
+          {item.label}
+        </a>
+      ))}
       <a
         href="/programeaza-discutie/"
         class="block w-full text-center bg-yp-yellow text-yp-black font-heading font-semibold px-6 py-3 rounded-lg hover:bg-white transition active:scale-[0.98] mt-4"

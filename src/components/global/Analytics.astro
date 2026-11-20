@@ -83,9 +83,23 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
     }
   }
 
+  // gaLoaded: scriptul GA e în pagină (nu se poate scoate). gaActive: avem acord și trimitem date.
+  // ga-disable-<id> e întrerupătorul oficial al GA: cât e true, gtag nu mai trimite nimic spre Google, nici fără
+  // cookie-uri (consent mode trimite altfel „ping-uri” fără cookie și după retragerea acordului).
   let gaLoaded = false;
+  let gaActive = false;
+  const setGaDisabled = (disabled: boolean) => {
+    (w as unknown as Record<string, unknown>)[`ga-disable-${id}`] = disabled;
+  };
   function loadGa() {
-    if (gaLoaded || !id) return;
+    if (!id) return;
+    setGaDisabled(false);
+    gaActive = true;
+    if (gaLoaded) {
+      // Acord dat din nou pe aceeași pagină, după o retragere.
+      w.gtag?.('consent', 'update', { analytics_storage: 'granted' });
+      return;
+    }
     gaLoaded = true;
     w.dataLayer = w.dataLayer || [];
     // gtag cere obiectul `arguments`, nu un array.
@@ -113,6 +127,8 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
 
   // La retragerea acordului: GA nu mai primește nimic, iar cookie-urile lui se șterg.
   function revokeGa() {
+    gaActive = false;
+    if (id) setGaDisabled(true);
     w.gtag?.('consent', 'update', { analytics_storage: 'denied' });
     const host = location.hostname.replace(/^www\./, '');
     for (const part of document.cookie.split(';')) {
@@ -125,7 +141,7 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
   }
 
   function track(name: string, params: Params = {}) {
-    if (!gaLoaded || !w.gtag) return;
+    if (!gaActive || !w.gtag) return;
     w.gtag('event', name, params);
   }
 
@@ -148,7 +164,7 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
   function fireLeadFlag() {
     try {
       const form = sessionStorage.getItem(LEAD_FLAG);
-      if (form && gaLoaded) {
+      if (form && gaActive) {
         sessionStorage.removeItem(LEAD_FLAG);
         track('generate_lead', { form });
       }

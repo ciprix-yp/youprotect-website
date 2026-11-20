@@ -3,7 +3,8 @@ import { isValidCUI } from '../../lib/cui.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../../lib/quote-categories.js';
 import { SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
-import { DETAILS_MAX_LENGTH } from '../../lib/lead-limits.js';
+import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../../lib/lead-limits.js';
+import { postLead } from '../../lib/post-lead.js';
 import { flagLead, track } from '../../lib/track';
 import { HONEYPOT_FIELD } from '../../lib/honeypot.js';
 import Honeypot from './Honeypot';
@@ -62,7 +63,8 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   // Direcția ultimei mutări între pași: pasul nou intră din dreapta (înainte) sau din stânga (înapoi). La încărcare, fără animație.
   const [stepDirection, setStepDirection] = useState<'forward' | 'back' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(false);
+  // null = fără eroare; message = mesajul serverului pentru vizitator (sau null: textul general cu telefonul).
+  const [submitError, setSubmitError] = useState<{ message: string | null } | null>(null);
   const [product, setProduct] = useState<string | null>(null);
   // Cine vine de pe o fișă de produs (?produs=<slug>) nu mai e întrebat ce produse are în vedere.
   const steps = isForm1 ? FORM_1_STEPS : product ? FORM_2_STEPS.filter((s) => s !== 'q3') : FORM_2_STEPS;
@@ -128,14 +130,18 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       if (!formData.company.trim()) newErrors.company = 'Scrie numele firmei.';
       if (formData.cui.trim() && !isValidCUI(formData.cui)) newErrors.cui = 'CUI-ul nu pare corect. Verifică cifrele sau lasă câmpul gol.';
       if (!formData.phone.trim()) newErrors.phone = 'Scrie un număr de telefon.';
-      if (!/^\S+@\S+\.\S+$/.test(formData.email.trim())) newErrors.email = 'Scrie o adresă de email validă, de forma nume@firma.ro.';
+      if (!EMAIL_REGEX.test(formData.email.trim())) newErrors.email = 'Scrie o adresă de email validă, de forma nume@firma.ro.';
     } else {
       const val = formData[sid];
       if (Array.isArray(val) ? val.length === 0 : !val) newErrors[sid] = 'Alege cel puțin o variantă.';
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // Cititoarele de ecran află de eroare: la contact, focusul merge pe primul câmp greșit (care își citește eroarea
+    // prin aria-describedby); la întrebări, mesajul are role="alert".
+    const invalid = Object.keys(newErrors);
+    if (sid === 'contact' && invalid.length) requestAnimationFrame(() => document.getElementById(`f-${invalid[0]}`)?.focus());
+    return invalid.length === 0;
   };
 
   const nextStep = () => {
@@ -147,6 +153,31 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     setCurrentStep((prev) => prev + 1);
   };
 
+  // „Scoate” de lângă produsul sau categoria cu care a venit vizitatorul.
+  // - Produsul: întrebarea „Ce produse ai în vedere?” (q3) reapare în listă. Dacă vizitatorul a trecut deja de locul
+  //   ei și n-a răspuns, îl ducem la ea; altfel rămâne pe întrebarea la care era (înainte, indexul rămânea același,
+  //   iar q3 nu mai era pusă niciodată).
+  // - Categoria: scoatem și varianta pe care a bifat-o ea la „Ce produse ai în vedere?”.
+  const removeContext = () => {
+    if (product) {
+      const currentId = steps[currentStep];
+      const next = FORM_2_STEPS;
+      const q3Index = next.indexOf('q3');
+      const currentIndex = Math.max(next.indexOf(currentId), 0);
+      setProduct(null);
+      if (currentIndex > q3Index && (formData.q3 as string[]).length === 0) {
+        setStepDirection('back');
+        setCurrentStep(q3Index);
+      } else {
+        setCurrentStep(currentIndex);
+      }
+      return;
+    }
+    const option = category ? CATEGORY_OPTION[category] : undefined;
+    setCategory(null);
+    if (option) updateField('q3', (formData.q3 as string[]).filter((item) => item !== option));
+  };
+
   const prevStep = () => {
     setStepDirection('back');
     setCurrentStep((prev) => prev - 1);
@@ -155,19 +186,18 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const submitForm = async () => {
     if (!validateStep()) return;
     setIsSubmitting(true);
-    setSubmitError(false);
+    setSubmitError(null);
 
     try {
-      const response = await fetch('/api/submit-lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          intent,
-          data: { ...formData, produs: product ?? undefined, categorie: category ?? undefined, [HONEYPOT_FIELD]: honeypot || undefined },
-        }),
+      const result = await postLead({
+        intent,
+        data: { ...formData, produs: product ?? undefined, categorie: category ?? undefined, [HONEYPOT_FIELD]: honeypot || undefined },
       });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!result.ok) {
+        setSubmitError({ message: result.message });
+        setIsSubmitting(false);
+        return;
+      }
       flagLead(intent);
 
       if (intent === 'consultation') {
@@ -183,7 +213,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       window.location.href = `/confirmare/?intent=${intent}`;
     } catch (err) {
       console.error(err);
-      setSubmitError(true);
+      setSubmitError({ message: null });
       setIsSubmitting(false);
     }
   };
@@ -285,7 +315,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
         id={`f-${fieldId}-other`}
         type="text"
         placeholder="Scrie pe scurt…"
-        className={`${inputClass} text-sm py-2.5`}
+        className={`${inputClass} py-2.5 text-base md:text-sm`}
         value={formData.q_other[fieldId] || ''}
         onChange={(e) => updateField('q_other', { ...formData.q_other, [fieldId]: e.target.value })}
       />
@@ -335,7 +365,11 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           );
         })}
       </div>
-      {errors[fieldId] && <p className="text-red-400 text-sm mt-2 text-center md:text-left">{errors[fieldId]}</p>}
+      {errors[fieldId] && (
+        <p role="alert" className="text-red-400 text-sm mt-2 text-center md:text-left">
+          {errors[fieldId]}
+        </p>
+      )}
       {note}
     </div>
   );
@@ -377,6 +411,12 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
                   onClick={() => {
                     if (isSelected) {
                       updateField(fieldId, selectedOptions.filter((item) => item !== opt.label));
+                      // „Altceva” debifat: textul scris la el nu mai pleacă în cerere.
+                      if (opt.hasOther && formData.q_other[fieldId]) {
+                        const newOthers = { ...formData.q_other };
+                        delete newOthers[fieldId];
+                        updateField('q_other', newOthers);
+                      }
                     } else if (!maxSelect || selectedOptions.length < maxSelect) {
                       updateField(fieldId, [...selectedOptions, opt.label]);
                     }
@@ -404,7 +444,11 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
             );
           })}
         </div>
-        {errors[fieldId] && <p className="text-red-400 text-sm mt-2 text-center md:text-left">{errors[fieldId]}</p>}
+        {errors[fieldId] && (
+        <p role="alert" className="text-red-400 text-sm mt-2 text-center md:text-left">
+          {errors[fieldId]}
+        </p>
+      )}
       </div>
     );
   };
@@ -508,7 +552,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           </p>
           <button
             type="button"
-            onClick={() => (product ? setProduct(null) : setCategory(null))}
+            onClick={removeContext}
             className="shrink-0 min-h-[44px] min-w-[44px] text-neutral-400 hover:text-white text-sm underline"
           >
             Scoate
@@ -541,11 +585,15 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
 
       {submitError && (
         <div role="alert" className="mt-6 rounded-md border border-red-400/40 bg-red-400/5 px-4 py-3 text-sm text-neutral-200">
-          Nu am putut trimite cererea. Încearcă din nou peste un minut sau sună-ne la{' '}
-          <a href={PHONE.href} className="underline text-white whitespace-nowrap">
-            {PHONE.label}
-          </a>
-          .
+          {submitError.message ?? (
+            <>
+              Nu am putut trimite cererea. Încearcă din nou peste un minut sau sună-ne la{' '}
+              <a href={PHONE.href} className="underline text-white whitespace-nowrap">
+                {PHONE.label}
+              </a>
+              .
+            </>
+          )}
         </div>
       )}
 

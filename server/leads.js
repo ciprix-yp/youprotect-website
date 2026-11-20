@@ -1,7 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
+import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../src/lib/lead-limits.js';
 import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../src/lib/quote-categories.js';
 import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
@@ -9,7 +9,6 @@ import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
 export const MAX_BODY_BYTES = 20_000;
 const MAX_ANSWER_LENGTH = 300;
 const MAX_ANSWER_ITEMS = 8;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PRODUCT_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+){1,15}$/;
 export const LEAD_TAG = 'website';
 

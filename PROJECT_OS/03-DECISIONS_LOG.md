@@ -580,3 +580,19 @@
     adresele *.pages.dev primesc `X-Robots-Tag: noindex`. CSP-ul cu hash-uri (fără 'unsafe-inline') e pasul următor.
 - Rămân la owner (setări Cloudflare): baza D1 separată pentru preview și scoaterea CRM_SYNC_TOKEN din mediul Preview;
   Turnstile, dacă apar cereri-spam care trec de filtrele de mai sus.
+
+## D-2026-11-20-12
+- Auditul din 20.11.2026, pasul 2 (bug-uri văzute de vizitatori), aprobat de owner:
+  - Căutarea din catalog ignoră diacriticele și semnele („caciula”, „MASCOT® 21404”) și caută toate cuvintele, în
+    orice ordine („geaca mascot”); include și codul modelului. `src/lib/search.js` + copia din scriptul inline,
+    ținute identice de `tests/search.test.mjs`.
+  - Calculatorul păstrează banii la prețuri (2 zecimale, minimum 0,01 lei): mănușile de 4,50 lei nu mai devin 5.
+  - Formularul: „Scoate” (produsul) duce înapoi la „Ce produse ai în vedere?” dacă vizitatorul trecuse de ea;
+    „Scoate” (categoria) scoate și bifa pusă de ea; „Altceva” debifat nu mai trimite textul scris la el.
+  - Aceeași regulă de email în pagină și pe server (`src/lib/lead-limits.js`); refuzurile serverului (date invalide,
+    prea multe cereri) apar vizitatorului cu mesajul lor, nu cu „încearcă din nou”.
+  - Erorile: focus pe primul câmp greșit la contact, `role="alert"` la întrebări.
+  - Câmpurile au 16 px pe telefon (Safari nu mai mărește pagina la atingere).
+  - Retragerea acordului oprește complet Google Analytics (`ga-disable-<id>`), nu doar cookie-urile.
+  - Meniul marchează pagina curentă (și pe /despre-noi/, /cum-lucram/), cu `aria-current`; linkurile de 36–40 px
+    au acum 44.
