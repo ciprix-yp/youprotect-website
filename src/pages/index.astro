@@ -1,4 +1,6 @@
 ---
+// Homepage, restructurat pe 20.11.2026 (D-2026-11-20-05): ce vinzi și de ce să alegi You Protect, cu fapte, nu cu
+// abstracțiuni. Ordinea: hero, mărci, recenzii, categorii, „De ce You Protect”, pași, ce include, CTA, întrebări.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Testimonials from "../components/home/Testimonials.astro";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
@@ -6,1028 +8,313 @@ import CategoryTiles from "../components/products/CategoryTiles.astro";
 import { getCollection } from "astro:content";
 import { modelsLabel } from "../lib/catalog-categories";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
+import { RISK_FREE_TESTING, SITE } from "../lib/site";
+import { btnPrimary, btnSecondary, pageContainer } from "../lib/ui";
+import { jsonLd } from "../lib/json-ld";
 
 const publishedCount = (await getCollection("products", ({ data }) => data.status === "published")).length;
+const models = modelsLabel(publishedCount);
+
+const sectionHeading = "font-heading text-3xl font-light leading-tight text-white lg:text-4xl";
+const textLink = "inline-block py-2 text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white";
+
+const brands = [
+  { name: "MASCOT", logo: "/logos/logo-1.webp", href: "/produse/mascot/" },
+  { name: "Sir Safety", logo: "/logos/logo-2.webp", href: "/produse/sir-safety/" },
+  { name: "Portwest", logo: "/logos/logo-3.webp", href: "/produse/portwest/" },
+  { name: "Malfini", logo: "/logos/logo-4.webp" },
+];
+
+// Patru fapte, fiecare cu pagina care îl dovedește.
+const reasons = [
+  {
+    title: "Alegi după costul real",
+    text: "Prețul de pe factură e doar o parte. Calculatorul compară cât te costă pe zi de purtare ce folosești acum și produsele care durează mai mult.",
+    link: { label: "Calculează costul real", href: "/calculator-cost-echipamente/" },
+  },
+  {
+    title: "Testezi 90 de zile, fără riscuri",
+    text: RISK_FREE_TESTING.short,
+    link: { label: RISK_FREE_TESTING.linkLabel, href: RISK_FREE_TESTING.href },
+  },
+  {
+    title: "Vezi și probezi înainte",
+    text: "În showroom-ul din Vetiș, Satu Mare, ai cabină de probă. Pe fiecare fișă din catalog găsești documentele producătorului și, unde există, standardele declarate de el.",
+    link: { label: "Vezi showroom-ul", href: "/echipamente-protectie-satu-mare/#showroom" },
+  },
+  {
+    title: "Logo-ul firmei, livrat în toată țara",
+    text: "Hainele de lucru le poți personaliza cu logo prin broderie, serigrafie sau transfer termic. Livrăm în toată România.",
+    link: { label: "Cum funcționează personalizarea", href: "/haine-de-lucru-personalizate/" },
+  },
+];
+
+const steps = [
+  {
+    title: "Discutăm despre activitatea și echipa ta",
+    text: "Începem cu o discuție despre contextul real: ce face echipa, în ce condiții lucrează și ce vrei să îmbunătățești în procesul de echipare.",
+  },
+  {
+    title: "Primești o recomandare și o ofertă",
+    text: "Selectăm variante potrivite de echipamente de protecție și haine de lucru și construim o propunere adaptată activității, bugetului și imaginii pe care vrei să o transmiți.",
+  },
+  {
+    title: "Testezi și alegi informat",
+    text: "Poți testa produsele cu o parte din echipă, compara și decide, astfel încât alegerea finală să fie potrivită și pentru oameni, și pentru firmă.",
+  },
+];
+
+const includes = [
+  "Consultanță pentru alegerea echipamentelor potrivite",
+  "Selecție clară pentru activitatea și echipa ta",
+  "Livrări programate, pentru mai multă predictibilitate",
+  "Personalizare cu logo prin broderie, serigrafie sau transfer termic",
+  "Fișe de produs cu documentele producătorului și certificările declarate de el",
+  "Testare de 90 de zile înainte de decizia finală, cu banii înapoi pe rolurile unde produsele nu ies mai eficiente și nu ești mulțumit",
+  "Sprijin pentru comenzi recurente sau anuale",
+  "Showroom cu cabină de probă în Vetiș, Satu Mare",
+];
+
+// Întrebările frecvente: aceeași listă pentru pagină și pentru FAQPage (JSON-LD).
+const faq = [
+  {
+    q: "Ce echipamente de protecție sunt obligatorii pentru angajatori în România?",
+    a: "Depinde de riscurile de la locul de muncă și de activitate. Angajatorul trebuie să asigure echipamente individuale de protecție adecvate riscurilor identificate, conforme și potrivite pentru utilizarea reală din teren. De aceea, alegerea nu se face generic, ci în funcție de activitate, mediu de lucru și nevoile echipei.",
+  },
+  {
+    q: "Cum aleg corect hainele de lucru pentru echipa mea?",
+    a: "Pornești de la activitate, sezon, nivelul de uzură, confort, imaginea pe care vrei să o transmită echipa și nevoia de personalizare. Pentru multe firme, o recomandare clară e mai utilă decât o listă lungă de produse.",
+  },
+  {
+    q: "Care este diferența dintre S1P și S3 la bocancii de protecție?",
+    a: "Și S1P, și S3 au bombeu de protecție, călcâi închis, proprietăți antistatice, absorbție de energie la călcâi și protecție la perforare. S3 adaugă două lucruri: fața încălțămintei rezistă la pătrunderea și absorbția apei, iar talpa are crampoane. Dacă oamenii tăi lucrează afară, pe teren denivelat sau pe ude, ai nevoie de ce adaugă S3.",
+    more: { label: "Ghidul S1P sau S3", href: "/ghiduri/s1p-sau-s3/" },
+  },
+  {
+    q: "Pot testa produsele înainte să echipez toată firma?",
+    a: `Da, prin programul „Testare fără riscuri”. ${RISK_FREE_TESTING.text}`,
+    more: { label: RISK_FREE_TESTING.linkLabel, href: RISK_FREE_TESTING.href },
+  },
+  {
+    q: "Aveți showroom unde pot proba produsele?",
+    a: "Da. Showroom-ul You Protect e în Vetiș, pe Strada Careiului nr. 45, în Parc Industrial Areli, județul Satu Mare, și are cabină de probă. Programul e de luni până vineri, între 09:00 și 17:00.",
+    more: { label: "Adresa și harta", href: "/echipamente-protectie-satu-mare/#showroom" },
+  },
+  {
+    q: "Livrați echipamente de protecție în toată România?",
+    a: "Da. You Protect livrează echipamente de protecție, haine de lucru și articole personalizate firmelor din toată România. Avem baza în Satu Mare și lucrăm des cu firme din nord-vestul țării. În funcție de proiect și de volum, colaborarea poate include consultanță, selecție de produse, personalizare și planificarea comenzilor recurente.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+};
 ---
 
 <BaseLayout
   title="Echipamente de protecție și haine de lucru"
-  description="Echipamente de protecție (SSM) și haine de lucru pentru firme, personalizate cu logo. Baza în Satu Mare, livrare în toată România, ofertă pentru echipa ta."
+  description="Echipamente de protecție și haine de lucru pentru firme, personalizate cu logo. Showroom cu cabină de probă în Vetiș, Satu Mare, livrare în toată România."
 >
-  <!-- Mobile Sticky CTA: Dispare la scroll jos, apare la scroll sus -->
+  <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+
+  <!-- Butonul fix de pe telefon: dispare la derulare în jos, revine la derulare în sus. -->
   <div
     id="mobile-sticky-catalog"
     class="md:hidden fixed z-[999] left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out top-20 translate-y-[10px]"
   >
     <a
       href="/programeaza-discutie/"
-      class="bg-yp-yellow text-yp-black font-medium px-5 py-2.5 min-h-[44px] rounded-full shadow-lg border border-yp-black/10 flex items-center justify-center gap-2 text-sm whitespace-nowrap"
+      class="flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full border border-yp-black/10 bg-yp-yellow px-5 py-2.5 text-sm font-medium text-yp-black shadow-lg"
     >
-      Hai să discutăm
+      Programează o discuție
     </a>
   </div>
 
   <script>
     let lastScrollY = window.scrollY;
     const stickyBtn = document.getElementById("mobile-sticky-catalog");
-
-    // It should be visible initially. Hide when scrolling down, show when scrolling up
     window.addEventListener(
       "scroll",
       () => {
         if (!stickyBtn) return;
-
         const currentScrollY = window.scrollY;
-
-        if (currentScrollY > lastScrollY && currentScrollY > 50) {
-          // Scrolling DOWN -> hide
-          stickyBtn.style.transform = "translate(-50%, -150%)";
-        } else {
-          // Scrolling UP or at the top -> show
-          stickyBtn.style.transform = "translate(-50%, 10px)";
-        }
-
+        stickyBtn.style.transform =
+          currentScrollY > lastScrollY && currentScrollY > 50 ? "translate(-50%, -150%)" : "translate(-50%, 10px)";
         lastScrollY = currentScrollY;
       },
       { passive: true },
     );
   </script>
 
-  <main class="relative min-h-screen flex items-center overflow-hidden">
-    <div class="absolute inset-0 z-0">
+  <section class="relative overflow-hidden border-b border-white/5">
+    <div class="absolute inset-0">
       <img
         src="/hero-youprotect-highvis.webp"
         alt="Echipamente de protecție și haine de lucru You Protect, Satu Mare"
-        class="w-full h-full object-cover object-[85%_center] md:object-[70%_center] opacity-80"
+        class="h-full w-full object-cover object-[85%_center] opacity-80 md:object-[70%_center]"
         fetchpriority="high"
       />
-      <div
-        class="absolute inset-0 bg-gradient-to-t from-yp-black via-yp-black/60 to-yp-black/20"
-      >
-      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-yp-black via-yp-black/70 to-yp-black/30"></div>
     </div>
 
-    <div
-      class="relative z-10 max-w-7xl mx-auto px-4 w-full flex items-center h-full py-20 md:py-24"
-    >
-      <div class="w-full lg:w-[75%] flex flex-col justify-center">
-        <div
-          class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm w-fit mb-8"
-        >
-          <span class="relative flex h-2 w-2">
-            <span
-              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yp-yellow opacity-75"
-            ></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-yp-yellow"
-            ></span>
-          </span>
-          <span class="text-xs font-medium text-neutral-300 tracking-wide"
-            >Consultanță gratuită pentru firme</span
-          >
-        </div>
-
-        <h1
-          class="text-3xl lg:text-5xl xl:text-6xl font-semibold tracking-tight leading-[1.15] text-white mb-6 max-w-[95%] md:max-w-[90%]"
-        >
-          Echipamente de protecție și haine de lucru alese după
-          costul real, nu după preț
+    <div class:list={[pageContainer, "relative py-16 md:py-24 lg:py-28"]}>
+      <div class="max-w-3xl">
+        <h1 class="font-heading text-4xl font-light leading-tight text-white md:text-5xl xl:text-6xl">
+          Echipamente de protecție și haine de lucru alese după costul real, nu după preț
         </h1>
-
-        <p
-          class="text-base lg:text-lg text-neutral-400 font-normal leading-relaxed mb-8 max-w-2xl"
-        >
-          Echipa ta nu arată întâmplător. Iar o alegere greșită costă mai mult decât apare pe factură: în disconfort, timp pierdut, oameni nemulțumiți și o imagine slabă în fața clienților. La You Protect, te ajutăm să alegi echipamente de protecție și haine de lucru potrivite activității tale, pentru mai multă claritate, mai puțin haos și o echipă care arată și lucrează profesionist. Suntem furnizor cu baza în Satu Mare și lucrăm cu firme din nord-vestul României și din toată țara.
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-yp-white/80">
+          {models} de la MASCOT, Portwest, Sir Safety și alte mărci, pe care le poți personaliza cu logo-ul firmei și le
+          livrăm în toată România. Le vezi și le probezi în showroom-ul nostru din Vetiș, Satu Mare.
         </p>
-
-        <div class="flex flex-col sm:flex-row gap-4 mb-4">
-          <a href="/programeaza-discutie/"
-            class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black transition-colors hover:bg-white">
-            Programează o discuție
-          </a>
-
-          <a
-            href="/produse/"
-            class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-white/25 px-6 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow"
-          >
-            Vezi catalogul
-          </a>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/programeaza-discutie/" class={btnPrimary}>Programează o discuție</a>
+          <a href="/cere-oferta/" class={btnSecondary}>Cere ofertă</a>
         </div>
-        <p class="text-sm text-neutral-400 mb-4 max-w-md">Discutăm despre echipa ta, activitatea ta și ce soluții ți se potrivesc. Fără obligații și fără presiune.</p>
-        <a
-          href="/calculator-cost-echipamente/"
-          class="inline-flex items-center gap-1 min-h-[44px] mb-6 text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white w-fit"
-        >
-          Calculează cât te costă de fapt echipamentele
-        </a>
-
-        <div
-          class="border-t border-white/10 pt-6 w-full max-w-2xl"
-        >
+        <div class="mt-3 flex flex-wrap gap-x-6">
+          <a href="/produse/" class={textLink}>Vezi catalogul</a>
+          <a href="/calculator-cost-echipamente/" class={textLink}>Calculează cât te costă de fapt echipamentele</a>
+        </div>
+        <div class="mt-6 max-w-2xl border-t border-white/10 pt-6">
           <RiskFreeTesting variant="inline" />
-        </div>
-      </div>
-
-      <div class="hidden lg:block lg:col-span-5 h-full"></div>
-    </div>
-  </main>
-
-  <!-- Trust Section Centered & Enlarged with Effects -->
-  <section class="py-12 bg-yp-black border-b border-white/5 relative z-20">
-    <div class="max-w-7xl mx-auto px-4 w-full">
-      <p
-        class="mb-12 text-center text-sm text-yp-white/60"
-      >
-        PARTENERI DE ÎNCREDERE
-      </p>
-
-      <div
-        class="grid grid-cols-2 lg:grid-cols-4 items-center justify-items-center justify-center gap-4 sm:gap-10 md:gap-16 w-full"
-      >
-        <!-- Logo 1: Mascot -->
-        <a href="/produse/mascot/"
-          class="group bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
-        >
-          <img
-            src="/logos/logo-1.webp"
-            alt="Produse MASCOT"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
-            loading="lazy"
-          />
-        </a>
-
-        <!-- Logo 2: Sir Safety -->
-        <a href="/produse/sir-safety/"
-          class="group bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
-        >
-          <img
-            src="/logos/logo-2.webp"
-            alt="Produse Sir Safety"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
-            loading="lazy"
-          />
-        </a>
-
-        <!-- Logo 3: Portwest -->
-        <div
-          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
-        >
-          <img
-            src="/logos/logo-3.webp"
-            alt="Portwest"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
-            loading="lazy"
-          />
-        </div>
-
-        <!-- Logo 4: Malfini -->
-        <div
-          class="group cursor-pointer bg-transparent border border-transparent rounded-[4px] p-4 md:p-8 hover:border-yp-yellow transition-all duration-300 flex items-center justify-center w-full max-w-[200px] md:max-w-[280px] mx-auto"
-        >
-          <img
-            src="/logos/logo-4.webp"
-            alt="Malfini"
-            class="h-16 md:max-h-28 md:h-28 w-auto object-contain rounded-[4px] md:opacity-60 md:grayscale md:group-hover:opacity-100 md:group-hover:grayscale-0 transition-all duration-300"
-            loading="lazy"
-          />
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIALE: Recenzii Google (src/data/testimonials.json). Imediat după branduri, ca dovada socială să apară
-       devreme, nu după 14 ecrane de text (auditul de conversie din 17.11.2026). -->
+  <section class="border-b border-white/5" aria-labelledby="marci">
+    <div class:list={[pageContainer, "py-12"]}>
+      <h2 id="marci" class="mb-8 text-center text-sm text-yp-white/60">Mărci cu care lucrăm</h2>
+      <ul class="grid grid-cols-2 items-center justify-items-center gap-4 sm:gap-10 lg:grid-cols-4">
+        {brands.map((b) => (
+          <li class="w-full max-w-[200px] md:max-w-[240px]">
+            {b.href ? (
+              <a href={b.href} class="group flex items-center justify-center rounded-[4px] border border-transparent p-4 transition-colors hover:border-yp-yellow md:p-6">
+                <img src={b.logo} alt={`Produse ${b.name}`} class="h-16 w-auto object-contain md:h-24 md:opacity-70 md:grayscale md:transition md:group-hover:opacity-100 md:group-hover:grayscale-0" loading="lazy" />
+              </a>
+            ) : (
+              <div class="flex items-center justify-center p-4 md:p-6">
+                <img src={b.logo} alt={b.name} class="h-16 w-auto object-contain md:h-24 md:opacity-70 md:grayscale" loading="lazy" />
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   {
     testimonials.length > 0 && (
-      <section class="py-24 bg-[#0a0a0a] border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4">
-          <h2
-            class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight text-center"
-          >
-            Ce spun clienții noștri
-          </h2>
-          <div
-            class="w-12 h-1 bg-yp-yellow mx-auto mb-16"
-          />
-          <div>
-            <Testimonials testimonials={testimonials} />
-          </div>
+      <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="recenzii">
+        <div class:list={[pageContainer, "py-20 md:py-24"]}>
+          <h2 id="recenzii" class:list={[sectionHeading, "mb-12 text-center"]}>Ce spun clienții noștri</h2>
+          <Testimonials testimonials={testimonials} />
         </div>
       </section>
     )
   }
 
-  <!-- BLOC 2: Obstacole -->
-  <section class="py-24 bg-yp-black border-b border-white/5 relative">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
-        <div class="flex flex-col">
-          <p
-            class="mb-4 text-sm text-yp-white/60"
-          >
-            Probleme reale, nu doar produse
-          </p>
-          <h2
-            class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight"
-          >
-            Dacă procesul de echipare nu este clar, costurile apar în mai multe forme
-          </h2>
-          <div
-            class="w-12 h-1 bg-yp-yellow mb-8"
-          >
-          </div>
-
-          <!-- Image Container Placeholder -->
-          <div
-            class="relative flex-grow rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 mt-auto hidden md:block min-h-[300px]"
-          >
-            <img
-              src="/obstacole-bg.webp"
-              alt="Provocările unui antreprenor"
-              class="absolute inset-0 w-full h-full object-cover opacity-80"
-              loading="lazy"
-              decoding="async"
-            />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-yp-black/80 via-yp-black/20 to-transparent pointer-events-none"
-            >
-            </div>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-8">
-          <div class="group">
-            <h3
-              class="text-white font-medium mb-2 group-hover:text-yp-yellow transition-colors"
-            >
-              Achiziții dezorganizate
-            </h3>
-            <p class="text-neutral-400 text-sm leading-relaxed">
-              Când cumperi din mai multe locuri, la momente diferite și fără o logică clară, pierzi timp, control și coerență în echiparea oamenilor.
-            </p>
-          </div>
-
-          <div class="group">
-            <h3
-              class="text-white font-medium mb-2 group-hover:text-yp-yellow transition-colors"
-            >
-              Echipă care nu se simte reprezentată
-            </h3>
-            <p class="text-neutral-400 text-sm leading-relaxed">
-              Hainele de lucru și echipamentele alese doar „ca să fie” transmit exact asta: lipsă de grijă, lipsă de standard și lipsă de atenție la om.
-            </p>
-          </div>
-
-          <div class="group">
-            <h3
-              class="text-white font-medium mb-2 group-hover:text-yp-yellow transition-colors"
-            >
-              Imagine neuniformă în fața clienților
-            </h3>
-            <p class="text-neutral-400 text-sm leading-relaxed">
-              O echipă echipată incoerent lasă impresia unei companii improvizate, chiar și atunci când munca din teren este bună.
-            </p>
-          </div>
-
-          <div class="group">
-            <h3
-              class="text-white font-medium mb-2 group-hover:text-yp-yellow transition-colors"
-            >
-              Costuri mai mari decât par la început
-            </h3>
-            <p class="text-neutral-400 text-sm leading-relaxed">
-              Produsul ieftin nu înseamnă întotdeauna economie. În timp, costul real apare prin înlocuiri dese, alegeri greșite și disconfort în utilizare.
-            </p>
-          </div>
-
-          <div class="group">
-            <h3
-              class="text-white font-medium mb-2 group-hover:text-yp-yellow transition-colors"
-            >
-              Lipsă de claritate în decizie
-            </h3>
-            <p class="text-neutral-400 text-sm leading-relaxed">
-              Fără un partener care să înțeleagă activitatea ta, alegerea se transformă rapid într-o comparație obositoare între produse, coduri și prețuri.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOC 2: Agravare -->
-  <section class="py-24 bg-[#0a0a0a] border-b border-white/5 relative">
-    <div class="max-w-7xl mx-auto px-4">
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center"
-      >
-        <!-- Text Container -->
-        <div class="order-2 md:order-1">
-          <h2
-            class="text-3xl lg:text-4xl font-light text-white mb-6 leading-tight"
-          >
-            Ce se întâmplă când lași lucrurile așa?
-          </h2>
-          <div class="w-12 h-1 bg-yp-yellow mb-8"></div>
-
-          <div class="space-y-6 text-neutral-400 text-base leading-relaxed">
-            <p>
-              La început, poate părea că te descurci. Mai faci o comandă rapidă, mai înlocuiești ceva punctual, mai amâni o decizie. Dar, în timp, lipsa unui sistem clar începe să se vadă: în felul în care arată echipa, în felul în care se simt oamenii și în felul în care compania este percepută.
-            </p>
-            <p>
-              Când echiparea este tratată superficial, efectele nu rămân doar în zona de produs. Apar în moral, în coerență, în ritmul de lucru și în imaginea profesională a firmei. Oamenii simt când poartă ceva ales atent și simt la fel de repede când poartă ceva cumpărat doar ca să bifeze o nevoie imediată.
-            </p>
-            <p>
-              În plus, protecția muncii nu este o zonă în care merită să mergi pe ghicite. Echipamentele individuale de protecție trebuie alese în funcție de activitate, riscuri și condițiile reale din teren. De aceea, o alegere făcută corect de la început înseamnă mai puțin haos, mai puține erori și mai multă încredere în decizie.
-            </p>
-          </div>
-        </div>
-
-        <!-- Image Container -->
-        <div class="order-1 md:order-2">
-          <div
-            class="relative w-full aspect-square md:aspect-[4/5] rounded-[4px] overflow-hidden bg-yp-black border border-white/5"
-          >
-            <img
-              src="/agravare-img.webp"
-              alt="Riscurile utilizării echipamentelor de protecție neconforme pe șantier sau în fabrică"
-              class="absolute inset-0 w-full h-full object-cover opacity-80"
-              loading="lazy"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOC 3: CTA Principal / SOLUTIE -->
-  <section class="py-24 bg-yp-black relative overflow-hidden">
-    <div
-      class="absolute top-0 right-0 w-[600px] h-[600px] bg-yp-yellow/5 rounded-full blur-[120px] pointer-events-none"
-    >
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 relative z-10">
-      <div
-        class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center"
-      >
-        <!-- Image Container (Colaj) -->
-        <div
-          class="order-1 grid grid-cols-2 gap-2 md:gap-4 h-full min-h-[300px] md:min-h-[400px] mb-8 md:mb-0"
-        >
-          <!-- Imagine principala verticala -->
-          <div
-            class="relative rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 row-span-2 shadow-2xl"
-          >
-            <img
-              src="/images/mascot-premium-1-v2.webp"
-              alt="Muncitor român cu echipament Mascot premium"
-              class="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-500"
-              loading="lazy"
-            />
-            <div
-              class="absolute inset-0 border border-white/10 pointer-events-none"
-            >
-            </div>
-          </div>
-          <!-- Imagini secundare -->
-          <div
-            class="relative rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 shadow-lg"
-          >
-            <img
-              src="/images/mascot-premium-2-v2.webp"
-              alt="Echipă muncitori construcții folosind echipamente de protecție premium"
-              class="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-500"
-              loading="lazy"
-            />
-            <div
-              class="absolute inset-0 border border-white/10 pointer-events-none"
-            >
-            </div>
-          </div>
-          <div
-            class="relative rounded-[4px] overflow-hidden bg-[#0a0a0a] border border-white/5 shadow-lg"
-          >
-            <img
-              src="/images/mascot-premium-3-v2.webp"
-              alt="Muncitor lucrând cu ferăstrău circular, purtând haine de lucru pentru siguranță maximă"
-              class="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-500"
-              loading="lazy"
-            />
-            <div
-              class="absolute inset-0 border border-white/10 pointer-events-none"
-            >
-            </div>
-          </div>
-        </div>
-
-        <!-- Text Container -->
-        <div class="order-2">
-          <h2
-            class="text-3xl lg:text-4xl font-light text-white mb-6 tracking-tight leading-tight"
-          >
-            You Protect te ajută să echipezi oamenii cu mai mult respect, mai multă claritate și o imagine profesională mai puternică
-          </h2>
-          <div class="w-12 h-1 bg-yp-yellow mb-10"></div>
-
-          <div class="space-y-6">
-            <p class="text-base text-neutral-400 leading-relaxed">
-              Lucrăm cu firme din construcții, producție, logistică, energie și servicii tehnice care vor mai mult decât un furnizor de echipamente de protecție. Vor un partener care înțelege că echiparea echipei influențează nu doar siguranța, ci și felul în care oamenii se simt și sunt percepuți.
-            </p>
-            <p class="text-base text-neutral-300 leading-relaxed font-medium">
-              De aceea, nu ne limităm la a trimite produse și prețuri. Oferim consultanță, selecție atentă, recomandări potrivite activității și un proces mai simplu de achiziție. Alegem împreună ce funcționează, ce merită și ce susține cu adevărat standardul companiei tale.
-            </p>
-          </div>
-
-          <div class="mt-12 flex flex-col gap-3 items-start">
-            <a href="/programeaza-discutie/"
-              class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black transition-colors hover:bg-white">
-              Programează o discuție
-            </a>
-            <p class="text-xs text-neutral-400 max-w-sm">Te ajutăm să clarifici ce se potrivește echipei tale înainte să iei o decizie.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOC 4: Solutii (Carduri 01-04) -->
-  <section class="py-24 bg-[#0a0a0a] border-t border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-        <!-- Card 01 -->
-        <div
-          class="bg-yp-black border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group"
-        >
-          <span
-            class="text-yp-yellow font-mono text-sm tracking-widest block mb-6"
-            >01 //</span
-          >
-          <h3 class="text-2xl font-light text-white mb-4">
-            Respect vizibil pentru oameni
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            Când echiparea este aleasă atent, oamenii simt că sunt tratați serios, iar asta se vede în atitudine, în încredere și în felul în care poartă imaginea companiei.
-          </p>
-        </div>
-
-        <!-- Card 02 -->
-        <div
-          class="bg-yp-black border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group relative overflow-hidden"
-        >
-          <span
-            class="text-yp-yellow font-mono text-sm tracking-widest block mb-6"
-            >02 //</span
-          >
-          <h3 class="text-2xl font-light text-white mb-4">
-            Imagine profesională mai puternică
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            O echipă bine prezentată inspiră mai multă încredere și transmite ordine, seriozitate și atenție la detalii.
-          </p>
-        </div>
-
-        <!-- Card 03 -->
-        <div
-          class="bg-yp-black border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group"
-        >
-          <span
-            class="text-yp-yellow font-mono text-sm tracking-widest block mb-6"
-            >03 //</span
-          >
-          <h3 class="text-2xl font-light text-white mb-4">Cost real mai bun în timp</h3>
-          <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            Deciziile bune nu se iau doar după prețul de achiziție. Contează durabilitatea, potrivirea, confortul și frecvența cu care trebuie să înlocuiești produsele.
-          </p>
-        </div>
-
-        <!-- Card 04 -->
-        <div
-          class="bg-yp-black border border-white/10 p-10 lg:p-12 hover:border-yp-yellow/30 transition-colors group"
-        >
-          <span
-            class="text-yp-yellow font-mono text-sm tracking-widest block mb-6"
-            >04 //</span
-          >
-          <h3 class="text-2xl font-light text-white mb-4">
-            Claritate în achiziție
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-            Ai un proces mai simplu, mai puțin obositor și mai ușor de dus mai departe, fără comparații inutile și fără alegeri făcute în grabă.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- BLOC 5: Categorii de produse, generate din catalog (CategoryTiles) -->
-  <section class="py-16 md:py-20 bg-yp-black border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4">
+  <section class="border-b border-white/5" aria-labelledby="categorii">
+    <div class:list={[pageContainer, "py-16 md:py-20"]}>
       <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <h2 class="max-w-3xl font-heading text-3xl font-light leading-tight text-white lg:text-4xl">
-          Echipamente individuale de protecție și haine de lucru pentru echipe tehnice
+        <h2 id="categorii" class:list={[sectionHeading, "max-w-3xl"]}>
+          Echipamente de protecție și haine de lucru pentru echipe tehnice
         </h2>
-        <a href="/produse/" class="shrink-0 py-2 text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white">
-          Vezi tot catalogul ({modelsLabel(publishedCount)})
-        </a>
+        <a href="/produse/" class:list={[textLink, "shrink-0"]}>Vezi tot catalogul ({models})</a>
       </div>
       <CategoryTiles />
     </div>
   </section>
 
-  <!-- BLOC 6: Proces in 3 pasi -->
-  <section class="py-24 bg-yp-black border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4 text-center lg:text-left">
-      <h2
-        class="text-3xl lg:text-4xl font-light text-white mb-16 text-center"
-      >
-        Cum începe colaborarea cu You Protect
-      </h2>
+  <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="de-ce">
+    <div class:list={[pageContainer, "py-20 md:py-24"]}>
+      <h2 id="de-ce" class:list={[sectionHeading, "max-w-3xl"]}>De ce să echipezi echipa cu You Protect</h2>
+      <ul class="mt-10 grid gap-4 md:grid-cols-2">
+        {reasons.map((r) => (
+          <li class="flex flex-col border border-white/10 bg-yp-black p-6 md:p-8">
+            <h3 class="font-heading text-xl font-medium text-white">{r.title}</h3>
+            <p class="mt-3 flex-1 leading-relaxed text-yp-white/75">{r.text}</p>
+            <a href={r.link.href} class:list={[textLink, "mt-4 w-fit"]}>{r.link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-8 relative">
-        <!-- Linie de conectare desktop -->
-        <div
-          class="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-px bg-white/10"
-        >
-        </div>
+  <section class="border-b border-white/5" aria-labelledby="pasi">
+    <div class:list={[pageContainer, "py-20 md:py-24"]}>
+      <h2 id="pasi" class:list={[sectionHeading, "max-w-3xl"]}>Cum începe colaborarea cu You Protect</h2>
+      <ol class="mt-10 grid gap-8 md:grid-cols-3">
+        {steps.map((s, i) => (
+          <li class="border-t border-yp-yellow/60 pt-6">
+            <p class="text-sm font-medium text-yp-yellow">Pasul {i + 1}</p>
+            <h3 class="mt-2 font-heading text-xl font-medium text-white">{s.title}</h3>
+            <p class="mt-3 leading-relaxed text-yp-white/75">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
 
-        <!-- Pas 1 -->
-        <div
-          class="relative z-10 flex flex-col items-center md:items-start text-center md:text-left"
-        >
-          <div
-            class="w-14 h-14 rounded-full bg-yp-black border-2 border-yp-yellow text-yp-yellow flex items-center justify-center font-mono text-xl mb-6 mx-auto md:mx-0"
-          >
-            1
-          </div>
-          <h3 class="text-xl font-medium text-white mb-3">
-            Discutăm despre activitatea și echipa ta
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Începem cu o discuție clară despre contextul real: ce face echipa, în ce condiții lucrează și ce vrei să îmbunătățești în procesul de echipare.
-          </p>
-        </div>
+  <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="include">
+    <div class:list={[pageContainer, "py-20 md:py-24"]}>
+      <h2 id="include" class:list={[sectionHeading, "max-w-3xl"]}>Ce include colaborarea cu You Protect</h2>
+      <ul class="mt-10 grid gap-x-12 gap-y-5 md:grid-cols-2">
+        {includes.map((item) => (
+          <li class="flex items-start gap-3 leading-relaxed text-yp-white/85">
+            <svg class="mt-1 h-5 w-5 shrink-0 text-yp-yellow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
-        <!-- Pas 2 -->
-        <div
-          class="relative z-10 flex flex-col items-center md:items-start text-center md:text-left"
-        >
-          <div
-            class="w-14 h-14 rounded-full bg-yp-black border-2 border-yp-yellow text-yp-yellow flex items-center justify-center font-mono text-xl mb-6 mx-auto md:mx-0"
-          >
-            2
-          </div>
-          <h3 class="text-xl font-medium text-white mb-3">
-            Primești o recomandare clară și o direcție potrivită
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Selectăm variante relevante de echipamente de protecție și haine de lucru și construim o propunere adaptată activității, bugetului și imaginii pe care vrei să o transmiți.
-          </p>
-        </div>
-
-        <!-- Pas 3 -->
-        <div
-          class="relative z-10 flex flex-col items-center md:items-start text-center md:text-left"
-        >
-          <div
-            class="w-14 h-14 rounded-full bg-yp-black border-2 border-yp-yellow text-yp-yellow flex items-center justify-center font-mono text-xl mb-6 mx-auto md:mx-0"
-          >
-            3
-          </div>
-          <h3 class="text-xl font-medium text-white mb-3">
-            Alegi informat, nu din grabă
-          </h3>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Poți testa, compara și decide cu mai multă claritate, astfel încât alegerea finală să fie potrivită atât pentru oameni, cât și pentru companie.
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-16 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-         <a href="/programeaza-discutie/"
-            class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black transition-colors hover:bg-white">
+  <section class="bg-yp-yellow">
+    <div class:list={[pageContainer, "py-16 text-center md:py-20"]}>
+      <div class="mx-auto flex max-w-3xl flex-col items-center">
+        <h2 class="font-heading text-3xl font-medium leading-tight text-yp-black md:text-4xl">Spune-ne ce echipă ai de echipat</h2>
+        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-yp-black/80">
+          Nu trebuie să știi dinainte ce produse îți trebuie. Ne spui activitatea și câți oameni ai, iar noi venim cu o
+          propunere. Fără obligații.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray">
             Programează o discuție
           </a>
-
-          <a
-            href="/cere-oferta/"
-            class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-white/25 px-6 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow"
-          >
+          <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-black/40 px-6 text-sm font-medium text-yp-black transition-colors hover:border-yp-black">
             Cere ofertă
           </a>
+        </div>
+        <p class="mt-6 text-sm text-yp-black/70">
+          Sau sună-ne la <a href={`tel:${SITE.telephone}`} class="font-medium underline underline-offset-4">0742 226 127</a>, de luni până vineri, 09:00–17:00.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- BLOC 7: Lista de beneficii -->
-  <section
-    class="py-24 bg-[#0a0a0a] border-b border-white/5 border-t border-t-white/10"
-  >
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-3xl lg:text-4xl font-light text-white mb-12 text-center">
-        Ce include relația cu You Protect
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Consultanță pentru alegerea echipamentelor potrivite
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Selecție clară pentru activitatea și echipa ta
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Livrări programate pentru mai multă predictibilitate
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            <a href="/haine-de-lucru-personalizate/" class="underline underline-offset-4 decoration-white/30 hover:text-yp-yellow">Personalizare cu logo</a>
-            prin broderie, serigrafie sau transfer termic
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Produse conforme și suport în alegere
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Testare de 90 de zile înainte de decizia finală, cu banii înapoi pe rolurile unde produsele nu ies mai eficiente și nu ești mulțumit
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Sprijin pentru comenzi recurente sau anuale
-          </p>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <svg
-            class="w-6 h-6 text-yp-yellow shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"></path></svg
-          >
-          <p class="text-neutral-300">
-            Colaborare orientată spre claritate, nu spre presiune comercială
-          </p>
-        </div>
+  <section aria-labelledby="intrebari">
+    <div class="mx-auto max-w-3xl px-4 py-20 md:py-24">
+      <h2 id="intrebari" class:list={[sectionHeading, "mb-10"]}>Întrebări frecvente despre echipamentele de protecție și hainele de lucru</h2>
+      <div class="flex flex-col gap-3">
+        {faq.map((f) => (
+          <details class="group border border-white/10 bg-[#0f0f0f] p-6 [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-white">
+              {f.q}
+              <svg class="h-6 w-6 shrink-0 transition group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+              </svg>
+            </summary>
+            <div class="mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed text-yp-white/75">
+              <p>{f.a}</p>
+              {f.more && <a href={f.more.href} class:list={[textLink, "mt-2"]}>{f.more.label}</a>}
+            </div>
+          </details>
+        ))}
       </div>
     </div>
   </section>
-
-  <!-- BLOC 7: CE FACI ACUM -->
-  <section class="py-24 bg-yp-black border-b border-white/5 relative">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2
-        class="text-3xl lg:text-4xl font-light text-white mb-6"
-      >
-        Ai două variante simple să mergi mai departe
-      </h2>
-      <div
-        class="w-12 h-1 bg-yp-yellow mx-auto mb-10"
-      >
-      </div>
-
-      <p
-        class="text-lg text-neutral-400 mb-16 leading-relaxed"
-      >
-        Nu trebuie să știi exact ce produse ai nevoie înainte să ne contactezi. Este suficient să ne spui ce provocări ai, iar noi te ajutăm să alegi o direcție potrivită pentru echipa ta, bugetul tău și modul tău de lucru.
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Variant 1 -->
-        <a
-          href="/programeaza-discutie/"
-          class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all group block"
-        >
-          <div
-            class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              ></path></svg
-            >
-          </div>
-          <p class="text-white text-lg font-medium mb-2">Programezi o discuție</p>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Intrăm în contextul firmei tale și vedem ce ți se potrivește cel mai bine.
-          </p>
-        </a>
-
-        <!-- Variant 2 -->
-        <a
-          href="/produse/"
-          class="bg-[#0a0a0a] border border-white/10 p-8 rounded-sm hover:border-yp-yellow/30 transition-all group block"
-        >
-          <div
-            class="w-12 h-12 bg-white/5 text-yp-yellow rounded-full flex items-center justify-center mb-6 mx-auto group-hover:bg-yp-yellow/10 transition-colors"
-          >
-             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-          </div>
-          <p class="text-white text-lg font-medium mb-2">Vezi catalogul</p>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Explorezi categoriile și selecțiile disponibile, iar când ești pregătit, poți cere o ofertă sau o recomandare.
-          </p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOC 8: CTA FINAL -->
-  <section class="py-24 bg-yp-yellow relative overflow-hidden">
-    <div class="max-w-4xl mx-auto px-4 text-center relative z-10 flex flex-col items-center">
-      <div class="flex flex-col sm:flex-row gap-4 justify-center w-full">
-         <a href="/programeaza-discutie/"
-          class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray">
-          Programează o discuție
-        </a>
-
-        <a
-          href="/produse/"
-          class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-black/40 px-6 text-sm font-medium text-yp-black transition-colors hover:border-yp-black"
-        >
-          Vezi catalogul
-        </a>
-      </div>
-
-      <p class="mt-8 text-yp-black/80 font-medium max-w-2xl text-center leading-relaxed">
-        Fără obligații. Fără presiune. Doar o discuție clară despre ce se potrivește companiei tale.
-      </p>
-    </div>
-  </section>
-
-  <!-- BLOC 9: FAQ -->
-  <section
-    class="py-24 bg-yp-black border-b border-white/5 relative overflow-hidden"
-  >
-    <div
-      class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-yp-yellow/5 rounded-full blur-[100px] pointer-events-none"
-    >
-    </div>
-
-    <div class="max-w-3xl mx-auto px-4 relative z-10">
-      <h2
-        class="text-3xl lg:text-4xl font-light text-white mb-16 text-center"
-      >
-        Întrebări frecvente despre echipamentele de protecție și hainele de lucru
-      </h2>
-
-      <div class="flex flex-col gap-4">
-        <!-- Intrebare 1 -->
-        <details
-          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-        >
-          <summary
-            class="flex items-center justify-between text-lg font-medium text-white"
-          >
-            Ce echipamente de protecție sunt obligatorii pentru angajatori în
-            România?
-            <span class="transition group-open:rotate-180">
-              <svg
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                width="24"><path d="M6 9l6 6 6-6"></path></svg
-              >
-            </span>
-          </summary>
-          <div
-            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-          >
-            Obligațiile diferă în funcție de riscurile prezente la locul de muncă și de activitatea desfășurată. În practică, angajatorul trebuie să asigure echipamente individuale de protecție adecvate riscurilor identificate, conforme și potrivite pentru utilizarea reală din teren. De aceea, alegerea nu ar trebui făcută generic, ci în funcție de activitate, mediu de lucru și nevoile echipei.
-          </div>
-        </details>
-
-        <!-- Intrebare 2 (New) -->
-        <details
-          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-        >
-          <summary
-            class="flex items-center justify-between text-lg font-medium text-white"
-          >
-            Cum aleg corect hainele de lucru pentru echipa mea?
-            <span class="transition group-open:rotate-180">
-              <svg
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                width="24"><path d="M6 9l6 6 6-6"></path></svg
-              >
-            </span>
-          </summary>
-          <div
-            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-          >
-            Alegerea corectă depinde de activitate, sezon, nivel de uzură, confort, imaginea pe care vrei să o transmită echipa și nevoia de personalizare. De aceea, pentru multe firme, o recomandare clară este mai utilă decât o listă lungă de produse.
-          </div>
-        </details>
-
-        <!-- Intrebare 3 (Original Intrebare 2) -->
-        <details
-          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-        >
-          <summary
-            class="flex items-center justify-between text-lg font-medium text-white"
-          >
-            Care este diferența dintre S1P și S3 la bocancii de protecție?
-            <span class="transition group-open:rotate-180">
-              <svg
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                width="24"><path d="M6 9l6 6 6-6"></path></svg
-              >
-            </span>
-          </summary>
-          <div
-            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-          >
-            Ambele categorii includ protecție de bază pentru medii de lucru tehnice, însă S3 oferă în general un nivel mai mare de protecție pentru condiții dificile, inclusiv rezistență mai bună la umezeală și cerințe suplimentare legate de talpă și construcție. Alegerea corectă depinde de mediul de lucru, nu doar de preț sau de popularitatea modelului.
-          </div>
-        </details>
-
-        <!-- Intrebare 4 (Original Intrebare 3) -->
-        <details
-          class="group bg-[#0f0f0f] border border-white/10 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer"
-        >
-          <summary
-            class="flex items-center justify-between text-lg font-medium text-white"
-          >
-            Livrați echipamente de protecție în toată România?
-            <span class="transition group-open:rotate-180">
-              <svg
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                width="24"><path d="M6 9l6 6 6-6"></path></svg
-              >
-            </span>
-          </summary>
-          <div
-            class="mt-4 text-neutral-400 text-sm leading-relaxed border-t border-white/10 pt-4"
-          >
-            Da. You Protect livrează echipamente de protecție, haine de lucru și articole personalizate pentru companii din toată România. Avem baza în Satu Mare și colaborăm frecvent cu firme din nord-vestul țării. În funcție de proiect și de volum, colaborarea poate include consultanță, selecție de produse, personalizare și planificarea comenzilor recurente.
-          </div>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- JSON-LD FAQ Schema -->
-  <script type="application/ld+json" is:inline>
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Ce echipamente de protecție sunt obligatorii pentru angajatori în România?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Obligațiile diferă în funcție de riscurile prezente la locul de muncă și de activitatea desfășurată. În practică, angajatorul trebuie să asigure echipamente individuale de protecție adecvate riscurilor identificate, conforme și potrivite pentru utilizarea reală din teren. Alegerea nu ar trebui făcută generic, ci în funcție de activitate, mediu de lucru și nevoile echipei."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Cum aleg corect hainele de lucru pentru echipa mea?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Alegerea corectă depinde de activitate, sezon, nivel de uzură, confort, imaginea pe care vrei să o transmită echipa și nevoia de personalizare. De aceea, pentru multe firme, o recomandare clară este mai utilă decât o listă lungă de produse."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Care este diferența dintre S1P și S3 la bocancii de protecție?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ambele categorii includ protecție de bază pentru medii de lucru tehnice, însă S3 oferă în general un nivel mai mare de protecție pentru condiții dificile, inclusiv rezistență mai bună la umezeală și cerințe suplimentare legate de talpă și construcție. Alegerea corectă depinde de mediul de lucru."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Livrați echipamente de protecție în toată România?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Da. You Protect livrează echipamente de protecție, haine de lucru și articole personalizate pentru companii din toată România. Avem baza în Satu Mare și colaborăm frecvent cu firme din nord-vestul țării. În funcție de proiect și de volum, colaborarea poate include consultanță, selecție de produse, personalizare și planificarea comenzilor recurente."
-          }
-        }
-      ]
-    }
-  </script>
 </BaseLayout>

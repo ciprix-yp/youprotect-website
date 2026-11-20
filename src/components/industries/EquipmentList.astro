@@ -1,18 +1,21 @@
 ---
 // Lista „ce echipament trebuie” de pe paginile de industrie. Un element duce la pagina lui de categorie din catalog doar
 // dacă pagina există (cel puțin două produse publicate, src/lib/catalog-categories.ts); altfel rămâne text simplu.
+// `product` (slug-ul fișei) duce direct la fișa produsului, dacă e publicată.
 import { getCollection } from 'astro:content';
 import { activeCategoryPages } from '../../lib/catalog-categories';
 import type { CategoryKey } from '../../lib/catalog-taxonomy';
 
 interface Props {
-  items: { text: string; category?: CategoryKey }[];
+  items: { text: string; category?: CategoryKey; product?: string }[];
 }
 
-const published = (await getCollection('products', ({ data }) => data.status === 'published')).map((e) => e.data);
+const entries = await getCollection('products', ({ data }) => data.status === 'published');
+const published = entries.map((e) => e.data);
 const active = activeCategoryPages(published);
 // Categoria cu pagină duce la pagina ei; cea cu un singur model, la catalogul filtrat; cea fără modele rămâne text.
-const hrefFor = (key?: CategoryKey) => {
+const hrefFor = (key?: CategoryKey, product?: string) => {
+  if (product) return entries.some((e) => e.id === product) ? `/produse/${product}/` : undefined;
   if (!key) return undefined;
   const page = active.find((c) => c.key === key);
   if (page) return `/produse/${page.slug}/`;
@@ -23,7 +26,7 @@ const hrefFor = (key?: CategoryKey) => {
 <ul class="list-disc space-y-3 pl-5 text-neutral-300 marker:text-yp-yellow">
   {
     Astro.props.items.map((item) => {
-      const href = hrefFor(item.category);
+      const href = hrefFor(item.category, item.product);
       return (
         <li>
           {href ? (

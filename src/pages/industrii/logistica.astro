@@ -16,8 +16,8 @@ const breadcrumbSchema = {
 
 <InnerPageLayout
   title="Echipamente de protecție: depozite și logistică"
-  description="Echipamente de protecție pentru depozite și logistică: încălțăminte de protecție, haine reflectorizante pentru trafic intern și haine de lucru cu logo."
-  heroTitle="Echipare pentru logistică"
+  description="Echipamente de protecție pentru depozite și logistică: încălțăminte de protecție, haine reflectorizante, haine și mănuși pentru depozit frigorific, cu logo."
+  heroTitle="Echipamente de protecție pentru depozite și logistică"
   heroSubtitle="În depozite și logistică, oamenii sunt pe picioare ore întregi, în trafic intern de stivuitoare și manipulare continuă. Echipamentul potrivit înseamnă confort, vizibilitate și siguranță pe tot parcursul turei."
   breadcrumb="Logistică"
   heroImage="/hero-youprotect-highvis.webp"
@@ -46,7 +46,7 @@ const breadcrumbSchema = {
             items={[
               { text: 'Încălțăminte de protecție ușoară, confortabilă pentru ture lungi', category: 'incaltaminte' },
               { text: 'Vestă și îmbrăcăminte hi-vis pentru trafic intern', category: 'reflectorizante' },
-              { text: 'Mănuși de manipulare cu grip și protecție', category: 'manusi' },
+              { text: 'Mănuși de manipulare cu grip și protecție, inclusiv anti-tăiere', category: 'manusi' },
               { text: 'Haine de lucru lejere, personalizabile cu logo' },
             ]}
           />
@@ -57,9 +57,39 @@ const breadcrumbSchema = {
           </p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="py-24 lg:py-32 bg-yp-black border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row gap-16 md:gap-24">
+        <div class="md:w-1/3 shrink-0">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32">
+            Depozit <br />frigorific.
+          </h2>
+        </div>
+        <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 leading-relaxed">
+          <p>
+            În camerele frigorifice, oamenii intră și ies din frig toată tura. Pentru ei avem haine și mănuși certificate
+            pentru protecția la frig: geaca și salopeta Portwest ColdStore, conform EN 342, și mănușile Portwest Apacha,
+            conform EN 511.
+          </p>
+          <EquipmentList
+            items={[
+              { text: 'Geacă pentru depozit frigorific Portwest ColdStore (EN 342)', product: 'geaca-depozit-frigorific-portwest-coldstore-cs10' },
+              { text: 'Salopetă pentru depozit frigorific Portwest ColdStore (EN 342)', product: 'salopeta-depozit-frigorific-portwest-coldstore-cs11' },
+              { text: 'Mănuși pentru depozit frigorific Portwest Apacha (EN 511)', product: 'manusi-depozit-frigorific-portwest-apacha-a751' },
+            ]}
+          />
+          <p class="text-base text-neutral-400">
+            Pe fiecare fișă găsești declarația de conformitate și fișa tehnică în română, cu ce înseamnă marcajul de pe
+            etichetă.
+          </p>
+        </div>
+      </div>
       <div class="mt-12">
         <a href="/produse/" class="inline-flex items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
-          Vezi catalogul complet →
+          Vezi catalogul complet
         </a>
       </div>
     </div>

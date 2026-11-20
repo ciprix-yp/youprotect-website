@@ -488,3 +488,17 @@
   - personalizare: zonele de logo pe coloane (un model deschis nu mai întinde rândul), fără etichetele de deasupra titlurilor;
   - testare fără riscuri: ce intră în program e acum sus, sub primul paragraf.
 - Homepage-ul (blocurile de CTA repetate, textul lung din hero) rămâne pentru faza de conversie: e mesaj, nu design.
+
+## D-2026-11-20-05
+- Faza finală (SEO, GEO, conversie), după auditul din 20.11.2026 (Search Console pe 90 de zile: 78 de clickuri, 73 pe
+  numele firmei; căutările generice duc la homepage pe pozițiile 1–4, aproape fără clickuri, multe cu intenție locală
+  „magazin…”). Owner-ul a aprobat tot:
+  - homepage restructurat din 13 blocuri în 8 (hero scurt și concret, mărci, recenzii, categorii, „De ce You Protect” cu
+    4 fapte și link spre dovadă, pași, ce include, un singur CTA, 6 întrebări frecvente generate dintr-o listă);
+  - în hero: „Programează o discuție” + „Cere ofertă”; catalogul și calculatorul ca linkuri;
+  - showroom-ul din Vetiș are cabină de probă (owner): în descrierea homepage-ului, în LocalBusiness (amenityFeature),
+    pe pagina Satu Mare (secțiune cu adresă, program, telefon) și într-o întrebare frecventă;
+  - pagina de logistică: H1 „Echipamente de protecție pentru depozite și logistică” și secțiunea „Depozit frigorific”
+    (ColdStore CS10/CS11, Apacha A751);
+  - produsele demo vechi (Directus) redirecționează la categoria cea mai apropiată, nu la catalog.
+- Nu scriem că showroom-ul primește fără programare și nici că toate produsele sunt expuse: nu avem confirmarea.
