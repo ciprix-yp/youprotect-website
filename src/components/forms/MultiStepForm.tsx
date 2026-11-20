@@ -16,7 +16,8 @@ interface MultiStepFormProps {
 }
 
 // Datele de contact vin la final: întrebările ușoare întâi, apoi „unde îți trimitem oferta”.
-const FORM_1_STEPS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'contact'];
+// Programarea: trei întrebări de calificare, apoi contactul cu un câmp liber (20.11.2026, D-2026-11-20-06).
+const FORM_1_STEPS = ['q1', 'q2', 'q3', 'contact'];
 const FORM_2_STEPS = ['q1', 'q2', 'q3', 'personalizare', 'q4', 'q5', 'q6', 'q7', 'contact'];
 
 // Cheia din sessionStorage cu datele pentru calendarul de pe /confirmare/ (nu le punem în URL).
@@ -74,7 +75,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     q1: '',
     q2: '',
     q3: isForm1 ? '' : [],
-    q4: isForm1 ? [] : '',
+    q4: '',
     q5: [],
     q6: '',
     q7: '',
@@ -224,22 +225,24 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           {field('phone', 'Telefon', { type: 'tel', inputMode: 'tel', autoComplete: 'tel', placeholder: '0722 123 456' })}
           {field('email', 'Email', { type: 'email', inputMode: 'email', autoComplete: 'email', placeholder: 'ion@exemplu.ro' })}
         </div>
-        {!isForm1 && (
-          <div>
-            <label htmlFor="f-detalii" className="block text-sm font-medium text-neutral-300 mb-1">
-              Cantități, mărimi, coduri (opțional)
-            </label>
-            <textarea
-              id="f-detalii"
-              rows={3}
-              maxLength={DETAILS_MAX_LENGTH}
-              className={inputClass}
-              value={formData.detalii}
-              onChange={(e) => updateField('detalii', e.target.value)}
-              placeholder="Ex.: 20 de perechi de bocanci, mărimile 40–46; 30 de geci reflectorizante M–2XL"
-            />
-          </div>
-        )}
+        <div>
+          <label htmlFor="f-detalii" className="block text-sm font-medium text-neutral-300 mb-1">
+            {isForm1 ? 'Despre ce vrei să vorbim? (opțional)' : 'Cantități, mărimi, coduri (opțional)'}
+          </label>
+          <textarea
+            id="f-detalii"
+            rows={3}
+            maxLength={DETAILS_MAX_LENGTH}
+            className={inputClass}
+            value={formData.detalii}
+            onChange={(e) => updateField('detalii', e.target.value)}
+            placeholder={
+              isForm1
+                ? 'Ex.: schimbăm furnizorul de încălțăminte; vrem haine cu logo pentru 40 de oameni'
+                : 'Ex.: 20 de perechi de bocanci, mărimile 40–46; 30 de geci reflectorizante M–2XL'
+            }
+          />
+        </div>
       </div>
       <p className="text-sm text-neutral-400 leading-relaxed">
         Folosim datele doar ca să-ți răspundem la cerere. Detalii în{' '}
@@ -415,44 +418,6 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           smallTeamNote,
         );
       if (stepId === 'q3') return renderRadioGroup('q3', 'În ce domeniu lucrează echipa ta, în principal?', DOMAIN_OPTIONS);
-      if (stepId === 'q4')
-        return renderMultiSelect(
-          'q4',
-          'Ce s-a schimbat recent, de a devenit important să te uiți la echipamente?',
-          [
-            { label: 'Începe un proiect nou sau o etapă nouă' },
-            { label: 'Vrem să înlocuim sau să reevaluăm furnizorul actual' },
-            { label: 'Vrem să îmbunătățim calitatea sau confortul echipamentelor' },
-            { label: 'Avem nevoie de mai multă claritate pe partea de SSM / conformitate' },
-            { label: 'Vrem o imagine mai unitară și mai profesionistă a echipei' },
-            { label: 'Ne uităm din timp la opțiuni, fără urgență imediată' },
-          ],
-          2,
-        );
-      if (stepId === 'q5')
-        return renderMultiSelect(
-          'q5',
-          'Când te gândești la echiparea echipei, ce ai vrea să fie mai clar sau mai bine pus la punct?',
-          [
-            { label: 'Alegerea corectă a produselor pentru activitatea noastră' },
-            { label: 'Conformitatea și documentarea SSM' },
-            { label: 'Calitatea și durabilitatea în utilizare' },
-            { label: 'Organizarea comenzilor și reaprovizionării' },
-            { label: 'Confortul și acceptarea echipamentelor de către echipă' },
-            { label: 'Imaginea profesională a firmei în fața clienților' },
-            { label: 'Altceva', hasOther: true },
-          ],
-          2,
-        );
-      if (stepId === 'q6')
-        return renderRadioGroup('q6', 'Ce ar face discuția cu adevărat utilă pentru tine?', [
-          { label: 'Să înțelegem ce variante ni se potrivesc' },
-          { label: 'Să primim recomandări clare pentru activitatea noastră' },
-          { label: 'Să clarificăm ce este necesar din punct de vedere SSM' },
-          { label: 'Să vedem cum putem uniformiza mai bine imaginea echipei' },
-          { label: 'Să știm ce variantă este mai rentabilă pe termen lung' },
-          { label: 'Altceva', hasOther: true },
-        ]);
     } else {
       if (stepId === 'q1')
         return renderRadioGroup('q1', 'Pentru câți colegi ai nevoie de echipamente acum?', TEAM_SIZES, undefined, smallTeamNote);
