@@ -1,10 +1,13 @@
 ---
 // Previzualizare fișă de produs, pentru orice status (draft, review, published). Nu se indexează, nu e în sitemap.
+// Doar pe preview-uri și local, nu pe youprotect.ro (vezi [...lista].astro).
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { isProductionBuild } from '../../../lib/build-env.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProductDetail from '../../../components/products/ProductDetail.astro';
 
 export async function getStaticPaths() {
+  if (isProductionBuild()) return [];
   const products = await getCollection('products');
   return products.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }

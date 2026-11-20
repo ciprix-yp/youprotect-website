@@ -30,6 +30,4 @@ function bind(el: HTMLElement) {
   });
 }
 
-const init = () => document.querySelectorAll<HTMLElement>('[data-tilt]').forEach(bind);
-init();
-document.addEventListener('astro:page-load', init);
+document.querySelectorAll<HTMLElement>('[data-tilt]').forEach(bind);

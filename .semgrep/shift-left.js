@@ -68,3 +68,28 @@ export const onRequestPost = async () => {
     return jsonResponse({ success: false, error: "Nu am putut salva cererea." }, 500);
   }
 };
+
+// Cloudflare Pages Functions + D1
+export const onRequestGet = async (context) => {
+  const { request, env } = context;
+  const url = new URL(request.url);
+  const tag = url.searchParams.get("tag");
+  // ruleid: d1-sql-injection-from-request, d1-dynamic-sql
+  await env.LEADS_DB.prepare(`SELECT * FROM lead WHERE tag = '${tag}'`).all();
+  const body = await request.json();
+  // ruleid: d1-sql-injection-from-request, d1-dynamic-sql
+  await env.LEADS_DB.prepare("DELETE FROM lead WHERE id = '" + body.id + "'").run();
+  // ruleid: d1-sql-injection-from-request, d1-dynamic-sql
+  await env.LEADS_DB.exec(`DROP TABLE ${context.params.table}`);
+  const ip = request.headers.get("CF-Connecting-IP");
+  // ruleid: d1-sql-injection-from-request, d1-dynamic-sql
+  await env.LEADS_DB.prepare("SELECT COUNT(*) FROM lead WHERE ip = '" + ip + "'").first();
+  // ok: d1-sql-injection-from-request, d1-dynamic-sql
+  await env.LEADS_DB.prepare("SELECT * FROM lead WHERE tag = ?1 AND ip = ?2").bind(tag, ip).all();
+  // ok: d1-sql-injection-from-request, d1-dynamic-sql
+  await env.LEADS_DB.prepare(`INSERT INTO lead (id, tag) VALUES (?1, ?2)`).bind(body.id, tag).run();
+  const limit = Number.parseInt(url.searchParams.get("limit"), 10);
+  // Numărul e curățat (nu e injecție), dar SQL-ul tot e dinamic: d1-dynamic-sql cere .bind().
+  // ruleid: d1-dynamic-sql
+  await env.LEADS_DB.prepare(`SELECT * FROM lead LIMIT ${limit}`).all();
+};

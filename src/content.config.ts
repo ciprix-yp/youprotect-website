@@ -35,7 +35,8 @@ const products = defineCollection({
           name: z.string(),
           swatch: media.nullable(),
           images: z.array(z.object({ src: media, thumb: media, view: z.string() })).min(1),
-          // Cadrele 360° (P01–P24) pentru culoarea principală; folosite de viewer-ul 360° (I-2026-11-11-01).
+          // Cadrele 360° (P01–P24) pentru viewer-ul 360° (idee, I-2026-11-11-01). Goale din 20.11.2026: nicio pagină nu le
+          // folosea; fetch_images_mascot.py --spin le descarcă din nou dacă facem viewer-ul.
           spin: z.array(media).default([]),
         }),
       )

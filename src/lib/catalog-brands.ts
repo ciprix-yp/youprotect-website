@@ -62,10 +62,6 @@ export function activeBrandPages(products: { supplier: { brand: string } }[]): B
   );
 }
 
-export function brandPageFor(brand: string): BrandPage | undefined {
-  return BRAND_PAGES.find((b) => b.brand === brand);
-}
-
 /** Descrierea din Google: numărul de modele vine din produse. */
 export function brandDescription(page: BrandPage, count: number): string {
   return `Produse ${page.name} pentru firme: ${modelsLabel(count)} în catalog, cu certificările fiecărui model. Ofertă, testare și logo de la You Protect, Satu Mare.`;

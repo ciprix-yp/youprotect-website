@@ -1,4 +1,5 @@
 ---
+import { jsonLd } from '../lib/json-ld';
 import Header from "../components/global/Header.astro";
 import Footer from "../components/global/Footer.astro";
 import Analytics from "../components/global/Analytics.astro";
@@ -24,12 +25,6 @@ const {
 
 // OG/Twitter cer URL-uri absolute. `new URL` ignoră baza dacă input-ul e deja absolut.
 const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
-const defaultBookingsUrl =
-  "https://outlook.office.com/book/Booking@youprotect.ro/?ismsaljsauthenabled";
-const bookingsUrl =
-  import.meta.env.PUBLIC_MICROSOFT_BOOKINGS_URL ||
-  import.meta.env.PUBLIC_BOOKINGS_URL ||
-  defaultBookingsUrl;
 ---
 
 <!doctype html>
@@ -87,7 +82,7 @@ const bookingsUrl =
     <!-- JSON-LD LocalBusiness Schema -->
     <script
       type="application/ld+json"
-      set:html={JSON.stringify({
+      set:html={jsonLd({
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "@id": `${SITE.url}/#localbusiness`,

@@ -596,3 +596,19 @@
   - Retragerea acordului oprește complet Google Analytics (`ga-disable-<id>`), nu doar cookie-urile.
   - Meniul marchează pagina curentă (și pe /despre-noi/, /cum-lucram/), cu `aria-current`; linkurile de 36–40 px
     au acum 44.
+
+## D-2026-11-20-13
+- Auditul din 20.11.2026, pasul 3 (curățenie în cod), aprobat de owner:
+  - Semgrep: regulile `d1-sql-injection-from-request` (surse Workers: request.json(), headers.get(), searchParams,
+    context.params) și `d1-dynamic-sql` (SQL D1 construit cu template sau concatenare), cu teste în
+    `.semgrep/shift-left.js`; regula de comenzi nu mai confundă `env.LEADS_DB.exec` cu child_process.
+  - CI: `npm run check` (`astro check`, TypeScript) înainte de build; proiectul are 0 erori.
+  - Șterse: cele 501 cadre 360° (5,9 MB; viewer-ul e doar idee, I-2026-11-11-01 — `fetch_images_mascot.py --spin` le
+    aduce înapoi), 3 logo-uri goale + `logo-yp.jpg`, `serve.mjs`, `bookingsUrl`, `brandPageFor`, ascultătorul
+    `astro:page-load`; `.DS_Store` ignorat.
+  - `/preview/produse/` (aprobarea fișelor în lucru) nu se mai construiește pe youprotect.ro (`CF_PAGES_BRANCH=main`),
+    doar pe preview-uri și local.
+  - Paritate (`tests/lead-parity.test.mjs`): întrebările formularului vin din `src/lib/lead-questions.js` (și pentru
+    server), harta categoriilor din `quote-categories.js`, cheile sessionStorage din `src/lib/session-keys.js`, linkul
+    WhatsApp pentru echipe mici din `whatsapp.ts`, JSON-LD doar prin `jsonLd()`. Limitele calculatorului = capetele
+    sliderelor (200 de angajați, 40 de ore, 150 lei/oră; serverul accepta 500/80/300).

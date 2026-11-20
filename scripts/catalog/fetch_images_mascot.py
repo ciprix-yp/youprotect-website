@@ -2,16 +2,18 @@
 
 Usage (needs Pillow):
   uv run --no-project --with pillow python -I scripts/catalog/fetch_images_mascot.py \
-      <source_dir> <texts_dir> <cache_dir> <public_dir>
+      <source_dir> <texts_dir> <cache_dir> <public_dir> [--spin]
 
   <source_dir>  .catalog-work/mascot           (extract_mascot.py output: qualities, ordered colours, swatches)
   <texts_dir>   catalog/texts/mascot           (slug + primaryColour per model)
   <cache_dir>   .catalog-work/images/mascot    (downloaded originals, local only)
   <public_dir>  public/images/products         (web images, committed)
 
-Per product: primary colour -> all 360° frames P01–P24 (+ PS pack shot); other ordered colours -> P01, P07, P13 (+ PS).
-Web output per colour: gallery views as <colour>-<view>.webp (1200 px) + <colour>-<view>-thumb.webp (240 px),
-<colour>-swatch.webp, and for the primary colour <colour>-spin-<view>.webp (800 px) for a future 360° viewer.
+Per product: primary colour -> gallery views PS, P01, P04, P07, P13, P19; other ordered colours -> P01, P07, P13 (+ PS).
+Web output per colour: gallery views as <colour>-<view>.webp (1200 px) + <colour>-<view>-thumb.webp (240 px) and
+<colour>-swatch.webp. With --spin, the primary colour also gets all 360° frames P01–P24 as <colour>-spin-<view>.webp
+(800 px), for the 360° viewer idea (PROJECT_OS/07-IDEA_INBOX.md, I-2026-11-11-01). Off by default since 20.11.2026:
+no page used them, and the 501 frames weighed 5.9 MB in every deploy.
 
 Security: only allowlisted https hosts are requested; codes are validated and every local path is built here,
 never taken from API responses; responses must be images within a size cap.
@@ -122,8 +124,11 @@ def cached(cache_dir, mqc, view, pp, content_id):
     return path.read_bytes()
 
 
-def process_colour(pp, mqc, colour, is_primary, cache_dir, out_dir):
-    wanted = SPIN_VIEWS + ["PS"] if is_primary else OTHER_VIEWS + ["PS"]
+def process_colour(pp, mqc, colour, is_primary, cache_dir, out_dir, with_spin=False):
+    if is_primary:
+        wanted = SPIN_VIEWS + ["PS"] if with_spin else GALLERY_VIEWS
+    else:
+        wanted = OTHER_VIEWS + ["PS"]
     available = pp.frames(mqc)
     stats = {"gallery": 0, "spin": 0, "missing": [v for v in wanted if v not in available and v != "PS"]}
     for view in wanted:
@@ -134,14 +139,15 @@ def process_colour(pp, mqc, colour, is_primary, cache_dir, out_dir):
             save_webp(raw, out_dir / f"{colour}-{view}.webp", 1200, 82)
             save_webp(raw, out_dir / f"{colour}-{view}-thumb.webp", 240, 75)
             stats["gallery"] += 1
-        if is_primary and view in SPIN_VIEWS:
+        if with_spin and is_primary and view in SPIN_VIEWS:
             save_webp(raw, out_dir / f"{colour}-spin-{view}.webp", 800, 72)
             stats["spin"] += 1
     return stats
 
 
 def main(argv):
-    source_dir, texts_dir, cache_dir, public_dir = map(Path, argv[:4])
+    with_spin = "--spin" in argv
+    source_dir, texts_dir, cache_dir, public_dir = map(Path, [a for a in argv if a != "--spin"][:4])
     pp = Picturepark()
     for text_path in sorted(texts_dir.glob("*.json")):
         if text_path.name.startswith("_"):
@@ -159,7 +165,7 @@ def main(argv):
             if not CODE.match(colour):
                 raise ValueError(f"cod de culoare invalid: {colour}")
             mqc = f"{model}-{quality}-{colour}"
-            stats = process_colour(pp, mqc, colour, colour == primary, cache_dir, out_dir)
+            stats = process_colour(pp, mqc, colour, colour == primary, cache_dir, out_dir, with_spin)
             if c.get("swatch"):
                 try:
                     save_webp(fetch_plain(c["swatch"]), out_dir / f"{colour}-swatch.webp", 64, 80)

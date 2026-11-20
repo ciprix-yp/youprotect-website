@@ -162,7 +162,7 @@ test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/
   assert.equal(parseTcoInputs({ ...input, months: 5 }), null);
   assert.equal(parseTcoInputs({ ...input, categories: [] }), null);
   assert.equal(parseTcoInputs({ ...input, employees: '10' }), null);
-  assert.equal(parseTcoInputs({ ...input, employees: 1e9, durability: 99 }).employees, 500);
+  assert.equal(parseTcoInputs({ ...input, employees: 1e9, durability: 99 }).employees, 200); // capătul sliderului
   assert.equal(parseTcoInputs({ ...input, durability: 99 }).durability, 3);
   assert.equal(parseTcoInputs({ ...input, domain: '<b>x</b>' }).domain, '');
 });
