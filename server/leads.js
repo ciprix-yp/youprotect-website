@@ -2,6 +2,7 @@
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
 import { DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
+import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../src/lib/quote-categories.js';
 import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
 
@@ -128,10 +129,34 @@ export function parseLead(payload) {
   };
 }
 
-/** Cererile de pe youprotect.ro sunt „production”; cele de pe preview-urile Cloudflare sunt „preview” (test). */
+/** Cererile de pe youprotect.ro sunt „production”; cele de pe preview-urile Cloudflare sunt „preview” (test).
+ *  youprotect-website.pages.dev servește tot producția (aceeași versiune ca youprotect.ro), deci e „production”;
+ *  preview-urile sunt subdomenii ale lui (<hash>. sau <branch>.youprotect-website.pages.dev). */
+const PRODUCTION_HOSTS = new Set(['youprotect.ro', 'www.youprotect.ro', 'youprotect-website.pages.dev']);
 export function environmentOf(hostname) {
-  return hostname === 'youprotect.ro' || hostname === 'www.youprotect.ro' ? 'production' : 'preview';
+  return PRODUCTION_HOSTS.has(hostname) ? 'production' : 'preview';
 }
+
+/** Câmpul-capcană din formulare (ascuns pentru oameni, src/components/forms/Honeypot.tsx). Un robot care completează
+ *  toate câmpurile îl completează și pe el; atunci răspundem „succes”, dar nu salvăm și nu trimitem nimic. */
+export { HONEYPOT_FIELD };
+export function isBotSubmission(payload) {
+  const value = payload?.data?.[HONEYPOT_FIELD];
+  return typeof value === 'string' && value.trim() !== '';
+}
+
+/** Cererea vine din formularul de pe același site: browserul trimite antetul Origin la orice POST făcut cu fetch.
+ *  Un script care postează direct, fără Origin sau de pe alt site, e refuzat. */
+export function isSameOrigin(request) {
+  const origin = request.headers.get('Origin');
+  return origin !== null && origin === new URL(request.url).origin;
+}
+
+/** Câte cereri salvăm de la același IP într-o oră. Un client real trimite una-două. */
+export const MAX_LEADS_PER_IP_PER_HOUR = 5;
+
+/** Cererile preluate de CRM se șterg din D1 după atâtea zile (politica de confidențialitate). */
+export const SYNCED_RETENTION_DAYS = 30;
 
 // Fără CR/LF în subiect (header injection) și fără caractere de control.
 const oneLine = (s) => String(s ?? '').replace(/[\r\n\t\u0000-\u001f]+/g, ' ').trim();

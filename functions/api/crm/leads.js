@@ -5,8 +5,9 @@
 //   POST /api/crm/leads  { "acks": [{ "id": "...", "crmRef": "..." }] } -> le marchează preluate
 //
 // Autentificare: Authorization: Bearer <CRM_SYNC_TOKEN> (secret în Cloudflare Pages și în Keychain).
-// Cererile preluate se șterg din D1 după 30 de zile: rămân în CRM, unde se aplică termenul de păstrare.
-import { jsonResponse, safeEqual } from '../../../server/leads.js';
+// Cererile preluate se șterg din D1 după 30 de zile: rămân în CRM, unde se aplică termenul de păstrare. Curățenia
+// rulează la fiecare preluare (GET, la 5 minute) și la fiecare confirmare (POST), nu doar la confirmări.
+import { SYNCED_RETENTION_DAYS, jsonResponse, safeEqual } from '../../../server/leads.js';
 
 const MAX_LIMIT = 100;
 const MAX_ACKS = 100;
@@ -19,6 +20,13 @@ function authorized(request, env) {
   return safeEqual(given, token);
 }
 
+// Data limită se calculează aici, în același format ca synced_at (ISO 8601 cu „T” și „Z”). Înainte se compara cu
+// datetime('now', …) din SQLite („2026-10-21 18:00:00”, cu spațiu), iar în ziua limită „T” > „ ” amâna ștergerea.
+function purgeSynced(db) {
+  const cutoff = new Date(Date.now() - SYNCED_RETENTION_DAYS * 86_400_000).toISOString();
+  return db.prepare('DELETE FROM lead WHERE synced_at IS NOT NULL AND synced_at < ?1').bind(cutoff);
+}
+
 function unavailable(env) {
   return !env.LEADS_DB ? jsonResponse({ error: 'Inbox-ul nu e configurat.' }, 503) : null;
 }
@@ -27,6 +35,12 @@ export const onRequestGet = async ({ request, env }) => {
   if (!authorized(request, env)) return jsonResponse({ error: 'Neautorizat.' }, 401);
   const missing = unavailable(env);
   if (missing) return missing;
+
+  try {
+    await purgeSynced(env.LEADS_DB).run();
+  } catch (error) {
+    console.error('crm/leads: purge failed', error);
+  }
 
   const url = new URL(request.url);
   const limit = Math.min(Math.max(Number.parseInt(url.searchParams.get('limit') || '50', 10) || 50, 1), MAX_LIMIT);
@@ -77,9 +91,7 @@ export const onRequestPost = async ({ request, env }) => {
       a.crmRef ? a.crmRef.slice(0, 100) : null,
     ),
   );
-  statements.push(
-    env.LEADS_DB.prepare("DELETE FROM lead WHERE synced_at IS NOT NULL AND synced_at < datetime('now', '-30 days')"),
-  );
+  statements.push(purgeSynced(env.LEADS_DB));
   await env.LEADS_DB.batch(statements);
   return jsonResponse({ acknowledged: valid.length });
 };

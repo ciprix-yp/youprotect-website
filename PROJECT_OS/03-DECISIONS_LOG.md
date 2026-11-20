@@ -563,3 +563,20 @@
   tactile). Fără efect cu „reduce motion” sau în browserele fără suport.
 - Bug prins la build: minificatorul CSS lipea `animation-timeline` în prescurtarea `animation`, iar browserul arunca
   regula fără eroare; test nou `tests/scroll-animations.test.mjs`.
+
+## D-2026-11-20-11
+- Auditul din 20.11.2026, pasul 1 (securitate și date), aprobat de owner:
+  - `/api/submit-lead` acceptă doar cereri cu Origin = site-ul (browserul îl trimite la orice POST cu fetch), ignoră
+    cererile cu câmpul-capcană `adresa_web` completat (răspunde „succes”, nu salvează, nu trimite email) și salvează
+    cel mult 5 cereri pe oră de la același IP (numărate în tabelul `lead`, fără schemă nouă în D1). Răspunsul de
+    eroare nu mai spune ce a căzut (`stage` scos).
+  - Ștergerea cererilor preluate de CRM după 30 de zile compară acum date ISO (înainte, în ziua limită „T” > „ ”
+    amâna ștergerea cu până la o zi) și rulează la fiecare preluare (GET, la 5 minute), nu doar la confirmări.
+    Cererile nepreluate rămân până le ia CRM-ul.
+  - `youprotect-website.pages.dev` (aliasul de producție Cloudflare) e „production”, ca cererile de acolo să ajungă
+    în CRM; preview-urile rămân „preview”. Contractul cu CRM-ul nu se schimbă.
+  - `public/_headers`: HSTS (1 an, fără subdomenii), X-Frame-Options DENY, CSP cu sursele externe folosite
+    (Google Analytics, Cloudflare Web Analytics, Cal.com) și `frame-ancestors 'none'`, Permissions-Policy, COOP;
+    adresele *.pages.dev primesc `X-Robots-Tag: noindex`. CSP-ul cu hash-uri (fără 'unsafe-inline') e pasul următor.
+- Rămân la owner (setări Cloudflare): baza D1 separată pentru preview și scoaterea CRM_SYNC_TOKEN din mediul Preview;
+  Turnstile, dacă apar cereri-spam care trec de filtrele de mai sus.
