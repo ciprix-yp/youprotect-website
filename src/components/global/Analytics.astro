@@ -6,6 +6,7 @@
 // - Evenimentele vin de la componente ca `yp:track` / `yp:lead` (CustomEvent) sau din clicuri pe link-uri; dacă GA nu e
 //   pornit, se ignoră. În GA nu trimitem date din formulare (nume, email, telefon, cifrele din calculator).
 import { ANALYTICS } from "../../lib/site";
+import { LEAD_FLAG } from "../../lib/session-keys.js";
 
 const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
 ---
@@ -19,6 +20,7 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
       aria-label="Cookie-uri"
       data-ga4-id={ga4Id}
       data-key={consentKey}
+      data-lead-flag={LEAD_FLAG}
       data-max-age-days={String(consentMaxAgeDays)}
       data-cookie-days={String(gaCookieMaxAgeDays)}
       class="fixed inset-x-0 bottom-0 z-[1000] p-3 sm:p-6 pointer-events-none"
@@ -53,7 +55,6 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
 }
 
 <script>
-  import { LEAD_FLAG } from '../../lib/session-keys.js';
   type Consent = { v: 1; analytics: boolean; at: string };
   type Params = Record<string, string | number | boolean | undefined>;
   type Win = Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
@@ -62,6 +63,9 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
   const banner = document.getElementById('yp-consent');
   const id = banner?.dataset.ga4Id ?? '';
   const KEY = banner?.dataset.key ?? 'yp_consent';
+  // Cheia vine din pagină (session-keys.js), nu dintr-un import: un import ar scoate scriptul din pagină într-un fișier
+  // separat, iar pe preview-urile Cloudflare tranziția card → fișă era atunci sărită (20.11.2026, cauză neclarificată).
+  const LEAD_FLAG = banner?.dataset.leadFlag ?? '';
   const MAX_AGE_MS = Number(banner?.dataset.maxAgeDays ?? 182) * 86_400_000;
   const COOKIE_SECONDS = Number(banner?.dataset.cookieDays ?? 395) * 86_400;
 
