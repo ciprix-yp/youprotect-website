@@ -526,3 +526,17 @@
     abia după hero; numele de produs pe 4 rânduri și marca jos (nu se mai taie); logo-urile pe un rând; footer pe
     două coloane; secțiuni mai strânse.
   - Antet translucid cu blur; butoane cu efect de apăsare.
+
+## D-2026-11-20-08
+- Auditul calculatorului de cost (20.11.2026): aritmetica era corectă și aceeași pe pagină și pe server, dar modelul
+  greșea la coșuri mixte. Avea o singură frecvență de înlocuire pentru toate categoriile, între 3 și 12 luni (mănușile
+  „la 6 luni” = 2 perechi pe an de om), o singură bucată pe om și spunea că pragul „nu depinde de nicio presupunere”,
+  deși includea ipoteza că timpul de administrare scade odată cu înlocuirile. Bug-uri: un preț gol apărea 0 pe ecran,
+  dar calculul folosea 1 leu; virgula nu era acceptată; „1.3333333333333333 pe an” la 9 luni.
+- Owner-ul a aprobat refacerea și durabilitatea implicită 1 (durează la fel: rezultat neutru până alege vizitatorul):
+  - pe fiecare categorie: bucăți pe om și frecvența de înlocuire, de la o săptămână la 3 ani;
+  - rezultatul principal e pragul din prețuri (fără ipoteze); pragul cu administrarea apare separat, numit ipoteză;
+  - prețurile se validează (1–5.000 de lei, cu mesaj), acceptă virgula; zecimalele în română;
+  - `tests/tco.test.mjs` cu valori calculate de mână; formatul vechi al cererilor (o singură frecvență) e acceptat.
+- Rezumatul pentru CRM: `calc_categorii` include bucățile și frecvența pe categorie, `calc_inlocuire` dispare,
+  `calc_prag` = pragul din prețuri, `calc_prag_admin` nou.
