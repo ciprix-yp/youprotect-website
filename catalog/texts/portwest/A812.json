@@ -1,11 +1,14 @@
 {
   "model": "A812",
   "slug": "manusi-protectie-chimica-portwest-nitrosafe-plus-a812",
-  "status": "review",
+  "status": "published",
   "keyword": "mănuși de protecție chimică",
   "name": "Mănuși de protecție chimică Portwest Nitrosafe Plus",
   "category": "manusi",
-  "industries": ["productie", "alimentar"],
+  "industries": [
+    "productie",
+    "alimentar"
+  ],
   "primaryColour": "GN",
   "summary": "Mănuși de protecție chimică din nitril, certificate EN ISO 374-1 tip A pentru 10 substanțe testate și EN ISO 374-5 pentru micro-organisme și virusuri. Subțiri, de 0,38 mm, simți ce atingi.",
   "description": [
@@ -45,15 +48,42 @@
     }
   ],
   "specs": [
-    { "label": "Tip", "value": "Mănușă din nitril pentru protecție chimică, căptușită" },
-    { "label": "Grosime", "value": "0,38 mm" },
-    { "label": "Lungime", "value": "330 mm" },
-    { "label": "Suprafață", "value": "Model texturat, antialunecare" },
-    { "label": "Fără silicon", "value": "Da" },
-    { "label": "AQL", "value": "1,5" },
-    { "label": "Dexteritate", "value": "Nivel 5, pe o scară de la 1 la 5" },
-    { "label": "Categorie EIP", "value": "III, conform Regulamentului (UE) 2016/425; producție supravegheată de SGS FIMKO OY (modulul D)" },
-    { "label": "Certificat UE de tip", "value": "2777/10079-06/E09-01, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)" }
+    {
+      "label": "Tip",
+      "value": "Mănușă din nitril pentru protecție chimică, căptușită"
+    },
+    {
+      "label": "Grosime",
+      "value": "0,38 mm"
+    },
+    {
+      "label": "Lungime",
+      "value": "330 mm"
+    },
+    {
+      "label": "Suprafață",
+      "value": "Model texturat, antialunecare"
+    },
+    {
+      "label": "Fără silicon",
+      "value": "Da"
+    },
+    {
+      "label": "AQL",
+      "value": "1,5"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 5, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "Categorie EIP",
+      "value": "III, conform Regulamentului (UE) 2016/425; producție supravegheată de SGS FIMKO OY (modulul D)"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/10079-06/E09-01, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)"
+    }
   ],
   "notes": [
     "Protecția chimică e certificată doar pentru cele 10 substanțe din cod (AFJKLMNOPT). Pentru alte substanțe sau pentru amestecuri, cere datele de permeație înainte de folosire.",

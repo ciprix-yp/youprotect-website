@@ -1,11 +1,15 @@
 {
   "model": "A727",
   "slug": "manusi-anti-impact-portwest-dx-vhr-a727",
-  "status": "review",
+  "status": "published",
   "keyword": "mănuși anti-impact",
   "name": "Mănuși anti-impact Portwest DX VHR",
   "category": "manusi",
-  "industries": ["constructii", "energie", "productie"],
+  "industries": [
+    "constructii",
+    "energie",
+    "productie"
+  ],
   "primaryColour": "OR",
   "summary": "Mănuși anti-impact cu protecții din cauciuc termoplastic (TPR) și nivelul E la tăiere, certificate EN 388 (4X43EP). Te miști liber, ai priză pe ud sau uscat, iar căptușeala hi-vis portocalie se vede ușor.",
   "description": [
@@ -37,13 +41,34 @@
     }
   ],
   "specs": [
-    { "label": "Tip", "value": "Mănușă anti-impact tricotată, cu impregnare de nitril" },
-    { "label": "Protecție la impact", "value": "Cauciuc termoplastic (TPR), lipit direct pe căptușeală" },
-    { "label": "Finețea tricotului", "value": "13 G" },
-    { "label": "Impregnare", "value": "Nitril, flexibilă" },
-    { "label": "Căptușeală", "value": "Hi-vis, portocalie" },
-    { "label": "Dexteritate", "value": "Nivel 5, pe o scară de la 1 la 5" },
-    { "label": "Certificat UE de tip", "value": "2777/13465/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)" }
+    {
+      "label": "Tip",
+      "value": "Mănușă anti-impact tricotată, cu impregnare de nitril"
+    },
+    {
+      "label": "Protecție la impact",
+      "value": "Cauciuc termoplastic (TPR), lipit direct pe căptușeală"
+    },
+    {
+      "label": "Finețea tricotului",
+      "value": "13 G"
+    },
+    {
+      "label": "Impregnare",
+      "value": "Nitril, flexibilă"
+    },
+    {
+      "label": "Căptușeală",
+      "value": "Hi-vis, portocalie"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 5, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/13465/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)"
+    }
   ],
   "notes": [
     "Protecția la căldură e doar la contact, nivelul 1 conform EN 407 (100 °C). Comportarea la flacără și metalul topit nu au fost testate."

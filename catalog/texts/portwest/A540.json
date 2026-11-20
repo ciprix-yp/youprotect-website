@@ -1,11 +1,14 @@
 {
   "model": "A540",
   "slug": "manusi-sudura-portwest-a540",
-  "status": "review",
+  "status": "published",
   "keyword": "mănuși de sudură",
   "name": "Mănuși de sudură Portwest Ultra",
   "category": "manusi",
-  "industries": ["productie", "constructii"],
+  "industries": [
+    "productie",
+    "constructii"
+  ],
   "primaryColour": "BR",
   "summary": "Mănuși de sudură din piele bovină, certificate EN 12477 tip A și EN 407 (412X4X), cu cusături din aramidă și căptușeală fleece. Te simți protejat la flacără și la stropi mici de metal topit.",
   "description": [
@@ -41,12 +44,30 @@
     }
   ],
   "specs": [
-    { "label": "Tip", "value": "Mănușă de sudură din piele bovină" },
-    { "label": "Căptușeală", "value": "Fleece" },
-    { "label": "Cusături", "value": "Fir de aramidă, întărite pe palme și degete" },
-    { "label": "Întărituri", "value": "Palmă și deget mare" },
-    { "label": "Dexteritate", "value": "Nivel 2, pe o scară de la 1 la 5" },
-    { "label": "Certificat UE de tip", "value": "2777/21744-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)" }
+    {
+      "label": "Tip",
+      "value": "Mănușă de sudură din piele bovină"
+    },
+    {
+      "label": "Căptușeală",
+      "value": "Fleece"
+    },
+    {
+      "label": "Cusături",
+      "value": "Fir de aramidă, întărite pe palme și degete"
+    },
+    {
+      "label": "Întărituri",
+      "value": "Palmă și deget mare"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 2, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/21744-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)"
+    }
   ],
   "notes": [
     "Dexteritatea e de nivel 2 din 5: pentru lucrări care cer mișcări fine, ca sudura TIG, EN 12477 recomandă mănuși de tip B.",

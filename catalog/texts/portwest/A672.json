@@ -1,11 +1,15 @@
 {
   "model": "A672",
   "slug": "manusi-anti-taiere-portwest-cs-cut-f13-a672",
-  "status": "review",
+  "status": "published",
   "keyword": "mănuși anti-tăiere",
   "name": "Mănuși anti-tăiere Portwest CS Cut F13",
   "category": "manusi",
-  "industries": ["productie", "constructii", "logistica"],
+  "industries": [
+    "productie",
+    "constructii",
+    "logistica"
+  ],
   "primaryColour": "K8",
   "summary": "Mănuși anti-tăiere cu nivelul F la tăiere, conform EN 388 (4X44F), din tricot de 13 G care respiră, cu spumă de nitril în palmă. Lucrezi precis, iar eticheta reflectorizantă te face mai vizibil în lumină slabă.",
   "description": [
@@ -37,15 +41,42 @@
     }
   ],
   "specs": [
-    { "label": "Tip", "value": "Mănușă anti-tăiere tricotată, cu acoperire de nitril în palmă" },
-    { "label": "Finețea tricotului", "value": "13 G" },
-    { "label": "Acoperire", "value": "Spumă de nitril, în palmă" },
-    { "label": "Deget mare", "value": "Întărit" },
-    { "label": "Ecran tactil", "value": "Compatibile cu majoritatea dispozitivelor" },
-    { "label": "Vizibilitate", "value": "Etichetă reflectorizantă" },
-    { "label": "Dexteritate", "value": "Nivel 5, pe o scară de la 1 la 5" },
-    { "label": "OEKO-TEX®", "value": "STANDARD 100, conform fișei tehnice" },
-    { "label": "Certificat UE de tip", "value": "2777/26500-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)" }
+    {
+      "label": "Tip",
+      "value": "Mănușă anti-tăiere tricotată, cu acoperire de nitril în palmă"
+    },
+    {
+      "label": "Finețea tricotului",
+      "value": "13 G"
+    },
+    {
+      "label": "Acoperire",
+      "value": "Spumă de nitril, în palmă"
+    },
+    {
+      "label": "Deget mare",
+      "value": "Întărit"
+    },
+    {
+      "label": "Ecran tactil",
+      "value": "Compatibile cu majoritatea dispozitivelor"
+    },
+    {
+      "label": "Vizibilitate",
+      "value": "Etichetă reflectorizantă"
+    },
+    {
+      "label": "Dexteritate",
+      "value": "Nivel 5, pe o scară de la 1 la 5"
+    },
+    {
+      "label": "OEKO-TEX®",
+      "value": "STANDARD 100, conform fișei tehnice"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/26500-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat nr. 2777)"
+    }
   ],
   "notes": [
     "Protecția la căldură e doar la contact, până la 100 °C (EN 407, nivelul 1). Testele pentru comportarea la flacără și pentru stropii de metal topit nu au fost efectuate, deci nu sunt mănuși pentru sudură.",
