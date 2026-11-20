@@ -14,3 +14,10 @@ export const labelTitle = 'mb-2 text-sm font-medium text-yp-white';
 export const breadcrumbNav = 'mb-6 flex flex-wrap items-center text-sm text-yp-white/60';
 /** Containerul paginii: aceeași lățime și aceeași margine ca header-ul și footer-ul. */
 export const pageContainer = 'mx-auto max-w-7xl px-4';
+
+/** H1-ul paginii, ca în catalog. */
+export const pageTitle = 'font-heading text-3xl font-light leading-tight text-yp-white md:text-4xl';
+/** Paragraful de sub H1. */
+export const pageIntro = 'mt-4 text-base leading-relaxed text-yp-white/75';
+/** Textul lung (pagini legale, ghiduri): rânduri de cel mult ~70 de caractere. */
+export const readingColumn = 'max-w-3xl';

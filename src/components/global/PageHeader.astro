@@ -1,0 +1,60 @@
+---
+// Antetul unei pagini interioare, în stilul catalogului: breadcrumb, H1, intro, butoane, iar opțional o fotografie în
+// dreapta (pe telefon, sub text). Toate paginile interioare îl folosesc, ca titlurile, butoanele și marginile să fie la
+// fel peste tot.
+import { breadcrumbNav, btnPrimary, btnSecondary, pageContainer, pageIntro, pageTitle } from '../../lib/ui';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+export interface Props {
+  title: string;
+  intro?: string;
+  /** Fără „Acasă”: se adaugă singur. Ultimul element e pagina curentă. */
+  crumbs: Crumb[];
+  image?: string;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  microcopy?: string;
+}
+
+const { title, intro, crumbs, image, primary, secondary, microcopy } = Astro.props;
+const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
+---
+
+<section class="border-b border-yp-white/10">
+  <div class:list={[pageContainer, 'py-8 md:py-12']}>
+    <nav aria-label="Breadcrumb" class={breadcrumbNav}>
+      {trail.map((c, i) => (
+        <>
+          {i > 0 && <span class="mx-2" aria-hidden="true">/</span>}
+          {c.href && i < trail.length - 1 ? (
+            <a href={c.href} class="inline-block py-2 transition-colors hover:text-yp-yellow">{c.label}</a>
+          ) : (
+            <span class="text-yp-white" aria-current="page">{c.label}</span>
+          )}
+        </>
+      ))}
+    </nav>
+    <div class:list={['grid gap-8', image && 'lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center']}>
+      <div class="max-w-3xl">
+        <h1 class={pageTitle}>{title}</h1>
+        {intro && <p class={pageIntro}>{intro}</p>}
+        <slot />
+        {(primary || secondary) && (
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+            {primary && <a href={primary.href} class={btnPrimary}>{primary.label}</a>}
+            {secondary && <a href={secondary.href} class={btnSecondary}>{secondary.label}</a>}
+          </div>
+        )}
+        {microcopy && <p class="mt-3 text-sm text-yp-white/60">{microcopy}</p>}
+      </div>
+      {image && (
+        <div class="relative aspect-[16/10] overflow-hidden border border-yp-white/10 bg-yp-gray">
+          <img src={image} alt="" width="1200" height="750" loading="eager" class="absolute inset-0 h-full w-full object-cover" />
+        </div>
+      )}
+    </div>
+  </div>
+</section>

@@ -53,7 +53,7 @@ const faqSchema = {
   mainEntity: faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
 };
 
-const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4';
+const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
 ---
 
 <BaseLayout title={guide.title} description={guide.description} ogType="article">
@@ -61,8 +61,8 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
   <script type="application/ld+json" set:html={jsonLd(articleSchema)} />
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
 
-  <article class="max-w-6xl mx-auto px-4 py-8 md:py-12">
-    <nav aria-label="Breadcrumb" class="text-xs uppercase tracking-widest text-yp-white/60 mb-6 flex flex-wrap items-center">
+  <article class="max-w-7xl mx-auto px-4 py-8 md:py-12">
+    <nav aria-label="Breadcrumb" class="mb-6 flex flex-wrap items-center text-sm text-yp-white/60">
       <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
       <span class="mx-2" aria-hidden="true">/</span>
       <a href={GUIDES_HREF} class="inline-block py-2 hover:text-yp-yellow transition-colors">Ghiduri</a>
@@ -76,7 +76,7 @@ const sectionTitle = 'text-xs uppercase tracking-[0.16em] text-yp-white/60 mb-4'
         You Protect, Satu Mare · Actualizat pe <time datetime={guide.updated}>{formatGuideDate(guide.updated)}</time>
       </p>
       <div class="mt-6 border-l-2 border-yp-yellow pl-4">
-        <p class="text-xs uppercase tracking-[0.16em] text-yp-yellow">Pe scurt</p>
+        <p class="text-sm font-medium text-yp-yellow">Pe scurt</p>
         <p class="mt-2 text-lg text-yp-white/90 leading-relaxed">{answer}</p>
       </div>
     </header>

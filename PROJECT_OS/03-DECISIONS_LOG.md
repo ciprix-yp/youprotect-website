@@ -474,3 +474,17 @@
   - pantalonii de damă 20637 (perechea lui 20739), pantofii sport business F3003, puloverul 50636 (+50635, guler în V).
 - F3003 nu e încălțăminte de protecție („Non-safety” în feed): categorie nouă, „Încălțăminte business”, și o notă pe
   fișă. Categorie cu pagină nouă: „Cămăși corporate” (/produse/camasi-corporate/).
+
+## D-2026-11-20-04
+- Uniformizarea designului (cerută de owner pe 20.11.2026), după stilul catalogului:
+  - un singur antet de pagină (`PageHeader.astro`): breadcrumb, H1 ca în catalog, butoanele din `ui.ts`, fotografia în
+    dreapta pe paginile de prezentare; fără spațiile duble de sub header pe formulare, confirmare și paginile legale;
+  - containere `max-w-7xl px-4` peste tot (30 erau `px-6`); paginile legale și ghidurile cu coloana de text de ~70 de
+    caractere, aliniată la stânga, cu breadcrumb;
+  - scoase: animațiile AOS (196 de atribute, scriptul și pachetul npm), etichetele monospațiate în majuscule, cuvintele
+    colorate din titluri, săgețile din butoane, emoji-urile din footer, cercurile blurate;
+  - butoanele de pe homepage, Despre noi și Cum lucrăm la cele patru variante comune, cu înălțimea de 48 px;
+  - „Discută cu un consultant” → „Programează o discuție” (același nume ca pagina și ca butonul din header);
+  - personalizare: zonele de logo pe coloane (un model deschis nu mai întinde rândul), fără etichetele de deasupra titlurilor;
+  - testare fără riscuri: ce intră în program e acum sus, sub primul paragraf.
+- Homepage-ul (blocurile de CTA repetate, textul lung din hero) rămâne pentru faza de conversie: e mesaj, nu design.

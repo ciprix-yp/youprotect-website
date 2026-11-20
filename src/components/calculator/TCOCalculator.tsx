@@ -235,7 +235,7 @@ export default function TCOCalculator() {
       {step < INPUT_STEPS && (
         <div className="mb-8">
           <div className="flex justify-between items-end mb-2">
-            <span className="text-xs font-medium text-yp-yellow font-mono uppercase tracking-wider">
+            <span className="text-sm font-medium text-yp-yellow">
               Pasul {step + 1} din {INPUT_STEPS}
             </span>
           </div>
