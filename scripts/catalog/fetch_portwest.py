@@ -170,35 +170,46 @@ def clean_pdf(body: bytes) -> bytes | None:
     return pdf if b"%%EOF" in pdf[-1024:] else None
 
 
-def fetch_documents(out: Path, styles: list[str]) -> None:
-    variants_path = out / "variante.csv"
-    first_colour: dict[str, str] = {}
-    if variants_path.exists():
+def item_colours(out: Path) -> dict[str, str]:
+    """Codul primei culori a fiecărui model, din numele pozei: model + culoare + croială (C474YER)."""
+    first: dict[str, str] = {}
+    for variants_path in (out / "variante.csv", out / "variante-base.csv"):  # Base are fișierul lui
+        if not variants_path.exists():
+            continue
         for r in csv.DictReader(variants_path.open(encoding="utf-8")):
-            # Numele pozei = cod model + cod culoare + croială (C474YER), exact ce cere fișa tehnică.
             m = re.search(r"/styles1100px/([A-Z0-9]+)\.jpg$", r["Image_Path"])
             if m and m.group(1).startswith(r["Style"]):
-                first_colour.setdefault(r["Style"], m.group(1))
+                first.setdefault(r["Style"], m.group(1))
+    return first
+
+
+def fetch_pdf(opener, url: str) -> tuple[bytes | None, bool]:
+    """(PDF întreg, None) sau (None, True) dacă documentul nu există; reîncearcă de 4 ori."""
+    for attempt in range(4):
+        try:
+            _, body = get(opener, url)
+            pdf = clean_pdf(body)
+            if pdf:
+                return pdf, False
+        except urllib.error.HTTPError as e:
+            if e.code in (403, 404):
+                return None, True
+        except (urllib.error.URLError, TimeoutError):
+            pass
+        time.sleep(2 * (attempt + 1))
+    return None, False
+
+
+def fetch_documents(out: Path, styles: list[str]) -> None:
+    first_colour = item_colours(out)
     opener = opener_with_session()
     for style in styles:
         if not re.fullmatch(r"[A-Z0-9]{2,8}", style):
             raise SystemExit(f"cod de model invalid: {style}")
-        item_colour = first_colour.get(style, style)
         target = out / "documente" / style
         target.mkdir(parents=True, exist_ok=True)
-        for name, url in document_urls(style, item_colour).items():
-            pdf, missing = None, False
-            for attempt in range(4):
-                try:
-                    _, body = get(opener, url)
-                    pdf = clean_pdf(body)
-                except urllib.error.HTTPError as e:
-                    missing = e.code in (403, 404)
-                except (urllib.error.URLError, TimeoutError):
-                    pdf = None
-                if pdf or missing:
-                    break
-                time.sleep(2 * (attempt + 1))
+        for name, url in document_urls(style, first_colour.get(style, style)).items():
+            pdf, missing = fetch_pdf(opener, url)
             if pdf:
                 (target / name).write_bytes(pdf)
                 print(f"{style:8} {name:36} {len(pdf) // 1024:>5} KB")

@@ -39,7 +39,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     heading: 'Îmbrăcăminte reflectorizantă pentru firme',
     title: 'Îmbrăcăminte reflectorizantă pentru firme',
     intro:
-      'Geci și haine de avertizare pentru cine lucrează lângă drum, utilaje sau vehicule. Mai jos vezi clasa fiecărui model conform EN ISO 20471, așa cum o declară producătorul.',
+      'Geci, veste, pantaloni, tricouri polo și hanorace de avertizare pentru cine lucrează lângă drum, utilaje sau vehicule. Mai jos vezi clasa fiecărui model conform EN ISO 20471, așa cum o declară producătorul.',
     plural: 'hainele reflectorizante',
     logo: true,
   },
@@ -49,7 +49,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     heading: 'Geci și jachete de lucru',
     title: 'Geci și jachete de lucru pentru firme',
     intro:
-      'Geci și jachete de lucru pentru frig, ploaie și vânt, pentru echipe care lucrează afară sau în hale. Mai jos vezi ce protecție declară producătorul pentru fiecare model.',
+      'Geci și jachete de lucru pentru frig, ploaie și vânt, pentru depozite frigorifice și pentru sudură. Mai jos vezi ce protecție declară producătorul pentru fiecare model.',
     plural: 'gecile și jachetele de lucru',
     logo: true,
   },
@@ -78,7 +78,8 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     slug: 'veste-de-lucru',
     heading: 'Veste de lucru',
     title: 'Veste de lucru pentru firme',
-    intro: 'Veste de lucru care țin trunchiul la cald și lasă brațele libere. Mai jos vezi certificările fiecărui model.',
+    intro:
+      'Veste de lucru care lasă brațele libere: termice, pentru frig, sau cu buzunare, ca să fii văzut pe șantier și în depozit. Mai jos vezi certificările fiecărui model.',
     plural: 'vestele de lucru',
     logo: true,
   },
@@ -100,7 +101,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     heading: 'Mănuși de protecție pentru firme',
     title: 'Mănuși de protecție pentru firme',
     intro:
-      'Mănuși de protecție pentru manipulare, montaj și lucrări electrice. Mai jos vezi nivelurile de protecție ale fiecărui model, așa cum le declară producătorul.',
+      'Mănuși de protecție pentru manipulare, tăiere, impact, frig, sudură, substanțe chimice și lucrări electrice. Mai jos vezi nivelurile de protecție ale fiecărui model, așa cum le declară producătorul.',
     plural: 'mănușile de protecție',
     logo: false,
   },
@@ -180,6 +181,15 @@ export function modelsLabel(n: number): string {
 }
 
 /** Descrierea din Google: cifrele și mărcile vin din produse. */
+/** Numele scurt al mărcii, pentru texte: fără ® și fără „System” („Sir Safety System” → „Sir Safety”). */
+export function shortBrand(brand: string): string {
+  return brand.replace('®', '').replace(/ System$/, '').trim();
+}
+
+/** Descrierea din Google (max. 160 de caractere): cu mărcile, sau doar câți producători sunt când lista nu încape. */
 export function categoryDescription(page: CategoryPage, count: number, brands: string[]): string {
-  return `${page.heading}: ${modelsLabel(count)} ${joinRo(brands)}, cu certificările fiecărui model. Ofertă de la You Protect, Satu Mare.`;
+  const tail = ', cu certificările fiecărui model. Ofertă de la You Protect, Satu Mare.';
+  const withBrands = `${page.heading}: ${modelsLabel(count)} ${joinRo(brands.map(shortBrand))}${tail}`;
+  if ([...withBrands].length <= 160) return withBrands;
+  return `${page.heading}: ${modelsLabel(count)} de la ${brands.length} producători${tail}`;
 }

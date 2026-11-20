@@ -43,6 +43,16 @@ export const BRAND_PAGES: BrandPage[] = [
       'Sir Safety System e o firmă italiană cu sediul în Assisi, pornită în 1979 de Gino Sirci. Face haine de lucru și echipamente de protecție, inclusiv încălțăminte de protecție.',
     source: { label: 'sirsafety.com', url: 'https://sirsafety.com/about-us' },
   },
+  {
+    brand: 'Portwest',
+    slug: 'portwest',
+    name: 'Portwest',
+    heading: 'Portwest: haine de lucru și echipamente de protecție pentru firme',
+    title: 'Portwest în România: echipamente de protecție',
+    about:
+      'Portwest e o firmă de familie fondată în 1904, condusă azi de a treia generație a familiei Hughes. Face haine de lucru, îmbrăcăminte de protecție și echipamente de protecție, are fabrici proprii în Bangladesh, Myanmar, Italia și Albania și vinde în peste 130 de țări.',
+    source: { label: 'portwest.com', url: 'https://portwest.com/market/aboutus' },
+  },
 ];
 
 /** Paginile de marcă care se publică: cele cu cel puțin MIN_PRODUCTS_FOR_BRAND_PAGE produse publicate. */

@@ -1,0 +1,211 @@
+{
+  "status": "published",
+  "name": "Vestă executive cu buzunare Portwest Iona",
+  "category": "veste",
+  "industries": [
+    "constructii",
+    "logistica",
+    "productie"
+  ],
+  "summary": "Vestă executive cu buzunare, ușoară și respirabilă, în patru culori, cu benzi reflectorizante și certificare EN 17353 tip B3. Arăți organizat, cu ecusonul la vedere și stația radio la îndemână.",
+  "description": [
+    "Vesta executive cu buzunare Portwest Iona F476 e din tricot 100 % poliester de 124 g/m², pe care Portwest îl descrie ca ușor, confortabil și foarte respirabil. O porți peste alte haine fără să adauge volum și o închizi cu fermoar, iar telefonul, pixul, cheile și stația radio au fiecare locul lor: 7 buzunare, buclă pentru radio și bandă cu inel în D.",
+    "Arăți organizat și ești mai ușor de observat: ecusonul stă la vedere în suportul transparent dublu, pe verticală sau pe orizontală, iar benzile reflectorizante îți cresc vizibilitatea când lumina e slabă. Alegi culoarea care se potrivește firmei tale, verde închis, bleumarin, albastru regal sau roșu, așa că echipa arată unitar și profesionist.",
+    "Pentru firmă, Iona F476 e certificată EN 17353 tip B3, standardul pentru echipamentele de vizibilitate sporită în situații cu risc mediu, cu certificatul de examinare UE de tip 2777/22892-01/E00-00, emis de SATRA Technology Europe Ltd. Nu este o vestă de înaltă vizibilitate conform EN ISO 20471, așa că nu o folosești acolo unde se cere acest standard. Portwest o prezintă ca potrivită pentru brandingul firmei: pui logoul pe fondul colorat și poți testa vestele cu echipa ta înainte de comanda mare, în condițiile programului „Testare fără riscuri”."
+  ],
+  "benefits": [
+    "Ușoară și respirabilă: tricot 100 % poliester de 124 g/m².",
+    "Mai ușor de observat când lumina e slabă: benzi reflectorizante, certificare EN 17353 tip B3.",
+    "Culorile firmei tale: verde închis, bleumarin, albastru regal sau roșu.",
+    "Totul la îndemână: 7 buzunare, printre care unul pentru telefon și pix.",
+    "Ecusonul la vedere: suport transparent dublu, pentru card pe verticală sau pe orizontală.",
+    "Stația radio și cheile prinse: buclă pentru radio și bandă cu inel în D."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Tricot 100 % poliester"
+    },
+    {
+      "label": "Gramaj",
+      "value": "124 g/m²"
+    },
+    {
+      "label": "Închidere",
+      "value": "Fermoar în față"
+    },
+    {
+      "label": "Buzunare",
+      "value": "7: buzunare pe piept, buzunar pentru telefon și pix, două buzunare jos, cu clapă, și două buzunare laterale"
+    },
+    {
+      "label": "Ecuson",
+      "value": "Suport transparent dublu, pentru card pe verticală sau pe orizontală"
+    },
+    {
+      "label": "Prinderi",
+      "value": "Buclă pentru stația radio; bandă cu inel în D pentru chei sau card"
+    },
+    {
+      "label": "Benzi reflectorizante",
+      "value": "Verticale, peste umeri, și o bandă orizontală în jurul corpului"
+    },
+    {
+      "label": "Certificat UE de tip",
+      "value": "2777/22892-01/E00-00, emis de SATRA Technology Europe Ltd (organism notificat 2777)"
+    }
+  ],
+  "notes": [
+    "Vesta Iona F476 nu este îmbrăcăminte de avertizare de înaltă vizibilitate: e certificată EN 17353 tip B3, pentru situații cu risc mediu, nu EN ISO 20471. Unde evaluarea riscurilor cere EN ISO 20471, alegi o vestă reflectorizantă, de exemplu Portwest Berlin S476."
+  ],
+  "certifications": [
+    {
+      "code": "EN 17353 tip B3",
+      "label": "Echipament de vizibilitate sporită pentru situații cu risc mediu. Tipul B: pentru riscul de a nu fi văzut în întuneric, doar cu material retroreflectorizant (întoarce lumina farurilor spre sursă); B3: materialul retroreflectorizant este pe trunchi. Nu este îmbrăcăminte de înaltă vizibilitate conform EN ISO 20471."
+    }
+  ],
+  "care": [
+    "Spală la maximum 40 °C, la program moderat.",
+    "Nu folosi înălbitor.",
+    "Nu o usca în uscător.",
+    "Las-o să se usuce atârnată.",
+    "Nu o călca.",
+    "Nu o curăța chimic.",
+    "Spal-o de cel mult 50 de ori, cât indică producătorul."
+  ],
+  "colours": [
+    {
+      "code": "BG",
+      "name": "verde închis",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-executive-portwest-iona-f476/BG-PS.webp",
+          "thumb": "/images/products/vesta-executive-portwest-iona-f476/BG-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "NA",
+      "name": "bleumarin",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-executive-portwest-iona-f476/NA-PS.webp",
+          "thumb": "/images/products/vesta-executive-portwest-iona-f476/NA-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "RB",
+      "name": "albastru regal",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-executive-portwest-iona-f476/RB-PS.webp",
+          "thumb": "/images/products/vesta-executive-portwest-iona-f476/RB-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    },
+    {
+      "code": "RE",
+      "name": "roșu",
+      "swatch": null,
+      "images": [
+        {
+          "src": "/images/products/vesta-executive-portwest-iona-f476/RE-PS.webp",
+          "thumb": "/images/products/vesta-executive-portwest-iona-f476/RE-PS-thumb.webp",
+          "view": "PS"
+        }
+      ],
+      "spin": []
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "S–3XL",
+    "values": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL"
+    ],
+    "table": [],
+    "note": null
+  },
+  "personalization": null,
+  "documents": [
+    {
+      "type": "declaratie-conformitate",
+      "label": "Declarație de conformitate UE (în română)",
+      "url": "/documente/vesta-executive-portwest-iona-f476/declaratie-de-conformitate-ro.pdf",
+      "language": "ro"
+    },
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în română)",
+      "url": "/documente/vesta-executive-portwest-iona-f476/fisa-tehnica-ro.pdf",
+      "language": "ro"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ce standard are vesta Portwest Iona F476?",
+      "a": "EN 17353 tip B3: vesta executive Portwest Iona F476 este echipament de vizibilitate sporită pentru situații cu risc mediu. Tipul B înseamnă vizibilitate în întuneric, prin material retroreflectorizant, iar B3, că acesta este pe trunchi. Certificatul de examinare UE de tip, 2777/22892-01/E00-00, e emis de SATRA Technology Europe Ltd."
+    },
+    {
+      "q": "Este vesta Iona F476 o vestă reflectorizantă de înaltă vizibilitate?",
+      "a": "Nu. Vesta Portwest Iona F476 are benzi reflectorizante, dar nu este certificată EN ISO 20471, standardul pentru îmbrăcămintea de avertizare cu vizibilitate ridicată. Unde ai nevoie de EN ISO 20471, alegi o vestă precum Portwest Berlin S476, clasa 2, care are aceleași tipuri de buzunare."
+    },
+    {
+      "q": "E comodă vesta Iona F476 peste alte haine?",
+      "a": "Da. Vesta Portwest Iona F476 e din tricot de poliester de 124 g/m², pe care Portwest îl descrie ca ușor, confortabil și foarte respirabil, și se poartă peste alte haine fără să fie voluminoasă."
+    },
+    {
+      "q": "Pot pune logoul firmei pe vesta Iona F476?",
+      "a": "Da. Portwest prezintă vesta Iona F476 ca potrivită pentru brandingul firmei. Pui logoul pe fondul colorat, fără să acoperi benzile reflectorizante; zona și tehnica le stabilești cu You Protect la ofertă."
+    },
+    {
+      "q": "Ce mărimi și culori are vesta Iona F476?",
+      "a": "Vesta Portwest Iona F476 se găsește în mărimile S–3XL, în patru culori: verde închis, bleumarin, albastru regal și roșu."
+    },
+    {
+      "q": "De unde pot comanda vesta executive Portwest Iona în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru toată echipa, în culoarea firmei și cu logo, și poți testa vesta Iona F476 înainte de comanda mare, în condițiile programului „Testare fără riscuri”."
+    }
+  ],
+  "seo": {
+    "title": "Vestă executive cu buzunare Portwest F476",
+    "description": "Vestă executive cu buzunare Portwest Iona F476: ușoară, respirabilă, 7 buzunare, ecuson la vedere, culorile firmei. Ofertă cu logo de la You Protect."
+  },
+  "supplier": {
+    "name": "Portwest",
+    "brand": "Portwest",
+    "model": "F476",
+    "range": "Iona",
+    "productUrl": "https://portwest.com/products/view/F476"
+  },
+  "reviewNotes": [
+    "Fără categoria EIP: declarația scrie Cat. III, dar productionSurveillance e null (nu apare organismul care supraveghează producția, modulul C2 sau D). De cerut de la Portwest.",
+    "Traduceri Portwest interpretate: „Doua buzunare posterioare cu clapeta” e, după desenul din tabelul de mărimi, două buzunare cu clapă jos, pe față (spatele nu are buzunare); „Fermoar lateral pentru acces facil”: desenul arată fermoarul în față, așa că am scris „fermoar în față”. De confirmat.",
+    "Defalcarea celor 7 buzunare nu e dată în sursă; textul enumeră tipurile din caracteristici, fără să le numere separat.",
+    "Omis: punga de vânzare cu amănuntul, „Marcat UKCA”, „Certificare CE”.",
+    "Explicația EN 17353 vine din standard, nu din fișă (verificată în surse secundare): tipul A doar fluorescent, pentru zi; tipul B doar retroreflectorizant, pentru întuneric (B1 liber atârnat, B2 pe membre, B3 pe trunchi sau trunchi și membre); tipul AB combinat. Coerent cu vesta: fond colorat nefluorescent + benzi reflectorizante.",
+    "„Ușor, confortabil și foarte respirabil” și „se poartă peste alte haine fără a fi voluminoase” vin din textul gamei Iona Vest-Port din fișă, nu din caracteristicile modelului.",
+    "„Maxim 50 de spălări” e simbolul de întreținere; sursa nu spune dacă certificarea EN 17353 e legată de 50 de spălări, așa că textul nu o leagă.",
+    "Culoarea BG: harta de culori dă „verde închis”, fișa Portwest o numește „Verde Smarald”. Textul folosește „verde închis”, ca harta. De ales un singur nume.",
+    "Tabelul de mărimi arată și 4XL, sursa de variante doar S–3XL; textul spune S–3XL."
+  ],
+  "source": {
+    "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
+    "assembledAt": "2026-11-20"
+  }
+}

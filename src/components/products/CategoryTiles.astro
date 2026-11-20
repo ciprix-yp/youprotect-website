@@ -25,10 +25,16 @@ const tiles = (Object.keys(CATEGORIES) as CategoryKey[])
     };
   })
   .filter((t): t is NonNullable<typeof t> => t !== null);
+
+// Pe desktop, rânduri pline: numărul de coloane (5–8) care lasă ultimul rând cel mai plin (15 dale → 3 × 5, nu 7 + 7 + 1).
+// Clasele sunt scrise întregi, ca Tailwind să le găsească.
+const LG_COLS = { 8: 'lg:grid-cols-8', 7: 'lg:grid-cols-7', 6: 'lg:grid-cols-6', 5: 'lg:grid-cols-5' } as const;
+const fill = (cols: number) => (tiles.length % cols === 0 ? 1 : (tiles.length % cols) / cols);
+const lgCols = ([8, 7, 6, 5] as const).reduce((best, cols) => (fill(cols) > fill(best) ? cols : best));
 ---
 
 <div class="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0" tabindex="0" role="region" aria-label="Categorii: derulează orizontal pe telefon">
-  <ul class="flex snap-x gap-3 sm:grid sm:grid-cols-4 lg:grid-cols-7">
+  <ul class:list={['flex snap-x gap-3 sm:grid sm:grid-cols-4', LG_COLS[lgCols]]}>
     {tiles.map((t) => (
       <li class="w-36 shrink-0 snap-start sm:w-auto">
         <a href={t.href} class="group flex h-full flex-col border border-yp-white/10 transition-colors hover:border-yp-yellow focus-visible:border-yp-yellow">
