@@ -142,6 +142,132 @@
   }
 }
 
+/* Mișcare legată de derulare (20.11.2026): pe telefon nu există hover, deci paginile păreau statice. Efectele urmăresc
+   degetul (progresul vine din poziția paginii, nu dintr-un cronometru), așa că nu întârzie nimic și merg și înapoi.
+   Doar unde browserul le are (Chrome, Edge, Safari 26+); în rest pagina rămâne cum era. Oprite cu „reduce motion”.
+   - .sd-hero-media / .sd-hero-content: poza din hero alunecă mai încet decât pagina; textul se stinge sub header.
+   - .sd-media: pozele din pagină pornesc ușor mărite și se așază la mărimea normală spre mijlocul ecranului.
+   - .sd-step: linia galbenă de deasupra pasului se trage pe măsură ce pasul urcă în ecran.
+   - .sd-check: bifele apar una câte una.
+   - .sd-expand: blocul galben pornește ca un card cu colțuri rotunjite și se lărgește până la margini.
+   - .sd-rise și .card-3d, doar pe ecranele tactile: cardurile urcă în loc când intră în ecran (cu mouse-ul, cardurile
+     se înclină spre cursor, scripts/tilt.ts).
+   Proprietățile animației sunt scrise separat, nu cu prescurtarea `animation`: minificatorul de la build lipea
+   animation-timeline în prescurtare, unde browserul nu o acceptă, și arunca toată regula. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sd-hero-media {
+      animation-name: sd-hero-media;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    .sd-hero-content > * {
+      animation-name: sd-fade-under-header;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    .sd-media {
+      animation-name: sd-media;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 50%;
+    }
+    .sd-step {
+      position: relative;
+      border-top-color: rgb(255 255 255 / 0.1);
+    }
+    .sd-step::before {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      top: -1px;
+      height: 1px;
+      background: rgb(227 252 2 / 0.6);
+      transform-origin: left;
+      animation-name: sd-line;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 5% cover 35%;
+    }
+    .sd-check > svg {
+      animation-name: sd-pop;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 5% cover 22%;
+    }
+    .sd-expand {
+      animation-name: sd-expand;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+  }
+  @media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .card-3d,
+    .sd-rise {
+      animation-name: sd-rise;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+  }
+}
+@keyframes sd-hero-media {
+  to {
+    translate: 0 20%;
+  }
+}
+@keyframes sd-fade-under-header {
+  to {
+    opacity: 0;
+    translate: 0 -12px;
+  }
+}
+@keyframes sd-media {
+  from {
+    scale: 1.12;
+  }
+}
+@keyframes sd-line {
+  from {
+    scale: 0 1;
+  }
+}
+@keyframes sd-pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+  70% {
+    opacity: 1;
+    scale: 1.15;
+  }
+}
+@keyframes sd-expand {
+  from {
+    clip-path: inset(0 4% round 28px);
+  }
+  to {
+    clip-path: inset(0 0 round 0);
+  }
+}
+@keyframes sd-rise {
+  from {
+    opacity: 0;
+    translate: 0 32px;
+    scale: 0.96;
+  }
+}
+
 /* Cine a cerut mai puțină transparență în sistem primește header-ul solid, fără blur. */
 @media (prefers-reduced-transparency: reduce) {
   header.site-header {
