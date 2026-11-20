@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { parseLead, leadEmail, environmentOf, safeEqual } from '../server/leads.js';
+import { parseLead, leadEmail, environmentOf, safeEqual, HONEYPOT_FIELD, MAX_LEADS_PER_IP_PER_HOUR } from '../server/leads.js';
 import { computeTco, parseTcoInputs } from '../src/lib/tco.js';
 import { onRequestPost as submitLead } from '../functions/api/submit-lead.js';
 import { onRequestGet as crmGet, onRequestPost as crmPost } from '../functions/api/crm/leads.js';
@@ -26,15 +26,25 @@ function fakeD1({ failInsert = false } = {}) {
           if (sql.startsWith('INSERT INTO lead')) {
             if (failInsert) throw new Error('D1 down');
             const [id, created_at, environment, tag, intent, name, company, cui, phone, email, product, answers] = stmt.args;
-            rows.push({ id, created_at, environment, tag, intent, name, company, cui, phone, email, product, answers, synced_at: null });
+            const ip = stmt.args[14];
+            rows.push({ id, created_at, environment, tag, intent, name, company, cui, phone, email, product, answers, ip, synced_at: null });
           } else if (sql.startsWith('UPDATE lead SET email_sent_at')) {
             const row = rows.find((r) => r.id === stmt.args[0]);
             if (row) Object.assign(row, { email_sent_at: stmt.args[1], email_error: stmt.args[2] });
           } else if (sql.startsWith('UPDATE lead SET synced_at')) {
             const row = rows.find((r) => r.id === stmt.args[0] && !r.synced_at);
             if (row) Object.assign(row, { synced_at: stmt.args[1], crm_ref: stmt.args[2] });
+          } else if (sql.startsWith('DELETE FROM lead WHERE synced_at IS NOT NULL AND synced_at < ?1')) {
+            for (let i = rows.length - 1; i >= 0; i -= 1) if (rows[i].synced_at && rows[i].synced_at < stmt.args[0]) rows.splice(i, 1);
+          } else {
+            throw new Error(`SQL necunoscut în fakeD1: ${sql}`);
           }
           return { success: true };
+        },
+        async first() {
+          if (!sql.startsWith('SELECT COUNT(*) AS n FROM lead WHERE ip = ?1 AND created_at > ?2')) throw new Error(`SQL necunoscut: ${sql}`);
+          const [ip, since] = stmt.args;
+          return { n: rows.filter((r) => r.ip === ip && r.created_at > since).length };
         },
         async all() {
           const [includePreview, limit] = stmt.args;
@@ -62,12 +72,14 @@ function stubFetch(status = 200) {
   return calls;
 }
 
-function ctx(body, { host = 'youprotect.ro', env = {} } = {}) {
+function ctx(body, { host = 'youprotect.ro', env = {}, origin = `https://${host}`, ip = '203.0.113.7' } = {}) {
   const pending = [];
+  const headers = { 'Content-Type': 'application/json', Referer: `https://${host}/cere-oferta/`, 'CF-Connecting-IP': ip };
+  if (origin) headers.Origin = origin;
   return {
     request: new Request(`https://${host}/api/submit-lead`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Referer: `https://${host}/cere-oferta/`, 'CF-Connecting-IP': '203.0.113.7' },
+      headers,
       body: JSON.stringify(body),
     }),
     env,
@@ -179,7 +191,9 @@ test('email: doar text, fără CR/LF în subiect, cu tag website', () => {
 
 test('environmentOf și safeEqual', () => {
   assert.equal(environmentOf('youprotect.ro'), 'production');
+  assert.equal(environmentOf('youprotect-website.pages.dev'), 'production'); // aliasul de producție Cloudflare
   assert.equal(environmentOf('feature-x.youprotect-website.pages.dev'), 'preview');
+  assert.equal(environmentOf('d889720d.youprotect-website.pages.dev'), 'preview');
   assert.equal(safeEqual('abc', 'abc'), true);
   assert.equal(safeEqual('abc', 'abd'), false);
   assert.equal(safeEqual('abc', 'abcd'), false);
@@ -216,6 +230,69 @@ test('submit-lead: ambele căi căzute -> 500, fără mesaj intern', async () =>
   const body = await res.json();
   assert.equal(body.success, false);
   assert.equal(JSON.stringify(body).includes('D1 down'), false);
+  assert.equal('stage' in body, false); // nu spunem ce a căzut
+});
+
+test('submit-lead: fără Origin sau de pe alt site -> 403, nimic salvat', async () => {
+  const db = fakeD1();
+  const calls = stubFetch(200);
+  const env = { LEADS_DB: db, RESEND_API_KEY: 'k' };
+  assert.equal((await submitLead(ctx(valid, { env, origin: null }))).status, 403);
+  assert.equal((await submitLead(ctx(valid, { env, origin: 'https://spam.example' }))).status, 403);
+  assert.equal((await submitLead(ctx(valid, { env, origin: 'http://youprotect.ro' }))).status, 403);
+  assert.equal(db.rows.length, 0);
+  assert.equal(calls.length, 0);
+});
+
+test('submit-lead: câmpul-capcană completat -> „succes”, dar nimic salvat sau trimis', async () => {
+  const db = fakeD1();
+  const calls = stubFetch(200);
+  const c = ctx({ ...valid, data: { ...valid.data, [HONEYPOT_FIELD]: 'https://spam.example' } }, { env: { LEADS_DB: db, RESEND_API_KEY: 'k' } });
+  const res = await submitLead(c);
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).success, true);
+  await Promise.all(c.pending);
+  assert.equal(db.rows.length, 0);
+  assert.equal(calls.length, 0);
+  // Câmpul gol (oamenii) nu blochează nimic.
+  const ok = await submitLead(ctx({ ...valid, data: { ...valid.data, [HONEYPOT_FIELD]: '  ' } }, { env: { LEADS_DB: db } }));
+  assert.equal(ok.status, 200);
+  assert.equal(db.rows.length, 1);
+});
+
+test('submit-lead: cel mult MAX_LEADS_PER_IP_PER_HOUR cereri pe oră de la același IP', async () => {
+  const db = fakeD1();
+  stubFetch(200);
+  const env = { LEADS_DB: db };
+  for (let i = 0; i < MAX_LEADS_PER_IP_PER_HOUR; i += 1) assert.equal((await submitLead(ctx(valid, { env }))).status, 200);
+  const blocked = await submitLead(ctx(valid, { env }));
+  assert.equal(blocked.status, 429);
+  assert.match((await blocked.json()).error, /ultima oră/);
+  assert.equal(db.rows.length, MAX_LEADS_PER_IP_PER_HOUR);
+  // Alt IP trece; cererile mai vechi de o oră nu se mai numără.
+  assert.equal((await submitLead(ctx(valid, { env, ip: '198.51.100.9' }))).status, 200);
+  for (const r of db.rows) r.created_at = new Date(Date.now() - 2 * 3_600_000).toISOString();
+  assert.equal((await submitLead(ctx(valid, { env }))).status, 200);
+});
+
+test('crm: cererile preluate se șterg după 30 de zile, la GET și la POST (data comparată în format ISO)', async () => {
+  const db = fakeD1();
+  const env = { LEADS_DB: db, CRM_SYNC_TOKEN: TOKEN };
+  const auth = { Authorization: `Bearer ${TOKEN}` };
+  const daysAgo = (d, h = 0) => new Date(Date.now() - d * 86_400_000 - h * 3_600_000).toISOString();
+  db.rows.push(
+    { id: 'vechi', environment: 'production', created_at: daysAgo(40), synced_at: daysAgo(30, 1) }, // o oră peste limită
+    { id: 'recent', environment: 'production', created_at: daysAgo(20), synced_at: daysAgo(29, 23) },
+    { id: 'nepreluat', environment: 'production', created_at: daysAgo(45), synced_at: null },
+  );
+  await crmGet({ request: new Request('https://youprotect.ro/api/crm/leads', { headers: auth }), env });
+  assert.deepEqual(db.rows.map((r) => r.id).sort(), ['nepreluat', 'recent']);
+  db.rows.find((r) => r.id === 'recent').synced_at = daysAgo(31);
+  await crmPost({
+    request: new Request('https://youprotect.ro/api/crm/leads', { method: 'POST', headers: { ...auth, 'Content-Type': 'application/json' }, body: '{"acks":[]}' }),
+    env,
+  });
+  assert.deepEqual(db.rows.map((r) => r.id), ['nepreluat']); // nepreluate rămân până le ia CRM-ul
 });
 
 test('submit-lead: date invalide -> 400', async () => {

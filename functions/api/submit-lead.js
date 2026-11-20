@@ -4,7 +4,18 @@
 //   1. inbox-ul D1 (binding LEADS_DB), de unde Prospector CRM o preia prin /api/crm/leads;
 //   2. emailul de notificare prin Resend (RESEND_API_KEY) către echipa You Protect.
 // Răspunsul e „success” dacă cel puțin una a reușit. Tag-ul cererii este „website”.
-import { MAX_BODY_BYTES, LEAD_TAG, environmentOf, jsonResponse, leadEmail, normalizeString, parseLead } from '../../server/leads.js';
+import {
+  MAX_BODY_BYTES,
+  MAX_LEADS_PER_IP_PER_HOUR,
+  LEAD_TAG,
+  environmentOf,
+  isBotSubmission,
+  isSameOrigin,
+  jsonResponse,
+  leadEmail,
+  normalizeString,
+  parseLead,
+} from '../../server/leads.js';
 
 const DEFAULT_FROM = 'You Protect website <noreply@deeplogic.ro>';
 const DEFAULT_TO = 'office@youprotect.ro';
@@ -21,6 +32,13 @@ async function storeLead(db, lead) {
       lead.phone, lead.email, lead.product, JSON.stringify(lead.answers), lead.sourceUrl, lead.userAgent, lead.ip,
     )
     .run();
+}
+
+// Câte cereri am salvat de la același IP în ultima oră (tabelul e mic: cererile se șterg după preluare + 30 de zile).
+async function recentLeadsFromIp(db, ip) {
+  const since = new Date(Date.now() - 3_600_000).toISOString();
+  const row = await db.prepare('SELECT COUNT(*) AS n FROM lead WHERE ip = ?1 AND created_at > ?2').bind(ip, since).first();
+  return Number(row?.n ?? 0);
 }
 
 async function sendEmail(env, lead) {
@@ -58,6 +76,7 @@ async function markEmail(db, id, error) {
 export const onRequestPost = async (context) => {
   const { request, env } = context;
 
+  if (!isSameOrigin(request)) return jsonResponse({ success: false, error: 'Cererea nu vine din formularul site-ului.' }, 403);
   if (Number(request.headers.get('content-length') || 0) > MAX_BODY_BYTES) {
     return jsonResponse({ success: false, error: 'Cererea e prea mare.' }, 413);
   }
@@ -68,6 +87,11 @@ export const onRequestPost = async (context) => {
     payload = JSON.parse(raw);
   } catch (_error) {
     return jsonResponse({ success: false, error: 'Date invalide.' }, 400);
+  }
+
+  if (isBotSubmission(payload)) {
+    console.warn('submit-lead: câmpul-capcană completat, cerere ignorată');
+    return jsonResponse({ success: true, id: crypto.randomUUID() });
   }
 
   const parsed = parseLead(payload);
@@ -83,6 +107,20 @@ export const onRequestPost = async (context) => {
     userAgent: normalizeString(request.headers.get('user-agent'), 500),
     ip: forwardedIp && /^[0-9a-f:.]+$/i.test(forwardedIp) ? forwardedIp : null,
   };
+
+  if (env.LEADS_DB && lead.ip) {
+    try {
+      if ((await recentLeadsFromIp(env.LEADS_DB, lead.ip)) >= MAX_LEADS_PER_IP_PER_HOUR) {
+        return jsonResponse(
+          { success: false, error: 'Am primit deja mai multe cereri de la tine în ultima oră. Sună-ne la 0742 226 127 dacă e urgent.' },
+          429,
+        );
+      }
+    } catch (error) {
+      // Dacă numărarea nu merge, nu blocăm un client real: cererea continuă.
+      console.error('submit-lead: rate limit check failed', error);
+    }
+  }
 
   let stored = false;
   if (env.LEADS_DB) {
@@ -118,8 +156,6 @@ export const onRequestPost = async (context) => {
       console.error('submit-lead: email failed and D1 unavailable', error);
     }
   }
-  return jsonResponse(
-    { success: false, error: 'Nu am putut trimite cererea. Încearcă din nou sau sună-ne.', stage: canEmail ? 'email' : 'config' },
-    500,
-  );
+  // Fără detalii despre ce a căzut (D1, email, configurație): rămân în log, nu în răspuns.
+  return jsonResponse({ success: false, error: 'Nu am putut trimite cererea. Încearcă din nou sau sună-ne.' }, 500);
 };

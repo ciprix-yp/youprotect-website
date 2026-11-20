@@ -5,6 +5,8 @@ import { SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
 import { DETAILS_MAX_LENGTH } from '../../lib/lead-limits.js';
 import { flagLead, track } from '../../lib/track';
+import { HONEYPOT_FIELD } from '../../lib/honeypot.js';
+import Honeypot from './Honeypot';
 
 type Intent = 'consultation' | 'quote';
 type Option = { label: string; hasOther?: boolean };
@@ -56,6 +58,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
   const isForm1 = intent === 'consultation';
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [honeypot, setHoneypot] = useState('');
   // Direcția ultimei mutări între pași: pasul nou intră din dreapta (înainte) sau din stânga (înapoi). La încărcare, fără animație.
   const [stepDirection, setStepDirection] = useState<'forward' | 'back' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -158,7 +161,10 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
       const response = await fetch('/api/submit-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent, data: { ...formData, produs: product ?? undefined, categorie: category ?? undefined } }),
+        body: JSON.stringify({
+          intent,
+          data: { ...formData, produs: product ?? undefined, categorie: category ?? undefined, [HONEYPOT_FIELD]: honeypot || undefined },
+        }),
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -221,7 +227,8 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           ? 'După ce trimiți, alegi direct ora discuției din calendar.'
           : 'Primești oferta în cel mult 48 de ore. Te sunăm doar dacă e nevoie de o clarificare.',
       )}
-      <div className="space-y-4">
+      <div className="relative space-y-4">
+        <Honeypot value={honeypot} onChange={setHoneypot} />
         {field('name', 'Nume și prenume', { type: 'text', autoComplete: 'name', placeholder: 'Ion Popescu' })}
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
           {field('company', 'Firma', { type: 'text', autoComplete: 'organization', placeholder: 'Exemplu SRL' })}

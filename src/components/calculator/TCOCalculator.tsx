@@ -14,6 +14,8 @@ import {
   parseTcoInputs,
 } from '../../lib/tco.js';
 import { track } from '../../lib/track';
+import { HONEYPOT_FIELD } from '../../lib/honeypot.js';
+import Honeypot from '../forms/Honeypot';
 
 // Calculatorul de cost real (lead magnet). Calculul e în src/lib/tco.js, comun cu serverul.
 // Rezultatul apare imediat, fără date de contact. Datele de contact sunt opționale, la final, pentru cine vrea să
@@ -166,6 +168,7 @@ export default function TCOCalculator() {
     .map((c) => TCO_CATEGORIES[c as keyof typeof TCO_CATEGORIES].label.toLocaleLowerCase('ro'));
   const offersTesting = testable.length > 0;
   const [contact, setContact] = useState({ name: '', company: '', email: '', phone: '' });
+  const [honeypot, setHoneypot] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -235,7 +238,7 @@ export default function TCOCalculator() {
       const response = await fetch('/api/submit-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent: 'quote', data: { ...contact, calculator: parsed } }),
+        body: JSON.stringify({ intent: 'quote', data: { ...contact, calculator: parsed, [HONEYPOT_FIELD]: honeypot || undefined } }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       window.dispatchEvent(new CustomEvent('yp:lead', { detail: { form: 'calculator' } }));
@@ -616,7 +619,8 @@ export default function TCOCalculator() {
       {id === 'contact' && (
         <div className="space-y-6">
           {heading('Unde te contactăm?', offersTesting ? 'Îți propunem produsele pentru testare, pornind de la rezultatul tău.' : 'Îți trimitem oferta, pornind de la rezultatul tău.')}
-          <div className="space-y-4">
+          <div className="relative space-y-4">
+            <Honeypot value={honeypot} onChange={setHoneypot} />
             {contactField('name', 'Nume și prenume', { type: 'text', autoComplete: 'name', placeholder: 'Ion Popescu' })}
             {contactField('company', 'Firma', { type: 'text', autoComplete: 'organization', placeholder: 'Exemplu SRL' })}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
