@@ -131,10 +131,10 @@ test('parseLead: personalizarea, doar cu valorile convenite cu CRM-ul, după pro
   assert.equal(consultation.lead.answers.some((a) => a.question === 'personalizare'), false);
 });
 
-test('calculator: model simplu, ipoteze la vedere', () => {
+test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/tco.test.mjs)', () => {
   const input = parseTcoInputs({
     employees: 10, categories: ['incaltaminte', 'necunoscut'], prices: { incaltaminte: 200 }, qualityPrices: { incaltaminte: 300 },
-    months: 6, durability: 2, adminHours: 4, hourCost: 50, domain: 'Agricultură',
+    months: { incaltaminte: 6 }, qty: { incaltaminte: 1 }, durability: 2, adminHours: 4, hourCost: 50, domain: 'Agricultură',
   });
   assert.deepEqual(input.categories, ['incaltaminte']);
   const r = computeTco(input);
@@ -143,8 +143,8 @@ test('calculator: model simplu, ipoteze la vedere', () => {
   assert.equal(r.adminNow, 4 * 12 * 50);
   assert.equal(r.adminQuality, r.adminNow / 2);
   assert.equal(r.difference, r.totalNow - r.totalQuality);
-  // La prag, costul de calitate e egal cu cel de acum.
-  const atBreakEven = computeTco({ ...input, durability: r.breakEven });
+  // La pragul cu administrare, costul de calitate e egal cu cel de acum.
+  const atBreakEven = computeTco({ ...input, durability: r.breakEvenWithAdmin });
   assert.ok(Math.abs(atBreakEven.totalQuality - r.totalNow) < 1e-6);
   // Limite și tipuri
   assert.equal(parseTcoInputs({ ...input, months: 5 }), null);
