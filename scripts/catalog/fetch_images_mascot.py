@@ -22,6 +22,7 @@ import json
 import re
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -162,7 +163,7 @@ def main(argv):
             if c.get("swatch"):
                 try:
                     save_webp(fetch_plain(c["swatch"]), out_dir / f"{colour}-swatch.webp", 64, 80)
-                except NotRaster as exc:
+                except (NotRaster, urllib.error.HTTPError) as exc:  # eșantionul e opțional (F3003: 404 la MASCOT)
                     stats["missing"].append(f"swatch ({exc})")
             note = f" lipsă: {','.join(stats['missing'])}" if stats["missing"] else ""
             print(f"ok {mqc}: galerie {stats['gallery']}, 360° {stats['spin']}{note}")

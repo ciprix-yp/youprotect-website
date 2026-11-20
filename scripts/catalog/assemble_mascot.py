@@ -97,9 +97,10 @@ def weight(fields):
     m = re.match(r"^Size (\d+): (\d+) g$", w)
     if m:
         return ("Greutate", f"{m.group(2)}{NBSP}g (mărimea {m.group(1)})")
-    m = re.match(r"^(\d+) g/m²$", w)
+    m = re.match(r"^(\d+) g/m²(?: \((\d+) GG\))?$", w)  # tricotaj: „240 g/m² (12 GG)”
     if m:
-        return ("Gramaj", f"{m.group(1)}{NBSP}g/m²")
+        gauge = f" (finețe {m.group(2)}{NBSP}GG)" if m.group(2) else ""
+        return ("Gramaj", f"{m.group(1)}{NBSP}g/m²{gauge}")
     raise MissingTranslation(f"format de gramaj necunoscut: {w!r}")
 
 
@@ -131,6 +132,11 @@ def sizes(source, text):
                  for r in sorted(rows, key=lambda r: r["EU Size"])]
         values = [row["size"] for row in table]
         summary = f"{values[0]}–{values[-1]}"
+    elif all(re.match(r"^\d{2}(-\d{2})?$", s) for s in eu):
+        # Cămăși: mărimea gulerului („37-38”, „40”); la damă, mărimea europeană („34”–„52”).
+        values = [v.replace("-", "/") for v in sorted(dict.fromkeys(eu), key=lambda s: int(s[:2]))]  # „37/38”
+        table = []
+        summary = f"{values[0]}–{values[-1]}" if len(values) > 1 else values[0]
     else:
         unknown = [s for s in eu if s not in LETTER_ORDER]
         if unknown:
@@ -249,7 +255,27 @@ def documents(source, colour_list, model_quality):
     return docs
 
 
-def assemble(source, text, maps, network, public_dir):
+def variants(text, maps, load):
+    """Croielile (sau gulerele) aceleiași linii, fiecare cu codul, mărimile și culorile ei din feed."""
+    items = text.get("variants") or []
+    if not items:
+        return None
+    if items[0]["model"] != text["model"]:
+        raise MissingTranslation("prima variantă trebuie să fie modelul principal")
+    out = []
+    for item in items:
+        src = load(item["model"])
+        quality = src["qualities"][0] if src["qualities"] else ""
+        out.append({
+            "label": item["label"],
+            "model": f"{src['model']}-{quality}" if quality else src["model"],
+            "sizes": sizes(src, {})["summary"],
+            "colours": [tr(maps["colours"], c["name"], "culoare") for c in src["colours"]],
+        })
+    return {"title": text.get("variantsTitle", "Variante"), "items": out}
+
+
+def assemble(source, text, maps, network, public_dir, load=None):
     fields = source["fields"]
     quality = source["qualities"][0] if source["qualities"] else ""
     model_quality = f"{source['model']}-{quality}" if quality else source["model"]
@@ -280,7 +306,7 @@ def assemble(source, text, maps, network, public_dir):
                 cert = tr(maps["certifications"], code, "certificare")
                 certs.append({"code": cert["code"], "label": cert["label"] or None})
 
-    review_notes = [n for n in [text.get("industriesNote")] if n]
+    review_notes = [n for n in [text.get("industriesNote"), *text.get("reviewNotes", [])] if n]
     return {
         "status": text["status"],
         "name": text["name"],
@@ -296,6 +322,7 @@ def assemble(source, text, maps, network, public_dir):
         "colours": colour_list,
         "otherColoursCount": other_colours,
         "sizes": sizes(source, text),
+        "variants": variants(text, maps, load),
         "personalization": personalization(fields, maps),
         "documents": documents(source, colour_list, model_quality),
         "faq": text["faq"],
@@ -342,8 +369,10 @@ def main(argv):
             failed = True
             continue
         try:
-            entry = assemble(json.loads(source_path.read_text(encoding="utf-8")), text, maps, network, public_dir)
-        except MissingTranslation as exc:
+            def load(model):
+                return json.loads((source_dir / f"{model}.json").read_text(encoding="utf-8"))
+            entry = assemble(json.loads(source_path.read_text(encoding="utf-8")), text, maps, network, public_dir, load)
+        except (MissingTranslation, FileNotFoundError) as exc:
             print(f"!! {text['model']}: {exc}", file=sys.stderr)
             failed = True
             continue

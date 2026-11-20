@@ -462,3 +462,15 @@
 - B1712B e fabricat de BASE Protection Srl (Italia), cu declarația semnată în numele Portwest: marca pe site e
   „Base Protection”, cu producătorul trecut pe fișă.
 - Categorie nouă: „Genunchiere” (KP40).
+
+## D-2026-11-20-03
+- Owner-ul (20.11.2026) a cerut „colecția Office” MASCOT. În feed nu există o gamă cu numele ăsta: e FRONTLINE
+  „Corporate Casual” (cămăși, pantaloni, pulovere) plus „M by Mascot” (pantofi business), 47 de modele.
+- Cămășile se grupează pe linii, după material: o fișă = o linie, cu croielile (bărbați și damă) ca variante, fiecare cu
+  codul ei MASCOT (aprobat de owner). Câmp nou în schemă: `variants` {title, items[{label, model, sizes, colours}]},
+  completat de `assemble_mascot.py` din feed, pe fiecare cod. 7 fișe în loc de 17 modele:
+  - Signature 22004 (+22104, 22204), Premium cu poliester reciclat 20104 (+20304, 20204, 20014, 20114),
+    Premium din bumbac 21404 (+20504, 21204, 21314, 21214), Basic din poplin 21904 (+20604, 21804, 21914, 21814);
+  - pantalonii de damă 20637 (perechea lui 20739), pantofii sport business F3003, puloverul 50636 (+50635, guler în V).
+- F3003 nu e încălțăminte de protecție („Non-safety” în feed): categorie nouă, „Încălțăminte business”, și o notă pe
+  fișă. Categorie cu pagină nouă: „Cămăși corporate” (/produse/camasi-corporate/).
