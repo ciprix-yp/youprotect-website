@@ -1,0 +1,370 @@
+{
+  "status": "published",
+  "name": "Pantaloni de damă stretch MASCOT® Frontline Pearl",
+  "category": "pantaloni",
+  "industries": [
+    "corporate"
+  ],
+  "summary": "Pantaloni de damă stretch cu croiala PEARL, din țesătura ULTIMATE STRETCH, elastică pe patru direcții, ușoară și cu finisaj hidrofob. Stai comod la birou și arăți îngrijită în fața clienților.",
+  "description": [
+    "Pantalonii de damă stretch MASCOT® Frontline urmează fiecare mișcare: țesătura ULTIMATE STRETCH se întinde pe patru direcții și e moale la purtare, așa că nu te strânge nicăieri, nici când te așezi, te apleci sau urci scări. Sunt ușori și rezistenți, iar croiala de damă PEARL e gândită pentru femeile cu o diferență de sub 20 cm între talie și șolduri.",
+    "Croiala PEARL din gama Corporate Casual le dă un aspect curat, de uniformă de birou, și arăți îngrijită și profesionistă la recepție sau în ședințe. Sunt perechea pentru femei a pantalonilor MASCOT® Frontline 20739 pentru bărbați: aceeași țesătură, aceeași nuanță de bleumarin închis, așa că echipa arată unitar, cu croieli separate pentru femei și bărbați.",
+    "Pentru firmă sunt simplu de gestionat: îi speli la 60 °C, îi poți usca în uscător, iar țesătura cu finisaj hidrofob, certificată OEKO-TEX® STANDARD 100, respinge stropii. Logoul firmei îl poți pune pe buzunarele din spate, pe coapse sau pe gambe, în aceleași zone ca la modelul pentru bărbați."
+  ],
+  "benefits": [
+    "Libertate de mișcare: ULTIMATE STRETCH se întinde pe patru direcții.",
+    "Croială pentru femei: PEARL, pentru o diferență de sub 20 cm între talie și șolduri.",
+    "Ușori, dar rezistenți: țesătură ușoară, potrivită în interior și pe căldură.",
+    "Feriți de stropi: finisaj hidrofob care respinge apa.",
+    "Echipă unitară: pereche pentru femei a pantalonilor MASCOT® Frontline 20739.",
+    "Întreținere ușoară: spălare la 60 °C, uscare în uscător, OEKO-TEX® STANDARD 100."
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "88 % poliester / 12 % elastolefină, ULTIMATE STRETCH"
+    },
+    {
+      "label": "Gramaj",
+      "value": "275 g/m²"
+    },
+    {
+      "label": "Croială",
+      "value": "PEARL, pentru femei (diferență talie–șolduri sub 20 cm)"
+    },
+    {
+      "label": "Finisaj",
+      "value": "Hidrofob"
+    },
+    {
+      "label": "Închidere",
+      "value": "Fermoar"
+    },
+    {
+      "label": "Buzunare",
+      "value": "Buzunare frontale, buzunar pentru monede, buzunare la spate"
+    },
+    {
+      "label": "Alte detalii",
+      "value": "Găici pentru curea"
+    },
+    {
+      "label": "Model pentru bărbați",
+      "value": "MASCOT® Frontline 20739"
+    }
+  ],
+  "notes": [
+    "Finisajul hidrofob respinge stropii, dar pantalonii nu sunt impermeabili: cusăturile nu sunt sigilate.",
+    "Dacă diferența dintre talie și șolduri trece de 20 cm, MASCOT recomandă croiala de damă DIAMOND în locul croielii PEARL.",
+    "Pantalonii nu se calcă și nu se curăță chimic."
+  ],
+  "certifications": [
+    {
+      "code": "OEKO-TEX® STANDARD 100",
+      "label": "Textile testate pentru substanțe nocive."
+    }
+  ],
+  "care": [
+    "Spălare la max. 60 °C",
+    "Nu se folosește înălbitor",
+    "Uscare în uscător, temperatura inițială max. 80 °C",
+    "Nu se calcă",
+    "Nu se curăță chimic",
+    "Categoria de întreținere industrială A1"
+  ],
+  "colours": [
+    {
+      "code": "010",
+      "name": "bleumarin închis",
+      "swatch": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-swatch.webp",
+      "images": [
+        {
+          "src": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P04.webp",
+          "thumb": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P04-thumb.webp",
+          "view": "P04"
+        },
+        {
+          "src": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P07.webp",
+          "thumb": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P07-thumb.webp",
+          "view": "P07"
+        },
+        {
+          "src": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P13.webp",
+          "thumb": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P13-thumb.webp",
+          "view": "P13"
+        },
+        {
+          "src": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P19.webp",
+          "thumb": "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-P19-thumb.webp",
+          "view": "P19"
+        }
+      ],
+      "spin": [
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P02.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P04.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P05.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P06.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P07.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P08.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P09.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P10.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P11.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P12.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P13.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P14.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P15.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P16.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P17.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P18.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P19.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P20.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P21.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P22.webp",
+        "/images/products/pantaloni-dama-stretch-mascot-frontline-pearl-20637/010-spin-P24.webp"
+      ]
+    }
+  ],
+  "otherColoursCount": 0,
+  "sizes": {
+    "summary": "C34–C56 (picior 76 cm); C34–C56 (picior 82 cm)",
+    "values": [
+      "C34",
+      "C36",
+      "C38",
+      "C40",
+      "C42",
+      "C44",
+      "C46",
+      "C48",
+      "C50",
+      "C52",
+      "C54",
+      "C56"
+    ],
+    "table": [
+      {
+        "size": "C34",
+        "measure": "talie 78 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C36",
+        "measure": "talie 82 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C38",
+        "measure": "talie 86 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C40",
+        "measure": "talie 90 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C42",
+        "measure": "talie 94 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C44",
+        "measure": "talie 98 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C46",
+        "measure": "talie 104 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C48",
+        "measure": "talie 110 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C50",
+        "measure": "talie 116 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C52",
+        "measure": "talie 122 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C54",
+        "measure": "talie 128 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C56",
+        "measure": "talie 136 cm",
+        "leg": "76 cm"
+      },
+      {
+        "size": "C34",
+        "measure": "talie 78 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C36",
+        "measure": "talie 82 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C38",
+        "measure": "talie 86 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C40",
+        "measure": "talie 90 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C42",
+        "measure": "talie 94 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C44",
+        "measure": "talie 98 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C46",
+        "measure": "talie 104 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C48",
+        "measure": "talie 110 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C50",
+        "measure": "talie 116 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C52",
+        "measure": "talie 122 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C54",
+        "measure": "talie 128 cm",
+        "leg": "82 cm"
+      },
+      {
+        "size": "C56",
+        "measure": "talie 136 cm",
+        "leg": "82 cm"
+      }
+    ],
+    "note": "Talia se măsoară în punctul cel mai îngust. Croiala PEARL se potrivește când diferența dintre talie și șolduri e sub 20 cm."
+  },
+  "variants": null,
+  "personalization": {
+    "placements": [
+      {
+        "position": "Buzunarul stâng din spate",
+        "maxSize": "8 × 3 cm"
+      },
+      {
+        "position": "Buzunarul drept din spate",
+        "maxSize": "8 × 3 cm"
+      },
+      {
+        "position": "Coapsa stângă, vertical",
+        "maxSize": "25 × 5 cm"
+      },
+      {
+        "position": "Coapsa stângă, orizontal",
+        "maxSize": "9 × 5 cm"
+      },
+      {
+        "position": "Coapsa dreaptă, vertical",
+        "maxSize": "25 × 5 cm"
+      },
+      {
+        "position": "Coapsa dreaptă, orizontal",
+        "maxSize": "9 × 5 cm"
+      },
+      {
+        "position": "Gamba stângă, orizontal",
+        "maxSize": "12 × 6 cm"
+      },
+      {
+        "position": "Gamba dreaptă, orizontal",
+        "maxSize": "12 × 6 cm"
+      },
+      {
+        "position": "Gamba stângă, vertical",
+        "maxSize": "28 × 10 cm"
+      },
+      {
+        "position": "Gamba dreaptă, vertical",
+        "maxSize": "28 × 10 cm"
+      }
+    ],
+    "special": true,
+    "hiVisNote": null
+  },
+  "documents": [
+    {
+      "type": "fisa-tehnica",
+      "label": "Fișă tehnică (în engleză)",
+      "url": "https://mascotsitecore-1ccb8.kxcdn.com/pdf/20637-511-010-en.pdf",
+      "language": "en"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Pentru cine este croiala PEARL a pantalonilor de damă MASCOT® Frontline 20637?",
+      "a": "Pentru femeile cu o diferență de sub 20 cm între talie și șolduri. Pantalonii de damă MASCOT® Frontline 20637 au croiala PEARL; la o diferență mai mare de 20 cm, MASCOT recomandă croiala DIAMOND. Talia se măsoară în punctul cel mai îngust."
+    },
+    {
+      "q": "Cât de elastici sunt pantalonii de damă MASCOT® Frontline 20637?",
+      "a": "Se întind pe patru direcții. Pantalonii de damă MASCOT® Frontline 20637 sunt din ULTIMATE STRETCH (88 % poliester, 12 % elastolefină), o țesătură moale și ușoară care urmează mișcările corpului, ca nimic să nu strângă."
+    },
+    {
+      "q": "Se potrivesc pantalonii de damă MASCOT® Frontline 20637 cu modelul pentru bărbați?",
+      "a": "Da. Pantalonii de damă MASCOT® Frontline 20637 sunt varianta pentru femei a pantalonilor stretch MASCOT® Frontline 20739, din aceeași țesătură ULTIMATE STRETCH și în aceeași nuanță de bleumarin închis. Echipa poartă aceeași uniformă, fiecare cu croiala potrivită."
+    },
+    {
+      "q": "Pot pune logoul firmei pe pantalonii de damă MASCOT® Frontline 20637?",
+      "a": "Da. Pe pantalonii de damă MASCOT® Frontline 20637 poți pune logoul pe buzunarele din spate (max. 8 × 3 cm), pe coapse (max. 25 × 5 cm vertical sau 9 × 5 cm orizontal) și pe gambe (max. 28 × 10 cm vertical sau 12 × 6 cm orizontal). Alte poziții se discută la cerere."
+    },
+    {
+      "q": "Cum se întrețin pantalonii de damă MASCOT® Frontline 20637?",
+      "a": "Se spală la maximum 60 °C, fără înălbitor, și se pot usca în uscător, la o temperatură inițială de maximum 80 °C. Pantalonii de damă MASCOT® Frontline 20637 nu se calcă și nu se curăță chimic."
+    },
+    {
+      "q": "De unde pot comanda pantaloni de damă stretch în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru pantalonii de damă MASCOT® Frontline 20637, cu logoul firmei, și îi poți comanda împreună cu modelul pentru bărbați 20739."
+    }
+  ],
+  "seo": {
+    "title": "Pantaloni de damă stretch MASCOT Frontline 20637",
+    "description": "Pantaloni de damă stretch MASCOT Frontline 20637: croială PEARL, elastici pe 4 direcții, ușori și hidrofobi, pereche cu 20739. Ofertă de la You Protect."
+  },
+  "supplier": {
+    "name": "MASCOT",
+    "brand": "MASCOT®",
+    "model": "20637-511",
+    "range": "FRONTLINE",
+    "productUrl": "https://www.mascotworkwear.ie/en/mascot-frontline-20637-511"
+  },
+  "reviewNotes": [
+    "Pereche cu 20739: confirmată de feed-ul 20739 („Variant Woman-Man: 20637-511; 20638-511”), aceeași calitate 511 (88 % poliester / 12 % elastolefină, 275 g/m²), aceeași culoare 010 și aceleași zone de logo.",
+    "Feed-ul 20739 mai listează 20638-511 ca variantă pentru femei; probabil croiala DIAMOND, dar feed-ul nu o spune, așa că n-am numit codul. Nota spune doar că MASCOT recomandă DIAMOND peste 20 cm diferență.",
+    "„Industrial care category A1” apare automat la întreținere; n-am explicat-o în text (nu știm sigur ce acoperă).",
+    "N-am scris „talie joasă” (declarată la 20739, nu și la 20637). „Potrivită în interior și pe căldură” vine din textul pictogramei Lightweight."
+  ],
+  "source": {
+    "feed": "MASCOT_extended_productdata_EXPORT-en.xlsx",
+    "assembledAt": "2026-11-20"
+  }
+}

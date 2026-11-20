@@ -9,6 +9,7 @@ export const CATEGORIES = {
   pantaloni: 'Pantaloni',
   camasi: 'Cămăși',
   incaltaminte: 'Încălțăminte de protecție',
+  'incaltaminte-business': 'Încălțăminte business',
   'casti-protectie': 'Căști de protecție',
   manusi: 'Mănuși de protecție',
   'protectia-ochilor': 'Ochelari și viziere de protecție',

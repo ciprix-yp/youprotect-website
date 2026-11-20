@@ -52,6 +52,17 @@ const products = defineCollection({
       ),
       note: z.string().nullable(),
     }),
+    // Variantele aceleiași linii pe o singură fișă (croieli de cămașă, tipuri de guler), fiecare cu codul ei de la
+    // producător. Mărimile și culorile vin din feed, pe fiecare cod (assemble_mascot.py).
+    variants: z
+      .object({
+        title: z.string(),
+        items: z
+          .array(z.object({ label: z.string(), model: z.string(), sizes: z.string(), colours: z.array(z.string()).min(1) }))
+          .min(2),
+      })
+      .nullable()
+      .default(null),
     personalization: z
       .object({
         placements: z.array(z.object({ position: z.string(), maxSize: z.string().nullable() })),

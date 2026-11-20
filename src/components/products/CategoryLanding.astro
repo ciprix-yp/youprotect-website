@@ -25,6 +25,14 @@ const { page, entries, others } = Astro.props;
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
 const products = [...entries].sort((a, b) => roCollator.compare(a.data.name, b.data.name));
 const brands = [...new Set(products.map((e) => e.data.supplier.brand))].sort(roCollator.compare);
+// Dala „Nu găsești modelul potrivit?” apare doar unde completează un rând început (2, 3 sau 4 coloane); pe un rând
+// plin ar sta singură. Clasele sunt scrise întregi, ca Tailwind să le găsească.
+const n = products.length;
+const closingTileClass = [
+  n % 2 === 0 ? 'hidden' : 'block',
+  n % 3 === 0 ? 'md:hidden' : 'md:block',
+  n % 4 === 0 ? 'lg:hidden' : 'lg:block',
+].join(' ');
 const count = products.length;
 const href = `/produse/${page.slug}/`;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
@@ -121,7 +129,7 @@ const faqSchema = {
         <ProductCard {...toCardProps(e)} />
       </li>
     ))}
-    <li>
+    <li class={closingTileClass}>
       <div class="flex h-full flex-col justify-between gap-4 border border-dashed border-yp-white/25 p-4">
         <div>
           <p class="text-sm font-medium text-yp-white sm:text-base">Nu găsești modelul potrivit?</p>

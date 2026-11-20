@@ -1,0 +1,84 @@
+{
+  "model": "F3003",
+  "slug": "pantofi-sport-business-mascot-f3003",
+  "status": "published",
+  "keyword": "pantofi sport business",
+  "name": "Pantofi sport business M by MASCOT®",
+  "category": "incaltaminte-business",
+  "industries": [
+    "corporate"
+  ],
+  "primaryColour": "13",
+  "sizeNote": null,
+  "summary": "Pantofi sport business ușori, cu fața din microfibră, talpă din EVA și branț moale care absoarbe șocurile. Arăți îngrijit la birou și la client; nu sunt încălțăminte de protecție.",
+  "description": [
+    "Pantofii sport business M by MASCOT® sunt ușori și moi la pas: talpa din EVA și branțul moale și flexibil absorb șocurile, iar șireturile te lasă să-i potrivești bine pe picior. Fața e din microfibră, cu linia unui sneaker modern.",
+    "Merg și ca pantof business, și ca pantof de lucru ușor, așa i-a gândit MASCOT. Arăți îngrijit la recepție, în showroom sau la client, iar echipa poate purta același model, în alb, negru sau albastru închis.",
+    "Pentru firmă sunt o alegere pentru birouri, recepții și spații comerciale, unde nu se cere încălțăminte de protecție. Atenție: pantofii F3003 nu au bombeu de protecție sau alte componente de siguranță și nu sunt certificați conform EN ISO 20345, așa că nu îi dai oamenilor care lucrează în zone cu risc pentru picioare."
+  ],
+  "benefits": [
+    "Calci moale: talpa din EVA și branțul flexibil absorb șocurile.",
+    "Ușori la purtare: sneaker modern, cu fața din microfibră.",
+    "Arăți îngrijit: linie potrivită la birou și la client.",
+    "Două roluri într-un singur model: pantof business și pantof de lucru ușor.",
+    "Se potrivesc pe picior: închidere cu șireturi."
+  ],
+  "specs": [
+    {
+      "label": "Tip",
+      "value": "Încălțăminte fără componente de protecție (non-safety)"
+    },
+    {
+      "label": "Talpă",
+      "value": "EVA"
+    },
+    {
+      "label": "Branț",
+      "value": "Moale și flexibil, absoarbe șocurile"
+    },
+    {
+      "label": "Închidere",
+      "value": "Șireturi"
+    },
+    {
+      "label": "Standard de protecție",
+      "value": "Nu are (nu este certificată conform EN ISO 20345)"
+    }
+  ],
+  "notes": [
+    "Nu sunt încălțăminte de protecție: pantofii sport business M by MASCOT® F3003 nu au bombeu de protecție și nu sunt certificați conform EN ISO 20345. Nu îi folosi unde evaluarea riscurilor cere încălțăminte de protecție."
+  ],
+  "faq": [
+    {
+      "q": "Sunt pantofii M by MASCOT® F3003 încălțăminte de protecție?",
+      "a": "Nu. Pantofii sport business M by MASCOT® F3003 sunt încălțăminte fără componente de protecție: nu au bombeu de protecție și nu sunt certificați conform EN ISO 20345. Sunt pentru birou, recepție și alte locuri unde nu se cere încălțăminte de protecție."
+    },
+    {
+      "q": "Sunt comozi pantofii sport business M by MASCOT® F3003?",
+      "a": "Da. Pantofii sport business M by MASCOT® F3003 sunt ușori, iar talpa din EVA și branțul moale și flexibil absorb șocurile la fiecare pas."
+    },
+    {
+      "q": "Pot purta pantofii M by MASCOT® F3003 ca pantofi business?",
+      "a": "Da. MASCOT a gândit modelul F3003 ca un sneaker modern care merge și ca pantof business, și ca pantof de lucru ușor. Pantofii M by MASCOT® F3003 au fața din microfibră și se leagă cu șireturi."
+    },
+    {
+      "q": "Ce mărimi și culori există pentru pantofii M by MASCOT® F3003?",
+      "a": "Pantofii sport business M by MASCOT® F3003 au mărimile 40–48 și se fac în alb, negru și albastru închis."
+    },
+    {
+      "q": "De unde pot comanda pantofi sport business în România?",
+      "a": "De la You Protect, din Satu Mare. Ceri ofertă de pe această pagină pentru pantofii M by MASCOT® F3003, pentru toată echipa de birou."
+    }
+  ],
+  "seo": {
+    "title": "Pantofi sport business M by MASCOT F3003",
+    "description": "Pantofi sport business M by MASCOT F3003: ușori, talpă EVA și branț care absoarbe șocurile, aspect îngrijit. Nu sunt de protecție. Ofertă de la You Protect."
+  },
+  "reviewNotes": [
+    "Non-safety spus în summary, în paragraful 3, în specs, în notă și în prima întrebare (feed: „Non-safety – footwear without safety components”). N-am pus F3003 la industrii cu risc.",
+    "Greutatea din feed („Size 42: 342 g”) nu spune dacă e per pantof sau per pereche; apare doar automat în specs, n-am folosit-o în text.",
+    "Feed-ul nu declară antiderapant, impermeabil, respirabil sau întreținere; nu le-am menționat. USP spune „maximum shock absorption”: am scris „absorb șocurile”, fără superlativ.",
+    "Technical text: talpă exterioară EVA; USP: talpă intermediară EVA. Am scris „talpă din EVA”. Mărimile UK au prefix M (posibil „men”); n-am spus că sunt pentru bărbați.",
+    "Culori: în text alb, negru și albastru închis (toate trei în feed); comandată doar 13 (albastru închis), pusă ca primaryColour."
+  ]
+}

@@ -1,25 +1,28 @@
 {
   "_comment": "Traduceri RO pentru valorile din feed-ul MASCOT. Cheia = textul exact din feed. Scriptul de asamblare se opreste daca lipseste o cheie. Certificari: code = marcajul afisat pe site, label = explicatia in romana (gol = fara explicatie).",
   "colours": {
-    "navy": "bleumarin",
-    "dark navy": "bleumarin închis",
-    "red": "roșu",
-    "white": "alb",
-    "black": "negru",
-    "deep black": "negru intens",
-    "dark anthracite": "antracit închis",
     "anthracite": "antracit",
-    "grass green": "verde iarbă",
-    "light blue": "albastru deschis",
-    "hi-vis orange/dark navy": "portocaliu fluorescent / bleumarin închis",
     "azure blue/dark navy": "albastru azur/bleumarin închis",
+    "black": "negru",
+    "blue-flecked": "albastru melanj",
+    "dark anthracite": "antracit închis",
     "dark anthracite/black": "antracit închis/negru",
+    "dark anthracite/light grey-flecked": "antracit închis/gri deschis melanj",
+    "dark blue": "albastru închis",
+    "dark navy": "bleumarin închis",
+    "deep black": "negru intens",
     "forest green": "verde pădure",
+    "grass green": "verde iarbă",
     "grass green/green": "verde iarbă/verde",
     "grey-flecked": "gri melanj",
+    "hi-vis orange/dark navy": "portocaliu fluorescent / bleumarin închis",
+    "light blue": "albastru deschis",
+    "navy": "bleumarin",
+    "red": "roșu",
     "stone blue": "albastru-cenușiu",
     "stone grey": "gri piatră",
-    "traffic red/black": "roșu semnal/negru"
+    "traffic red/black": "roșu semnal/negru",
+    "white": "alb"
   },
   "certifications": {
     "OEKO-TEX® STANDARD 100": {
@@ -90,17 +93,23 @@
     "Normal dry cleaning": "Curățare chimică normală",
     "Do not dry-clean": "Nu se curăță chimic",
     "FT088-980-88 Impregnation Spray": "Întreținere cu spray de impregnare MASCOT FT088",
-    "Tumble-dry - initial temperature max. 60° C": "Uscare în uscător, temperatura inițială max. 60 °C"
+    "Tumble-dry - initial temperature max. 60° C": "Uscare în uscător, temperatura inițială max. 60 °C",
+    "Gentle wash, max. 30° C": "Spălare delicată la max. 30 °C",
+    "Hang to dry": "Uscare pe umeraș",
+    "Lay flat to dry": "Uscare pe orizontală"
   },
   "materials": {
-    "polyester": "poliester",
+    "Leather": "Piele",
+    "Microfibre leather": "Piele din microfibră",
+    "acrylic": "acril",
     "cotton": "bumbac",
     "elastane": "elastan",
     "elastolefin": "elastolefină",
-    "viscose": "viscoză",
-    "Leather": "Piele",
     "organic cotton": "bumbac organic",
-    "recycled polyester": "poliester reciclat"
+    "polyester": "poliester",
+    "recycled polyester": "poliester reciclat",
+    "viscose": "viscoză",
+    "wool (merino)": "lână merinos"
   },
   "logoPositions": {
     "Left breast": "Piept stânga",

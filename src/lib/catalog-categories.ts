@@ -74,6 +74,16 @@ export const CATEGORY_PAGES: CategoryPage[] = [
     logo: true,
   },
   {
+    key: 'camasi',
+    slug: 'camasi-corporate',
+    heading: 'Cămăși corporate pentru firme',
+    title: 'Cămăși corporate pentru angajați',
+    intro:
+      'Cămăși pentru echipele de la birou, recepție și vânzări, în croieli pentru bărbați și pentru femei, cu logo-ul firmei. Mai jos vezi materialul și croielile fiecărei linii.',
+    plural: 'cămășile corporate',
+    logo: true,
+  },
+  {
     key: 'veste',
     slug: 'veste-de-lucru',
     heading: 'Veste de lucru',
