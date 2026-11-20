@@ -30,6 +30,10 @@ jobs:
       - name: Tests (formular, inbox CRM)
         run: npm test
 
+      # TypeScript și componentele Astro: Vite doar șterge tipurile, nu le verifică (audit, 20.11.2026).
+      - name: Verificare de tipuri (astro check)
+        run: npm run check
+
       - name: Build
         run: npm run build
 

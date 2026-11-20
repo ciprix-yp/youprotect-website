@@ -17,6 +17,7 @@ import { track } from '../../lib/track';
 import { HONEYPOT_FIELD } from '../../lib/honeypot.js';
 import { EMAIL_REGEX } from '../../lib/lead-limits.js';
 import { postLead } from '../../lib/post-lead.js';
+import { SMALL_TEAM_WHATSAPP } from '../../lib/whatsapp';
 import Honeypot from '../forms/Honeypot';
 
 // Calculatorul de cost real (lead magnet). Calculul e în src/lib/tco.js, comun cu serverul.
@@ -39,9 +40,6 @@ type Inputs = typeof TCO_DEFAULTS & {
 const STEPS = ['echipa', 'produse', 'ipoteze', 'rezultat', 'contact', 'gata'] as const;
 const INPUT_STEPS = 3;
 
-const SMALL_TEAM_WHATSAPP = `https://wa.me/${SITE.telephone.replace(/\D/g, '')}?text=${encodeURIComponent(
-  'Bună! Am o echipă de 1–4 persoane și aș vrea o recomandare de echipamente.',
-)}`;
 
 const inputClass =
   'w-full bg-[#0a0a0a] border border-white/15 rounded-md px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-none focus:border-yp-yellow transition-colors';
@@ -319,7 +317,7 @@ export default function TCOCalculator() {
             value={inputs.employees}
             onChange={(v) => set('employees', v)}
             min={TCO_LIMITS.employees.min}
-            max={200}
+            max={TCO_LIMITS.employees.max}
             suffix="pers."
           />
           <p className="text-sm text-neutral-400 -mt-4">
@@ -462,7 +460,7 @@ export default function TCOCalculator() {
             value={inputs.adminHours}
             onChange={(v) => set('adminHours', v)}
             min={TCO_LIMITS.adminHours.min}
-            max={40}
+            max={TCO_LIMITS.adminHours.max}
             suffix="ore"
             hint="Comenzi, recepție, împărțit pe mărimi, evidență, înlocuiri. Pune 0 dacă nu vrei să-l iei în calcul."
           />
@@ -472,7 +470,7 @@ export default function TCOCalculator() {
             value={inputs.hourCost}
             onChange={(v) => set('hourCost', v)}
             min={TCO_LIMITS.hourCost.min}
-            max={150}
+            max={TCO_LIMITS.hourCost.max}
             suffix="lei/oră"
             hint="Salariul brut cu taxele angajatorului, împărțit la orele lucrate."
           />

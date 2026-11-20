@@ -53,6 +53,7 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
 }
 
 <script>
+  import { LEAD_FLAG } from '../../lib/session-keys.js';
   type Consent = { v: 1; analytics: boolean; at: string };
   type Params = Record<string, string | number | boolean | undefined>;
   type Win = Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
@@ -63,7 +64,6 @@ const { ga4Id, consentKey, consentMaxAgeDays, gaCookieMaxAgeDays } = ANALYTICS;
   const KEY = banner?.dataset.key ?? 'yp_consent';
   const MAX_AGE_MS = Number(banner?.dataset.maxAgeDays ?? 182) * 86_400_000;
   const COOKIE_SECONDS = Number(banner?.dataset.cookieDays ?? 395) * 86_400;
-  const LEAD_FLAG = 'yp_lead';
 
   function readConsent(): Consent | null {
     try {

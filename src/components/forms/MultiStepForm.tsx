@@ -1,10 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { isValidCUI } from '../../lib/cui.js';
-import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../../lib/quote-categories.js';
+import {
+  CATEGORY_PRODUCTS_OPTION,
+  HEIGHT_OPTION,
+  PERSONALIZATION_ANSWERS,
+  SSM_OPTION,
+  quoteCategoryLabel,
+} from '../../lib/quote-categories.js';
 import { SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
 import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../../lib/lead-limits.js';
 import { postLead } from '../../lib/post-lead.js';
+import { LEAD_QUESTIONS } from '../../lib/lead-questions.js';
+import { BOOKING_PREFILL_KEY } from '../../lib/session-keys.js';
+import { SMALL_TEAM_WHATSAPP } from '../../lib/whatsapp';
 import { flagLead, track } from '../../lib/track';
 import { HONEYPOT_FIELD } from '../../lib/honeypot.js';
 import Honeypot from './Honeypot';
@@ -20,28 +29,15 @@ interface MultiStepFormProps {
 
 // Datele de contact vin la final: întrebările ușoare întâi, apoi „unde îți trimitem oferta”.
 // Programarea: trei întrebări de calificare, apoi contactul cu un câmp liber (20.11.2026, D-2026-11-20-06).
-const FORM_1_STEPS = ['q1', 'q2', 'q3', 'contact'];
-const FORM_2_STEPS = ['q1', 'q2', 'q3', 'personalizare', 'q4', 'q5', 'q6', 'q7', 'contact'];
-
-// Cheia din sessionStorage cu datele pentru calendarul de pe /confirmare/ (nu le punem în URL).
-export const BOOKING_PREFILL_KEY = 'yp_booking_prefill';
+// Pașii vin din src/lib/lead-questions.js, aceeași listă pe care o citește serverul.
+const FORM_1_STEPS = [...LEAD_QUESTIONS.consultation, 'contact'];
+const FORM_2_STEPS = [...LEAD_QUESTIONS.quote, 'contact'];
 
 const PHONE = { href: `tel:${SITE.telephone}`, label: SITE.telephoneDisplay };
 
-// Echipele de 1–4 persoane nu sunt în formular: le răspundem mai repede pe WhatsApp.
-const SMALL_TEAM_WHATSAPP = `https://wa.me/${SITE.telephone.replace(/\D/g, '')}?text=${encodeURIComponent(
-  'Bună! Am o echipă de 1–4 persoane și aș vrea o recomandare de echipamente.',
-)}`;
 
 // Variantele de la „Ce produse ai în vedere?” în care intră categoriile de pe homepage (?categorie=<slug>).
-const SSM_OPTION = 'Mănuși / căști / ochelari / alte echipamente SSM';
-const HEIGHT_OPTION = 'Lucru la înălțime (hamuri, sisteme anticădere)';
-const CATEGORY_OPTION: Record<string, string> = {
-  manusi: SSM_OPTION,
-  casti: SSM_OPTION,
-  ochelari: SSM_OPTION,
-  'lucru-la-inaltime': HEIGHT_OPTION,
-};
+const CATEGORY_OPTION: Record<string, string> = CATEGORY_PRODUCTS_OPTION;
 
 const DOMAIN_OPTIONS: Option[] = DOMAINS.map((label) => ({ label, hasOther: label === 'Alt domeniu' }));
 

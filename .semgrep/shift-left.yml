@@ -72,11 +72,74 @@ rules:
     pattern-sinks:
       - patterns:
           - pattern-either:
-              - pattern-inside: $CP.exec($CMD, ...)
+              # D1 are și el .exec(SQL): acela e SQL, nu comandă de sistem (regulile d1-* de mai jos).
+              - patterns:
+                  - pattern-inside: $CP.exec($CMD, ...)
+                  - metavariable-regex:
+                      metavariable: $CP
+                      regex: ^(?!(.*\.)?[A-Za-z_]*(DB|Db|db|D1|d1)$)
               - pattern-inside: $CP.execSync($CMD, ...)
               - pattern-inside: exec($CMD, ...)
               - pattern-inside: execSync($CMD, ...)
           - focus-metavariable: $CMD
+
+  # Cloudflare Pages Functions / Workers + D1 (auditul din 20.11.2026): regula de mai sus nu știa nici sursele
+  # Workers (request.json(), headers.get(), searchParams, context.params), nici D1 (db.prepare / db.exec).
+  - id: d1-sql-injection-from-request
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: >-
+      Input from the request reaches a D1 SQL string (SQL injection). Keep the SQL constant and
+      bind the values: db.prepare("... WHERE id = ?1").bind(id).
+    metadata:
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A03:2021 - Injection"
+    mode: taint
+    pattern-sources:
+      - pattern: $REQ.json()
+      - pattern: $REQ.text()
+      - pattern: $REQ.formData()
+      - pattern: $REQ.headers.get(...)
+      - pattern: $URL.searchParams.get(...)
+      - pattern: $URL.searchParams.getAll(...)
+      - pattern: $CTX.params
+      - pattern: $REQ.url
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern-inside: $DB.prepare($SQL, ...)
+              - pattern-inside: $DB.exec($SQL, ...)
+          # Doar bindingurile D1 (LEADS_DB, env.DB, db): Semgrep vede și child_process.exec ca $DB.exec.
+          - metavariable-regex:
+              metavariable: $DB
+              regex: ^(.*\.)?[A-Za-z_]*(DB|Db|db|D1|d1)$
+          - focus-metavariable: $SQL
+    pattern-sanitizers:
+      - pattern: parseInt(...)
+      - pattern: Number(...)
+      - pattern: Number.parseInt(...)
+
+  # Orice SQL construit dinamic pentru D1, indiferent de unde vine valoarea: în D1 valorile merg prin .bind().
+  - id: d1-dynamic-sql
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: >-
+      D1 SQL built from a template or concatenation. Write the SQL as a constant and pass values
+      with .bind(...) (?1, ?2 …). If a part really must be dynamic (a column from a fixed list),
+      add "// nosemgrep: d1-dynamic-sql — <reason>".
+    metadata:
+      cwe: "CWE-89: SQL Injection"
+    patterns:
+      - pattern-either:
+          - pattern: $DB.prepare(`...${$X}...`)
+          - pattern: $DB.prepare("..." + $X)
+          - pattern: $DB.prepare($X + "...")
+          - pattern: $DB.exec(`...${$X}...`)
+          - pattern: $DB.exec("..." + $X)
+      # Doar bindingurile D1 (LEADS_DB, env.DB, db): Semgrep vede și child_process.exec ca $DB.exec.
+      - metavariable-regex:
+          metavariable: $DB
+          regex: ^(.*\.)?[A-Za-z_]*(DB|Db|db|D1|d1)$
 
   # Găsit în functions/api/submit-lead.js (16.11.2026): eroarea din baza de date ajungea în răspunsul HTTP.
   - id: internal-error-message-in-response

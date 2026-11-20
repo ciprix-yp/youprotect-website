@@ -45,15 +45,17 @@ export const TCO_CATEGORIES = {
   ochelari: { label: 'Ochelari de protecție', price: 35, qualityPrice: 70, months: 6, qty: 1, riskFreeTesting: false },
 };
 
+// Limitele sunt și capetele sliderelor din calculator (TCOCalculator.tsx citește de aici): serverul nu acceptă altceva
+// decât poate alege vizitatorul. Înainte, sliderele mergeau până la 200/40/150, iar serverul până la 500/80/300.
 export const TCO_LIMITS = {
-  employees: { min: 5, max: 500 },
+  employees: { min: 5, max: 200 },
   // Prețuri cu bani (2 zecimale): mănușile de unică folosință sau dopurile de urechi costă sub un leu (audit, 20.11.2026).
   price: { min: 0.01, max: 5000 },
   qty: { min: 1, max: 50 },
   months: INTERVAL_MONTHS,
   durability: { min: 1, max: 3, step: 0.25 },
-  adminHours: { min: 0, max: 80 },
-  hourCost: { min: 10, max: 300 },
+  adminHours: { min: 0, max: 40 },
+  hourCost: { min: 10, max: 150 },
 };
 
 export const WORKING_DAYS_PER_YEAR = 220;
@@ -118,9 +120,15 @@ export function parseTcoInputs(raw) {
   };
 }
 
+/**
+ * Un rând din rezultat: o categorie, cu bucățile pe an și costul pe an acum / cu produse de calitate.
+ * @typedef {{ id: string, label: string, unitsPerYear: number, now: number, qualitySameLife: number, quality: number }} TcoRow
+ */
+
 /** Calculul propriu-zis, pe date deja validate cu parseTcoInputs. Sume în lei pe an. */
 export function computeTco(input) {
   const d = input.durability;
+  /** @type {TcoRow[]} */
   const rows = input.categories.map((id) => {
     const unitsPerYear = input.employees * input.qty[id] * (12 / input.months[id]);
     const now = unitsPerYear * input.prices[id];

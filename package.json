@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "pm": "./PROJECT_OS/pm/pm",
     "pm:status": "./PROJECT_OS/pm/pm status",
@@ -38,6 +39,10 @@
   },
   "homepage": "https://github.com/ciprix-yp/youprotect-website#readme",
   "devDependencies": {
-    "autoprefixer": "^10.6.2"
+    "@astrojs/check": "^0.9.12",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.6.2",
+    "typescript": "^6.0.3"
   }
 }

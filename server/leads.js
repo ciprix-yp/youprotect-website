@@ -3,8 +3,11 @@
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
 import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../src/lib/lead-limits.js';
 import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
+import { LEAD_QUESTIONS } from '../src/lib/lead-questions.js';
 import { PERSONALIZATION_ANSWERS, quoteCategoryLabel } from '../src/lib/quote-categories.js';
 import { computeTco, parseTcoInputs, tcoAnswers } from '../src/lib/tco.js';
+
+export { DETAILS_MAX_LENGTH, HONEYPOT_FIELD };
 
 export const MAX_BODY_BYTES = 20_000;
 const MAX_ANSWER_LENGTH = 300;
@@ -12,11 +15,9 @@ const MAX_ANSWER_ITEMS = 8;
 const PRODUCT_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+){1,15}$/;
 export const LEAD_TAG = 'website';
 
-// Întrebările fiecărui formular (MultiStepForm.tsx). Orice alt câmp trimis de client e ignorat.
-export const QUESTIONS = {
-  consultation: ['q1', 'q2', 'q3'],
-  quote: ['q1', 'q2', 'q3', 'personalizare', 'q4', 'q5', 'q6', 'q7'],
-};
+// Întrebările fiecărui formular (src/lib/lead-questions.js, aceleași ca pașii din MultiStepForm.tsx). Orice alt câmp
+// trimis de client e ignorat.
+export const QUESTIONS = LEAD_QUESTIONS;
 
 // Întrebări cu răspunsuri fixe: altă valoare se ignoră, ca CRM-ul să primească doar variantele convenite.
 const FIXED_ANSWERS = { quote: { personalizare: PERSONALIZATION_ANSWERS } };
@@ -66,8 +67,6 @@ function normalizeAnswer(value) {
  * Validează corpul cererii ({ intent, data }) și întoarce cererea curățată.
  * @returns {{ ok: true, lead: object } | { ok: false, error: string }}
  */
-export { DETAILS_MAX_LENGTH };
-
 export function parseLead(payload) {
   const intent = payload?.intent;
   const data = payload?.data;
@@ -138,7 +137,6 @@ export function environmentOf(hostname) {
 
 /** Câmpul-capcană din formulare (ascuns pentru oameni, src/components/forms/Honeypot.tsx). Un robot care completează
  *  toate câmpurile îl completează și pe el; atunci răspundem „succes”, dar nu salvăm și nu trimitem nimic. */
-export { HONEYPOT_FIELD };
 export function isBotSubmission(payload) {
   const value = payload?.data?.[HONEYPOT_FIELD];
   return typeof value === 'string' && value.trim() !== '';
