@@ -72,7 +72,8 @@ export const sameAs = Object.values(SOCIAL_LINKS).filter(Boolean) as string[];
 const GA4_ID_PATTERN = /^G-[A-Z0-9]{4,20}$/;
 // Proprietatea GA4 a youprotect.ro (18.11.2026).
 const GA4_MEASUREMENT_ID = "G-TV8YEFYQD5";
-const ga4Id = (import.meta.env.PUBLIC_GA4_ID as string | undefined) || GA4_MEASUREMENT_ID;
+// `import.meta.env` există doar în Astro/Vite; în testele Node (node --test) lipsește.
+const ga4Id = (import.meta.env?.PUBLIC_GA4_ID as string | undefined) || GA4_MEASUREMENT_ID;
 
 export const ANALYTICS = {
   ga4Id: GA4_ID_PATTERN.test(ga4Id) ? ga4Id : "",
