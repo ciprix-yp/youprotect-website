@@ -117,7 +117,7 @@ const faqSchema = {
         href="/programeaza-discutie/"
         class={btnSecondary}
       >
-        Discută cu un consultant
+        Programează o discuție
       </a>
     </div>
     {products.every((e) => e.data.riskFreeTesting) && <RiskFreeTesting variant="inline" class="mt-6" />}
@@ -144,7 +144,7 @@ const faqSchema = {
     <aside class="mt-10 max-w-3xl border-l-2 border-yp-yellow pl-4" aria-label="Ghiduri">
       {guides.map((g) => (
         <p>
-          <span class="block text-xs uppercase tracking-[0.16em] text-yp-yellow">Ghid</span>
+          <span class="block text-sm font-medium text-yp-yellow">Ghid</span>
           <a href={guideHref(g)} class="inline-block py-2 text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{g.heading}</a>
         </p>
       ))}

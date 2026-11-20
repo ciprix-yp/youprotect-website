@@ -540,7 +540,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
 
       <div className="mb-10">
         <div className="flex justify-between items-end mb-2">
-          <span className="text-xs font-medium text-yp-yellow font-mono uppercase tracking-wider">
+          <span className="text-sm font-medium text-yp-yellow">
             Pasul {currentStep + 1} din {steps.length}
           </span>
           <span className="text-xs text-neutral-400 font-medium">{progressPercent}% completat</span>

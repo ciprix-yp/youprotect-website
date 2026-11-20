@@ -1,92 +1,43 @@
 ---
+// Banda galbenă de dinaintea footer-ului, pe paginile interioare. Butoanele au aceeași mărime ca în restul site-ului
+// (ui.ts), în varianta pentru fond galben.
+import { pageContainer } from '../../lib/ui';
+
 export interface Props {
-    heading?: string;
-    subheading?: string;
-    buttonText?: string;
-    buttonLink?: string;
-    secondaryButtonText?: string;
-    secondaryButtonLink?: string;
+  heading?: string;
+  subheading?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
 }
 
 const {
-    heading = "Ești gata să discuți aplicat despre echipa ta?",
-    subheading = "Lasă-ne datele mai jos sau programează o scurtă discuție. Trecem direct la subiect, fără promisiuni goale.",
-    buttonText = "Programează o discuție",
-    buttonLink = "",
-    secondaryButtonText = "",
-    secondaryButtonLink = "",
+  heading = 'Ești gata să discuți aplicat despre echipa ta?',
+  subheading = 'Lasă-ne datele mai jos sau programează o scurtă discuție. Trecem direct la subiect, fără promisiuni goale.',
+  buttonText = 'Programează o discuție',
+  buttonLink = '',
+  secondaryButtonText = '',
+  secondaryButtonLink = '',
 } = Astro.props;
+
+const onYellowPrimary =
+  'inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray';
+const onYellowSecondary =
+  'inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-black/40 px-6 text-sm font-medium text-yp-black transition-colors hover:border-yp-black';
 ---
 
-<section class="py-24 bg-yp-yellow relative overflow-hidden">
-    <!-- Decorative background element -->
-    <div
-        class="absolute -top-40 -right-40 w-96 h-96 bg-white/20 rounded-full blur-[80px] pointer-events-none"
-    >
+<section class="bg-yp-yellow">
+  <div class:list={[pageContainer, 'py-16 text-center md:py-20']}>
+    <div class="mx-auto flex max-w-3xl flex-col items-center">
+      <h2 class="font-heading text-3xl font-medium leading-tight text-yp-black md:text-4xl">{heading}</h2>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-yp-black/80">{subheading}</p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href={buttonLink || '/programeaza-discutie/'} class={onYellowPrimary}>{buttonText}</a>
+        {secondaryButtonText && (
+          <a href={secondaryButtonLink || '/produse/'} class={onYellowSecondary}>{secondaryButtonText}</a>
+        )}
+      </div>
     </div>
-
-    <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
-        <div class="max-w-3xl mx-auto flex flex-col items-center">
-            <h2
-                class="text-3xl md:text-4xl font-medium text-yp-black mb-6 tracking-tight leading-tight"
-                data-aos="fade-up"
-            >
-                {heading}
-            </h2>
-
-            <p
-                class="text-yp-black/80 text-lg font-light mb-10 leading-relaxed max-w-2xl"
-                data-aos="fade-up"
-                data-aos-delay="100"
-            >
-                {subheading}
-            </p>
-
-            <div
-                class="flex flex-col sm:flex-row gap-4 items-center justify-center"
-                data-aos="fade-up"
-                data-aos-delay="200"
-            >
-                <a
-                    href={buttonLink || "/programeaza-discutie/"}
-                    class="bg-yp-black text-white h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-neutral-800 transition-all duration-200 group border border-transparent"
-                >
-                    {buttonText}
-                    <svg
-                        class="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-                </a>
-
-                {secondaryButtonText && (
-                    <a
-                        href={secondaryButtonLink || "/produse"}
-                        class="border border-yp-black text-yp-black h-14 px-10 rounded-[4px] font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-black/5 hover:border-yp-black/80 transition-all duration-200"
-                    >
-                        {secondaryButtonText}
-                        <svg
-                          class="w-4 h-4 text-yp-black/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                )}
-            </div>
-        </div>
-    </div>
+  </div>
 </section>

@@ -10,22 +10,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="Îți mulțumim! Echipa You Protect revine în cel mai scurt timp."
   noindex
 >
-  <div class="h-24 md:h-32"></div>
-
-  <section class="py-12 md:py-20 relative overflow-hidden min-h-[70vh] flex flex-col justify-center">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yp-yellow/10 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
+  <section class="pt-8 pb-12 md:pt-12 md:pb-20 min-h-[60vh] flex flex-col justify-center">
 
     <div class="max-w-4xl mx-auto px-4 w-full text-center">
-      <div data-aos="fade-up">
+      <div>
         <div class="w-20 h-20 bg-yp-yellow/10 text-yp-yellow rounded-full flex items-center justify-center mx-auto mb-8 border border-yp-yellow/20">
           <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
 
-        <h1 class="text-4xl md:text-5xl font-heading font-semibold text-white mb-6">
-          Cererea a fost <span class="text-yp-yellow">trimisă</span>
+        <h1 class="font-heading text-3xl font-light leading-tight text-yp-white md:text-4xl mb-4">
+          Cererea a fost trimisă
         </h1>
 
         <p id="msg-default" class="text-lg text-neutral-300 max-w-2xl mx-auto mb-12">

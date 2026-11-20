@@ -26,6 +26,12 @@ const notTestable = riskFreeExclusions(
     urmărim uzura până la final. Evaluăm fiecare rol separat: unde produsele nu ies mai eficiente financiar și nu ești
     mulțumit de ele, îți dăm banii înapoi integral.
   </p>
+  {notTestable.length > 0 && (
+    <p>
+      <strong>Ce intră în program:</strong> produsele din catalog, în afară de acestea, pe care le comanzi direct:
+      {" "}{joinRo(notTestable)}.
+    </p>
+  )}
 
   <h2>Cum decurge testarea</h2>
   <ol>
@@ -82,7 +88,7 @@ const notTestable = riskFreeExclusions(
 
   <h2>Ce nu intră în garanție</h2>
   <ul>
-    {notTestable.length > 0 && <li>{joinRo(notTestable)}: nu intră în program, le comanzi direct;</li>}
+    {notTestable.length > 0 && <li>produsele care nu intră în program (lista de la început);</li>}
     <li>comenzile făcute după testare;</li>
     <li>produsele care nu ne sunt returnate, cele deteriorate intenționat sau folosite în alt scop decât cel din protocol;</li>
     <li>testările fără protocol semnat sau fără accesul la date stabilit în el.</li>

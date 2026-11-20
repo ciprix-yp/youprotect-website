@@ -97,7 +97,7 @@ Setul de întrebări frecvente:
 
 - Aceeași formulă, la nivel de echipă: experiența oamenilor tăi → imaginea firmei → ce câștigă firma.
 - H1 cu keyword și, unde are sens, locația („… pentru construcții, în Satu Mare”).
-- CTA: primar „Cere ofertă”, secundar „Discută cu un consultant”; blocul „Testezi fără riscuri” unde e relevant.
+- CTA: primar „Cere ofertă”, secundar „Programează o discuție” (același nume peste tot, ca pagina la care duce); blocul „Testezi fără riscuri” unde e relevant.
 - Întrebări frecvente cu aceleași reguli GEO.
 
 ## 8. Înainte de aprobare
@@ -107,3 +107,17 @@ voce, diacritice, ghilimele, cuvinte interzise, lungimi SEO, keyword în titlu/H
 3 paragrafe, 5–6 întrebări, întrebarea locală.
 
 Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
+
+## 9. Design (aceleași reguli pe toate paginile)
+
+- Antetul paginii interioare: `PageHeader.astro` (breadcrumb, H1, intro, butoane, fotografie opțională). Paginile de
+  prezentare îl folosesc prin `GlobalInnerHero`; paginile legale prin `LegalPage`.
+- Clasele comune sunt în `src/lib/ui.ts`: `pageContainer` (`max-w-7xl` + `px-4`, ca antetul și footer-ul),
+  `pageTitle`, `pageIntro`, `sectionTitle`, `btnPrimary`, `btnSecondary`, `readingColumn` (text lung: max. ~70 de
+  caractere pe rând).
+- Butoane: înălțime 48 px (`h-12`), fără săgeți. Același nume pentru aceeași acțiune: „Cere ofertă”, „Programează o
+  discuție”, „Vezi catalogul”.
+- Fără etichete mici în majuscule deasupra titlurilor, fără cuvinte colorate în titluri, fără animații la derulare.
+- Text: paragrafele în greutate normală; `font-light` doar la titluri. Iconițe SVG, nu emoji.
+- Grile: rânduri pline (`CategoryTiles` alege numărul de coloane; dala de final de pe paginile de categorie apare doar
+  unde completează un rând).

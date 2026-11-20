@@ -8,17 +8,12 @@ import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
   title="Programează o discuție"
   description="Răspunde la câteva întrebări, apoi alegi ora unei discuții cu You Protect despre echipamentele potrivite echipei tale."
 >
-  <div class="h-24 md:h-32"></div>
-
-  <section class="pt-4 pb-12 md:py-20 relative overflow-hidden">
-    <!-- Backgound Elements -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yp-yellow/10 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] -z-10 mix-blend-screen pointer-events-none"></div>
+  <section class="pt-8 pb-12 md:pt-12 md:pb-20">
 
     <div class="max-w-7xl mx-auto px-4">
-      <div class="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-semibold text-white mb-6">
-          Programează o <span class="text-yp-yellow">discuție</span>
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <h1 class="font-heading text-3xl font-light leading-tight text-yp-white md:text-4xl mb-4">
+          Programează o discuție
         </h1>
         <p class="text-lg md:text-xl text-neutral-400">
           Răspunde la câteva întrebări, ca să venim la discuție cu recomandări pentru echipa ta. La final alegi ora din calendar.
@@ -26,7 +21,7 @@ import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
         <RiskFreeTesting variant="inline" class="mt-6 max-w-xl mx-auto text-left" />
       </div>
 
-      <div data-aos="fade-up" data-aos-delay="100">
+      <div>
         <MultiStepForm intent="consultation" client:load />
       </div>
     </div>
