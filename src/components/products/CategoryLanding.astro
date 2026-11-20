@@ -130,12 +130,19 @@ const faqSchema = {
       </li>
     ))}
     <li class={closingTileClass}>
-      <div class="flex h-full flex-col justify-between gap-4 border border-dashed border-yp-white/25 p-4">
+      <!-- Bloc de îndemn, nu card gol: conținutul stă la mijloc, oricât de înalt e rândul de produse. -->
+      <div class="flex h-full flex-col items-start justify-center gap-4 border border-yp-yellow/30 bg-yp-yellow/[0.04] p-4 sm:p-6">
+        <svg class="h-8 w-8 text-yp-yellow" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.2-5.2M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+        </svg>
         <div>
-          <p class="text-sm font-medium text-yp-white sm:text-base">Nu găsești modelul potrivit?</p>
-          <p class="mt-2 text-sm leading-relaxed text-yp-white/70">Scrie-ne ce îți trebuie și verificăm dacă îl putem aduce.</p>
+          <p class="text-base font-medium text-yp-white sm:text-lg">Nu găsești modelul potrivit?</p>
+          <p class="mt-2 text-sm leading-relaxed text-yp-white/75">
+            Scrie-ne ce îți trebuie: modelul, clasa de protecție sau mărimile. Verificăm dacă îl putem aduce.
+          </p>
         </div>
-        <a href="/cere-oferta/" class="w-fit py-2 text-sm font-medium text-yp-yellow underline-offset-4 hover:underline">Cere ofertă</a>
+        <a href="/cere-oferta/" class={btnPrimary}>Cere ofertă</a>
+        <a href="/programeaza-discutie/" class="-mt-2 py-2 text-sm text-yp-white/75 underline underline-offset-4 hover:text-yp-yellow">sau programează o discuție</a>
       </div>
     </li>
   </ul>
