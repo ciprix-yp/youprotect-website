@@ -63,9 +63,9 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
 
   <article class="max-w-7xl mx-auto px-4 py-8 md:py-12">
     <nav aria-label="Breadcrumb" class="mb-6 flex flex-wrap items-center text-sm text-yp-white/60">
-      <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
+      <a href="/" class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">Acasă</a>
       <span class="mx-2" aria-hidden="true">/</span>
-      <a href={GUIDES_HREF} class="inline-block py-2 hover:text-yp-yellow transition-colors">Ghiduri</a>
+      <a href={GUIDES_HREF} class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">Ghiduri</a>
       <span class="mx-2" aria-hidden="true">/</span>
       <span class="text-yp-white">{guide.title}</span>
     </nav>
@@ -107,7 +107,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
       <ul class="space-y-1 text-sm">
         {guide.sources.map((s) => (
           <li>
-            <a href={s.url} rel="noopener" class="inline-block py-1.5 text-yp-white/75 underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{s.label}</a>
+            <a href={s.url} rel="noopener" class="inline-flex min-h-11 items-center md:min-h-0 md:py-1.5 text-yp-white/75 underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{s.label}</a>
           </li>
         ))}
       </ul>

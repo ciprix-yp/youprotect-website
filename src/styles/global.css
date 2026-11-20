@@ -54,3 +54,62 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Design premium (20.11.2026): cardurile 3D și fondul pozelor de produs.
+   - .card-3d: cardul se înclină spre cursor (scripts/tilt.ts, doar cu mouse), cu un reflex care urmărește cursorul
+     (.tilt-sheen) și poza ușor ridicată (.tilt-pop). Pe ecranele tactile, la atingere, cardul se apasă în adâncime.
+   - .img-well: fond gri cald în loc de alb; pozele cu fundal alb (JPEG) se topesc în el prin mix-blend-multiply. */
+@layer components {
+  .card-3d {
+    transform-style: preserve-3d;
+    transition:
+      transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.35s ease,
+      border-color 0.25s ease;
+  }
+  .card-3d.is-tilting {
+    transition:
+      transform 0.12s linear,
+      box-shadow 0.35s ease,
+      border-color 0.25s ease;
+  }
+  .card-3d .tilt-pop {
+    transform: translateZ(0);
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .card-3d.is-tilting .tilt-pop {
+    transform: translateZ(24px);
+  }
+  .card-3d .tilt-sheen {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.11), transparent 45%);
+  }
+  .card-3d.is-tilting .tilt-sheen {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .card-3d:active {
+      transform: scale(0.975);
+      transition-duration: 0.12s;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-3d,
+    .card-3d .tilt-pop {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+
+  .img-well {
+    background: radial-gradient(120% 90% at 50% 25%, #f8f8f5 0%, #e7e6e1 100%);
+  }
+  .img-well img {
+    mix-blend-mode: multiply;
+  }
+}

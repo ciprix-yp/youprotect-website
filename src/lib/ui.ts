@@ -2,9 +2,9 @@
 // să arate la fel peste tot. Stilul de referință e catalogul (/produse/).
 
 export const btnPrimary =
-  'inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-yellow px-6 text-sm font-medium text-yp-black transition-colors hover:bg-white';
+  'inline-flex h-12 items-center justify-center rounded-lg bg-yp-yellow px-6 text-sm font-medium text-yp-black transition hover:bg-white active:scale-[0.98]';
 export const btnSecondary =
-  'inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-white/25 px-6 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow';
+  'inline-flex h-12 items-center justify-center rounded-lg border border-yp-white/25 px-6 text-sm font-medium text-yp-white transition hover:border-yp-yellow hover:text-yp-yellow active:scale-[0.98]';
 
 /** Titlul unei secțiuni (h2). */
 export const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';

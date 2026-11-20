@@ -16,7 +16,7 @@ const { title, description, updated } = Astro.props;
 <BaseLayout title={title} description={description}>
   <div class:list={[pageContainer, "pt-8 pb-24 md:pt-12"]}>
     <nav aria-label="Breadcrumb" class={breadcrumbNav}>
-      <a href="/" class="inline-block py-2 transition-colors hover:text-yp-yellow">Acasă</a>
+      <a href="/" class="inline-flex min-h-11 items-center transition-colors hover:text-yp-yellow">Acasă</a>
       <span class="mx-2" aria-hidden="true">/</span>
       <span class="text-yp-white" aria-current="page">{title}</span>
     </nav>

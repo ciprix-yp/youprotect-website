@@ -1,35 +1,45 @@
 ---
-// Cardul de produs: aceeași structură și aceeași înălțime pe fiecare rând (poza pătrată, numele pe două rânduri,
-// un rând pentru standard), ca grila să rămână aliniată oricât de lung e numele.
+// Cardul de produs: aceeași structură și aceeași înălțime pe fiecare rând (poza pătrată, numele pe 3 rânduri — 4 pe
+// telefon, unde cardul e îngust —, standardul pe 2 rânduri), ca grila să rămână aliniată oricât de lung e numele.
+// Design premium (20.11.2026): card 3D (data-tilt, src/scripts/tilt.ts), poza pe fond cald (.img-well). Marca e jos,
+// lângă „Cere ofertă”: în nume apare deja, iar sus ar fura un rând numelui pe telefon.
 import type { CardProps } from '../../lib/product-card';
 
 type Props = CardProps;
-const { slug, name, brand, categoryName, spec, image } = Astro.props;
+const { slug, name, brand, spec, image } = Astro.props;
 const href = `/produse/${slug}/`;
 const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
 ---
 
 <article
-  class="group relative flex h-full flex-col border border-yp-white/10 bg-yp-black transition-colors hover:border-yp-yellow/60 focus-within:border-yp-yellow"
+  data-tilt="7"
+  class="card-3d group relative flex h-full flex-col rounded-xl border border-white/[0.08] bg-yp-surface shadow-card hover:border-yp-yellow/40 hover:shadow-card-hover focus-within:border-yp-yellow"
 >
-  <div class="relative aspect-square overflow-hidden bg-white">
-    <img src={image} alt={name} width="600" height="600" loading="lazy" class="absolute inset-0 h-full w-full object-contain p-3 sm:p-5" />
+  <div class="tilt-pop img-well relative aspect-square overflow-hidden rounded-t-xl">
+    <img
+      src={image}
+      alt={name}
+      width="600"
+      height="600"
+      loading="lazy"
+      class="absolute inset-0 h-full w-full object-contain p-4 transition-transform duration-500 ease-out group-hover:scale-[1.04] sm:p-6"
+    />
   </div>
-  <div class="flex flex-1 flex-col p-3 sm:p-4">
-    <p class="truncate text-xs text-yp-white/60">{brand}</p>
-    <h3 class="mt-1 min-h-[3lh] text-sm font-medium leading-snug text-yp-white line-clamp-3 sm:text-base">
-      <a href={href} class="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none">{name}</a>
+  <div class="flex flex-1 flex-col px-3 pb-1 pt-3 sm:px-4 sm:pt-4">
+    <h3 class="min-h-[4lh] text-[0.9375rem] font-medium leading-snug text-yp-white line-clamp-4 sm:min-h-[3lh] sm:text-base sm:line-clamp-3">
+      <a href={href} class="after:absolute after:inset-0 after:rounded-xl after:content-[''] focus-visible:outline-none">{name}</a>
     </h3>
-    <p class="mb-3 mt-2 min-h-[1lh] truncate text-xs text-yp-white/75" title={spec ?? undefined}>{spec}</p>
-    <div class="mt-auto flex items-center justify-between gap-2 border-t border-yp-white/10 pt-3">
-      <span class="hidden truncate text-xs text-yp-white/60 sm:block">{categoryName}</span>
+    <p class="mt-2 min-h-[2lh] text-xs leading-snug text-yp-white/65 line-clamp-2" title={spec ?? undefined}>{spec}</p>
+    <div class="mt-auto flex items-center justify-between gap-2 border-t border-white/[0.08] pt-1">
+      <span class="truncate text-xs text-yp-white/50">{brand}</span>
       <a
         href={offerHref}
-        class="relative z-10 shrink-0 py-2 text-xs font-medium text-yp-yellow underline-offset-4 hover:underline"
+        class="relative z-10 inline-flex min-h-11 shrink-0 items-center text-xs font-medium text-yp-yellow underline-offset-4 hover:underline sm:text-sm"
         aria-label={`Cere ofertă: ${name}`}
       >
         Cere ofertă
       </a>
     </div>
   </div>
+  <span class="tilt-sheen" aria-hidden="true"></span>
 </article>

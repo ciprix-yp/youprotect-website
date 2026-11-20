@@ -30,7 +30,7 @@ const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
         <>
           {i > 0 && <span class="mx-2" aria-hidden="true">/</span>}
           {c.href && i < trail.length - 1 ? (
-            <a href={c.href} class="inline-block py-2 transition-colors hover:text-yp-yellow">{c.label}</a>
+            <a href={c.href} class="inline-flex min-h-11 items-center transition-colors hover:text-yp-yellow">{c.label}</a>
           ) : (
             <span class="text-yp-white" aria-current="page">{c.label}</span>
           )}

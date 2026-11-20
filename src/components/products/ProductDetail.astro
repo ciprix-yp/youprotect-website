@@ -97,12 +97,12 @@ const singleImage = primary.images.length <= 1;
   )}
 
   <nav aria-label="Breadcrumb" class={breadcrumbNav}>
-    <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
+    <a href="/" class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">Acasă</a>
     <span class="mx-2" aria-hidden="true">/</span>
-    <a href={catalogHref} class="inline-block py-2 hover:text-yp-yellow transition-colors">{catalogLabel}</a>
+    <a href={catalogHref} class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">{catalogLabel}</a>
     <span class="mx-2" aria-hidden="true">/</span>
     {categoryHref ? (
-      <a href={categoryHref} class="inline-block py-2 text-yp-white hover:text-yp-yellow transition-colors">{categoryLabel}</a>
+      <a href={categoryHref} class="inline-flex min-h-11 items-center text-yp-white hover:text-yp-yellow transition-colors">{categoryLabel}</a>
     ) : (
       <span class="text-yp-white">{categoryLabel}</span>
     )}
@@ -111,7 +111,7 @@ const singleImage = primary.images.length <= 1;
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
     <!-- Galerie (fixă la derulare pe desktop) -->
     <div class="min-w-0 md:sticky md:top-24 md:self-start">
-      <div class="bg-white aspect-square flex items-center justify-center">
+      <div class="img-well aspect-square overflow-hidden rounded-2xl border border-white/[0.08] flex items-center justify-center">
         <img
           id="gallery-main"
           src={mainImage}
@@ -126,7 +126,7 @@ const singleImage = primary.images.length <= 1;
         {primary.images.map((img, i) => (
           <button
             type="button"
-            class="thumb shrink-0 w-20 h-20 bg-white border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
+            class="thumb img-well shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
             data-src={img.src}
             aria-label={`Imaginea ${i + 1}`}
             aria-current={i === 0 ? 'true' : 'false'}
@@ -173,7 +173,7 @@ const singleImage = primary.images.length <= 1;
           {p.colours.map((c, i) => (
             <button
               type="button"
-              class="swatch flex items-center gap-2 px-3 py-2.5 border border-yp-white/20 aria-[pressed=true]:border-yp-yellow text-xs text-yp-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
+              class="swatch flex min-h-11 items-center gap-2 rounded-lg px-3 border border-yp-white/20 aria-[pressed=true]:border-yp-yellow aria-[pressed=true]:bg-yp-yellow/[0.06] text-xs text-yp-white/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
               data-images={JSON.stringify(c.images)}
               data-name={c.name}
               aria-pressed={i === 0 ? 'true' : 'false'}
@@ -219,7 +219,7 @@ const singleImage = primary.images.length <= 1;
           <ul class="flex flex-col">
             {p.documents.map((d) => (
               <li>
-                <a href={d.url} target="_blank" rel="noopener noreferrer" class="inline-block py-1.5 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
+                <a href={d.url} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center md:min-h-0 md:py-1.5 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
                   {d.label} (PDF)
                 </a>
               </li>
@@ -236,11 +236,11 @@ const singleImage = primary.images.length <= 1;
           {p.industries.map((key) => (
             <li>
               {INDUSTRY_PAGES[key] ? (
-                <a href={INDUSTRY_PAGES[key]} class="inline-block px-3 py-2.5 bg-yp-white/5 text-xs text-yp-white/80 hover:text-yp-yellow">
+                <a href={INDUSTRY_PAGES[key]} class="inline-flex min-h-11 items-center rounded-lg px-3 bg-yp-white/5 text-xs text-yp-white/80 transition-colors hover:text-yp-yellow">
                   {INDUSTRIES[key]}
                 </a>
               ) : (
-                <span class="inline-block px-3 py-2.5 bg-yp-white/5 text-xs text-yp-white/80">{INDUSTRIES[key]}</span>
+                <span class="inline-flex min-h-11 items-center rounded-lg px-3 bg-yp-white/5 text-xs text-yp-white/80">{INDUSTRIES[key]}</span>
               )}
             </li>
           ))}

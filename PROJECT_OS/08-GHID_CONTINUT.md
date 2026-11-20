@@ -121,3 +121,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
 - Text: paragrafele în greutate normală; `font-light` doar la titluri. Iconițe SVG, nu emoji.
 - Grile: rânduri pline (`CategoryTiles` alege numărul de coloane; dala de final de pe paginile de categorie apare doar
   unde completează un rând).
+- Premium (20.11.2026): cardurile de produs, dalele de categorie și cardurile „De ce You Protect” sunt 3D
+  (`data-tilt` + `.card-3d`, `src/scripts/tilt.ts`): se înclină spre cursor doar cu mouse și fără „reduce motion”; pe
+  telefon se apasă la atingere. Pozele de produs stau pe `.img-well` (fond gri cald, `mix-blend-multiply`).
+  Suprafețe: `bg-yp-surface`, `shadow-card`; colțuri: cardurile `rounded-xl`, butoanele și casetele `rounded-lg`.
+- Telefon: orice element atins cu degetul are cel puțin 44 px (`min-h-11`), în afară de linkurile din mijlocul frazei.
