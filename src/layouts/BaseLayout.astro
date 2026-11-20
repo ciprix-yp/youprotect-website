@@ -45,6 +45,30 @@ const bookingsUrl =
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="preload" href="/fonts/yp-text-300.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/yp-text-400.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+    <script is:inline>
+      // Tranziția înapoi spre o listă de produse (vezi scripts/fluid.ts): cardul produsului de unde vii primește
+      // numele pozei, ca poza să se întoarcă în card. Inline în <head>, ca să ruleze înainte de pagereveal.
+      addEventListener("pagereveal", function (e) {
+        var cards = document.querySelectorAll("[data-vt-photo]");
+        var clear = function () {
+          for (var i = 0; i < cards.length; i++) cards[i].style.viewTransitionName = "";
+        };
+        clear();
+        var gallery = document.getElementById("gallery-well");
+        if (gallery) gallery.style.viewTransitionName = "";
+        var vt = e.viewTransition;
+        var activation = window.navigation && window.navigation.activation;
+        if (!vt || gallery || !activation || !activation.from || !activation.from.url) return;
+        var m = /^\/produse\/([a-z0-9-]+)\/$/.exec(new URL(activation.from.url, location.href).pathname);
+        var photo = m && document.querySelector('[data-vt-photo="' + m[1] + '"]');
+        if (!photo) return;
+        var r = photo.getBoundingClientRect();
+        if (r.width === 0 || r.bottom <= 0 || r.top >= innerHeight) return;
+        photo.style.viewTransitionName = "product-photo";
+        vt.finished.then(clear, clear);
+      });
+    </script>
 
     <!-- SEO & OG Tags -->
     <meta property="og:title" content={`${title} | You Protect`} />
@@ -114,6 +138,7 @@ const bookingsUrl =
     <Analytics />
     <script>
       import "../scripts/tilt";
+      import "../scripts/fluid";
     </script>
   </body>
 </html>

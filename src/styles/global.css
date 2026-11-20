@@ -44,6 +44,111 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
   }
+
+  /* Titlurile mari au literele puțin mai strânse (ca la Apple): la mărimi mari, spațierea standard pare largă.
+     Textul mic rămâne cu spațierea normală. */
+  h1 {
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Mișcare (fluiditate, 20.11.2026): aceleași curbe în tot site-ul (sunt și în tailwind.config.mjs). */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Tranzițiile între pagini: pagina nouă apare cu un fade scurt, iar poza produsului trece din card în fișa produsului
+   și înapoi (scripts/fluid.ts dă numele „product-photo” cardului apăsat). Unde browserul nu le are (Firefox mai vechi),
+   navigarea rămâne normală. Cu „reduce motion” sunt oprite. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(product-photo),
+::view-transition-old(product-photo),
+::view-transition-new(product-photo) {
+  animation-duration: 380ms;
+  animation-timing-function: var(--ease-drawer);
+}
+#gallery-well {
+  view-transition-name: product-photo;
+}
+
+/* Meniul de pe telefon coboară din header în 200 ms și urcă înapoi pe același drum, mai repede (150 ms). */
+#mobile-menu {
+  transition:
+    opacity 200ms var(--ease-out),
+    translate 200ms var(--ease-out),
+    display 200ms allow-discrete;
+}
+#mobile-menu.hidden {
+  opacity: 0;
+  translate: 0 -8px;
+  transition-duration: 150ms;
+}
+@starting-style {
+  #mobile-menu {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+}
+
+/* Pașii formularului: pasul următor vine din dreapta, „Înapoi” aduce pasul din stânga. */
+@keyframes yp-step-in-forward {
+  from {
+    opacity: 0;
+    translate: 16px 0;
+  }
+}
+@keyframes yp-step-in-back {
+  from {
+    opacity: 0;
+    translate: -16px 0;
+  }
+}
+@keyframes yp-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.step-in-forward {
+  animation: yp-step-in-forward 240ms var(--ease-out) both;
+}
+.step-in-back {
+  animation: yp-step-in-back 240ms var(--ease-out) both;
+}
+.reveal-in {
+  animation: yp-fade-in 150ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mobile-menu,
+  #mobile-menu.hidden {
+    translate: none;
+  }
+  .step-in-forward,
+  .step-in-back {
+    animation-name: yp-fade-in;
+  }
+}
+
+/* Cine a cerut mai puțină transparență în sistem primește header-ul solid, fără blur. */
+@media (prefers-reduced-transparency: reduce) {
+  header.site-header {
+    background-color: #0a0a0a;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* Hide scrollbar pentru testimonials carousel pe mobile */
@@ -63,7 +168,7 @@
   .card-3d {
     transform-style: preserve-3d;
     transition:
-      transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.4s var(--ease-out),
       box-shadow 0.35s ease,
       border-color 0.25s ease;
   }
@@ -75,7 +180,7 @@
   }
   .card-3d .tilt-pop {
     transform: translateZ(0);
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.4s var(--ease-out);
   }
   .card-3d.is-tilting .tilt-pop {
     transform: translateZ(24px);

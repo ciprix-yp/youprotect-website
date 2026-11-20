@@ -65,6 +65,8 @@ const props = Astro.props;
     ogType="product"
     ogImage={props.entry.data.colours[0].images[0].src}
   >
+    <!-- Prima randare a fișei așteaptă galeria, ca poza din card să aibă unde „ateriza” (tranziția din global.css). -->
+    <link slot="head" rel="expect" href="#gallery-well" blocking="render" />
     <ProductDetail entry={props.entry} />
   </BaseLayout>
 ) : props.kind === 'category' ? (
