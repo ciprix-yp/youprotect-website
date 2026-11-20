@@ -16,7 +16,7 @@ const publishedCount = (await getCollection("products", ({ data }) => data.statu
 const models = modelsLabel(publishedCount);
 
 const sectionHeading = "font-heading text-3xl font-light leading-tight text-white lg:text-4xl";
-const textLink = "inline-block py-2 text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white";
+const textLink = "inline-flex min-h-11 items-center text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white";
 
 const brands = [
   { name: "MASCOT", logo: "/logos/logo-1.webp", href: "/produse/mascot/" },
@@ -122,7 +122,8 @@ const faqSchema = {
   <!-- Butonul fix de pe telefon: dispare la derulare în jos, revine la derulare în sus. -->
   <div
     id="mobile-sticky-catalog"
-    class="md:hidden fixed z-[999] left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out top-20 translate-y-[10px]"
+    class="md:hidden fixed z-[999] left-1/2 top-24 transition duration-300 ease-out"
+    style="transform: translate(-50%, -12px); opacity: 0; visibility: hidden"
   >
     <a
       href="/programeaza-discutie/"
@@ -133,22 +134,27 @@ const faqSchema = {
   </div>
 
   <script>
+    // Apare doar după hero (unde butoanele sunt deja vizibile) și doar la derularea în sus.
     let lastScrollY = window.scrollY;
     const stickyBtn = document.getElementById("mobile-sticky-catalog");
+    const hero = document.getElementById("hero");
     window.addEventListener(
       "scroll",
       () => {
         if (!stickyBtn) return;
-        const currentScrollY = window.scrollY;
-        stickyBtn.style.transform =
-          currentScrollY > lastScrollY && currentScrollY > 50 ? "translate(-50%, -150%)" : "translate(-50%, 10px)";
-        lastScrollY = currentScrollY;
+        const y = window.scrollY;
+        const pastHero = y > (hero?.offsetHeight ?? 600);
+        const show = pastHero && y < lastScrollY;
+        stickyBtn.style.transform = show ? "translate(-50%, 0)" : "translate(-50%, -12px)";
+        stickyBtn.style.opacity = show ? "1" : "0";
+        stickyBtn.style.visibility = show ? "visible" : "hidden";
+        lastScrollY = y;
       },
       { passive: true },
     );
   </script>
 
-  <section class="relative overflow-hidden border-b border-white/5">
+  <section id="hero" class="relative overflow-hidden border-b border-white/5">
     <div class="absolute inset-0">
       <img
         src="/hero-youprotect-highvis.webp"
@@ -159,12 +165,12 @@ const faqSchema = {
       <div class="absolute inset-0 bg-gradient-to-t from-yp-black via-yp-black/70 to-yp-black/30"></div>
     </div>
 
-    <div class:list={[pageContainer, "relative py-16 md:py-24 lg:py-28"]}>
+    <div class:list={[pageContainer, "relative pb-14 pt-12 md:py-24 lg:py-28"]}>
       <div class="max-w-3xl">
-        <h1 class="font-heading text-4xl font-light leading-tight text-white md:text-5xl xl:text-6xl">
+        <h1 class="font-heading text-[2rem] font-light leading-[1.12] tracking-tight text-white sm:text-4xl md:text-5xl xl:text-6xl">
           Echipamente de protecție și haine de lucru alese după costul real, nu după preț
         </h1>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-yp-white/80">
+        <p class="mt-5 max-w-2xl text-base leading-relaxed text-yp-white/80 sm:text-lg">
           {models} de la MASCOT, Portwest, Sir Safety și alte mărci, pe care le poți personaliza cu logo-ul firmei și le
           livrăm în toată România. Le vezi și le probezi în showroom-ul nostru din Vetiș, Satu Mare.
         </p>
@@ -186,16 +192,16 @@ const faqSchema = {
   <section class="border-b border-white/5" aria-labelledby="marci">
     <div class:list={[pageContainer, "py-12"]}>
       <h2 id="marci" class="mb-8 text-center text-sm text-yp-white/60">Mărci cu care lucrăm</h2>
-      <ul class="grid grid-cols-2 items-center justify-items-center gap-4 sm:gap-10 lg:grid-cols-4">
+      <ul class="grid grid-cols-4 items-center justify-items-center gap-2 sm:gap-10">
         {brands.map((b) => (
-          <li class="w-full max-w-[200px] md:max-w-[240px]">
+          <li class="w-full max-w-[96px] sm:max-w-[200px] md:max-w-[240px]">
             {b.href ? (
-              <a href={b.href} class="group flex items-center justify-center rounded-[4px] border border-transparent p-4 transition-colors hover:border-yp-yellow md:p-6">
-                <img src={b.logo} alt={`Produse ${b.name}`} class="h-16 w-auto object-contain md:h-24 md:opacity-70 md:grayscale md:transition md:group-hover:opacity-100 md:group-hover:grayscale-0" loading="lazy" />
+              <a href={b.href} class="group flex min-h-11 items-center justify-center rounded-xl border border-transparent p-1 transition-colors hover:border-yp-yellow/40 sm:p-4 md:p-6">
+                <img src={b.logo} alt={`Produse ${b.name}`} class="h-14 w-auto rounded-md object-contain sm:h-16 md:h-24 md:opacity-70 md:grayscale md:transition md:group-hover:opacity-100 md:group-hover:grayscale-0" loading="lazy" />
               </a>
             ) : (
-              <div class="flex items-center justify-center p-4 md:p-6">
-                <img src={b.logo} alt={b.name} class="h-16 w-auto object-contain md:h-24 md:opacity-70 md:grayscale" loading="lazy" />
+              <div class="flex items-center justify-center p-1 sm:p-4 md:p-6">
+                <img src={b.logo} alt={b.name} class="h-14 w-auto rounded-md object-contain sm:h-16 md:h-24 md:opacity-70 md:grayscale" loading="lazy" />
               </div>
             )}
           </li>
@@ -207,7 +213,7 @@ const faqSchema = {
   {
     testimonials.length > 0 && (
       <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="recenzii">
-        <div class:list={[pageContainer, "py-20 md:py-24"]}>
+        <div class:list={[pageContainer, "py-14 md:py-24"]}>
           <h2 id="recenzii" class:list={[sectionHeading, "mb-12 text-center"]}>Ce spun clienții noștri</h2>
           <Testimonials testimonials={testimonials} />
         </div>
@@ -216,7 +222,7 @@ const faqSchema = {
   }
 
   <section class="border-b border-white/5" aria-labelledby="categorii">
-    <div class:list={[pageContainer, "py-16 md:py-20"]}>
+    <div class:list={[pageContainer, "py-12 md:py-20"]}>
       <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <h2 id="categorii" class:list={[sectionHeading, "max-w-3xl"]}>
           Echipamente de protecție și haine de lucru pentru echipe tehnice
@@ -228,14 +234,15 @@ const faqSchema = {
   </section>
 
   <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="de-ce">
-    <div class:list={[pageContainer, "py-20 md:py-24"]}>
+    <div class:list={[pageContainer, "py-14 md:py-24"]}>
       <h2 id="de-ce" class:list={[sectionHeading, "max-w-3xl"]}>De ce să echipezi echipa cu You Protect</h2>
       <ul class="mt-10 grid gap-4 md:grid-cols-2">
         {reasons.map((r) => (
-          <li class="flex flex-col border border-white/10 bg-yp-black p-6 md:p-8">
+          <li data-tilt="4" class="card-3d relative flex flex-col rounded-xl border border-white/[0.08] bg-yp-surface p-6 shadow-card hover:border-yp-yellow/30 hover:shadow-card-hover md:p-8">
             <h3 class="font-heading text-xl font-medium text-white">{r.title}</h3>
             <p class="mt-3 flex-1 leading-relaxed text-yp-white/75">{r.text}</p>
-            <a href={r.link.href} class:list={[textLink, "mt-4 w-fit"]}>{r.link.label}</a>
+            <a href={r.link.href} class:list={[textLink, "relative z-10 mt-4 w-fit"]}>{r.link.label}</a>
+            <span class="tilt-sheen" aria-hidden="true"></span>
           </li>
         ))}
       </ul>
@@ -243,7 +250,7 @@ const faqSchema = {
   </section>
 
   <section class="border-b border-white/5" aria-labelledby="pasi">
-    <div class:list={[pageContainer, "py-20 md:py-24"]}>
+    <div class:list={[pageContainer, "py-14 md:py-24"]}>
       <h2 id="pasi" class:list={[sectionHeading, "max-w-3xl"]}>Cum începe colaborarea cu You Protect</h2>
       <ol class="mt-10 grid gap-8 md:grid-cols-3">
         {steps.map((s, i) => (
@@ -258,7 +265,7 @@ const faqSchema = {
   </section>
 
   <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="include">
-    <div class:list={[pageContainer, "py-20 md:py-24"]}>
+    <div class:list={[pageContainer, "py-14 md:py-24"]}>
       <h2 id="include" class:list={[sectionHeading, "max-w-3xl"]}>Ce include colaborarea cu You Protect</h2>
       <ul class="mt-10 grid gap-x-12 gap-y-5 md:grid-cols-2">
         {includes.map((item) => (
@@ -282,10 +289,10 @@ const faqSchema = {
           propunere. Fără obligații.
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-[4px] bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray">
+          <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-lg bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray">
             Programează o discuție
           </a>
-          <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-[4px] border border-yp-black/40 px-6 text-sm font-medium text-yp-black transition-colors hover:border-yp-black">
+          <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-lg border border-yp-black/40 px-6 text-sm font-medium text-yp-black transition-colors hover:border-yp-black">
             Cere ofertă
           </a>
         </div>
@@ -297,7 +304,7 @@ const faqSchema = {
   </section>
 
   <section aria-labelledby="intrebari">
-    <div class="mx-auto max-w-3xl px-4 py-20 md:py-24">
+    <div class="mx-auto max-w-3xl px-4 py-14 md:py-24">
       <h2 id="intrebari" class:list={[sectionHeading, "mb-10"]}>Întrebări frecvente despre echipamentele de protecție și hainele de lucru</h2>
       <div class="flex flex-col gap-3">
         {faq.map((f) => (

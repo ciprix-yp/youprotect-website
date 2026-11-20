@@ -515,3 +515,14 @@
   - scene ilustrative generate cu OpenAI gpt-image-2 pentru Construcții, Logistică, Producție și Personalizare
     (`scripts/images/generate-scenes.mjs`): fără logo-uri sau texte reale, echipament purtat corect, imagini decorative
     (alt=""), niciodată prezentate ca echipa sau clienții You Protect.
+
+## D-2026-11-20-07
+- Owner-ul (20.11.2026): aspect mai premium, efecte 3D la carduri, atenție la detalii pe telefon.
+  - Cardurile (produs, categorie, „De ce You Protect”) se înclină spre cursor cu un reflex de lumină și poza ridicată;
+    pe telefon se apasă la atingere; fără efect cu „reduce motion”. Suprafețe ridicate (`yp-surface`, `shadow-card`),
+    poze pe fond gri cald (`.img-well`, multiply), colțuri de 12 px la carduri și 8 px la butoane.
+  - Telefon: țintele de atingere sub 44 px reduse de la 16–41 la 0–3 pe pagină (cardurile, breadcrumb-ul, footer-ul,
+    chips-urile, punctele caruselului, selectorul de ordonare); titlul din hero mai compact; butonul plutitor apare
+    abia după hero; numele de produs pe 4 rânduri și marca jos (nu se mai taie); logo-urile pe un rând; footer pe
+    două coloane; secțiuni mai strânse.
+  - Antet translucid cu blur; butoane cu efect de apăsare.

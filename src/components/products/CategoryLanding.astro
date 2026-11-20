@@ -95,9 +95,9 @@ const faqSchema = {
 
 <section class="mx-auto max-w-7xl px-4 py-8 md:py-12">
   <nav aria-label="Breadcrumb" class={breadcrumbNav}>
-    <a href="/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Acasă</a>
+    <a href="/" class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">Acasă</a>
     <span class="mx-2" aria-hidden="true">/</span>
-    <a href="/produse/" class="inline-block py-2 hover:text-yp-yellow transition-colors">Catalog</a>
+    <a href="/produse/" class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">Catalog</a>
     <span class="mx-2" aria-hidden="true">/</span>
     <span class="text-yp-white">{CATEGORIES[page.key]}</span>
   </nav>
@@ -152,7 +152,7 @@ const faqSchema = {
       {guides.map((g) => (
         <p>
           <span class="block text-sm font-medium text-yp-yellow">Ghid</span>
-          <a href={guideHref(g)} class="inline-block py-2 text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{g.heading}</a>
+          <a href={guideHref(g)} class="inline-flex min-h-11 items-center text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{g.heading}</a>
         </p>
       ))}
     </aside>
@@ -183,13 +183,13 @@ const faqSchema = {
       <ul class="flex flex-wrap gap-2">
         {others.map((o) => (
           <li>
-            <a href={`/produse/${o.slug}/`} class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">
+            <a href={`/produse/${o.slug}/`} class="inline-flex min-h-11 items-center rounded-lg px-3 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">
               {CATEGORIES[o.key]}
             </a>
           </li>
         ))}
         <li>
-          <a href="/produse/" class="inline-block px-3 py-2 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">Tot catalogul</a>
+          <a href="/produse/" class="inline-flex min-h-11 items-center rounded-lg px-3 border border-yp-white/20 text-sm text-yp-white/80 hover:border-yp-yellow hover:text-yp-yellow transition-colors">Tot catalogul</a>
         </li>
       </ul>
     </nav>

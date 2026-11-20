@@ -372,7 +372,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
                 >
                   <span
                     aria-hidden="true"
-                    className={`mt-0.5 w-5 h-5 rounded-[4px] border flex-shrink-0 flex items-center justify-center transition-colors ${
+                    className={`mt-0.5 w-5 h-5 rounded-lg border flex-shrink-0 flex items-center justify-center transition-colors ${
                       isSelected ? 'border-yp-yellow bg-yp-yellow/20 text-yp-yellow' : 'border-neutral-500'
                     }`}
                   >
