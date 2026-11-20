@@ -27,18 +27,19 @@
 /personalizare/            /haine-de-lucru-personalizate/  301
 
 # Produsele demo din Directus (scos din uz pe 11.11.2026) -> catalog.
-/produse/antifoane-externe-x5    /produse/  301
-/produse/antifoane-externe-x5/   /produse/  301
-/produse/casc-ventilat-v-gard    /produse/  301
-/produse/casc-ventilat-v-gard/   /produse/  301
-/produse/jachet-hi-vis-storm    /produse/  301
-/produse/jachet-hi-vis-storm/   /produse/  301
-/produse/mnui-impact-grip-pro    /produse/  301
-/produse/mnui-impact-grip-pro/   /produse/  301
-/produse/pantof-protecie-carbon-s3    /produse/  301
-/produse/pantof-protecie-carbon-s3/   /produse/  301
-/produse/softshell-industrial-pro-x    /produse/  301
-/produse/softshell-industrial-pro-x/   /produse/  301
+# Produsele vechi duc la categoria (sau modelul) cel mai apropiat din catalogul nou (20.11.2026).
+/produse/antifoane-externe-x5  /produse/antifoane-externe-sir-safety-stark-8-fc1327/  301
+/produse/antifoane-externe-x5/  /produse/antifoane-externe-sir-safety-stark-8-fc1327/  301
+/produse/casc-ventilat-v-gard  /produse/casti-de-protectie/  301
+/produse/casc-ventilat-v-gard/  /produse/casti-de-protectie/  301
+/produse/jachet-hi-vis-storm  /produse/imbracaminte-reflectorizanta/  301
+/produse/jachet-hi-vis-storm/  /produse/imbracaminte-reflectorizanta/  301
+/produse/mnui-impact-grip-pro  /produse/manusi-de-protectie/  301
+/produse/mnui-impact-grip-pro/  /produse/manusi-de-protectie/  301
+/produse/pantof-protecie-carbon-s3  /produse/incaltaminte-de-protectie/  301
+/produse/pantof-protecie-carbon-s3/  /produse/incaltaminte-de-protectie/  301
+/produse/softshell-industrial-pro-x  /produse/geci-de-lucru/  301
+/produse/softshell-industrial-pro-x/  /produse/geci-de-lucru/  301
 
 # Calculatorul de cost s-a mutat de pe landing page-ul neindexat pe o pagină publică (18.11.2026).
 /lp/tco-calculator   /calculator-cost-echipamente/ 301
