@@ -127,7 +127,7 @@ Format task:
 - Status: `DONE`
 - Owner: `Claude`
 - Scope: Redirect 301 `www -> non-www` + maparea URL-urilor vechi (Wix) către paginile noi.
-- Implementare: contul de Gmail (`251beb`) NU are scope „Dynamic Redirect", deci NU s-a folosit o Redirect Rule clasică. În schimb: (1) Worker `www-redirect` cu rută `www.youprotect.ro/*` (zona youprotect.ro `34fc48…`) — 301 către apex cu mapping legacy single-hop; (2) `public/_redirects` în Pages — 301 pe apex pentru `/cine-suntem->/despre-noi`, `/blog->/`, `/contact->/programeaza-discutie`, `/servicii->/cum-lucram`, `/magazin|/shop->/produse`.
+- Implementare (codul Worker-ului e în `workers/www-redirect/` din 21.11.2026; `/contact` e pagină din aceeași zi, D-2026-11-21-01): contul de Gmail (`251beb`) NU are scope „Dynamic Redirect", deci NU s-a folosit o Redirect Rule clasică. În schimb: (1) Worker `www-redirect` cu rută `www.youprotect.ro/*` (zona youprotect.ro `34fc48…`) — 301 către apex cu mapping legacy single-hop; (2) `public/_redirects` în Pages — 301 pe apex pentru `/cine-suntem->/despre-noi`, `/blog->/`, `/contact->/programeaza-discutie`, `/servicii->/cum-lucram`, `/magazin|/shop->/produse`.
 - Acceptance: `www.*` -> 301 apex; URL-uri vechi -> pagini noi (nu 404). VERIFICAT live.
 - Note: codul site-ului nu are referințe Wix/Shopify (verificat prin grep).
 
@@ -247,12 +247,14 @@ Format task:
     o singură întrebare: personalizarea cu logo (D-2026-11-18-05).
 
 ### CONV-004
-- Status: `IN_PROGRESS` (lista de ofertă: PR deschis 21.11.2026; pagina de Contact: urmează)
+- Status: `IN_PROGRESS` (lista de ofertă: publicată 21.11.2026; pagina de Contact: PR deschis 21.11.2026)
 - Owner: `Claude`
 - Scope: Funcțiile lipsă din auditul din 20.11.2026, aprobate de owner pe 20.11.2026:
   - **Lista de ofertă cu mai multe produse** — implementată (D-2026-11-20-14). De urmărit după publicare: câte cereri
     vin cu mai multe produse (răspunsul `produse` în CRM) și evenimentul GA `quote_list_add`, după ce GA are ID-ul corect.
-  - **Pagina de Contact și linkul din meniu** — pasul următor.
+  - **Pagina de Contact și linkul din meniu** — implementată (D-2026-11-21-01). La publicare: Worker-ul
+    `www-redirect` se publică din `workers/www-redirect/` (fără `/contact`), apoi se verifică
+    `www.youprotect.ro/contact` și `youprotect.ro/contact`.
 
 ### PERF-001
 - Status: `DONE` (18.11.2026, PR #40 și PR-ul cu cardurile din catalog)

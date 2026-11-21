@@ -1,0 +1,9 @@
+# Worker-ul care mută www.youprotect.ro pe youprotect.ro (index.js). Nu face parte din site-ul de pe Cloudflare Pages
+# (wrangler.toml din rădăcină); se publică separat, după ce testele trec:
+#   cd workers/www-redirect && npx wrangler@4.156.1 deploy
+# Verificare după publicare: curl -sI https://www.youprotect.ro/despre  ->  301, location: https://youprotect.ro/despre-noi/
+name = "www-redirect"
+main = "index.js"
+compatibility_date = "2026-06-01"
+workers_dev = false
+routes = [{ pattern = "www.youprotect.ro/*", zone_name = "youprotect.ro" }]

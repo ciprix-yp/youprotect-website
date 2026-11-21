@@ -639,3 +639,21 @@
     calendarul de pe /confirmare/. Un script de pe toate paginile nu are voie să importe un modul folosit și de alt
     script (de aceea `src/lib/quote-list.js` nu importă nimic, iar formularul folosește lista prin
     `window.ypQuoteList`).
+
+## D-2026-11-21-01
+- Lista de ofertă (D-2026-11-20-14) e publicată pe 21.11.2026, după aprobarea owner-ului pe preview („Îmi place”).
+  Verificat pe producție, pe telefon și desktop: adăugarea, numărul din antet, formularul cu cele două produse.
+  projects-f7 a făcut linkurile din răspunsul `produse` clicabile în CRM. Cererea de test cap-coadă nu se face:
+  sincronizarea CRM preia doar cererile de producție, așa că așteptăm prima cerere reală cu mai multe produse.
+- Pagina de Contact (`/contact/`, a doua funcție din auditul din 20.11.2026) și „Contact” în meniu și în footer:
+  - Conținut: telefonul, WhatsApp-ul și emailul (tot rândul e link), showroom-ul cu adresa, programul și indicații
+    (Google Maps, Waze), drumul spre cele două formulare și datele firmei (denumire, CUI, Nr. Reg. Com., EUID).
+    Datele vin din `SITE` (`src/lib/site.ts`); adresa de sediu din Registrul Comerțului nu apare până nu e actualizată.
+  - Fără formular nou (cererile intră tot prin `/cere-oferta/` și `/programeaza-discutie/`, cu același format în CRM)
+    și fără hartă încorporată (iframe-ul Google Maps pune cookie-uri fără acord și cere excepții în CSP).
+  - `/contact` trimitea de la mutarea de pe Wix (OPS-004) spre `/programeaza-discutie/`, și în `public/_redirects`, și în
+    Worker-ul `www-redirect`. Regula s-a scos din ambele. Codul Worker-ului, care stătea doar în Cloudflare, e acum în
+    `workers/www-redirect/` (țintele au „/” la final, deci un singur salt), iar testele verifică că o regulă de
+    redirect nu ascunde o pagină și că Worker-ul spune același lucru ca `_redirects`.
+  - Antetul: meniul întreg apare de la 1024 px. Pe tabletă (768 px) logo-ul, linkurile și butonul treceau pe două
+    rânduri deja cu patru linkuri; tableta are acum meniul de pe telefon.
