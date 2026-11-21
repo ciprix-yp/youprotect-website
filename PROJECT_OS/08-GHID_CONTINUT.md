@@ -143,6 +143,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
     `#gallery-well` în fișă, `src/scripts/fluid.ts`). Un nume de tranziție apare o singură dată pe pagină.
     Scripturile de pe toate paginile stau în pagină, nu în fișiere separate: altfel rulează în timpul tranziției și
     Chrome o sare (D-2026-11-20-14; `scripts/check-inline-scripts.mjs` verifică în CI).
+    Tranzițiile se verifică în Google Chrome (Playwright `channel: 'chrome'`): browserul implicit al Playwright le sare
+    des pe paginile servite de Cloudflare, deși vizitatorii nu au problema (D-2026-11-21-02).
   - Titlurile: `h1` cu literele strânse cu 0,02em, `h2` cu 0,01em; textul mic rămâne cu spațierea normală.
   - La derulare (20.11.2026, după feedback-ul că pe telefon paginile păreau statice): progresul vine din poziția
     paginii (`animation-timeline`), nu dintr-un cronometru, deci urmărește degetul, nu întârzie conținutul și merge
