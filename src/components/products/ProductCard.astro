@@ -2,14 +2,16 @@
 // Cardul de produs: aceeași structură și aceeași înălțime pe fiecare rând (poza pătrată, numele pe 3 rânduri — 4 pe
 // telefon, unde cardul e îngust —, standardul pe 2 rânduri), ca grila să rămână aliniată oricât de lung e numele.
 // Design premium (20.11.2026): card 3D (data-tilt, src/scripts/tilt.ts), poza pe fond cald (.img-well). Marca e jos,
-// lângă „Cere ofertă”: în nume apare deja, iar sus ar fura un rând numelui pe telefon.
+// lângă „Adaugă la ofertă”: în nume apare deja, iar sus ar fura un rând numelui pe telefon.
+// „Adaugă la ofertă” (lista de ofertă, 20.11.2026) a luat locul linkului „Cere ofertă”: din catalog, clientul strânge
+// mai multe produse și cere o singură ofertă (linkul din antet). „Cere ofertă” pentru un singur produs e pe fișă.
 // data-vt-photo: poza trece din card în fișa produsului la click (scripts/fluid.ts).
 import type { CardProps } from '../../lib/product-card';
+import QuoteListButton from './QuoteListButton.astro';
 
 type Props = CardProps;
 const { slug, name, brand, spec, image } = Astro.props;
 const href = `/produse/${slug}/`;
-const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
 ---
 
 <article
@@ -32,14 +34,9 @@ const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
     </h3>
     <p class="mt-2 min-h-[2lh] text-xs leading-snug text-yp-white/65 line-clamp-2" title={spec ?? undefined}>{spec}</p>
     <div class="mt-auto flex items-center justify-between gap-2 border-t border-white/[0.08] pt-1">
-      <span class="truncate text-xs text-yp-white/50">{brand}</span>
-      <a
-        href={offerHref}
-        class="relative z-10 inline-flex min-h-11 shrink-0 items-center text-xs font-medium text-yp-yellow underline-offset-4 hover:underline sm:text-sm"
-        aria-label={`Cere ofertă: ${name}`}
-      >
-        Cere ofertă
-      </a>
+      {/* Pe telefon, cardul e prea îngust pentru marcă și buton („MAS…”); marca e oricum în nume. */}
+      <span class="hidden truncate text-xs text-yp-white/50 sm:block">{brand}</span>
+      <QuoteListButton slug={slug} name={name} location="card-produs" variant="card" />
     </div>
   </div>
   <span class="tilt-sheen" aria-hidden="true"></span>

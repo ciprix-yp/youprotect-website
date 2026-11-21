@@ -131,6 +131,61 @@
   animation: yp-fade-in 150ms var(--ease-out) both;
 }
 
+/* Confirmarea de la „Adaugă la ofertă” (Header.astro, scripts/quote-list.ts): coboară 8 px de sub antet, din direcția
+   listei din antet, în 200 ms, și dispare mai repede (150 ms). Sus, nu jos: jos ar sta sub bannerul de cookie-uri și
+   lângă butonul WhatsApp. Tranziții, nu keyframes: un tap nou în timpul animației o preia de unde a rămas. Regiunea
+   rămâne mereu în pagină (role="status"), doar transparentă și fără clicuri cât e închisă, ca anunțul să ajungă la
+   cititoarele de ecran. De la tabletă stă în dreapta, sub butonul „Lista de ofertă”. */
+.quote-toast {
+  position: fixed;
+  top: 6rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 0.75rem;
+  background: #181818;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.5);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: rgb(255 255 255 / 0.9);
+  opacity: 0;
+  translate: 0 -8px;
+  pointer-events: none;
+  transition:
+    opacity 150ms var(--ease-out),
+    translate 150ms var(--ease-out);
+}
+.quote-toast[data-open] {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+  transition-duration: 200ms;
+}
+.quote-toast a:not([hidden]) {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 0.5rem;
+  font-weight: 500;
+  color: #e3fc02;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (min-width: 768px) {
+  .quote-toast {
+    left: auto;
+    right: max(1rem, calc((100vw - 80rem) / 2 + 1rem));
+    max-width: 26rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #mobile-menu,
   #mobile-menu.hidden {
@@ -139,6 +194,9 @@
   .step-in-forward,
   .step-in-back {
     animation-name: yp-fade-in;
+  }
+  .quote-toast {
+    translate: none;
   }
 }
 

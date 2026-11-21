@@ -3,3 +3,5 @@
 export const BOOKING_PREFILL_KEY = 'yp_booking_prefill';
 /** Tipul cererii trimise, raportat o dată în Google Analytics (src/lib/track.ts, Analytics.astro). */
 export const LEAD_FLAG = 'yp_lead';
+// Lista de ofertă are cheia ei în src/lib/quote-list.js (QUOTE_LIST_KEY): modulul acela nu importă nimic, ca scriptul din
+// BaseLayout să rămână în pagină.

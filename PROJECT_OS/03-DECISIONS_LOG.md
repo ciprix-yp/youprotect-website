@@ -612,3 +612,30 @@
     server), harta categoriilor din `quote-categories.js`, cheile sessionStorage din `src/lib/session-keys.js`, linkul
     WhatsApp pentru echipe mici din `whatsapp.ts`, JSON-LD doar prin `jsonLd()`. Limitele calculatorului = capetele
     sliderelor (200 de angajați, 40 de ore, 150 lei/oră; serverul accepta 500/80/300).
+
+## D-2026-11-20-14
+- Lista de ofertă pentru mai multe produse (funcția propusă în auditul din 20.11.2026, aprobată de owner: „Da, le
+  facem”):
+  - „Adaugă la ofertă” pe cardurile din catalog (în locul linkului „Cere ofertă”) și pe fișa produsului (lângă
+    „Cere ofertă”; „Programează o discuție” a devenit link sub butoane). Al doilea tap scoate produsul.
+  - Antetul arată „Lista de ofertă” cu numărul de produse doar când lista are ceva; duce la `/cere-oferta/`.
+    Confirmarea apare sub antet (nu jos: acolo stă bannerul de cookie-uri și butonul WhatsApp), cu „Vezi lista”.
+  - Formularul arată produsele (cel de pe fișa de unde vii, apoi lista), fiecare cu „Scoate”, și sare peste „Ce produse
+    ai în vedere?”. După trimitere, lista se golește.
+  - Lista stă doar în browser (localStorage `yp_quote_list`, cel mult 15 produse, expiră după 30 de zile fără
+    schimbări). Politica de cookies o descrie; fiind cerută de vizitator, nu cere acord.
+  - Serverul primește `produse` (slug-uri). `product` rămâne primul produs; de la două produse în sus pleacă și
+    răspunsul `produse` („Produse din lista de ofertă”, adresele paginilor, câte una pe rând, ≤ 2000 de caractere).
+    Încape în importul Prospector fără schimbări (cheie ≤ 40, răspuns ≤ 2000); projects-f7 a fost anunțat. Emailul
+    listează produsele câte unul pe rând. Paginile vechi din cache trimit în continuare `produs`.
+  - Fără cantități pe produs: rămân în „Cantități, mărimi, coduri” (decizia din 18.11.2026, fără câmpuri noi).
+- Scripturile de pe fiecare pagină (BaseLayout, Header, Footer, Analytics) stau în pagină, nu în fișiere separate:
+  - Cauza găsită: un script extern se descarcă după HTML și rula în timpul tranziției dintre pagini, iar Chrome o
+    sărea (poza nu mai trecea din card în fișă). Măsurat cu rețea încetinită: 8 tranziții sărite din 16 cu scriptul
+    din BaseLayout ca fișier separat, 0 din 28 cu el în pagină, 0 din 16 pe versiunea de dinainte. Tot asta era și
+    problema scriptului de statistici din PR #80. Preîncărcarea (`modulepreload`) doar reducea rata, așa că n-a rămas.
+  - `astro.config.mjs` (`inlineLayoutScripts`) le ține în pagină peste limita de 4 KB, iar
+    `scripts/check-inline-scripts.mjs` pică în CI dacă o pagină încarcă alt script extern decât prefetch-ul Astro și
+    calendarul de pe /confirmare/. Un script de pe toate paginile nu are voie să importe un modul folosit și de alt
+    script (de aceea `src/lib/quote-list.js` nu importă nimic, iar formularul folosește lista prin
+    `window.ypQuoteList`).
