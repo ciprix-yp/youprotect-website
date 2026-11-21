@@ -4,7 +4,7 @@
 // (/produse/?categorie=<cheie>). Pe telefon sunt o bandă derulabilă, de la tabletă în sus o grilă.
 import { getCollection } from 'astro:content';
 import { CATEGORIES, type CategoryKey } from '../../lib/catalog-taxonomy';
-import { activeCategoryPages, modelsLabel } from '../../lib/catalog-categories';
+import { activeCategoryPages } from '../../lib/catalog-categories';
 import { toCardProps } from '../../lib/product-card';
 
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
@@ -19,7 +19,6 @@ const tiles = (Object.keys(CATEGORIES) as CategoryKey[])
     const page = pages.find((c) => c.key === key);
     return {
       label: CATEGORIES[key],
-      count: items.length,
       image: toCardProps(items[0]).image,
       href: page ? `/produse/${page.slug}/` : `/produse/?categorie=${key}#modele`,
     };
@@ -47,7 +46,6 @@ const lgCols = ([8, 7, 6, 5] as const).reduce((best, cols) => (fill(cols) > fill
           </span>
           <span class="flex flex-1 flex-col p-3">
             <span class="min-h-[2lh] text-sm font-medium leading-snug text-yp-white transition-colors group-hover:text-yp-yellow">{t.label}</span>
-            <span class="mt-1 text-xs text-yp-white/55">{modelsLabel(t.count)}</span>
           </span>
           <span class="tilt-sheen" aria-hidden="true"></span>
         </a>

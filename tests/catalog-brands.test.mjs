@@ -32,9 +32,8 @@ test('mărci: fiecare pagină corespunde unei mărci din fișe și se publică',
 
 test('mărci: titlul și descrierea încap în rezultatele Google', () => {
   for (const page of BRAND_PAGES) {
-    const count = products.filter((p) => p.data.supplier.brand === page.brand).length;
     assert.ok([...`${page.title} | You Protect`].length <= 64, `${page.slug}: titlu prea lung`);
-    const d = [...brandDescription(page, count)].length;
+    const d = [...brandDescription(page)].length;
     assert.ok(d >= 70 && d <= 160, `${page.slug}: descriere de ${d} caractere`);
   }
 });

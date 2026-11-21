@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { RESPONSE_TIME } from "../lib/site";
 // Pagina e statică; mesajul și calendarul depind de ?intent= și se aleg în browser.
 // Datele pentru calendar vin din sessionStorage (cheia BOOKING_PREFILL_KEY din MultiStepForm), nu din URL:
 // nume, email și telefon nu ajung în istoricul browserului sau în loguri.
@@ -28,11 +29,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           Mulțumim! Revenim în curând cu informațiile cerute.
         </p>
         <p id="msg-quote" class="hidden text-lg text-neutral-300 max-w-2xl mx-auto mb-12">
-          Pregătim oferta pentru echipa ta și ți-o trimitem în cel mult 48 de ore. Dacă avem nevoie de o clarificare, te
+          Pregătim oferta pentru echipa ta și ți-o trimitem {RESPONSE_TIME}. Dacă avem nevoie de o clarificare, te
           sunăm scurt înainte.
         </p>
         <div id="msg-consultation" class="hidden text-lg text-neutral-300 max-w-2xl mx-auto mb-12">
-          <p>Revenim în cel mult 24 de ore cu o propunere pentru discuție și câteva recomandări pentru echipa ta.</p>
+          <p>Revenim {RESPONSE_TIME} cu o propunere pentru discuție și câteva recomandări pentru echipa ta.</p>
           <p class="mt-6 font-semibold text-white">Dacă vrei, alege direct o oră liberă din calendarul de mai jos.</p>
         </div>
       </div>

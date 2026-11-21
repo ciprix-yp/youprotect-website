@@ -7,7 +7,7 @@ import {
   SSM_OPTION,
   quoteCategoryLabel,
 } from '../../lib/quote-categories.js';
-import { SITE } from '../../lib/site';
+import { RESPONSE_TIME, SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
 import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../../lib/lead-limits.js';
 import { postLead } from '../../lib/post-lead.js';
@@ -281,7 +281,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
         isForm1 ? 'Cum te contactăm?' : 'Unde îți trimitem oferta?',
         isForm1
           ? 'După ce trimiți, alegi direct ora discuției din calendar.'
-          : 'Primești oferta în cel mult 48 de ore. Te sunăm doar dacă e nevoie de o clarificare.',
+          : `Primești oferta ${RESPONSE_TIME}. Te sunăm doar dacă e nevoie de o clarificare.`,
       )}
       <div className="relative space-y-4">
         <Honeypot value={honeypot} onChange={setHoneypot} />
