@@ -247,14 +247,16 @@ Format task:
     o singură întrebare: personalizarea cu logo (D-2026-11-18-05).
 
 ### CONV-004
-- Status: `IN_PROGRESS` (lista de ofertă: publicată 21.11.2026; pagina de Contact: PR deschis 21.11.2026)
+- Status: `DONE` (21.11.2026: lista de ofertă, PR #81, și pagina de Contact, PR #82, publicate)
 - Owner: `Claude`
 - Scope: Funcțiile lipsă din auditul din 20.11.2026, aprobate de owner pe 20.11.2026:
   - **Lista de ofertă cu mai multe produse** — implementată (D-2026-11-20-14). De urmărit după publicare: câte cereri
     vin cu mai multe produse (răspunsul `produse` în CRM) și evenimentul GA `quote_list_add`, după ce GA are ID-ul corect.
-  - **Pagina de Contact și linkul din meniu** — implementată (D-2026-11-21-01). La publicare: Worker-ul
-    `www-redirect` se publică din `workers/www-redirect/` (fără `/contact`), apoi se verifică
-    `www.youprotect.ro/contact` și `youprotect.ro/contact`.
+  - **Pagina de Contact și linkul din meniu** — publicată pe 21.11.2026 (D-2026-11-21-01), cu Worker-ul
+    `www-redirect` publicat din `workers/www-redirect/` (versiunea 1c3151be). Verificat: `/contact` și
+    `www.youprotect.ro/contact` ajung pe pagină; adresele vechi cu www merg într-un singur salt.
+  - Rămas de investigat: pe desktop, în Chrome, 2–3 din 10 clicuri din meniu sar tranziția dintre pagini (măsurat pe
+    21.11.2026, la fel și pe versiunea de dinainte de pagina de Contact).
 
 ### PERF-001
 - Status: `DONE` (18.11.2026, PR #40 și PR-ul cu cardurile din catalog)
