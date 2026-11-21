@@ -194,22 +194,18 @@ export function activeCategoryPages(products: { category: CategoryKey }[]): Cate
   );
 }
 
-/** „1 model”, „4 modele”, „20 de modele”. */
-export function modelsLabel(n: number): string {
-  if (n === 1) return '1 model';
-  return `${n} ${new Intl.PluralRules('ro').select(n) === 'other' ? 'de ' : ''}modele`;
-}
-
-/** Descrierea din Google: cifrele și mărcile vin din produse. */
 /** Numele scurt al mărcii, pentru texte: fără ® și fără „System” („Sir Safety System” → „Sir Safety”). */
 export function shortBrand(brand: string): string {
   return brand.replace('®', '').replace(/ System$/, '').trim();
 }
 
-/** Descrierea din Google (max. 160 de caractere): cu mărcile, sau doar câți producători sunt când lista nu încape. */
-export function categoryDescription(page: CategoryPage, count: number, brands: string[]): string {
-  const tail = ', cu certificările fiecărui model. Ofertă de la You Protect, Satu Mare.';
-  const withBrands = `${page.heading}: ${modelsLabel(count)} ${joinRo(brands.map(shortBrand))}${tail}`;
+/**
+ * Descrierea din Google (max. 160 de caractere): ce face clientul pe pagină, cu mărcile când încap. Fără numărul de
+ * modele, pe nicio pagină (owner, 21.11.2026: un număr mic face catalogul să pară sărac).
+ */
+export function categoryDescription(page: CategoryPage, brands: string[]): string {
+  const action = 'Vezi certificările fiecărui model și cere ofertă pentru echipă de la You Protect, Satu Mare.';
+  const withBrands = `${page.heading}: modele ${joinRo(brands.map(shortBrand))}. ${action}`;
   if ([...withBrands].length <= 160) return withBrands;
-  return `${page.heading}: ${modelsLabel(count)} de la ${brands.length} producători${tail}`;
+  return `${page.heading}: ${action.charAt(0).toLowerCase()}${action.slice(1)}`;
 }

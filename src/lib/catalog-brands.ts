@@ -3,7 +3,6 @@
 // producătorului (sursa e în `source`, verificată pe 19.11.2026). Despre You Protect scriem doar ce e adevărat: vinde
 // produsele mărcii firmelor din România. NU „distribuitor autorizat” sau „oficial”: nu avem acest statut documentat.
 // Modelele, categoriile și certificările se generează din fișele de produs.
-import { modelsLabel } from './catalog-categories.ts';
 
 export interface BrandPage {
   /** Valoarea din `supplier.brand` a fișelor („MASCOT®”). */
@@ -62,7 +61,7 @@ export function activeBrandPages(products: { supplier: { brand: string } }[]): B
   );
 }
 
-/** Descrierea din Google: numărul de modele vine din produse. */
-export function brandDescription(page: BrandPage, count: number): string {
-  return `Produse ${page.name} pentru firme: ${modelsLabel(count)} în catalog, cu certificările fiecărui model. Ofertă, testare și logo de la You Protect, Satu Mare.`;
+/** Descrierea din Google. Fără numărul de modele (owner, 21.11.2026). */
+export function brandDescription(page: BrandPage): string {
+  return `Produse ${page.name} pentru firme, cu certificările fiecărui model. Ofertă, testare și logo de la You Protect, Satu Mare.`;
 }

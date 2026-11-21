@@ -7,7 +7,7 @@ import { toCardProps } from '../../lib/product-card';
 import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
 import { CATEGORIES, type CategoryKey } from '../../lib/catalog-taxonomy';
-import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
+import { joinRo, type CategoryPage } from '../../lib/catalog-categories';
 import { riskFreeExclusions } from '../../lib/risk-free-scope';
 import type { BrandPage } from '../../lib/catalog-brands';
 import { PERSONALIZATION_PAGE, productsWithLogoZones } from '../../lib/personalization';
@@ -29,7 +29,6 @@ const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
 const products = [...entries].sort((a, b) => roCollator.compare(a.data.name, b.data.name));
 // Ce produse ale mărcii nu intră în „Testare fără riscuri” (căști, ochelari, mănuși electroizolante…).
 const notTestable = riskFreeExclusions(products.map((e) => e.data));
-const count = products.length;
 const href = `/produse/${page.slug}/`;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 
@@ -43,10 +42,10 @@ const groups = (Object.keys(CATEGORIES) as CategoryKey[])
   .filter((g) => g.items.length > 0);
 
 const withLogoZones = productsWithLogoZones(products);
-const categorySummary = groups.map((g) => `${g.label.toLowerCase()} (${g.items.length})`).join(', ');
+const categorySummary = joinRo(groups.map((g) => g.label.toLowerCase()));
 const logoAnswer =
   withLogoZones.length > 0
-    ? `Da. Pentru ${modelsLabel(withLogoZones.length)} ${page.name}, producătorul dă zonele de logo și dimensiunile maxime; le vezi pe fișa fiecărui produs. Personalizarea o facem prin parteneri, prin broderie, serigrafie sau transfer termic.`
+    ? `Da. Unde producătorul dă zonele de logo și dimensiunile maxime pentru un model ${page.name}, le vezi pe fișa produsului. Personalizarea o facem prin parteneri, prin broderie, serigrafie sau transfer termic.`
     : `Da. Personalizarea o facem prin parteneri, prin broderie, serigrafie sau transfer termic. Locul și mărimea logo-ului pe hainele ${page.name} le stabilim împreună la ofertă.`;
 
 const faq = [
@@ -56,7 +55,7 @@ const faq = [
   },
   {
     q: `Ce produse ${page.name} găsesc la You Protect?`,
-    a: `În catalog sunt ${modelsLabel(count)}: ${categorySummary}. Dacă cauți alt model ${page.name}, întreabă-ne și verificăm dacă îl putem aduce.`,
+    a: `În catalog avem ${categorySummary} ${page.name}. Dacă cauți alt model ${page.name}, întreabă-ne și verificăm dacă îl putem aduce.`,
   },
   {
     q: `Pot testa produsele ${page.name} înainte să echipez toată firma?`,
@@ -89,7 +88,6 @@ const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: `Produse ${page.name} la You Protect`,
-  numberOfItems: count,
   itemListElement: products.map((e, i) => ({
     '@type': 'ListItem',
     position: i + 1,

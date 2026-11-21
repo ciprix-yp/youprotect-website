@@ -671,3 +671,15 @@
   - Măsurătorile din D-2026-11-20-14 (scripturile din pagină) au fost făcute cu `chrome-headless-shell`. Regula
     rămâne (nu costă nimic: scripturile comune nu mai așteaptă un fișier separat), dar o tranziție sărită în testele de acolo
     nu înseamnă neapărat o problemă pentru vizitatori.
+
+## D-2026-11-21-03
+- Termenul pentru ofertă: 24 de ore peste tot (înainte scria 48, fără confirmare documentată). Owner, 21.11.2026: după
+  ce există modulul de ofertare din Prospector, devine 15 minute. Textul stă într-un singur loc, `RESPONSE_TIME` din
+  `src/lib/site.ts` (formularul, calculatorul, `/confirmare/`, descrierea din Google a paginii `/cere-oferta/`).
+- Numărul de produse sau de modele nu apare nicăieri pe site (owner, 21.11.2026: un număr mic face catalogul să pară
+  sărac): descrierile din Google ale categoriilor și mărcilor, dalele de categorie, antetul catalogului, filtrele,
+  paginile de categorie și de marcă, ghidurile, schema `ItemList`. Deasupra listei din catalog apare filtrul ales
+  („Toate produsele”, „Încălțăminte de protecție, MASCOT”). Excepții: lista de ofertă a vizitatorului („Ai 3 produse
+  în listă”, limita de 15) și pagina internă `/preview/produse/`. `tests/site-promises.test.mjs` verifică ambele reguli.
+- Descrierea din Google a paginii „Despre noi”, din cuvintele paginii: „You Protect, din Satu Mare, alege consultativ
+  echipamente de protecție și haine de lucru pentru firme. Felul în care îți echipezi oamenii arată cât îi respecți.”

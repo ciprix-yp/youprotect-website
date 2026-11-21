@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import MultiStepForm from "../components/forms/MultiStepForm";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import { whatsappHref } from "../lib/whatsapp";
+import { RESPONSE_TIME } from "../lib/site";
 
 // Produsele publicate, pentru /cere-oferta/?produs=<slug> (link-ul „Cere ofertă” de pe fișa de produs).
 const products = Object.fromEntries(
@@ -13,7 +14,7 @@ const products = Object.fromEntries(
 
 <BaseLayout
   title="Cere ofertă pentru echipa ta"
-  description="Răspunde la câteva întrebări și primești în cel mult 48 de ore o ofertă de echipamente de protecție potrivită echipei tale."
+  description={`Răspunde la câteva întrebări și primești ${RESPONSE_TIME} o ofertă de echipamente de protecție potrivită echipei tale.`}
 >
   <section class="pt-8 pb-12 md:pt-12 md:pb-20">
 

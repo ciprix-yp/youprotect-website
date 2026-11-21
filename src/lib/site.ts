@@ -40,6 +40,11 @@ export const SITE = {
   },
 } as const;
 
+// Termenul în care trimitem oferta sau revenim după o cerere de pe site: 24 de ore (owner, 21.11.2026; înainte scria
+// 48). După modulul de ofertare din Prospector devine 15 minute, tot la decizia owner-ului. Folosit în formular, în
+// calculator, pe /confirmare/ și în descrierea din Google a paginii /cere-oferta/.
+export const RESPONSE_TIME = "în cel mult 24 de ore";
+
 // EUID = prefixul ONRC + numărul de înregistrare.
 export const LEGAL_EUID = `ROONRC.${SITE.legal.regCom}`;
 

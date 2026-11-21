@@ -7,7 +7,7 @@ import { toCardProps } from '../../lib/product-card';
 import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
 import { CATEGORIES } from '../../lib/catalog-taxonomy';
-import { joinRo, modelsLabel, type CategoryPage } from '../../lib/catalog-categories';
+import { joinRo, type CategoryPage } from '../../lib/catalog-categories';
 import { jsonLd } from '../../lib/json-ld';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { guideHref, guidesForCategory } from '../../lib/guides';
@@ -33,7 +33,6 @@ const closingTileClass = [
   n % 3 === 0 ? 'md:hidden' : 'md:block',
   n % 4 === 0 ? 'lg:hidden' : 'lg:block',
 ].join(' ');
-const count = products.length;
 const href = `/produse/${page.slug}/`;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const guides = guidesForCategory(page.key);
@@ -73,7 +72,6 @@ const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: page.heading,
-  numberOfItems: count,
   itemListElement: products.map((e, i) => ({
     '@type': 'ListItem',
     position: i + 1,
@@ -105,7 +103,7 @@ const faqSchema = {
   <header class="max-w-3xl">
     <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{page.heading}</h1>
     <p class="mt-4 text-base text-yp-white/80 leading-relaxed">{page.intro}</p>
-    <p class="mt-3 text-sm text-yp-white/60">{modelsLabel(count)} de la {joinRo(brands)}. Prețul îl primești în ofertă, pentru cantitățile echipei tale.</p>
+    <p class="mt-3 text-sm text-yp-white/60">Modele {joinRo(brands)}. Prețul îl primești în ofertă, pentru cantitățile echipei tale.</p>
     <div class="mt-6 flex flex-col gap-3 sm:flex-row">
       <a
         href="/cere-oferta/"

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { DOMAINS } from '../../lib/domains.js';
-import { RISK_FREE_TESTING, SITE } from '../../lib/site';
+import { RESPONSE_TIME, RISK_FREE_TESTING, SITE } from '../../lib/site';
 import {
   TCO_CATEGORIES,
   TCO_DEFAULTS,
@@ -654,7 +654,7 @@ export default function TCOCalculator() {
 
       {id === 'gata' && (
         <div className="text-center py-4">
-          {heading('Am primit datele', offersTesting ? 'Te contactăm în cel mult 48 de ore ca să alegem împreună produsele pentru testare.' : 'Te contactăm în cel mult 48 de ore cu oferta.')}
+          {heading('Am primit datele', offersTesting ? `Te contactăm ${RESPONSE_TIME} ca să alegem împreună produsele pentru testare.` : `Te contactăm ${RESPONSE_TIME} cu oferta.`)}
           <a href="/produse/" className="text-yp-yellow underline underline-offset-4 hover:text-white text-sm">
             Până atunci, vezi catalogul
           </a>

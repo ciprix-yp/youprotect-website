@@ -10,7 +10,6 @@ import {
   activeCategoryPages,
   categoryDescription,
   joinRo,
-  modelsLabel,
 } from '../src/lib/catalog-categories.ts';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -37,7 +36,7 @@ test('categorii: titlul și descrierea încap în rezultatele Google', () => {
   for (const page of activeCategoryPages(products.map((p) => p.data))) {
     const items = products.filter((p) => p.data.category === page.key);
     const brands = [...new Set(items.map((p) => p.data.supplier.brand))];
-    const description = categoryDescription(page, items.length, brands);
+    const description = categoryDescription(page, brands);
     assert.ok([...`${page.title} | You Protect`].length <= 62, `${page.slug}: titlu prea lung`);
     assert.ok([...description].length <= 160, `${page.slug}: descriere de ${[...description].length} caractere`);
   }
@@ -47,7 +46,4 @@ test('categorii: textele în română', () => {
   assert.equal(joinRo(['A']), 'A');
   assert.equal(joinRo(['A', 'B']), 'A și B');
   assert.equal(joinRo(['A', 'B', 'C']), 'A, B și C');
-  assert.equal(modelsLabel(1), '1 model');
-  assert.equal(modelsLabel(4), '4 modele');
-  assert.equal(modelsLabel(20), '20 de modele');
 });

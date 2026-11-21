@@ -8,7 +8,6 @@ import ProductCard from '../../components/products/ProductCard.astro';
 import CategoryTiles from '../../components/products/CategoryTiles.astro';
 import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
-import { modelsLabel } from '../../lib/catalog-categories';
 import { activeBrandPages } from '../../lib/catalog-brands';
 import { toCardProps } from '../../lib/product-card';
 import { jsonLd } from '../../lib/json-ld';
@@ -29,11 +28,7 @@ const categories = categoryOrder
   .map((key) => {
     const items = entries.filter((e) => e.data.category === key);
     if (items.length === 0) return null;
-    return {
-      key,
-      label: CATEGORIES[key],
-      count: items.length,
-    };
+    return { key, label: CATEGORIES[key] };
   })
   .filter((c): c is NonNullable<typeof c> => c !== null);
 
@@ -47,6 +42,7 @@ const brands = [...new Set(entries.map((e) => toCardProps(e).brand))]
     count: entries.filter((e) => toCardProps(e).brand === name).length,
     page: brandPages.find((b) => b.brand.replace('®', '') === name),
   }))
+  // Mărcile cu mai multe modele primele; numărul nu se afișează (owner, 21.11.2026).
   .sort((a, b) => b.count - a.count || roCollator.compare(a.name, b.name));
 // „MASCOT, Sir Safety și Climax”: mărcile cu pagină au link.
 const brandParts = brands.map((b, i) => ({
@@ -88,7 +84,7 @@ const filterOption =
             Catalog echipamente de protecție și haine de lucru
           </h1>
           <p class="mt-4 max-w-2xl text-base leading-relaxed text-yp-white/75">
-            {modelsLabel(entries.length)} de la{' '}
+            Modele{' '}
             {brandParts.map((part) => (<>{part.href ? <a href={part.href} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{part.text}</a> : part.text}{part.sep}</>))}, pentru
             construcții, producție, logistică și energie. Prețul îl primești în ofertă, pentru cantitățile echipei tale.
           </p>
@@ -146,7 +142,7 @@ const filterOption =
               <button type="button" data-value="all" aria-pressed="true" class={filterOption}>Toate categoriile</button>
               {categories.map((c) => (
                 <button type="button" data-value={c.key} aria-pressed="false" class={filterOption}>
-                  <span>{c.label}</span><span class="text-xs text-yp-white/50">{c.count}</span>
+                  <span>{c.label}</span>
                 </button>
               ))}
             </div>
@@ -157,7 +153,7 @@ const filterOption =
               <button type="button" data-value="all" aria-pressed="true" class={filterOption}>Toate industriile</button>
               {industries.map((i) => (
                 <button type="button" data-value={i.key} aria-pressed="false" class={filterOption}>
-                  <span>{i.label}</span><span class="text-xs text-yp-white/50">{i.count}</span>
+                  <span>{i.label}</span>
                 </button>
               ))}
             </div>
@@ -168,7 +164,7 @@ const filterOption =
               <button type="button" data-value="all" aria-pressed="true" class={filterOption}>Toate mărcile</button>
               {brands.map((b) => (
                 <button type="button" data-value={b.name} aria-pressed="false" class={filterOption}>
-                  <span>{b.name}</span><span class="text-xs text-yp-white/50">{b.count}</span>
+                  <span>{b.name}</span>
                 </button>
               ))}
             </div>
@@ -178,7 +174,7 @@ const filterOption =
 
       <div class="min-w-0 flex-1">
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-yp-white/10 pb-4">
-          <p id="catalog-count" class="text-sm text-yp-white/75" aria-live="polite">{modelsLabel(entries.length)}</p>
+          <p id="catalog-count" class="text-sm text-yp-white/75" aria-live="polite">Toate produsele</p>
           <div class="flex items-center gap-4">
             <button id="catalog-reset" type="button" hidden class="py-2 text-sm text-yp-yellow underline underline-offset-4 hover:text-yp-white">
               Șterge filtrele
@@ -255,8 +251,6 @@ const filterOption =
       const toggle = document.getElementById('catalog-filter-toggle');
       const panel = document.getElementById('catalog-filters');
       const activeCount = document.getElementById('catalog-filter-count');
-      const plural = new Intl.PluralRules('ro');
-      const models = (n) => (n === 1 ? '1 model' : `${n} ${plural.select(n) === 'other' ? 'de ' : ''}modele`);
 
       const params = new URLSearchParams(window.location.search);
       const fromUrl = params.get('categorie');
@@ -299,7 +293,13 @@ const filterOption =
           }
         }
         const active = ['category', 'industry', 'brand'].filter((k) => state[k] !== 'all').length + (q ? 1 : 0);
-        count.textContent = visible === items.length ? models(visible) : `${models(visible)} din ${items.length}`;
+        // Ce arată lista acum (filtrele alese și căutarea), fără numărul de produse (owner, 21.11.2026).
+        const chosen = groups
+          .filter((group) => state[group.dataset.filterGroup] !== 'all')
+          .map((group) => group.querySelector('[aria-pressed="true"]')?.textContent?.trim())
+          .filter(Boolean);
+        if (q) chosen.push(`„${state.query.trim()}”`);
+        count.textContent = chosen.length ? chosen.join(', ') : 'Toate produsele';
         reset.hidden = active === 0;
         activeCount.textContent = active ? `(${active})` : '';
         empty.hidden = visible > 0;
