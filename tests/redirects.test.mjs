@@ -2,15 +2,7 @@
 // 308 spre varianta cu „/”, iar Google vede două salturi (găsit pe 18.11.2026 la /cine-suntem -> /despre-noi).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-
-const FILE = fileURLToPath(new URL('../public/_redirects', import.meta.url));
-const rules = readFileSync(FILE, 'utf8')
-  .split('\n')
-  .map((l) => l.trim())
-  .filter((l) => l && !l.startsWith('#'))
-  .map((l) => l.split(/\s+/));
+import { pageExists, redirectRules as rules } from './site-routes.js';
 
 test('redirect-uri: fiecare regulă are sursă, țintă și cod 301/302', () => {
   for (const r of rules) {
@@ -31,4 +23,19 @@ test('redirect-uri: nicio sursă nu apare de două ori', () => {
   const seen = new Set();
   const dup = rules.map(([from]) => from).filter((f) => (seen.has(f) ? true : (seen.add(f), false)));
   assert.deepEqual(dup, []);
+});
+
+// Pe 21.11.2026, /contact trimitea spre /programeaza-discutie/ (de la mutarea de pe Wix); o pagină nouă /contact/ ar fi
+// rămas ascunsă pentru cine scria adresa fără „/” la final.
+test('redirect-uri: nicio sursă nu ascunde o pagină care există', () => {
+  const shadowed = rules.map(([from]) => from).filter((from) => !from.includes('*') && pageExists(from));
+  assert.deepEqual(shadowed, []);
+});
+
+test('redirect-uri: țintele din site există', () => {
+  const missing = rules
+    .map(([, to]) => to)
+    .filter((to) => to.startsWith('/') && !/\.[a-z0-9]+$/i.test(to) && !to.startsWith('/produse/'))
+    .filter((to) => !pageExists(to));
+  assert.deepEqual(missing, []);
 });

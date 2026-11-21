@@ -128,6 +128,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
   telefon se apasă la atingere. Pozele de produs stau pe `.img-well` (fond gri cald, `mix-blend-multiply`).
   Suprafețe: `bg-yp-surface`, `shadow-card`; colțuri: cardurile `rounded-xl`, butoanele și casetele `rounded-lg`.
 - Telefon: orice element atins cu degetul are cel puțin 44 px (`min-h-11`), în afară de linkurile din mijlocul frazei.
+- Antetul: meniul întreg apare de la 1024 px (`lg`); sub 1024 px, inclusiv pe tabletă, e meniul de telefon. Un link nou
+  în meniu se verifică la 1024 px: logo-ul, linkurile și butonul trebuie să încapă pe un rând.
 - Mișcare (20.11.2026, după ghidul Apple; skill-urile `apple-design` și `review-animations`): mișcarea are un rost
   (arată ce s-a schimbat sau răspunde la o acțiune), e scurtă și se poate întrerupe.
   - Curbele: `ease-out-strong` pentru ce apare sau răspunde, `ease-drawer` pentru ce se mută pe ecran (Tailwind și

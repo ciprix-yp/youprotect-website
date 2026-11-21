@@ -27,6 +27,9 @@ export const SITE = {
     addressCountry: "RO",
   },
   geo: { latitude: 47.7848561, longitude: 22.8030222 },
+  // Indicațiile spre showroom (footer, /contact/): pinul You Protect din Google Maps și aceleași coordonate în Waze.
+  mapsUrl: "https://maps.app.goo.gl/mTwMZfUZ5ZrVyAQP7",
+  wazeUrl: "https://waze.com/ul?ll=47.7848561,22.8030222&navigate=yes",
   // Zonele deservite — semnal GEO pentru local search.
   areaServed: ["Satu Mare", "Regiunea Nord-Vest", "România"],
   // Program (din Footer): L-V 09:00-17:00, weekend închis.

@@ -6,12 +6,12 @@
 /cine-suntem        /despre-noi/            301
 /despre             /despre-noi/            301
 /servicii           /cum-lucram/            301
-/contact            /programeaza-discutie/  301
 /blog               /                       301
 /blog/*             /                       301
 /magazin            /produse/               301
 /shop               /produse/               301
 /produsele-noastre  /produse/               301
+# /contact nu mai e aici: din 21.11.2026 e pagina de Contact (src/pages/contact.astro).
 
 # Adrese vechi (Wix și magazinul Shopify) care încă apar în Search Console, verificate pe 18.11.2026.
 /clientul-ideal            /industrii/                    301
