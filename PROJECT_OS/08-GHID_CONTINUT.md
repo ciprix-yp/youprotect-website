@@ -52,6 +52,11 @@ Dicționar faptul de la furnizor → cum îl spui:
 - Ofertele (testare fără riscuri, garanție) vin doar din constanta `RISK_FREE_TESTING` din `src/lib/site.ts`.
 - Un marcaj pe care nu-l înțelegem sigur se afișează fără explicație și se notează la review. Nu ghicim.
 - Limitările se spun deschis, în `notes` (ex.: nuanța se poate modifica la soare).
+- Fără „unitate protejată”: You Protect nu e și nu lucrează în acest context (owner, 21.11.2026), deși expresia apare
+  în căutări lângă „echipamente de protecție”.
+- Fără „distribuitor autorizat” sau „partener oficial” al unei mărci.
+- Fără numărul de produse sau de modele din catalog (D-2026-11-21-03). Termenul pentru ofertă vine doar din
+  `RESPONSE_TIME` (`src/lib/site.ts`).
 
 ## 4. Fișa de produs, câmp cu câmp
 
