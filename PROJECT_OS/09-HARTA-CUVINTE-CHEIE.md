@@ -32,6 +32,8 @@ deja în Search Console.
 | Haine cu identitatea firmei | „uniforme de lucru”, „uniforme cu logo” | personalizare, cămăși corporate, Acasă (o dată) |
 | Varianta locală | „echipamente de lucru” | pagina Satu Mare |
 | Local | Satu Mare (Vetiș), apoi „livrăm și în Baia Mare, Oradea, Cluj” | Acasă, Satu Mare, Contact, Despre noi |
+| Clientul | „firme” (nu „companii”) | peste tot |
+| Locul | „showroom în Vetiș” (nu „magazin”) | peste tot |
 | Mărci | „MASCOT / Portwest / Sir Safety în România”, „haine de lucru MASCOT” | paginile de marcă, catalog |
 
 De evitat:
@@ -49,7 +51,7 @@ De evitat:
 |---|---|---|---|
 | `/` | echipamente de protecție și haine de lucru | protecția muncii, pentru firme, cu logo, uniforme de lucru, Satu Mare, livrare în toată România | Ce face You Protect? De unde comand echipamente de protecție pentru firmă? |
 | `/produse/` | catalog echipamente de protecție și haine de lucru | protecția muncii; bocanci și pantofi de protecție, geci și veste reflectorizante, pantaloni și salopete de lucru, căști, mănuși; pentru bărbați și femei | — |
-| `/echipamente-protectie-satu-mare/` | echipamente de protecție Satu Mare | protecția muncii Satu Mare, haine de lucru Satu Mare, echipamente de lucru Satu Mare, showroom în Vetiș; Baia Mare, Oradea, Cluj; „magazin” doar dacă e confirmat (§4) | De unde cumpăr echipamente de protecție în Satu Mare? Pot proba înainte? |
+| `/echipamente-protectie-satu-mare/` | echipamente de protecție Satu Mare | protecția muncii Satu Mare, haine de lucru Satu Mare, echipamente de lucru Satu Mare, showroom în Vetiș; Baia Mare, Oradea, Cluj | De unde cumpăr echipamente de protecție în Satu Mare? Pot proba înainte? |
 | `/haine-de-lucru-personalizate/` | haine de lucru personalizate cu logo | uniforme de lucru personalizate, tricouri polo personalizate cu logo, brodate, geci și veste reflectorizante personalizate | Pot pune logo pe hainele reflectorizante fără să pierd certificarea? Aveți uniforme de lucru pentru femei? (doar dacă fișele confirmă) |
 | `/despre-noi/` | furnizor de echipamente de protecție din Satu Mare | protecția muncii (în poveste: „nu doar să bifeze protecția muncii”), din 2022, consultanță | Cine e You Protect? |
 | `/cum-lucram/` | cum alegem echipamentele de protecție pentru firma ta | consultanță gratuită, ofertă, testare 90 de zile, cost pe zi de purtare | Cum alegi echipamentele de protecție potrivite pentru echipă? |
@@ -105,10 +107,10 @@ Detaliile din coloana a treia intră doar pentru modelele care le au, verificat 
 Au deja câmpul `keyword` în `catalog/texts/` (formula din `08-GHID_CONTINUT.md` §4–5). La trecerea prin texte, doar
 verificăm că variantele de mai sus (bărbați/damă, de iarnă, impermeabil) apar unde fișa le confirmă.
 
-## 4. Decizii deschise (owner)
+## 4. Decizii (owner, 21.11.2026)
 
-- **„Magazin”**: se caută mult lângă Satu Mare. Îl folosim doar dacă o firmă poate cumpăra pe loc în showroom-ul din
-  Vetiș. Până la răspuns: „showroom”.
-- **„Firme” sau „companii”**: propunerea e „firme” peste tot (așa caută oamenii, fraza e mai simplă).
-- **Limbajul clienților**: 3–5 fraze auzite de la clienți și, cu acordul owner-ului, formulările din cererile reale
-  (fără nume și firme), pentru skill-ul `copywriter`.
+- **„Showroom”, nu „magazin”**, deși „magazin” se caută lângă Satu Mare.
+- **„Firme”** peste tot, nu „companii”.
+- **Limbajul clienților**: clienții spun „echipamente de protecție”, „bocanci”. Alte fraze notate nu există încă, așa
+  că expresiile din căutări (secțiunile 2 și 3) țin loc de limbajul clienților. Frazele auzite de acum încolo se
+  adaugă aici.
