@@ -1,12 +1,14 @@
 ---
 // Homepage, restructurat pe 20.11.2026 (D-2026-11-20-05): ce vinzi și de ce să alegi You Protect, cu fapte, nu cu
 // abstracțiuni. Ordinea: hero, mărci, recenzii, categorii, „De ce You Protect”, pași, ce include, CTA, întrebări.
+// Textele, rescrise pe 21.11.2026 după harta cuvintelor-cheie (PROJECT_OS/09-HARTA-CUVINTE-CHEIE.md): expresia
+// principală „echipamente de protecție și haine de lucru”, plus „protecția muncii”, „uniforme de lucru”, Satu Mare.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Testimonials from "../components/home/Testimonials.astro";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import CategoryTiles from "../components/products/CategoryTiles.astro";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
-import { RISK_FREE_TESTING, SITE } from "../lib/site";
+import { RESPONSE_TIME, RISK_FREE_TESTING, SITE } from "../lib/site";
 import { btnPrimary, btnSecondary, pageContainer } from "../lib/ui";
 import { jsonLd } from "../lib/json-ld";
 
@@ -25,7 +27,7 @@ const brands = [
 const reasons = [
   {
     title: "Alegi după costul real",
-    text: "Prețul de pe factură e doar o parte. Calculatorul compară cât te costă pe zi de purtare ce folosești acum și produsele care durează mai mult.",
+    text: "Prețul de pe factură e doar o parte. Calculatorul îți arată cât te costă pe zi de purtare bocancii și hainele pe care le folosești acum, față de unele care țin mai mult.",
     link: { label: "Calculează costul real", href: "/calculator-cost-echipamente/" },
   },
   {
@@ -35,12 +37,12 @@ const reasons = [
   },
   {
     title: "Vezi și probezi înainte",
-    text: "În showroom-ul din Vetiș, Satu Mare, ai cabină de probă. Pe fiecare fișă din catalog găsești documentele producătorului și, unde există, standardele declarate de el.",
+    text: "În showroom-ul din Vetiș, Satu Mare, probezi în cabină mărimea și modelul pentru echipă. Pe fiecare fișă din catalog găsești documentele producătorului și, unde există, standardele declarate de el.",
     link: { label: "Vezi showroom-ul", href: "/echipamente-protectie-satu-mare/#showroom" },
   },
   {
-    title: "Logo-ul firmei, livrat în toată țara",
-    text: "Hainele de lucru le poți personaliza cu logo prin broderie, serigrafie sau transfer termic. Livrăm în toată România.",
+    title: "Uniforme de lucru cu logo-ul firmei",
+    text: "Tricourile, gecile, vestele și pantalonii primesc logo-ul firmei prin broderie, serigrafie sau transfer termic, la partenerii noștri. Livrăm în toată România.",
     link: { label: "Cum funcționează personalizarea", href: "/haine-de-lucru-personalizate/" },
   },
 ];
@@ -48,26 +50,26 @@ const reasons = [
 const steps = [
   {
     title: "Discutăm despre activitatea și echipa ta",
-    text: "Începem cu o discuție despre contextul real: ce face echipa, în ce condiții lucrează și ce vrei să îmbunătățești în procesul de echipare.",
+    text: "Ne spui ce face echipa și unde lucrează: pe șantier, în depozit, în hală, la frig sau pe ploaie. Și ce nu merge cu echipamentele de acum.",
   },
   {
     title: "Primești o recomandare și o ofertă",
-    text: "Selectăm variante potrivite de echipamente de protecție și haine de lucru și construim o propunere adaptată activității, bugetului și imaginii pe care vrei să o transmiți.",
+    text: `Alegem echipamentele de protecție și hainele de lucru potrivite activității, bugetului și imaginii firmei tale. Oferta o primești ${RESPONSE_TIME}.`,
   },
   {
-    title: "Testezi și alegi informat",
-    text: "Poți testa produsele cu o parte din echipă, compara și decide, astfel încât alegerea finală să fie potrivită și pentru oameni, și pentru firmă.",
+    title: "Testezi, apoi echipezi toată firma",
+    text: "Încerci produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru. Comanda pentru toată echipa o faci abia după ce știi ce merge.",
   },
 ];
 
 const includes = [
-  "Consultanță pentru alegerea echipamentelor potrivite",
-  "Selecție clară pentru activitatea și echipa ta",
-  "Livrări programate, pentru mai multă predictibilitate",
-  "Personalizare cu logo prin broderie, serigrafie sau transfer termic",
+  "Consultanță gratuită la alegerea echipamentelor de protecție",
+  "O recomandare pentru fiecare rol din echipă, nu o listă lungă de produse",
+  "Livrări programate, ca oamenii să nu rămână fără echipament",
+  "Uniforme de lucru cu logo, prin broderie, serigrafie sau transfer termic",
   "Fișe de produs cu documentele producătorului și certificările declarate de el",
   "Testare de 90 de zile înainte de decizia finală, cu banii înapoi pe rolurile unde produsele nu ies mai eficiente și nu ești mulțumit",
-  "Sprijin pentru comenzi recurente sau anuale",
+  "Comenzi recurente sau anuale, planificate împreună",
   "Showroom cu cabină de probă în Vetiș, Satu Mare",
 ];
 
@@ -75,11 +77,13 @@ const includes = [
 const faq = [
   {
     q: "Ce echipamente de protecție sunt obligatorii pentru angajatori în România?",
-    a: "Depinde de riscurile de la locul de muncă și de activitate. Angajatorul trebuie să asigure echipamente individuale de protecție adecvate riscurilor identificate, conforme și potrivite pentru utilizarea reală din teren. De aceea, alegerea nu se face generic, ci în funcție de activitate, mediu de lucru și nevoile echipei.",
+    a: "Cele cerute de evaluarea riscurilor de la fiecare loc de muncă: legea nu dă o listă unică pentru toate firmele. Angajatorul le dă oamenilor gratuit și răspunde de întreținerea și înlocuirea lor (HG nr. 1.048/2006, art. 10). De aceea, echipamentele de protecția muncii se aleg după activitate, mediul de lucru și oamenii care le poartă.",
+    more: { label: "Cât costă echipamentul pe muncitor", href: "/ghiduri/cost-echipament-protectie-muncitor/" },
   },
   {
     q: "Cum aleg corect hainele de lucru pentru echipa mea?",
-    a: "Pornești de la activitate, sezon, nivelul de uzură, confort, imaginea pe care vrei să o transmită echipa și nevoia de personalizare. Pentru multe firme, o recomandare clară e mai utilă decât o listă lungă de produse.",
+    a: "Pornești de la ce face echipa: activitatea, sezonul, cât de repede se uzează hainele și cum se spală. Apoi alegi confortul și imaginea pe care vrei să o transmită oamenii, cu logo-ul firmei dacă vrei uniforme de lucru. O recomandare pe fiecare rol e mai utilă decât o listă lungă de produse.",
+    more: { label: "Cum alegi haine de lucru care rezistă", href: "/ghiduri/haine-de-lucru-care-rezista/" },
   },
   {
     q: "Care este diferența dintre S1P și S3 la bocancii de protecție?",
@@ -98,7 +102,7 @@ const faq = [
   },
   {
     q: "Livrați echipamente de protecție în toată România?",
-    a: "Da. You Protect livrează echipamente de protecție, haine de lucru și articole personalizate firmelor din toată România. Avem baza în Satu Mare și lucrăm des cu firme din nord-vestul țării. În funcție de proiect și de volum, colaborarea poate include consultanță, selecție de produse, personalizare și planificarea comenzilor recurente.",
+    a: "Da. You Protect livrează echipamente de protecție, haine de lucru și uniforme cu logo firmelor din toată România, de la Satu Mare și Baia Mare la Oradea, Cluj sau București. Avem baza în Vetiș, județul Satu Mare, și lucrăm des cu firme din nord-vestul țării. După proiect și volum, colaborarea poate include consultanță, alegerea produselor, personalizare și planificarea comenzilor recurente.",
   },
 ];
 
@@ -111,7 +115,7 @@ const faqSchema = {
 
 <BaseLayout
   title="Echipamente de protecție și haine de lucru"
-  description="Echipamente de protecție și haine de lucru pentru firme, personalizate cu logo. Showroom cu cabină de probă în Vetiș, Satu Mare, livrare în toată România."
+  description="Echipamente de protecție și haine de lucru pentru firme, cu logo, alese după costul real. You Protect: showroom în Vetiș, Satu Mare, livrare în toată România."
 >
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
 
@@ -167,8 +171,9 @@ const faqSchema = {
           Echipamente de protecție și haine de lucru alese după costul real, nu după preț
         </h1>
         <p class="mt-5 max-w-2xl text-base leading-relaxed text-yp-white/80 sm:text-lg">
-          Lucrăm cu MASCOT, Portwest, Sir Safety și alte mărci. Hainele le poți personaliza cu logo-ul firmei, livrăm în
-          toată România, iar în showroom-ul nostru din Vetiș, Satu Mare, vezi și probezi produsele înainte de comandă.
+          You Protect, din Satu Mare, echipează firme cu echipamente de protecția muncii și haine de lucru MASCOT, Portwest
+          și Sir Safety. Le alegem după ce face echipa ta, le personalizăm cu logo-ul firmei și le livrăm în toată România.
+          În showroom-ul din Vetiș le vezi și le probezi înainte de comandă.
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <a href="/programeaza-discutie/" class={btnPrimary}>Programează o discuție</a>
@@ -210,7 +215,7 @@ const faqSchema = {
     testimonials.length > 0 && (
       <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="recenzii">
         <div class:list={[pageContainer, "py-14 md:py-24"]}>
-          <h2 id="recenzii" class:list={[sectionHeading, "mb-12 text-center"]}>Ce spun clienții noștri</h2>
+          <h2 id="recenzii" class:list={[sectionHeading, "mb-12 text-center"]}>Ce spun firmele cu care lucrăm</h2>
           <Testimonials testimonials={testimonials} />
         </div>
       </section>
@@ -221,7 +226,7 @@ const faqSchema = {
     <div class:list={[pageContainer, "py-12 md:py-20"]}>
       <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <h2 id="categorii" class:list={[sectionHeading, "max-w-3xl"]}>
-          Echipamente de protecție și haine de lucru pentru echipe tehnice
+          De la bocanci de protecție la cască: tot ce poartă echipa ta
         </h2>
         <a href="/produse/" class:list={[textLink, "shrink-0"]}>Vezi tot catalogul</a>
       </div>
@@ -231,7 +236,7 @@ const faqSchema = {
 
   <section class="border-b border-white/5 bg-[#0a0a0a]" aria-labelledby="de-ce">
     <div class:list={[pageContainer, "py-14 md:py-24"]}>
-      <h2 id="de-ce" class:list={[sectionHeading, "max-w-3xl"]}>De ce să echipezi echipa cu You Protect</h2>
+      <h2 id="de-ce" class:list={[sectionHeading, "max-w-3xl"]}>Ce câștigi când lucrezi cu You Protect</h2>
       <ul class="mt-10 grid gap-4 md:grid-cols-2">
         {reasons.map((r) => (
           <li data-tilt="4" class="card-3d relative flex flex-col rounded-xl border border-white/[0.08] bg-yp-surface p-6 shadow-card hover:border-yp-yellow/30 hover:shadow-card-hover md:p-8">
