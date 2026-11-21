@@ -255,8 +255,9 @@ Format task:
   - **Pagina de Contact și linkul din meniu** — publicată pe 21.11.2026 (D-2026-11-21-01), cu Worker-ul
     `www-redirect` publicat din `workers/www-redirect/` (versiunea 1c3151be). Verificat: `/contact` și
     `www.youprotect.ro/contact` ajung pe pagină; adresele vechi cu www merg într-un singur salt.
-  - Rămas de investigat: pe desktop, în Chrome, 2–3 din 10 clicuri din meniu sar tranziția dintre pagini (măsurat pe
-    21.11.2026, la fel și pe versiunea de dinainte de pagina de Contact).
+  - Tranzițiile sărite la clicurile din meniu (2–3 din 10, apoi până la 11 din 25) nu sunt o problemă a site-ului:
+    apar doar în browserul de test al Playwright (`chrome-headless-shell`) și doar pe paginile servite de Cloudflare.
+    În Google Chrome 155, pe același preview, 0 din 30 (D-2026-11-21-02).
 
 ### PERF-001
 - Status: `DONE` (18.11.2026, PR #40 și PR-ul cu cardurile din catalog)

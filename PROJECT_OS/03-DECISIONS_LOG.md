@@ -643,8 +643,9 @@
 ## D-2026-11-21-01
 - Lista de ofertă (D-2026-11-20-14) e publicată pe 21.11.2026, după aprobarea owner-ului pe preview („Îmi place”).
   Verificat pe producție, pe telefon și desktop: adăugarea, numărul din antet, formularul cu cele două produse.
-  projects-f7 a făcut linkurile din răspunsul `produse` clicabile în CRM. Cererea de test cap-coadă nu se face:
-  sincronizarea CRM preia doar cererile de producție, așa că așteptăm prima cerere reală cu mai multe produse.
+  projects-f7 a făcut linkurile din răspunsul `produse` clicabile în CRM. Testul cap-coadă l-a făcut tot projects-f7,
+  cu acordul owner-ului: o cerere cu 3 produse de pe preview, importată printr-o rulare manuală a sincronizării cu
+  cererile de preview (cea obișnuită le ignoră). „produse” a ajuns primul, cu linkuri; cererea e marcată „Ignorată”.
 - Pagina de Contact (`/contact/`, a doua funcție din auditul din 20.11.2026) și „Contact” în meniu și în footer:
   - Conținut: telefonul, WhatsApp-ul și emailul (tot rândul e link), showroom-ul cu adresa, programul și indicații
     (Google Maps, Waze), drumul spre cele două formulare și datele firmei (denumire, CUI, Nr. Reg. Com., EUID).
@@ -657,3 +658,16 @@
     redirect nu ascunde o pagină și că Worker-ul spune același lucru ca `_redirects`.
   - Antetul: meniul întreg apare de la 1024 px. Pe tabletă (768 px) logo-ul, linkurile și butonul treceau pe două
     rânduri deja cu patru linkuri; tableta are acum meniul de pe telefon.
+
+## D-2026-11-21-02
+- Tranzițiile dintre pagini se testează în Google Chrome (Playwright `channel: 'chrome'`), nu în browserul implicit al
+  Playwright (`chrome-headless-shell`).
+  - Măsurat pe 21.11.2026, Catalog → „Despre noi” din meniu, pe preview-ul Cloudflare: `chrome-headless-shell` sare
+    tranziția în 7 din 14 și 11 din 25 de navigări; Google Chrome 155 în 0 din 15 fără fereastră și 0 din 15 cu
+    fereastră. Local (fără Cloudflare), `chrome-headless-shell` nu sare niciuna (0 din 15), nici cu antetele din
+    `_headers`, nici cu 150 ms întârziere la HTML.
+  - Tranziția se pierde în pagina nouă, înainte de `pagereveal` (pagina veche o pornește în `pageswap`). Beacon-ul
+    Cloudflare Web Analytics nu e cauza: blocat, 9 din 25 față de 11 din 25.
+  - Măsurătorile din D-2026-11-20-14 (scripturile din pagină) au fost făcute cu `chrome-headless-shell`. Regula
+    rămâne (nu costă nimic: scripturile comune nu mai așteaptă un fișier separat), dar o tranziție sărită în testele de acolo
+    nu înseamnă neapărat o problemă pentru vizitatori.
