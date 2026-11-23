@@ -683,3 +683,12 @@
   în listă”, limita de 15) și pagina internă `/preview/produse/`. `tests/site-promises.test.mjs` verifică ambele reguli.
 - Descrierea din Google a paginii „Despre noi”, din cuvintele paginii: „You Protect, din Satu Mare, alege consultativ
   echipamente de protecție și haine de lucru pentru firme. Felul în care îți echipezi oamenii arată cât îi respecți.”
+
+## D-2026-11-23-01
+- Textele site-ului le scrie agentul nostru; copywriterul extern intervine doar dacă rezultatul nu e bun (owner,
+  23.11.2026).
+- Criteriul de calitate: textul răspunde întrebărilor din capul cititorului (de ce să citesc, ce poți face pentru mine,
+  de ce să te cred, ce fac acum), nu gustului autorului.
+- Ghidul `08-GHID_CONTINUT.md` primește §0 (pentru cine scriem) și §7 (rețete pe tip de secțiune). Formula în trei
+  straturi rămâne doar pentru fișele de produs; Despre noi, beneficiile, procesul și CTA-ul au fiecare rețeta lor.
+- Impact: rescrierea pagină cu pagină nu mai așteaptă textele copywriterului.

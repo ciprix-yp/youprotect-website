@@ -4,12 +4,34 @@
 Fișele de produs au în plus un fișier-șablon (`catalog/texts/_template.json`) și o verificare automată
 (`scripts/catalog/lint_texts.py`), rulată la fiecare asamblare.
 
+## 0. Pentru cine scriem
+
+Textul nu trebuie să ne placă nouă. Trebuie să răspundă întrebărilor din capul cititorului, în ordinea în care și le
+pune:
+
+1. **„De ce să citesc?”** Titlul și prima frază a fiecărei secțiuni îi spun ce câștigă dacă citește mai departe.
+2. **„Ce poți face pentru mine?”** Rezultatul concret pentru firma și oamenii lui, nu descrierea noastră.
+3. **„De ce să te cred?”** Dovada: standardul, documentul, procesul, condiția scrisă, un client real.
+4. **„Ce fac acum și ce risc?”** Pasul următor și ce se întâmplă după clic.
+
+Reguli:
+
+- Fiecare secțiune răspunde în principal la o singură întrebare (tabelul din §7).
+- Întâi răspunsul, apoi explicația. Prima frază îl face pe cititor să o citească pe a doua.
+- Titlurile spun răspunsul sau rezultatul, nu eticheta secțiunii (nu „Serviciile noastre”, „Valorile noastre”).
+- Testul titlurilor: cine citește doar titlurile și primele fraze află ce poți face pentru el și de ce să te creadă.
+- O frază după care cititorul poate spune „și?” se taie sau primește faptul care îi lipsește.
+- Atenția se câștigă prin relevanță, nu prin lungime. Măsura e dacă cititorul trece la secțiunea următoare sau la
+  acțiune, nu cât timp stă pe pagină.
+- Întrebarea 3 e frâna întrebării 1: fără promisiuni, frică sau superlative ca să prinzi atenția (regulile de adevăr,
+  §3).
+
 ## 1. Vocea
 
 - **Tu**, diplomat, respectuos, apropiat. Niciodată „dumneavoastră”, „vă”, „cereți”, „aveți”.
 - Fraze scurte, la persoana a II-a: „Stai la cald.”, „Te miști liber.”, „Ceri ofertă de pe această pagină.”
 - Fără superlative goale: „cel mai bun”, „revoluționar”, „lider”, „nr. 1”.
-- Tipografie: ș/ț cu virgulă (nu ş/ţ), ghilimele „…”, spațiu nedespărțit între număr și unitate
+- Tipografie: ș/ț cu virgulă (nu cu sedilă), ghilimele „…”, spațiu nedespărțit între număr și unitate
   (`220 g/m²`, `40 °C`, `5 %`), majusculă doar la început de frază.
 
 | Corect | Greșit |
@@ -18,7 +40,9 @@ Fișele de produs au în plus un fișier-șablon (`catalog/texts/_template.json`
 | „Poți pune logoul pe piept” | „Logoul se poate aplica pe piept” (impersonal, rece) |
 | „Ceri ofertă” / „Cere ofertă” (buton) | „Solicitați o ofertă” |
 
-## 2. Formula: trei straturi
+## 2. Fișa de produs: formula în trei straturi
+
+Formula e pentru fișele de produs. Celelalte secțiuni ale site-ului au rețeta lor (§7).
 
 Fiecare produs oferă o experiență de purtare. Textul o spune în ordinea asta:
 
@@ -98,12 +122,38 @@ Setul de întrebări frecvente:
 - Entitatea locală: You Protect + Satu Mare, în întrebarea „De unde pot comanda…”.
 - `Product`, `FAQPage` și `BreadcrumbList` (JSON-LD) se generează automat din fișă.
 
-## 7. Celelalte pagini (industrie, homepage, servicii)
+## 7. Rețete pe tip de secțiune
 
-- Aceeași formulă, la nivel de echipă: experiența oamenilor tăi → imaginea firmei → ce câștigă firma.
+Nivelurile de ton: 0 factual (specificații, condiții), 1 practic (produse, categorii, alegere), 2 uman (homepage,
+beneficii, servicii), 3 personal (Despre noi, povești reale). Emoția nu justifică frica, rușinarea cumpărătorului sau
+promisiuni nesusținute.
+
+| Secțiunea | Întrebarea cititorului | Cum se construiește | SEO / GEO | Ton |
+|---|---|---|---|---|
+| Hero (H1, intro, butoane) | „Sunt unde trebuie? Ce poți face pentru mine?” | Cine, ce, pentru cine, unde, în 1–2 fraze; rezultatul pentru cititor, nu descrierea firmei; apoi butoanele | Maxim: expresia principală în H1 sau în prima frază; prima frază spune cine e You Protect, ce face și unde | 1–2 |
+| Situația cititorului | „Mă privește?” | O situație concretă de lucru pe care o recunoaște; fără frică exagerată, fără vină | Mic | 2 |
+| Beneficii („De ce You Protect”) | „Ce poți face pentru mine și de ce să te cred?” | Beneficiul → mecanismul care îl produce → condiția sau dovada; 3–4 blocuri, titlul fiecăruia spune rezultatul | Mediu: titluri descriptive, nu sloganuri | 2 |
+| Beneficii produs | „Îi va fi bine omului meu? Trece la control?” | Formula în trei straturi (§2) | Expresia în prima frază, fapte exacte | 1 |
+| Specificații | „Ce scrie exact?” | Doar date din fișa tehnică și declarația de conformitate, fără copywriting | GEO mare: cifre și standarde exacte | 0 |
+| Cum lucrăm / proces | „Ce se întâmplă dacă vă scriu și cât efort îmi cere?” | Pași numerotați: ce faci tu, ce facem noi, termenul (doar din `RESPONSE_TIME`) | Mic; o întrebare „Cum…?” în FAQ | 1 |
+| Despre noi | „Cine sunteți și de ce să am încredere?” | Un moment real → o decizie → ce faceți altfel azi → ce înseamnă pentru client; oameni, ani, locuri reale; fără valori abstracte; nu se scrie fără povestea factuală de la owner | Aproape zero în corp: fraza de identitate (cine, ce, unde, din ce an) și descrierea din Google | 3 |
+| Dovezi (testimoniale) | „Au mai făcut-o și pentru alții?” | Citatul rămâne exact; nu se rescrie, nu se inventează | Mic | — |
+| Ghid | „Cum aleg corect?” | Răspunsul în primul paragraf, apoi criterii, comparație, limite, sursa normei | Maxim, la ambele | 0–1 |
+| Întrebări frecvente | O întrebare precisă | Regulile din §6: concluzia întâi, răspunsul se înțelege singur | GEO maxim | 0–1 |
+| CTA și fraza de lângă buton | „Ce se întâmplă după clic și ce risc?” | Numele acțiunii din §9 + o frază care spune ce urmează (termenul doar din `RESPONSE_TIME`) | Zero | 1 |
+| Titlul și descrierea din Google | „Dau clic aici sau pe următorul?” | Expresia principală + ce te diferențiază + Satu Mare unde e cazul; limitele din §4 | Maxim SEO | 1 |
+
+Reguli comune:
+
 - H1 cu keyword și, unde are sens, locația („… pentru construcții, în Satu Mare”).
-- CTA: primar „Cere ofertă”, secundar „Programează o discuție” (același nume peste tot, ca pagina la care duce); blocul „Testezi fără riscuri” unde e relevant.
-- Întrebări frecvente cu aceleași reguli GEO.
+- CTA: primar „Cere ofertă”, secundar „Programează o discuție” (același nume peste tot, ca pagina la care duce); blocul
+  „Testezi fără riscuri” unde e relevant.
+- CTA-ul se alege după stadiul cititorului. Pe ghiduri, pasul următor e mic (categoria, calculatorul, ghidul conex).
+  Pe categorii și produse: „Cere ofertă” sau lista de ofertă. Pe Cum lucrăm și Despre noi, „Programează o discuție”
+  poate fi butonul principal.
+- Întrebările frecvente urmează regulile GEO din §6.
+- SEO stă în scheletul paginii (titlu, H1, primul paragraf, H2, descrierea din Google, întrebări frecvente), nu în
+  fiecare paragraf.
 
 ## 8. Înainte de aprobare
 
@@ -111,7 +161,8 @@ Automat, la `assemble_mascot.py` (sau separat: `python3 -I scripts/catalog/lint_
 voce, diacritice, ghilimele, cuvinte interzise, lungimi SEO, keyword în titlu/H1/rezumat/primul paragraf,
 3 paragrafe, 5–6 întrebări, întrebarea locală.
 
-Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură.
+Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecare secțiune răspunde la întrebarea ei (§0,
+§7), iar testul titlurilor trece.
 
 ## 9. Design (aceleași reguli pe toate paginile)
 

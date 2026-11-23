@@ -16,7 +16,7 @@ Acesta este centrul operațional al proiectului. Orice sesiune începe de aici.
 - Baza de date veche (Postgres pe Railway): ștearsă pe 17.11.2026, cu o copie criptată păstrată (D-2026-11-17-01). Documentația ei din `postgres-railway-projects` e doar istorică.
 - Cererile de pe site: Cloudflare D1 + Resend + Prospector CRM (OPS-006 în `02-BACKLOG.md`).
 - Deploy flow: `/Users/homefolder/youprotect-website/PROJECT_OS/06-DEPLOY_FLOW.md`
-- Ghid de conținut (voce, formula în 3 straturi, SEO, GEO, șablon fișă produs): `PROJECT_OS/08-GHID_CONTINUT.md`
+- Ghid de conținut (voce, întrebările cititorului, rețete pe tip de secțiune, formula în 3 straturi pentru fișele de produs, SEO, GEO, șablon fișă produs): `PROJECT_OS/08-GHID_CONTINUT.md`
 
 ## Reguli de operare
 
