@@ -3,13 +3,26 @@
 Usage (needs Pillow, which is not in the system Python; same convention as scripts/catalog/fetch_images_mascot.py):
   uv run --no-project --with pillow python -I scripts/images/fetch-poze-actiune.py
 
-Input : .catalog-work/images/actiune/manifest.json (22 entries) and preview/<ID>.jpg (the supplier previews).
-Output: .catalog-work/images/actiune/original/<ID>.<ext> (local only, gitignored) and, per manifest entry,
-        the fields sursa_folosita ("original" / "preview"), motiv, rezolutie_efectiva [w, h] (after EXIF
-        rotation), fisier_efectiv and dimensiune_bytes.
+Input : scripts/images/poze-actiune-surse.json (committed; per ID only public source data: supplier, source ID or
+        URL, declared original resolution, and `pixeli_din` = "original" | "preview") and src/data/poze-actiune.json
+        (the IDs and their order; `sursa` must agree with `pixeli_din`).
+Output: .catalog-work/images/actiune/original/<ID>.<ext> (local only, gitignored) and the local manifest
+        .catalog-work/images/actiune/efectiv.json (per ID: sursa_folosita, motiv, rezolutie_efectiva [w, h] after
+        EXIF rotation, fisier_efectiv, dimensiune_bytes), which build-poze-actiune.py reads.
 
-Idempotent: a valid original already on disk is kept and not downloaded again. When an original cannot be
-used, the preview stays the source and the reason is written to the manifest.
+Idempotent: a valid file already on disk is kept and not downloaded again (no request is made). A downloaded
+original must have the declared resolution. There is no silent fallback to a preview: an ID without a valid file
+is reported and no manifest is written.
+
+Previews are LOCAL sources. Two photos use the preview as the pixel source:
+  - S12 (Sir Safety): the preview is the public file itself (same URL, 1152x768 as declared), so it is fetched
+    into preview/S12.jpg when missing;
+  - P11 (Portwest): the Media Hub preview (2000x1338) differs from the declared original (2000x1333) and the
+    pixels MUST stay the preview. It is a MANUAL local file, preview/P11.jpg, taken by hand from Media Hub:
+    there is no automatic download, so a full regeneration from nothing is not possible without that file
+    (the script says so clearly when it is missing).
+The Portwest collection URL below is a Media Hub share-style link ("web/<hash>"); the research scripts opened it
+with no login, but whether it is account-bound or public could not be verified offline, and its lifetime is not ours.
 
 Security (the downloaded files are untrusted external data):
 - fixed allowlist of https hosts, checked before every request, including every redirect hop (no automatic
@@ -70,7 +83,6 @@ MASCOT = "https://mascot.picturepark.com"
 PORTWEST = "https://mediahub.portwest.com"
 PW_COLLECTION_PAGE = PORTWEST + "/web/c98f9ae4545b878/eu_row-mood-images/"
 PW_MOOD_COLLECTION_ID = "90EAF721-7B52-4DFD-848B1AAC0E5EB2E5"  # public collection id "EU_ROW mood images"
-PW_SKIP = {"P11": "originalul din Media Hub are doar 2000 px, la fel ca preview-ul"}
 
 MASCOT_ID_RE = re.compile(r"^[0-9a-f]{32}$")
 BYNDER_ID_RE = re.compile(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{16}$")
@@ -80,7 +92,8 @@ DATA = ROOT / "src" / "data" / "poze-actiune.json"
 BASE = ROOT / ".catalog-work" / "images" / "actiune"
 ORIG_DIR = BASE / "original"
 PREVIEW_DIR = BASE / "preview"
-MANIFEST = BASE / "manifest.json"
+SOURCES = Path(__file__).resolve().with_name("poze-actiune-surse.json")  # public source data, committed
+EFFECTIVE = BASE / "efectiv.json"  # generated here, read by build-poze-actiune.py (local only)
 
 
 class FetchError(ValueError):
@@ -163,12 +176,12 @@ class Client:
         return body
 
 
-def safe_target(image_id, ext):
+def safe_target(directory, image_id, ext):
     """Output path derived only from a validated ID and a Pillow-detected extension."""
     if not ID_RE.fullmatch(image_id) or ext not in FORMATS.values():
         raise FetchError("id sau extensie invalide")
-    target = (ORIG_DIR / f"{image_id}.{ext}").resolve()
-    if target.parent != ORIG_DIR.resolve():
+    target = (directory / f"{image_id}.{ext}").resolve()
+    if target.parent != directory.resolve():
         raise FetchError("cale în afara directorului de ieșire")
     return target
 
@@ -189,9 +202,10 @@ def inspect(path):
     return fmt, (width, height)
 
 
-def existing_original(image_id):
+def existing_file(directory, image_id):
+    """A valid image <ID>.<ext> already in `directory` (original/ or preview/): (path, size) or (None, None)."""
     for ext in FORMATS.values():
-        candidate = ORIG_DIR / f"{image_id}.{ext}"
+        candidate = directory / f"{image_id}.{ext}"
         if candidate.exists():
             try:
                 fmt, size = inspect(candidate)
@@ -202,15 +216,18 @@ def existing_original(image_id):
     return None, None
 
 
-def store(image_id, body):
-    """Validate the downloaded bytes and place them as original/<ID>.<ext>. Returns (path, size)."""
-    tmp = (ORIG_DIR / f".{image_id}.part").resolve()
-    if tmp.parent != ORIG_DIR.resolve():
+def store(directory, image_id, body):
+    """Validate the downloaded bytes and place them as <directory>/<ID>.<ext>. Returns (path, size)."""
+    directory.mkdir(parents=True, exist_ok=True)
+    if not ID_RE.fullmatch(image_id):
+        raise FetchError("id invalid")
+    tmp = (directory / f".{image_id}.part").resolve()
+    if tmp.parent != directory.resolve():
         raise FetchError("cale în afara directorului de ieșire")
     tmp.write_bytes(body)
     try:
         fmt, size = inspect(tmp)
-        target = safe_target(image_id, FORMATS[fmt])
+        target = safe_target(directory, image_id, FORMATS[fmt])
         tmp.replace(target)
         return target, size
     except Exception:
@@ -273,51 +290,8 @@ FETCHERS = {"M": mascot_bytes, "P": portwest_bytes, "S": sirsafety_bytes}
 
 # --- main --------------------------------------------------------------------------------------------------
 
-def declared_max_side(entry):
-    px = entry.get("rezolutie_originala_px")
-    if isinstance(px, list) and len(px) == 2:
-        return max(px)
-    match = re.fullmatch(r"([0-9]+)x([0-9]+)", str(entry.get("rezolutie_originala", "")))
-    return max(int(match.group(1)), int(match.group(2))) if match else None
-
-
-def set_result(entry, source, reason, path, size):
-    entry["sursa_folosita"] = source
-    entry["motiv"] = reason
-    entry["rezolutie_efectiva"] = list(size)
-    entry["fisier_efectiv"] = str(path.relative_to(BASE))
-    entry["dimensiune_bytes"] = path.stat().st_size
-
-
-def process(client, entry):
-    image_id = entry["id"]
-    preview = (PREVIEW_DIR / f"{image_id}.jpg")
-    _, preview_size = inspect(preview)
-    preview_side = max(preview_size)
-
-    def use_preview(reason):
-        set_result(entry, "preview", reason, preview, preview_size)
-
-    if image_id in PW_SKIP:
-        return use_preview(PW_SKIP[image_id])
-    declared = declared_max_side(entry)
-    if declared is not None and declared <= preview_side:
-        return use_preview(f"originalul declarat ({declared} px) nu depășește preview-ul ({preview_side} px)")
-
-    path, size = existing_original(image_id)
-    reused = path is not None
-    if not reused:
-        try:
-            body = FETCHERS[image_id[0]](client, entry)
-            time.sleep(PAUSE)
-            path, size = store(image_id, body)
-        except Exception as err:  # reason only: fixed text or class name, never the exception text (it can hold the URL)
-            return use_preview(f"originalul nu a putut fi luat ({reason_of(err)})")
-    if max(size) <= preview_side:
-        path.unlink()  # our own downloaded file, no gain over the preview
-        return use_preview(f"originalul ({max(size)} px) nu aduce rezoluție peste preview ({preview_side} px)")
-    reason = "original existent, revalidat cu Pillow" if reused else "original descărcat și validat cu Pillow"
-    set_result(entry, "original", reason, path, size)
+PROVIDER_NAMES = {"M": "mascot", "P": "portwest", "S": "sirsafety"}
+SOURCE_KEY = {"M": "id_sursa", "P": "bynder_asset_id", "S": "url_sursa"}
 
 
 def load_ids():
@@ -328,20 +302,95 @@ def load_ids():
     return ids
 
 
-def main():
-    ids_expected = load_ids()
-    entries = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    if [e.get("id") for e in entries] != ids_expected:
-        sys.exit("manifest.json nu conține exact id-urile (și ordinea) din src/data/poze-actiune.json")
-    ORIG_DIR.mkdir(parents=True, exist_ok=True)
-    client = Client()
+def load_sources():
+    """poze-actiune-surse.json, checked against src/data/poze-actiune.json (same IDs, same order, same pixel source)."""
+    ids = load_ids()
+    modes = {e["id"]: e["sursa"] for e in json.loads(DATA.read_text(encoding="utf-8"))}
+    entries = json.loads(SOURCES.read_text(encoding="utf-8"))
+    if [e.get("id") for e in entries] != ids:
+        sys.exit("poze-actiune-surse.json nu conține exact id-urile (și ordinea) din src/data/poze-actiune.json")
     for entry in entries:
-        process(entry=entry, client=client)
-        print(f"{entry['id']}: {entry['sursa_folosita']} {entry['rezolutie_efectiva'][0]}x{entry['rezolutie_efectiva'][1]}"
-              f" {entry['dimensiune_bytes']} B | {entry['motiv']}")
-    tmp = MANIFEST.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(MANIFEST)
+        image_id = entry["id"]
+        px = entry.get("rezolutie_originala")
+        if entry.get("furnizor") != PROVIDER_NAMES[image_id[0]]:
+            sys.exit(f"{image_id}: furnizor în neconcordanță cu prefixul id-ului")
+        if entry.get("pixeli_din") != modes[image_id] or entry["pixeli_din"] not in ("original", "preview"):
+            sys.exit(f"{image_id}: pixeli_din diferă de „sursa” din src/data/poze-actiune.json")
+        if not isinstance(entry.get(SOURCE_KEY[image_id[0]]), str):
+            sys.exit(f"{image_id}: lipsește {SOURCE_KEY[image_id[0]]}")
+        if not (isinstance(px, list) and len(px) == 2 and all(isinstance(n, int) and n > 0 for n in px)):
+            sys.exit(f"{image_id}: rezolutie_originala trebuie să fie [lățime, înălțime]")
+    return entries
+
+
+def preview_file(client, entry):
+    """The local preview file (preview/<ID>.<ext>). Sir Safety previews have a public URL and are fetched when
+    missing; every other preview (P11) is a manual local source from Media Hub and is never downloaded."""
+    image_id = entry["id"]
+    path, size = existing_file(PREVIEW_DIR, image_id)
+    if path is not None:
+        return path, size, "preview local, revalidat cu Pillow"
+    if image_id[0] != "S":
+        raise FetchError(
+            f"lipsește preview-ul local preview/{image_id}.jpg: e o sursă manuală (previzualizarea din Media Hub), "
+            "fără descărcare automată; pune fișierul acolo"
+        )
+    path, size = store(PREVIEW_DIR, image_id, FETCHERS["S"](client, entry))
+    time.sleep(PAUSE)
+    return path, size, "preview descărcat de la URL-ul public al sursei și validat cu Pillow"
+
+
+def original_file(client, entry):
+    image_id = entry["id"]
+    path, size = existing_file(ORIG_DIR, image_id)
+    reason = "original existent, revalidat cu Pillow"
+    if path is None:
+        body = FETCHERS[image_id[0]](client, entry)
+        time.sleep(PAUSE)
+        path, size = store(ORIG_DIR, image_id, body)
+        reason = "original descărcat și validat cu Pillow"
+    if sorted(size) != sorted(entry["rezolutie_originala"]):
+        raise FetchError("rezoluția fișierului diferă de cea declarată în poze-actiune-surse.json")
+    return path, size, reason
+
+
+def process(client, entry):
+    """Returns the local-manifest record of one photo. Raises FetchError (or another error; see reason_of)."""
+    image_id = entry["id"]
+    ORIG_DIR.mkdir(parents=True, exist_ok=True)
+    if entry["pixeli_din"] == "preview":
+        path, size, reason = preview_file(client, entry)
+    else:
+        path, size, reason = original_file(client, entry)
+    return {
+        "id": image_id,
+        "sursa_folosita": entry["pixeli_din"],
+        "motiv": reason,
+        "rezolutie_efectiva": list(size),
+        "fisier_efectiv": str(path.relative_to(BASE)),
+        "dimensiune_bytes": path.stat().st_size,
+    }
+
+
+def main():
+    entries = load_sources()
+    client = Client()
+    results, failed = [], []
+    for entry in entries:
+        try:
+            record = process(client, entry)
+        except Exception as err:  # fixed text or class name only: the exception text can hold a signed URL
+            failed.append(entry["id"])
+            print(f"{entry['id']}: EȘEC | {reason_of(err)}")
+            continue
+        results.append(record)
+        print(f"{record['id']}: {record['sursa_folosita']} {record['rezolutie_efectiva'][0]}x{record['rezolutie_efectiva'][1]}"
+              f" {record['dimensiune_bytes']} B | {record['motiv']}")
+    if failed:
+        sys.exit(f"EROARE: {' '.join(failed)} fără fișier valid; {EFFECTIVE.name} nu a fost scris")
+    tmp = EFFECTIVE.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(EFFECTIVE)
 
 
 if __name__ == "__main__":

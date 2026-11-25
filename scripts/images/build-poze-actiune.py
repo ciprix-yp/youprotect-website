@@ -4,7 +4,11 @@ Usage (needs Pillow, which is not in the system Python):
   mise exec uv@0.13.6 -- uv run --no-project --with pillow python -I scripts/images/build-poze-actiune.py
 
 Input : src/data/poze-actiune.json (single source of truth: id, slug, source, planned widths)
-        .catalog-work/images/actiune/manifest.json (field fisier_efectiv) + original/ or preview/ files.
+        .catalog-work/images/actiune/efectiv.json (field fisier_efectiv) + original/ or preview/ files.
+        Both are local (gitignored): run scripts/images/fetch-poze-actiune.py first; it reads the committed
+        scripts/images/poze-actiune-surse.json and writes efectiv.json. Previews are local sources: P11 (and any
+        preview) is taken by hand from Media Hub into preview/<ID>.jpg and is never downloaded automatically, so
+        a full regeneration needs that file (a missing file stops with a clear message).
 Output: public/images/actiune/<slug>-<width>.webp and src/data/poze-actiune-variante.json (real sizes).
 
 Per photo: EXIF rotation, sRGB, LANCZOS resize (never upscaled), WebP with adaptive quality (starts at
@@ -37,7 +41,7 @@ warnings.simplefilter("error", Image.DecompressionBombWarning)  # default pixel 
 ID_RE = re.compile(r"^[MPS][0-9]{2}$")
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / ".catalog-work" / "images" / "actiune"
-MANIFEST = BASE / "manifest.json"
+MANIFEST = BASE / "efectiv.json"
 DATA = ROOT / "src" / "data" / "poze-actiune.json"
 VARIANTS = ROOT / "src" / "data" / "poze-actiune-variante.json"
 OUT = ROOT / "public" / "images" / "actiune"
@@ -124,13 +128,15 @@ def chunk_names(data):
 
 def main():
     entries = json.loads(DATA.read_text(encoding="utf-8"))
+    if not MANIFEST.exists():
+        fail(f"lipsește {MANIFEST.relative_to(ROOT)}; rulează întâi scripts/images/fetch-poze-actiune.py")
     manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
     ids = [e["id"] for e in entries]
     if not ids or len(set(ids)) != len(ids) or not all(ID_RE.fullmatch(i) for i in ids):
         fail("poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
     missing = [i for i in ids if i not in manifest]
     if missing:
-        fail(f"manifest.json nu are intrări pentru: {' '.join(missing)}")
+        fail(f"efectiv.json nu are intrări pentru: {' '.join(missing)}")
     OUT.mkdir(parents=True, exist_ok=True)
     out_root = OUT.resolve()
     variants = {}
