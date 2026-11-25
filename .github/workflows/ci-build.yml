@@ -39,7 +39,7 @@ jobs:
 
       # Pozele în acțiune: regulile (Portwest, max. 2 pagini, erou) pe paginile generate; fără dist/ testul pică.
       - name: Poze în acțiune în dist (reguli pe paginile generate)
-        run: node --test tests/poze-actiune.test.mjs
+        run: node --test tests/poze-actiune.test.mjs tests/scroll-timeline-overflow.test.mjs
         env:
           POZE_REQUIRE_DIST: '1'
 
