@@ -11,7 +11,8 @@
 //   - erou: `heroPhoto="M02"` / `heroPhoto: 'M02'` sau <ActionPhoto id="M02" priority />; doar pozele cu `erou: true` în date
 //   - src/lib/catalog-brands.ts și catalog-categories.ts: `photo: 'S01'` / `heroPhoto: 'M02'` în intrarea cu `slug: '…'`
 //     (pagina = /produse/<slug>/); atributul `photo="…"` merge în aceleași fișiere de pagini
-//   - id dinamic (<ActionPhoto id={page.photo} />) doar în BrandLanding.astro și CategoryLanding.astro
+//   - id dinamic (<ActionPhoto id={page.photo} />) doar în BrandLanding.astro, CategoryLanding.astro și PageHeader.astro
+//     (PageHeader primește id-ul prin `heroPhoto`, scris literal în pagină)
 //   - id literal în orice alt fișier (componente, layout-uri) e eroare: pagina nu se poate deduce
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -125,7 +126,12 @@ test('poze: helperii (srcset, src, id necunoscut)', () => {
 // 2. Reguli de utilizare: analiza surselor
 
 /** Fișierele unde `<ActionPhoto id={…}>` poate avea id dinamic (primesc pagina din catalog-brands/-categories). */
-const DYNAMIC_OK = new Set(['src/components/products/BrandLanding.astro', 'src/components/products/CategoryLanding.astro']);
+const DYNAMIC_OK = new Set([
+  'src/components/products/BrandLanding.astro',
+  'src/components/products/CategoryLanding.astro',
+  // Eroul paginilor interioare: id-ul vine din `heroPhoto="…"` pus pe pagină (detectat ca erou).
+  'src/components/global/PageHeader.astro',
+]);
 /** Fișierele care definesc sau documentează pozele: nu sunt „utilizări”. */
 const NOT_USAGE = new Set(['src/components/media/ActionPhoto.astro', 'src/lib/poze-actiune.ts']);
 const CATALOG_FILES = new Set(['src/lib/catalog-brands.ts', 'src/lib/catalog-categories.ts']);

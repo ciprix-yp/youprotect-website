@@ -1,6 +1,8 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
 import { CTA_DISCUSS } from '../../lib/site';
+import ActionPhoto from '../../components/media/ActionPhoto.astro';
+import { imageGraph } from '../../lib/poze-actiune';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 import EquipmentList from '../../components/industries/EquipmentList.astro';
 
@@ -22,7 +24,7 @@ const breadcrumbSchema = {
   heroTitle="Echipamente de protecție pentru depozite și logistică"
   heroSubtitle="În depozite și logistică, oamenii sunt pe picioare ore întregi, în trafic intern de stivuitoare și manipulare continuă. Echipamentul potrivit înseamnă confort, vizibilitate și siguranță pe tot parcursul turei."
   breadcrumb="Logistică"
-  heroImage="/images/scena-logistica.webp"
+  heroPhoto="M09"
   ctaHeading="Echipezi o echipă de depozit?"
   ctaSubheading="Recomandăm seturi gândite pentru ture lungi și trafic intern."
   ctaButtonText={CTA_DISCUSS}
@@ -31,6 +33,7 @@ const breadcrumbSchema = {
   ctaMicrocopy="Consultanță gratuită, fără obligații."
 >
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(['M09', 'P11']))} />
 
   <section class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
     <div class="max-w-7xl mx-auto px-4">
@@ -87,6 +90,15 @@ const breadcrumbSchema = {
             Pe fiecare fișă găsești declarația de conformitate și fișa tehnică în română, cu ce înseamnă marcajul de pe
             etichetă.
           </p>
+          <div class="relative aspect-[3/2] overflow-hidden rounded-xl border border-white/10 bg-yp-gray">
+            <ActionPhoto
+              id="P11"
+              sizes="(min-width: 1280px) 768px, (min-width: 768px) 60vw, calc(100vw - 2rem)"
+              loading="lazy"
+              motion
+              class="absolute inset-0"
+            />
+          </div>
         </div>
       </div>
       <div class="mt-12">

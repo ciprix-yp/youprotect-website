@@ -9,6 +9,8 @@ export interface Props {
   subtitle?: string;
   breadcrumb?: string;
   imagePath?: string;
+  /** Id de poză de acțiune pentru erou; înlocuiește `imagePath`. */
+  heroPhoto?: string;
   ctaButtonText?: string;
   ctaSecondaryButtonText?: string;
   ctaSecondaryButtonLink?: string;
@@ -20,6 +22,7 @@ const {
   subtitle,
   breadcrumb = title,
   imagePath = '/hero-youprotect-highvis.webp',
+  heroPhoto,
   ctaButtonText,
   ctaSecondaryButtonText,
   ctaSecondaryButtonLink,
@@ -37,7 +40,8 @@ const crumbs: Crumb[] = [...(parent ? [parent] : []), { label: breadcrumb }];
   title={title}
   intro={subtitle}
   crumbs={crumbs}
-  image={imagePath}
+  image={heroPhoto ? undefined : imagePath}
+  heroPhoto={heroPhoto}
   primary={ctaButtonText ? { label: ctaButtonText, href: '/programeaza-discutie/' } : undefined}
   secondary={ctaSecondaryButtonText ? { label: ctaSecondaryButtonText, href: ctaSecondaryButtonLink || '/produse/' } : undefined}
   microcopy={ctaMicrocopy}
