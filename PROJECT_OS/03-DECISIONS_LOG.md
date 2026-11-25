@@ -704,3 +704,20 @@
 - Ghidul `08-GHID_CONTINUT.md` primește §0 (pentru cine scriem) și §7 (rețete pe tip de secțiune). Formula în trei
   straturi rămâne doar pentru fișele de produs; Despre noi, beneficiile, procesul și CTA-ul au fiecare rețeta lor.
 - Impact: rescrierea pagină cu pagină nu mai așteaptă textele copywriterului.
+
+## D-2026-11-25-01
+- Obiecțiile reale din vânzare (nouă, spuse de owner) sunt în `09-HARTA-CUVINTE-CHEIE.md` §5, fiecare cu răspunsul
+  adevărat (verificat în cod) și pagina care îl dă. Fiecare pagină principală răspunde la obiecțiile din dreptul ei.
+- Regula „cititorul e eroul, You Protect e ghidul” (owner, 25.11.2026: „vreau să punem leadul în rolul de erou, să
+  scriem pe limbajul său, să-i vorbim lui”) e în `08-GHID_CONTINUT.md` §0.
+- Catalogul interactiv de trimis după apel (gen Flipsnack, fără prețuri) intră în backlog ca CAT-004, după texte.
+- Impact: textele se scriu cu obiecțiile din §5 în față; varianta de catalog o alege owner-ul la start.
+
+## D-2026-11-25-02
+- Butonul de discuție se numește „Hai să discutăm” pe tot site-ul, în locul lui „Programează o discuție” (owner,
+  25.11.2026). Adresa `/programeaza-discutie/` rămâne.
+- „Hai să discutăm” e butonul principal pe Cum lucrăm și Despre noi; pe paginile comerciale rămâne „Cere ofertă”
+  (`08-GHID_CONTINUT.md` §7).
+- Textul vine din constanta `CTA_DISCUSS` (`src/lib/site.ts`), iar un test oprește revenirea numelui vechi (branch-ul
+  `cta-hai-sa-discutam`).
+- Impact: intrările vechi din acest jurnal păstrează numele de atunci.

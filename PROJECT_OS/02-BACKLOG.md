@@ -345,7 +345,7 @@ Format task:
 - Status: `TODO` (după textele din SEO-003)
 - Owner: `User` (alege varianta), `Claude` (execuție)
 - Scope: cererea owner-ului din 25.11.2026: un catalog profesionist, interactiv, „gen Flipsnack”, cu butoane spre
-  „Programează o discuție” și WhatsApp. Se trimite pe email după apel și răspunde la obiecția 9 din
+  „Hai să discutăm” și WhatsApp. Se trimite pe email după apel și răspunde la obiecția 9 din
   `09-HARTA-CUVINTE-CHEIE.md` §5 („Trimiteți-mi un catalog”). Fără prețuri.
 - Variante de evaluat la start:
   - (a) generat din datele catalogului (`src/content/products`), ca pagină web tip flipbook plus PDF cu linkuri, al

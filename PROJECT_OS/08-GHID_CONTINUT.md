@@ -161,11 +161,14 @@ promisiuni nesusținute.
 Reguli comune:
 
 - H1 cu keyword și, unde are sens, locația („… pentru construcții, în Satu Mare”).
-- CTA: primar „Cere ofertă”, secundar „Programează o discuție” (același nume peste tot, ca pagina la care duce); blocul
-  „Testezi fără riscuri” unde e relevant.
-- CTA-ul se alege după stadiul cititorului. Pe ghiduri, pasul următor e mic (categoria, calculatorul, ghidul conex).
-  Pe categorii și produse: „Cere ofertă” sau lista de ofertă. Pe Cum lucrăm și Despre noi, „Programează o discuție”
-  poate fi butonul principal.
+- CTA: numele sunt „Cere ofertă”, „Hai să discutăm” și „Vezi catalogul”, același nume peste tot, ca pagina la care
+  duce butonul. „Hai să discutăm” duce la `/programeaza-discutie/` (adresa nu se schimbă); textul vine din `CTA_DISCUSS`
+  (`src/lib/site.ts`).
+- Butonul principal e „Cere ofertă” pe paginile comerciale (categorii, produse, industrii, homepage) și „Hai să
+  discutăm” pe Cum lucrăm și Despre noi (owner, 25.11.2026). Pe categorii și produse, pasul poate fi și lista de
+  ofertă.
+- Pe ghiduri, pasul următor e mic (categoria, calculatorul, ghidul conex).
+- Blocul „Testezi fără riscuri” apare unde e relevant.
 - Întrebările frecvente urmează regulile GEO din §6.
 - SEO stă în scheletul paginii (titlu, H1, primul paragraf, H2, descrierea din Google, întrebări frecvente), nu în
   fiecare paragraf.
@@ -186,8 +189,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
 - Clasele comune sunt în `src/lib/ui.ts`: `pageContainer` (`max-w-7xl` + `px-4`, ca antetul și footer-ul),
   `pageTitle`, `pageIntro`, `sectionTitle`, `btnPrimary`, `btnSecondary`, `readingColumn` (text lung: max. ~70 de
   caractere pe rând).
-- Butoane: înălțime 48 px (`h-12`), fără săgeți. Același nume pentru aceeași acțiune: „Cere ofertă”, „Programează o
-  discuție”, „Vezi catalogul”.
+- Butoane: înălțime 48 px (`h-12`), fără săgeți. Același nume pentru aceeași acțiune: „Cere ofertă”, „Hai să
+  discutăm”, „Vezi catalogul”.
 - Fără etichete mici în majuscule deasupra titlurilor, fără cuvinte colorate în titluri, fără animații declanșate la
   derulare cu cronometru (tip AOS). Mișcarea la derulare e permisă doar legată de poziția paginii (clasele `sd-*`, vezi
   „Mișcare” mai jos).
