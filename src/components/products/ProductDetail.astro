@@ -9,6 +9,7 @@ import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { activeBrandPages } from '../../lib/catalog-brands';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
 import QuoteListButton from './QuoteListButton.astro';
+import { CTA_DISCUSS } from '../../lib/site';
 import { btnPrimary, breadcrumbNav, labelTitle, sectionTitle } from '../../lib/ui';
 
 interface Props {
@@ -222,7 +223,7 @@ const singleImage = primary.images.length <= 1;
         </p>
         <p class="text-sm text-yp-white/60">
           Vrei să vorbim întâi?
-          <a href="/programeaza-discutie/" class="ml-1 inline-flex min-h-11 items-center text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow md:min-h-0">Programează o discuție</a>
+          <a href="/programeaza-discutie/" class="ml-1 inline-flex min-h-11 items-center text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow md:min-h-0">{CTA_DISCUSS}</a>
         </p>
       </div>
 

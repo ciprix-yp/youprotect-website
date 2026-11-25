@@ -3,6 +3,7 @@
 // „Cum lucrăm” nu apăreau niciodată active. aria-current spune și cititoarelor de ecran unde ești.
 // Meniul întreg apare de la 1024 px (lg). Pe tabletă (768 px), logo-ul, linkurile și butonul nu încăpeau pe un rând și
 // treceau pe două (21.11.2026, odată cu „Contact”), așa că tableta are meniul de pe telefon.
+import { CTA_DISCUSS } from '../../lib/site';
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const NAV = [
   { href: '/', label: 'Acasă', page: path === '/', section: false },
@@ -66,7 +67,7 @@ const tone = (item: (typeof NAV)[number]) => (item.page || item.section ? 'text-
           href="/programeaza-discutie/"
           class="hidden lg:block bg-yp-yellow text-yp-black text-center font-heading font-semibold px-6 py-2.5 rounded-lg hover:bg-white transition active:scale-[0.98]"
         >
-          Programează o discuție
+          {CTA_DISCUSS}
         </a>
 
         <!-- Mobile Menu Button -->
@@ -101,7 +102,7 @@ const tone = (item: (typeof NAV)[number]) => (item.page || item.section ? 'text-
         href="/programeaza-discutie/"
         class="block w-full text-center bg-yp-yellow text-yp-black font-heading font-semibold px-6 py-3 rounded-lg hover:bg-white transition active:scale-[0.98] mt-4"
       >
-        Programează o discuție
+        {CTA_DISCUSS}
       </a>
     </nav>
   </div>

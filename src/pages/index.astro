@@ -8,7 +8,7 @@ import Testimonials from "../components/home/Testimonials.astro";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import CategoryTiles from "../components/products/CategoryTiles.astro";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
-import { RESPONSE_TIME, RISK_FREE_TESTING, SITE } from "../lib/site";
+import { CTA_DISCUSS, RESPONSE_TIME, RISK_FREE_TESTING, SITE } from "../lib/site";
 import { btnPrimary, btnSecondary, pageContainer } from "../lib/ui";
 import { jsonLd } from "../lib/json-ld";
 
@@ -129,7 +129,7 @@ const faqSchema = {
       href="/programeaza-discutie/"
       class="flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full border border-yp-black/10 bg-yp-yellow px-5 py-2.5 text-sm font-medium text-yp-black shadow-lg"
     >
-      Programează o discuție
+      {CTA_DISCUSS}
     </a>
   </div>
 
@@ -176,7 +176,7 @@ const faqSchema = {
           În showroom-ul din Vetiș le vezi și le probezi înainte de comandă.
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href="/programeaza-discutie/" class={btnPrimary}>Programează o discuție</a>
+          <a href="/programeaza-discutie/" class={btnPrimary}>{CTA_DISCUSS}</a>
           <a href="/cere-oferta/" class={btnSecondary}>Cere ofertă</a>
         </div>
         <div class="mt-3 flex flex-wrap gap-x-6">
@@ -291,7 +291,7 @@ const faqSchema = {
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-lg bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray">
-            Programează o discuție
+            {CTA_DISCUSS}
           </a>
           <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-lg border border-yp-black/40 px-6 text-sm font-medium text-yp-black transition-colors hover:border-yp-black">
             Cere ofertă

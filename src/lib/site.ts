@@ -45,6 +45,10 @@ export const SITE = {
 // calculator, pe /confirmare/ și în descrierea din Google a paginii /cere-oferta/.
 export const RESPONSE_TIME = "în cel mult 24 de ore";
 
+// Numele butonului care duce la /programeaza-discutie/. Decizia owner-ului din 25.11.2026, D-2026-11-25-02: același
+// nume peste tot. Adresa paginii rămâne /programeaza-discutie/.
+export const CTA_DISCUSS = "Hai să discutăm";
+
 // EUID = prefixul ONRC + numărul de înregistrare.
 export const LEGAL_EUID = `ROONRC.${SITE.legal.regCom}`;
 

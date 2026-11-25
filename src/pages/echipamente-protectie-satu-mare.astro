@@ -1,5 +1,6 @@
 ---
 import { jsonLd } from '../lib/json-ld';
+import { CTA_DISCUSS } from '../lib/site';
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
@@ -22,7 +23,7 @@ const breadcrumbSchema = {
   heroImage="/hero-youprotect-highvis.webp"
   ctaHeading="Discutăm despre echipa ta din Satu Mare?"
   ctaSubheading="Consultanță gratuită, ofertă personalizată și produse potrivite activității tale."
-  ctaButtonText="Programează o discuție"
+  ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
   ctaMicrocopy="Fără obligații. Discutăm despre activitatea, riscurile și nevoile reale ale echipei tale."

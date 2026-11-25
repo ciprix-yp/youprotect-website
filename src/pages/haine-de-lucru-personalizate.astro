@@ -9,7 +9,7 @@ import { CATEGORIES, type CategoryKey } from "../lib/catalog-taxonomy";
 import { joinRo } from "../lib/catalog-categories";
 import { LOGO_TECHNIQUES, PERSONALIZATION_PAGE, productsWithHiVisLimit, productsWithLogoZones, zonesLabel } from "../lib/personalization";
 import { jsonLd } from "../lib/json-ld";
-import { SITE } from "../lib/site";
+import { SITE, CTA_DISCUSS } from "../lib/site";
 
 const published = await getCollection("products", ({ data }) => data.status === "published");
 const withZones = productsWithLogoZones(published);
@@ -113,7 +113,7 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
   heroImage="/images/scena-personalizare.webp"
   ctaHeading="Vrei hainele echipei cu logo-ul firmei?"
   ctaSubheading="Spune-ne ce produse ai în vedere și câți oameni ai. Primești oferta cu personalizarea inclusă."
-  ctaButtonText="Programează o discuție"
+  ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Cere ofertă"
   ctaSecondaryButtonLink="/cere-oferta/"
   ctaMicrocopy="Fără obligații. În formularul de ofertă ne spui și dacă vrei produsele cu logo."
