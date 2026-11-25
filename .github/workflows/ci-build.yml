@@ -37,6 +37,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Pozele în acțiune: regulile (Portwest, max. 2 pagini, erou) pe paginile generate; fără dist/ testul pică.
+      - name: Poze în acțiune în dist (reguli pe paginile generate)
+        run: node --test tests/poze-actiune.test.mjs
+        env:
+          POZE_REQUIRE_DIST: '1'
+
       - name: Titluri și descrieri (lungime, duplicate)
         run: node scripts/seo/check-meta.mjs dist
 
