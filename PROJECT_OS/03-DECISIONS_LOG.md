@@ -684,6 +684,18 @@
 - Descrierea din Google a paginii „Despre noi”, din cuvintele paginii: „You Protect, din Satu Mare, alege consultativ
   echipamente de protecție și haine de lucru pentru firme. Felul în care îți echipezi oamenii arată cât îi respecți.”
 
+## D-2026-11-21-04
+- Harta cuvintelor-cheie (`09-HARTA-CUVINTE-CHEIE.md`, PR #86) e referința pentru toate textele: o expresie principală
+  pe pagină, celelalte expresii cel mult o dată, primul paragraf spune cine, ce și unde. Sursele: căutările din Search
+  Console, sugestiile Google la tastare și limbajul clienților (cifrele din Search Console nu intră în repo).
+- Vocabularul (owner, 21.11.2026): „showroom în Vetiș”, nu „magazin”; „firme”, nu „companii”; clienții spun
+  „echipamente de protecție” și „bocanci”. Nu apar „unitate protejată” (You Protect nu este și nu lucrează în acest
+  context) și „distribuitor autorizat” (`08-GHID_CONTINUT.md` §3).
+- Homepage-ul rescris după hartă e live (PR #87): expresia principală în titlu și în descrierea din Google, „protecția
+  muncii” și „uniforme de lucru” câte o dată, întrebările frecvente cu concluzia întâi. H1 a rămas același.
+- Textele tuturor paginilor au fost exportate în Markdown, câte un fișier pe pagină cu cuvintele-cheie, pentru un
+  copywriter extern. D-2026-11-23-01 i-a schimbat apoi rolul: intervine doar dacă textele agentului nu sunt bune.
+
 ## D-2026-11-23-01
 - Textele site-ului le scrie agentul nostru; copywriterul extern intervine doar dacă rezultatul nu e bun (owner,
   23.11.2026).

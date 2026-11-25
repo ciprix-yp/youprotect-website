@@ -20,7 +20,7 @@ Obiectiv: la fiecare iteratie avem build live online pentru verificare desktop +
 - Production domain: `https://youprotect-website.pages.dev`.
 
 2. CI checks in GitHub Actions (fara deploy)
-- Fisier: `/Users/homefolder/youprotect-website/.github/workflows/ci-build.yml`
+- Fisier: `.github/workflows/ci-build.yml`
 - Ruleaza build la push/PR pentru validare tehnica.
 
 3. Local auth (doar pentru deploy manual direct, optional)
