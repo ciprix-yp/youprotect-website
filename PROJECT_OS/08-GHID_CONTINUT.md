@@ -25,6 +25,8 @@ Reguli:
   acțiune, nu cât timp stă pe pagină.
 - Întrebarea 3 e frâna întrebării 1: fără promisiuni, frică sau superlative ca să prinzi atenția (regulile de adevăr,
   §3).
+- Obiecțiile reale ale clienților și pagina care răspunde la fiecare sunt în `09-HARTA-CUVINTE-CHEIE.md` §5. Fiecare
+  pagină principală răspunde la obiecțiile din dreptul ei.
 
 ## 1. Vocea
 
