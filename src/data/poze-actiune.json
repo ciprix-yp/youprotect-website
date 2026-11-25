@@ -49,7 +49,7 @@
     "sursa": "original",
     "latimi": [640, 960, 1440],
     "erou": false,
-    "obiectPoz": { "desktop": "50% 30%", "telefon": "45% 40%" }
+    "obiectPoz": { "desktop": "50% 30%", "telefon": "45% 20%" }
   },
   {
     "id": "M09",
