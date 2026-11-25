@@ -8,15 +8,15 @@ export const PERSONALIZATION_PAGE = {
   /** Titlul din Google; layout-ul adaugă „ | You Protect”. */
   title: 'Haine de lucru personalizate cu logo pentru firme',
   description:
-    'Tricouri, polo, hanorace, geci, veste și pantaloni de lucru cu logo-ul firmei: broderie, serigrafie sau transfer termic. Ofertă de la You Protect, Satu Mare.',
+    'Haine de lucru personalizate cu logo pentru firme: tricouri polo, hanorace, geci, veste și pantaloni, brodate sau imprimate. You Protect, Satu Mare.',
   linkLabel: 'Cum funcționează personalizarea',
 } as const;
 
 /** Tehnicile, descrise prin ce sunt, fără promisiuni de durabilitate. Pe care o folosim decidem la ofertă. */
 export const LOGO_TECHNIQUES = [
-  { name: 'Broderie', text: 'Logo-ul e cusut cu fir colorat direct în material și are relief.' },
-  { name: 'Serigrafie', text: 'Logo-ul e imprimat cu cerneală printr-o sită fină, câte o culoare pe rând.' },
-  { name: 'Transfer termic', text: 'Logo-ul e tipărit pe o folie, care se lipește pe haină prin presare la cald.' },
+  { name: 'Broderie', text: 'Logoul e cusut cu fir colorat direct în material și are relief.' },
+  { name: 'Serigrafie', text: 'Logoul e imprimat cu cerneală printr-o sită fină, câte o culoare pe rând.' },
+  { name: 'Transfer termic', text: 'Logoul e tipărit pe o folie, care se lipește pe haină prin presare la cald.' },
 ] as const;
 
 interface Placement {
