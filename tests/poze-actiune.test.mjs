@@ -318,6 +318,17 @@ export function portwestProblems(refs, allowedPages) {
     .map((r) => `${r.file}: ${r.id} (Portwest) pe ${r.page}, unde nu e pagină cu produse Portwest`);
 }
 
+/** Scoate blocurile <style>…</style> (global, tolerant la `</style >`) până la punct fix, ca să nu rămână niciun `<style`. */
+function stripStyleBlocks(text) {
+  let prev;
+  let out = text;
+  do {
+    prev = out;
+    out = out.replace(/<style\b[\s\S]*?<\/style\s*>/gi, '');
+  } while (out !== prev);
+  return out;
+}
+
 /** Textul vizibil lângă pozele de acțiune și folosirea creditului în afara lib. */
 export function creditProblems(files) {
   const problems = [];
@@ -328,7 +339,7 @@ export function creditProblems(files) {
       problems.push(`${path}: creditText/copyrightNotice doar în src/lib`);
     }
     if (path === 'src/components/media/ActionPhoto.astro') {
-      const markup = text.replace(/^---[\s\S]*?\n---/, '').replace(/<style[\s\S]*?<\/style>/, '');
+      const markup = stripStyleBlocks(text.replace(/^---[\s\S]*?\n---/, ''));
       if (VISIBLE.test(markup)) problems.push(`${path}: credit vizibil în componentă`);
       continue;
     }
