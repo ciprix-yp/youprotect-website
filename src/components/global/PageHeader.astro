@@ -53,14 +53,14 @@ const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
         )}
         {microcopy && <p class="mt-3 text-sm text-yp-white/60">{microcopy}</p>}
       </div>
-      {/* Sub 1024 px poza e pe toată lățimea, dar `sizes` declară 40vw: pe telefon (DPR 3) browserul ia varianta de 640 px
+      {/* Între 768 și 1023 px poza ocupă ~toată lățimea (60vw, ca să nu fie moale pe iPad). Sub 768 px `sizes` declară 40vw, compromisul LCP: pe telefon (DPR 3) browserul ia varianta de 640 px
           (40-55 KB), nu pe cea de 960 sau 1440 px. Măsurat pe 4G throttled: LCP mai mic decât cu scenele vechi; cu 65vw (960 px)
           LCP creștea cu 0,3-1 s. Poza e puțin mai moale la 1,8x; dacă te deranjează pe iPhone, 65vw e varianta mai clară. */}
       {heroPhoto ? (
         <div class="relative aspect-[16/10] overflow-hidden rounded-xl border border-yp-white/10 bg-yp-gray">
           <ActionPhoto
             id={heroPhoto}
-            sizes="(min-width: 1280px) 576px, (min-width: 1024px) 47vw, 40vw"
+            sizes="(min-width: 1280px) 576px, (min-width: 1024px) 47vw, (min-width: 768px) 60vw, 40vw"
             priority
             motion
             class="absolute inset-0"

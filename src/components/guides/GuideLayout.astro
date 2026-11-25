@@ -6,7 +6,7 @@ import GlobalPreFooterCTA from '../global/GlobalPreFooterCTA.astro';
 import { GUIDES, GUIDES_HREF, formatGuideDate, guideHref, type Guide } from '../../lib/guides';
 import ActionPhoto from '../media/ActionPhoto.astro';
 import { jsonLd } from '../../lib/json-ld';
-import { imageGraph, imageRef, photoSize } from '../../lib/poze-actiune';
+import { imageObject, photoSize } from '../../lib/poze-actiune';
 import { SITE, CTA_DISCUSS } from '../../lib/site';
 
 export interface GuideFaq {
@@ -52,7 +52,7 @@ const articleSchema = {
   author: { '@id': `${SITE.url}/#localbusiness` },
   publisher: { '@id': `${SITE.url}/#localbusiness` },
   citation: guide.sources.map((s) => s.url),
-  ...(photo ? { image: imageRef(photo) } : {}),
+  ...(photo ? { image: imageObject(photo) } : {}),
 };
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -66,7 +66,6 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
 <BaseLayout title={guide.title} description={guide.description} ogType="article">
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
   <script type="application/ld+json" set:html={jsonLd(articleSchema)} />
-  {photo && <script type="application/ld+json" set:html={jsonLd(imageGraph([photo]))} />}
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
 
   <article class="max-w-7xl mx-auto px-4 py-8 md:py-12">

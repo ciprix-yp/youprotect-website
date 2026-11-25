@@ -1,4 +1,5 @@
-// Scenele ilustrative de pe paginile de industrie și de personalizare (public/images/scena-*.webp), generate cu OpenAI
+// Scena ilustrativă a paginii de personalizare (public/images/scena-personalizare.webp; scenele de industrie au fost înlocuite
+// cu poze reale în acțiune, vezi src/data/poze-actiune.json), generată cu OpenAI
 // gpt-image-2 pe 20.11.2026 (D-2026-11-20-06). Sunt ilustrații, nu fotografii cu echipa sau clienții You Protect:
 // fără logo-uri sau texte de mărci reale, cu echipamentul purtat corect; pe site au alt="" (decorative).
 // Rulare: secret run youprotect-website -- node scripts/images/generate-scenes.mjs <out_dir> [nume...]
