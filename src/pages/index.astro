@@ -10,7 +10,9 @@ import CategoryTiles from "../components/products/CategoryTiles.astro";
 import { publishedTestimonials as testimonials } from "../lib/testimonials";
 import { CTA_DISCUSS, RESPONSE_TIME, RISK_FREE_TESTING, SITE } from "../lib/site";
 import { btnPrimary, btnSecondary, pageContainer } from "../lib/ui";
+import ActionPhoto from "../components/media/ActionPhoto.astro";
 import { jsonLd } from "../lib/json-ld";
+import { imageGraph } from "../lib/poze-actiune";
 
 
 const sectionHeading = "font-heading text-3xl font-light leading-tight text-white lg:text-4xl";
@@ -113,6 +115,7 @@ const faqSchema = {
   description="Echipamente de protecție și haine de lucru pentru firme, cu logo, alese după costul real. You Protect: showroom în Vetiș, Satu Mare, livrare în toată România."
 >
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M12"]))} />
 
   <!-- Butonul fix de pe telefon: dispare la derulare în jos, revine la derulare în sus. -->
   <div
@@ -242,6 +245,9 @@ const faqSchema = {
           </li>
         ))}
       </ul>
+      <div class="mt-4 aspect-[4/3] overflow-hidden rounded-xl sm:aspect-[16/9]">
+        <ActionPhoto id="M12" sizes="(min-width: 1280px) 1216px, calc(100vw - 2rem)" loading="lazy" motion />
+      </div>
     </div>
   </section>
 

@@ -4,7 +4,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlobalPreFooterCTA from '../global/GlobalPreFooterCTA.astro';
 import { GUIDES, GUIDES_HREF, formatGuideDate, guideHref, type Guide } from '../../lib/guides';
+import ActionPhoto from '../media/ActionPhoto.astro';
 import { jsonLd } from '../../lib/json-ld';
+import { imageGraph, imageRef, photoSize } from '../../lib/poze-actiune';
 import { SITE, CTA_DISCUSS } from '../../lib/site';
 
 export interface GuideFaq {
@@ -18,9 +20,13 @@ interface Props {
   /** Răspunsul pe scurt, primul paragraf de sub titlu. */
   answer: string;
   faq: GuideFaq[];
+  /** Id-ul pozei în acțiune (src/data/poze-actiune.json), pusă între „Pe scurt” și conținut. Pagina o dă ca literal. */
+  photo?: string;
 }
 
-const { guide, answer, faq } = Astro.props;
+const { guide, answer, faq, photo } = Astro.props;
+// Poza păstrează raportul ei natural (nimic tăiat); înălțimea e limitată la 28rem, deci cea verticală iese mai îngustă.
+const photoBox = photo ? photoSize(photo) : undefined;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const pageUrl = new URL(guideHref(guide), siteOrigin).href;
 const others = GUIDES.filter((g) => g.slug !== guide.slug);
@@ -46,6 +52,7 @@ const articleSchema = {
   author: { '@id': `${SITE.url}/#localbusiness` },
   publisher: { '@id': `${SITE.url}/#localbusiness` },
   citation: guide.sources.map((s) => s.url),
+  ...(photo ? { image: imageRef(photo) } : {}),
 };
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -59,6 +66,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
 <BaseLayout title={guide.title} description={guide.description} ogType="article">
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
   <script type="application/ld+json" set:html={jsonLd(articleSchema)} />
+  {photo && <script type="application/ld+json" set:html={jsonLd(imageGraph([photo]))} />}
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
 
   <article class="max-w-7xl mx-auto px-4 py-8 md:py-12">
@@ -80,6 +88,17 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
         <p class="mt-2 text-lg text-yp-white/90 leading-relaxed">{answer}</p>
       </div>
     </header>
+
+    {photo && photoBox && (
+      <div class="mt-10 max-w-3xl">
+        <div
+          class="w-full overflow-hidden rounded-xl"
+          style={`aspect-ratio:${photoBox.width}/${photoBox.height};max-width:min(100%,calc(28rem*${photoBox.width}/${photoBox.height}))`}
+        >
+          <ActionPhoto id={photo} sizes="(min-width: 768px) 768px, calc(100vw - 2rem)" motion />
+        </div>
+      </div>
+    )}
 
     <div class="guide-body mt-12 max-w-3xl space-y-12 text-yp-white/80 leading-relaxed">
       <slot />

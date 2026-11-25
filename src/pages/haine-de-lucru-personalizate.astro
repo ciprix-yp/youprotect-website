@@ -8,7 +8,9 @@ import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import { CATEGORIES, type CategoryKey } from "../lib/catalog-taxonomy";
 import { joinRo } from "../lib/catalog-categories";
 import { LOGO_TECHNIQUES, PERSONALIZATION_PAGE, productsWithHiVisLimit, productsWithLogoZones, zonesLabel } from "../lib/personalization";
+import ActionPhoto from "../components/media/ActionPhoto.astro";
 import { jsonLd } from "../lib/json-ld";
+import { imageGraph } from "../lib/poze-actiune";
 import { SITE, CTA_DISCUSS } from "../lib/site";
 
 const published = await getCollection("products", ({ data }) => data.status === "published");
@@ -130,6 +132,7 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
   <script type="application/ld+json" set:html={jsonLd(serviceSchema)} />
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M04"]))} />
 
   <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="cum-functioneaza">
     <div class="max-w-7xl mx-auto px-4">
@@ -143,6 +146,9 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
           </li>
         ))}
       </ol>
+      <div class="mt-10 aspect-[3/2] overflow-hidden rounded-xl sm:aspect-[2/1]">
+        <ActionPhoto id="M04" sizes="(min-width: 1280px) 1216px, calc(100vw - 2rem)" motion />
+      </div>
       <p class="mt-8 text-neutral-300">
         Nu știi încă ce haine să alegi? <a href="/produse/" class="text-yp-yellow underline underline-offset-4 hover:text-white">Vezi catalogul</a>
         sau <a href="/programeaza-discutie/" class="text-yp-yellow underline underline-offset-4 hover:text-white">vorbește cu un consultant</a>.

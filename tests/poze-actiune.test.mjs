@@ -129,6 +129,8 @@ test('poze: helperii (srcset, src, id necunoscut)', () => {
 const DYNAMIC_OK = new Set([
   'src/components/products/BrandLanding.astro',
   'src/components/products/CategoryLanding.astro',
+  // Ghidurile: pagina dă `photo="S12"` ca literal pe <GuideLayout>, layout-ul îl randează.
+  'src/components/guides/GuideLayout.astro',
   // Eroul paginilor interioare: id-ul vine din `heroPhoto="…"` pus pe pagină (detectat ca erou).
   'src/components/global/PageHeader.astro',
 ]);
