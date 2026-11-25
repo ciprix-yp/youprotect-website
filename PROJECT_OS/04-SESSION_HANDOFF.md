@@ -1,6 +1,52 @@
 # Session Handoff
 
-## Sesiunea 2026-11-17: cererile pe D1, baza Railway retrasă (citește întâi)
+## Stare la 25.11.2026 (citește întâi)
+
+**Live** (PR #81–87, fiecare cu toate verificările verzi):
+- Lista de ofertă cu mai multe produse și pagina `/contact/`, cu „Contact” în meniu (CONV-004, D-2026-11-21-01).
+  Meniul întreg apare de la 1024 px (`lg`); sub această lățime, inclusiv pe tabletă, se folosește meniul de pe telefon.
+- Worker-ul `www-redirect` are codul în `workers/www-redirect/` și se publică cu `wrangler deploy` din acel folder.
+  `tests/www-redirect.test.mjs` verifică faptul că redirecționările din Worker și din `public/_redirects` coincid.
+- Oferta „în cel mult 24 de ore” vine din `RESPONSE_TIME` (`src/lib/site.ts`). Pe site nu apare niciun număr de
+  produse (D-2026-11-21-03); `tests/site-promises.test.mjs` verifică ambele reguli.
+- Harta cuvintelor-cheie `09-HARTA-CUVINTE-CHEIE.md` și homepage-ul rescris după ea (D-2026-11-21-04).
+
+**Cum scriem textele** (D-2026-11-23-01):
+- Textele le scrie agentul; copywriterul extern intervine doar dacă rezultatul nu e bun.
+- Sursele sunt `08-GHID_CONTINUT.md` (§0 întrebările cititorului, §3 regulile de adevăr, §7 rețetele pe tip de
+  secțiune) și harta din `09`.
+- Recenziile reale de pe homepage arată limbajul clienților; nu se rescriu.
+- Fiecare pagină are PR-ul ei, cu link de preview; owner-ul o aprobă pe iPhone.
+
+**Urmează** (detaliile sunt în SEO-003, `02-BACKLOG.md`):
+1. Rescrierea pe pagini, începând cu `/echipamente-protectie-satu-mare/`.
+2. 03.12.2026: verificarea indexării fișelor de produs. Claude Desktop le cere zilnic până pe 02.12.
+3. Începutul lui decembrie: clicurile pe căutările generale și măsurătoarea ChatGPT.
+4. 18.12.2026: expiră suprimarea alertei picomatch (GHSA-fc5q-39xc-vjpf) din `osv-scanner.toml`. Dacă există între timp
+   o versiune reparată, se actualizează dependența; dacă nu, se reevaluează suprimarea. Rulează doar la build, din
+   dependențele Tailwind 3.
+
+**La owner** (nu se pot face din cod):
+- ID-ul corect de Google Analytics 4: `G-TV8YEFYQD5` din `src/lib/site.ts` răspunde cu 404.
+- Golirea cache-ului Cloudflare pentru `/preview/produse/`.
+- Scoaterea `CRM_SYNC_TOKEN` din mediul Preview din Cloudflare Pages și o bază D1 separată pentru preview.
+- Trei decizii:
+  - dacă roboții AI au voie să citească site-ul;
+  - dacă repo-ul devine privat;
+  - dacă formularele primesc Cloudflare Turnstile.
+
+**Deschis pe GitHub:** PR #88 (Dependabot, TypeScript 6 → 7). E o versiune majoră; build-ul și testele trebuie
+verificate înainte de merge.
+
+**Testare:**
+- Tranzițiile între pagini se testează în Google Chrome (Playwright `channel: 'chrome'`), nu în
+  `chrome-headless-shell` (D-2026-11-21-02).
+- Formularele se testează doar pe preview. Testele cap-coadă cu CRM-ul le face sesiunea CRM (projects-f7), cu
+  acordul lui Ciprian.
+- Search Console: `secret run youprotect-website -- node scripts/seo/gsc.mjs …`. Inspecția durează cam 5 s pe adresă;
+  datele nu intră în repo.
+
+## Sesiunea 2026-11-17: cererile pe D1, baza Railway retrasă
 
 - Cererile de pe site: D1 `youprotect-leads` + email Resend + Prospector CRM (job la 5 minute pe M1). Totul e verificat cap-coadă, vezi OPS-006. Testele de formular: doar pe preview, fără CUI, cu acordul lui Ciprian (`01-RUNBOOK.md`, pasul 6).
 - Baza veche de pe Railway e copiată, verificată și ștearsă, la fel și Hyperdrive și `DATABASE_URL` (D-2026-11-17-01). Site-ul nu mai depinde de Railway.
@@ -36,7 +82,10 @@
 - GitHub: PR #10 (draft), branch `staging` → https://staging.youprotect-website.pages.dev, `STAGING_URL` setat, ruleset „main: security gates” activ (main blocat până la SEC-001 + SEC-002).
 - Node: build-ul a rulat cu Node 22 (`mise exec node@22.23.4 -- npm run build`); proiectul nu are încă `.mise.toml`.
 
-## Ultimul update
+## Istoric: starea din iunie 2026
+
+Secțiunile de mai jos, până la checklist, descriu starea din iunie 2026. WP-005 și WP-006 (Directus) au fost depășite:
+catalogul stă acum în fișiere (CAT-001), iar baza Railway a fost ștearsă (D-2026-11-17-01).
 
 - Data: `2026-06-24`
 - Status global: SEO/domeniu canonic + audit SEO/GEO livrate (4 PR-uri merged, live). Git→Cloudflare auto-deploy confirmat funcțional. `WP-005_IN_PROGRESS` rămâne deschis.
@@ -158,7 +207,8 @@
 
 ## Checklist start sesiune viitoare
 
-- Citește `PROJECT_OS/README.md`.
-- Verifică `02-BACKLOG.md` și marchează taskul curent (`WP-005`) status `IN_PROGRESS`.
-- Lucrează pe un singur obiectiv clar: Content premium + CTA clarity pe frontend.
-- La final, actualizează acest fișier.
+- Citește `PROJECT_OS/README.md`, apoi secțiunea „Stare la …” de la începutul acestui fișier.
+- `git status` și `gh pr list`: pornește de pe un branch nou din `main`. Un branch local nepublicat poate fi al altei
+  sesiuni; nu-l șterge și nu-l rescrie. `.codex/` și `AGENTS.md` nu sunt ale proiectului; se lasă neatinse.
+- Lucrează pe un singur obiectiv din `02-BACKLOG.md` (acum SEO-003, rescrierea pe pagini).
+- La final, actualizează secțiunea „Stare la …”.

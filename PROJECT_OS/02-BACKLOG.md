@@ -274,7 +274,7 @@ Format task:
   produs publicat.
 
 ### SEO-003 / GEO / mesaje de conversie
-- Status: `TODO`
+- Status: `IN_PROGRESS` (faza finală pornită pe 21.11.2026; starea și pașii următori la finalul secțiunii)
 - Owner: `Claude` + `User` (decizii de mesaj)
 - Scope: La final, după partea tehnică (cererea lui Ciprian, 18.11.2026): SEO, GEO (vizibilitate în răspunsurile
   AI și local) și mesajele care ajută conversia. Textul homepage-ului e lung și abstract în a doua jumătate (WP-005).
@@ -324,6 +324,22 @@ Format task:
   De întrebat Portwest: de ce declarațiile scriu „Cat. III” fără modulul C2/D (genunchiere, veste, mănuși de frig).
 - MASCOT linia de birou (20.11.2026): owner-ul a cerut „colecția Office” = FRONTLINE Corporate Casual + M by Mascot.
   Cămășile grupate pe linii, cu croielile ca variante pe aceeași fișă. Next action: importul, după Portwest.
+
+- Faza finală (21–25.11.2026):
+  - Auditul titlurilor și descrierilor, deciziile owner-ului (D-2026-11-21-03, D-2026-11-21-04, D-2026-11-23-01),
+    harta cuvintelor-cheie (PR #86) și homepage-ul rescris (PR #87).
+  - Indexarea: cereri manuale „Solicită indexarea” în Search Console, făcute de Claude Desktop (Google acceptă cam 10
+    pe zi). Paginile principale, ghidurile, categoriile și mărcile au fost cerute pe 21–24.11 și sunt indexate (Google
+    le citește la câteva minute după cerere). Fișele de produs: o sarcină programată în Claude Desktop cere câte 10 pe
+    zi, la 11:00, între 25.11 și 02.12.2026, în ordinea categoriilor.
+  - Next action:
+    1. Rescrierea textelor pagină cu pagină (D-2026-11-23-01), cu `08-GHID_CONTINUT.md` §0 și §7 și harta din `09`.
+       Ordinea: pagina Satu Mare, catalogul, personalizarea (cu „uniforme de lucru”), Despre noi (doar cu povestea
+       factuală de la owner, §7), apoi restul. Un PR cu link de preview pe rând; owner-ul aprobă pe telefon.
+    2. 03.12.2026: `gsc.mjs inspect` pe toate fișele de produs; ce n-a intrat devine o listă scurtă pentru Claude
+       Desktop.
+    3. Începutul lui decembrie: clicurile pe căutările generale față de baza din 22.08–19.11.2026 și a doua măsurătoare
+       ChatGPT (`scripts/seo/ai-visibility.mjs`).
 ---
 
 ## Next Sprint (S2)

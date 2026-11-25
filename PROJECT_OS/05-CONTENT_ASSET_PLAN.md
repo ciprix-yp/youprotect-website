@@ -16,9 +16,9 @@
 
 ## Reguli copy
 
-Regulile complete sunt în `PROJECT_OS/08-GHID_CONTINUT.md` (din 11.11.2026): vocea „tu”, formula în 3 straturi
-(experiența de purtare → cum te simți și cum arăți → ce câștigă firma), reguli de adevăr, SEO, GEO și șablonul
-fișei de produs.
+Regulile complete sunt în `PROJECT_OS/08-GHID_CONTINUT.md` (din 11.11.2026): vocea „tu”, întrebările cititorului,
+rețetele pe tip de secțiune, reguli de adevăr, SEO, GEO și șablonul fișei de produs, cu formula în 3 straturi
+(experiența de purtare → cum te simți și cum arăți → ce câștigă firma) doar pentru fișele de produs.
 
 - Evităm limbaj de e-commerce clasic: produsele sunt magnet de lead, nu se cumpără de pe site.
 - CTA-uri: primar „Cere ofertă”, secundar „Discută cu un consultant”, plus blocul „Testezi fără riscuri”
