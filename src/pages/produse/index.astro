@@ -11,7 +11,7 @@ import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxo
 import { activeBrandPages } from '../../lib/catalog-brands';
 import { toCardProps } from '../../lib/product-card';
 import { jsonLd } from '../../lib/json-ld';
-import { CTA_DISCUSS } from '../../lib/site';
+import { CTA_DISCUSS, RESPONSE_TIME } from '../../lib/site';
 import { searchKey } from '../../lib/search.js';
 
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
@@ -51,6 +51,10 @@ const brandParts = brands.map((b, i) => ({
   href: b.page ? `/produse/${b.page.slug}/` : null,
   sep: i === brands.length - 1 ? '' : i === brands.length - 2 ? ' și ' : ', ',
 }));
+// Descrierea din Google numește doar mărcile cu pagină („MASCOT, Sir Safety și Portwest”), din aceleași date.
+const brandPageNames = brandPages.map((b) => b.name);
+const brandPagesText =
+  brandPageNames.length > 1 ? `${brandPageNames.slice(0, -1).join(', ')} și ${brandPageNames.at(-1)}` : brandPageNames.join('');
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const breadcrumbSchema = {
@@ -68,7 +72,7 @@ const filterOption =
 
 <BaseLayout
   title="Catalog echipamente de protecție și haine de lucru"
-  description="Catalogul You Protect: încălțăminte, haine reflectorizante și de lucru, căști, mănuși, măști și hamuri MASCOT și Sir Safety. Cere ofertă pentru echipă."
+  description={`Catalog echipamente de protecție și haine de lucru ${brandPagesText}, de la bocanci la geci reflectorizante. Oferta vine ${RESPONSE_TIME}.`}
 >
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
 
@@ -85,9 +89,10 @@ const filterOption =
             Catalog echipamente de protecție și haine de lucru
           </h1>
           <p class="mt-4 max-w-2xl text-base leading-relaxed text-yp-white/75">
-            Modele{' '}
-            {brandParts.map((part) => (<>{part.href ? <a href={part.href} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{part.text}</a> : part.text}{part.sep}</>))}, pentru
-            construcții, producție, logistică și energie. Prețul îl primești în ofertă, pentru cantitățile echipei tale.
+            You Protect, din Satu Mare, are în catalog modele{' '}
+            {brandParts.map((part) => (<>{part.href ? <a href={part.href} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{part.text}</a> : part.text}{part.sep}</>))},
+            pentru bărbații și femeile care lucrează în construcții, producție, depozite și logistică sau energie. Adaugi la
+            ofertă modelele care te interesează și primești prețurile pentru cantitățile echipei tale {RESPONSE_TIME}.
           </p>
         </div>
         <div class="flex flex-col gap-4 lg:max-w-sm">
@@ -221,10 +226,11 @@ const filterOption =
 
   <section class="border-t border-yp-white/10 bg-[#050505]">
     <div class="mx-auto max-w-3xl px-4 py-16 text-center md:py-20">
-      <h2 class="font-heading text-2xl font-light text-yp-white md:text-3xl">Nu trebuie să alegi singur dintre zeci de variante</h2>
+      <h2 class="font-heading text-2xl font-light text-yp-white md:text-3xl">Nu trebuie să alegi singur modelul potrivit</h2>
       <p class="mx-auto mt-4 max-w-2xl leading-relaxed text-yp-white/75">
-        Spune-ne ce activitate are echipa, în ce condiții lucrează și ce standard vrei să atingi. Îți propunem o selecție
-        potrivită, cu prețuri pentru cantitățile tale.
+        Spune-ne ce lucrează oamenii tăi și în ce condiții, iar noi îți propunem echipamentul de protecția muncii potrivit
+        fiecărui rol. Consultanța e gratuită, iar oferta vine {RESPONSE_TIME}. Mărimile le probezi înainte de comandă, în
+        <a href="/echipamente-protectie-satu-mare/#showroom" class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">showroom-ul din Vetiș</a>.
       </p>
       <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <a href="/cere-oferta/" class="inline-flex h-12 items-center justify-center rounded-lg bg-yp-yellow px-8 text-sm font-medium text-yp-black transition-colors hover:bg-white">
