@@ -14,6 +14,19 @@ pune:
 3. **„De ce să te cred?”** Dovada: standardul, documentul, procesul, condiția scrisă, un client real.
 4. **„Ce fac acum și ce risc?”** Pasul următor și ce se întâmplă după clic.
 
+**Cititorul e eroul, You Protect e ghidul** (owner, 25.11.2026: „vreau să punem leadul în rolul de erou, să scriem
+pe limbajul său, să-i vorbim lui”):
+
+- Eroul are o sarcină: să-și echipeze oamenii potrivit, în buget și fără bătăi de cap. Ghidul îl ajută cu înțelegere
+  (îi cunoaștem situația) și cu autoritate (dovezi: standarde, documente, showroom-ul, testarea, recenziile reale).
+- Subiectul frazelor e „tu”, „echipa ta”, „oamenii tăi”. „Noi” apare doar ca să spună ce facem pentru el.
+- Titlurile vorbesc despre rezultatul lui, nu despre noi. De evitat, exemplu de pe site: „Suntem partenerul local
+  pentru companiile din Satu Mare…”.
+- Povestea noastră (Despre noi) e dovada că suntem ghidul potrivit, nu subiectul paginii.
+- Cuvintele lui: expresiile din căutări (`09-HARTA-CUVINTE-CHEIE.md` §2–3), obiecțiile (09 §5) și recenziile reale
+  (`src/data/testimonials.json`), nu jargonul nostru.
+- Mizele se spun ca fapt (ce se întâmplă dacă echipamentul nu e potrivit sau nu e purtat), nu ca frică (§3).
+
 Reguli:
 
 - Fiecare secțiune răspunde în principal la o singură întrebare (tabelul din §7).

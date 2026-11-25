@@ -140,7 +140,7 @@ vânzător: fiecare pagină principală răspunde la obiecțiile din dreptul ei.
 | 5. Oricum nu le poartă | „De ce ar purta-o pe asta?” | Oamenii probează înainte de comandă: în showroom-ul din Vetiș, în cabina de probă (homepage și `/echipamente-protectie-satu-mare/#showroom`), și în testul de 90 de zile, unde se aplică. Fișele spun ce simte cine o poartă (formula din 08 §2). Nu promitem că o vor purta. | Homepage, `/testare-fara-riscuri/`, categoriile, fișele |
 | 2, 3. Nu cumpărăm acum / reveniți în luna X | „De ce acum?” | Nu trebuie acum. Lista de ofertă rămâne în browserul tău 30 de zile de la ultima schimbare și se golește după ce trimiți cererea (`src/lib/quote-list.js`): acoperă o amânare scurtă, nu „luna X” de peste câteva luni, și nu o promitem mai lungă. Discuția se programează când e momentul. | CTA-urile, `/programeaza-discutie/`, lista de ofertă |
 | 7. Nu e momentul | „Am alte priorități.” | Pagini scurte, cu răspunsul întâi (08 §0). | Toate paginile |
-| 8. Nu mă ocup eu | „Nu e decizia mea.” | Pagina se înțelege și dacă e trimisă unui coleg fără context: prima frază spune cine, ce și unde (08 §6). | Toate paginile |
+| 8. Nu mă ocup eu | „Nu e decizia mea.” | Pagina se înțelege și dacă e trimisă unui coleg fără context: prima frază spune cine, ce și unde (09 §1). | Toate paginile |
 | 9. Catalog / mă uit pe site | „Vreau să compar singur.” | Site-ul e catalogul și continuarea discuției: răspunde la obiecțiile de mai sus fără vânzător. | Catalogul, fișele, homepage |
 
 Regula: răspunsul nu vorbește de rău furnizorul actual și nu folosește frica sau vina (08 §0 și §3). Compară costul,

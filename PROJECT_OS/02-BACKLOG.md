@@ -340,6 +340,19 @@ Format task:
        Desktop.
     3. Începutul lui decembrie: clicurile pe căutările generale față de baza din 22.08–19.11.2026 și a doua măsurătoare
        ChatGPT (`scripts/seo/ai-visibility.mjs`).
+
+### CAT-004 Catalog interactiv de trimis după apel
+- Status: `TODO` (după textele din SEO-003)
+- Owner: `User` (alege varianta), `Claude` (execuție)
+- Scope: cererea owner-ului din 25.11.2026: un catalog profesionist, interactiv, „gen Flipsnack”, cu butoane spre
+  „Programează o discuție” și WhatsApp. Se trimite pe email după apel și răspunde la obiecția 9 din
+  `09-HARTA-CUVINTE-CHEIE.md` §5 („Trimiteți-mi un catalog”). Fără prețuri.
+- Variante de evaluat la start:
+  - (a) generat din datele catalogului (`src/content/products`), ca pagină web tip flipbook plus PDF cu linkuri, al
+    nostru, fără serviciu extern;
+  - (b) un serviciu extern de tip Flipsnack, cu cont și conținut încărcat separat (costul și limitele se verifică).
+- Recomandarea agentului: (a), pentru că rămâne al firmei și se actualizează odată cu catalogul. Decizia e a
+  owner-ului.
 ---
 
 ## Next Sprint (S2)
