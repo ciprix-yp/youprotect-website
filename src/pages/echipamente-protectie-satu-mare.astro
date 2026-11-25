@@ -1,6 +1,6 @@
 ---
 import { jsonLd } from '../lib/json-ld';
-import { CTA_DISCUSS } from '../lib/site';
+import { CTA_DISCUSS, RESPONSE_TIME } from '../lib/site';
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
@@ -15,18 +15,18 @@ const breadcrumbSchema = {
 ---
 
 <InnerPageLayout
-  title="Echipamente de protecție în Satu Mare pentru firme"
-  description="Echipamente de protecție și haine de lucru cu logo pentru firmele din Satu Mare și nord-vest. Showroom cu cabină de probă în Vetiș, livrare în toată țara."
-  heroTitle="Echipamente de protecție în Satu Mare"
-  heroSubtitle="Suntem partenerul local pentru companiile din Satu Mare și din nord-vestul României care vor să își echipeze oamenii corect — cu echipamente de protecție, haine de lucru și articole personalizate alese în funcție de activitate, nu generic."
+  title="Echipamente de protecție Satu Mare pentru firme"
+  description="Echipamente de protecție Satu Mare pentru firme: probezi în cabina din showroom-ul din Vetiș, testezi 90 de zile cu echipa ta, iar noi livrăm în toată România."
+  heroTitle="Echipamente de protecție în Satu Mare, probate de oamenii tăi înainte de comandă"
+  heroSubtitle="You Protect, din Satu Mare, echipează firme cu echipamente de protecție și haine de lucru alese după munca fiecărui om din echipa ta. Probezi în cabina din showroom-ul din Vetiș, iar comanda ajunge la tine oriunde în România."
   breadcrumb="Satu Mare"
   heroImage="/hero-youprotect-highvis.webp"
-  ctaHeading="Discutăm despre echipa ta din Satu Mare?"
-  ctaSubheading="Consultanță gratuită, ofertă personalizată și produse potrivite activității tale."
+  ctaHeading="Nu trebuie să decizi acum"
+  ctaSubheading="Programezi o discuție când ți se potrivește. Ne spui ce lucrează oamenii tăi, iar noi propunem produsele potrivite și o ofertă pe măsură."
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
-  ctaMicrocopy="Fără obligații. Discutăm despre activitatea, riscurile și nevoile reale ale echipei tale."
+  ctaMicrocopy="Fără obligații: discuția e despre munca și riscurile oamenilor tăi."
 >
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
 
@@ -35,15 +35,15 @@ const breadcrumbSchema = {
       <div class="flex flex-col md:flex-row gap-16 md:gap-24">
         <div class="md:w-1/3 shrink-0">
           <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32">
-            Partener local, <br />standard național.
+            Fiecare om, <br />echipat pentru munca lui.
           </h2>
         </div>
         <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 leading-relaxed">
           <p>
-            You Protect are baza în Vetiș, județul Satu Mare, și lucrează cu firme din întreaga regiune de nord-vest — construcții, producție, logistică, energie și servicii tehnice. Faptul că suntem aproape înseamnă recomandări rapide, comunicare directă și o înțelegere reală a felului în care lucrează echipele de pe teren.
+            Spui ce lucrează oamenii tăi și în ce condiții, iar noi îți recomandăm echipamentele de protecție și hainele de lucru potrivite pentru fiecare rol, cu logo-ul firmei unde îl vrei. Așa rezolvi protecția muncii pentru echipă fără să parcurgi singur un catalog întreg.
           </p>
           <p>
-            Nu vindem doar produse dintr-un raft. Pornim de la activitatea ta, de la riscurile concrete și de la imaginea pe care vrei să o transmită echipa, apoi recomandăm echipamentele de protecție și hainele de lucru potrivite — cu personalizare și planificarea comenzilor recurente atunci când e nevoie.
+            Ne găsești în Vetiș, județul Satu Mare, și lucrăm des cu firme din nord-vestul țării, din construcții, depozite și logistică sau producție. Livrăm și în Baia Mare, Oradea sau Cluj, la fel ca în restul României. Comenzile care se repetă le planificăm împreună, ca oamenii tăi să nu rămână fără echipament.
           </p>
         </div>
       </div>
@@ -53,10 +53,14 @@ const breadcrumbSchema = {
   <section class="py-16 md:py-24 bg-yp-black border-b border-white/5" aria-labelledby="showroom">
     <div class="max-w-7xl mx-auto px-4 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start">
       <div>
-        <h2 id="showroom" class="text-3xl md:text-4xl font-light text-white leading-tight">Showroom cu cabină de probă, în Vetiș</h2>
+        <h2 id="showroom" class="text-3xl md:text-4xl font-light text-white leading-tight">Probezi înainte de comandă, în showroom-ul din Vetiș</h2>
         <p class="mt-6 text-lg text-neutral-300 leading-relaxed">
-          Poți veni să vezi produsele și să le probezi înainte de comandă: în showroom avem cabină de probă. Așa alegi
-          mărimea și modelul pe care le vrei pentru echipă, nu doar din poze.
+          Da, probezi înainte de comandă. Showroom-ul You Protect din Vetiș are cabină de probă, așa că alegi mărimea și
+          modelul pentru echipă după cum ți se potrivesc, nu doar după poze.
+        </p>
+        <p class="mt-4 text-lg text-neutral-300 leading-relaxed">
+          Vrei să vezi cum se poartă produsele în munca ta, nu doar în cabină? Le testezi 90 de zile cu 3–5 oameni pe rol,
+          în condiții reale de lucru. <a href="/testare-fara-riscuri/" class="underline underline-offset-4 decoration-yp-yellow/60 hover:text-yp-yellow">Condițiile și produsele care nu intră în testare</a> sunt pe pagina lor.
         </p>
       </div>
       <dl class="divide-y divide-white/10 border-y border-white/10 text-base">
@@ -81,26 +85,27 @@ const breadcrumbSchema = {
   <section class="py-16 md:py-24 bg-[#050505]">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-light text-white mb-12">
-        Ce livrăm firmelor din Satu Mare și nord-vest
+        De la echipamentul de protecție la uniforma cu logo, într-un singur loc
       </h2>
       <div class="grid md:grid-cols-3 gap-8">
         <div class="sd-rise border border-white/10 rounded-lg p-8 bg-white/5">
-          <h3 class="text-xl font-medium text-white mb-3">Echipamente de protecție (EPI)</h3>
-          <p class="text-neutral-400">Încălțăminte, căști, mănuși, ochelari, antifoane, măști, hamuri și combinezoane de protecție, cu certificările declarate de producător pe fiecare fișă.</p>
+          <h3 class="text-xl font-medium text-white mb-3">Protecție pentru munca fiecărui om</h3>
+          <p class="text-neutral-400">Încălțăminte, căști, mănuși, ochelari, antifoane, măști, hamuri și combinezoane de protecție. Pe fiecare fișă găsești documentele producătorului și standardele declarate de el.</p>
         </div>
         <div class="sd-rise border border-white/10 rounded-lg p-8 bg-white/5">
-          <h3 class="text-xl font-medium text-white mb-3">Haine de lucru personalizate</h3>
-          <p class="text-neutral-400">Salopete, jachete și uniforme rezistente, personalizate cu identitatea companiei tale, pentru o imagine profesională în teren.</p>
+          <h3 class="text-xl font-medium text-white mb-3">Haine de lucru cu logo-ul firmei tale</h3>
+          <p class="text-neutral-400">Salopete, jachete și uniforme cu logo, prin broderie, serigrafie sau transfer termic. Ai o singură ofertă și un singur interlocutor: You Protect.</p>
           <a href="/haine-de-lucru-personalizate/" class="inline-block mt-3 py-2 text-yp-yellow hover:text-white transition-colors font-medium">Cum funcționează personalizarea</a>
         </div>
         <div class="sd-rise border border-white/10 rounded-lg p-8 bg-white/5">
-          <h3 class="text-xl font-medium text-white mb-3">Consultanță și ofertă</h3>
-          <p class="text-neutral-400">Te ajutăm să clarifici ce se potrivește echipei tale înainte de decizie, cu ofertă personalizată și comenzi recurente planificate.</p>
+          <h3 class="text-xl font-medium text-white mb-3">Ajutor la alegere, înainte de decizie</h3>
+          <p class="text-neutral-400">Consultanța e gratuită. Clarificăm împreună ce se potrivește echipei tale, iar oferta o primești {RESPONSE_TIME} de la cerere.</p>
         </div>
       </div>
       <div class="mt-12">
-        <a href="/produse/" class="inline-flex items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
-          Vezi catalogul complet
+        <p class="text-neutral-300">Preferi să te uiți singur? Catalogul are o fișă pentru fiecare produs.</p>
+        <a href="/produse/" class="inline-flex min-h-11 items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
+          Vezi catalogul
         </a>
       </div>
     </div>
