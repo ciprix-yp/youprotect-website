@@ -1,5 +1,6 @@
 ---
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import { CTA_DISCUSS } from "../lib/site";
 ---
 
 <InnerPageLayout
@@ -11,7 +12,7 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
   heroImage="/images/mascot-premium-1-v2.webp"
   ctaHeading="Gata să crești standardul?"
   ctaSubheading="Mai puțin haos, mai multă claritate și o echipă care arată profesionist."
-  ctaButtonText="Programează o discuție"
+  ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi cum lucrăm"
   ctaSecondaryButtonLink="/cum-lucram/"
   ctaMicrocopy="Dacă valorile și standardul nostru se potrivesc cu felul în care vrei să îți construiești echipa, următorul pas este o discuție clară."
@@ -314,7 +315,7 @@ import InnerPageLayout from "../layouts/InnerPageLayout.astro";
       <div class="flex flex-col sm:flex-row gap-4 justify-center w-full">
          <a href="/programeaza-discutie/"
           class="inline-flex h-12 items-center justify-center rounded-lg bg-yp-black px-6 text-sm font-medium text-white transition-colors hover:bg-yp-gray">
-          Programează o discuție
+          {CTA_DISCUSS}
         </a>
 
         <a

@@ -2,6 +2,7 @@
 // Banda galbenă de dinaintea footer-ului, pe paginile interioare. Butoanele au aceeași mărime ca în restul site-ului
 // (ui.ts), în varianta pentru fond galben.
 import { pageContainer } from '../../lib/ui';
+import { CTA_DISCUSS } from '../../lib/site';
 
 export interface Props {
   heading?: string;
@@ -15,7 +16,7 @@ export interface Props {
 const {
   heading = 'Ești gata să discuți aplicat despre echipa ta?',
   subheading = 'Lasă-ne datele mai jos sau programează o scurtă discuție. Trecem direct la subiect, fără promisiuni goale.',
-  buttonText = 'Programează o discuție',
+  buttonText = CTA_DISCUSS,
   buttonLink = '',
   secondaryButtonText = '',
   secondaryButtonLink = '',

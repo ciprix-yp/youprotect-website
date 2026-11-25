@@ -3,10 +3,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import MultiStepForm from "../components/forms/MultiStepForm";
 import RiskFreeTesting from "../components/global/RiskFreeTesting.astro";
 import { whatsappHref } from "../lib/whatsapp";
+import { CTA_DISCUSS } from "../lib/site";
 ---
 
 <BaseLayout
-  title="Programează o discuție"
+  title={CTA_DISCUSS}
   description="Răspunde la câteva întrebări, apoi alegi ora unei discuții cu You Protect despre echipamentele potrivite echipei tale."
 >
   <section class="pt-8 pb-12 md:pt-12 md:pb-20">
@@ -14,7 +15,7 @@ import { whatsappHref } from "../lib/whatsapp";
     <div class="max-w-7xl mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center mb-12">
         <h1 class="font-heading text-3xl font-light leading-tight text-yp-white md:text-4xl mb-4">
-          Programează o discuție
+          {CTA_DISCUSS}
         </h1>
         <p class="text-lg md:text-xl text-neutral-400">
           Răspunde la câteva întrebări, ca să venim la discuție cu recomandări pentru echipa ta. La final alegi ora din calendar.

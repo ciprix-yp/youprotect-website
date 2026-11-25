@@ -7,7 +7,7 @@ import { getCollection } from "astro:content";
 import LegalPage from "../components/legal/LegalPage.astro";
 import { joinRo } from "../lib/catalog-categories";
 import { riskFreeExclusions } from "../lib/risk-free-scope";
-import { SITE } from "../lib/site";
+import { SITE, CTA_DISCUSS } from "../lib/site";
 
 // Ce nu intră în program se generează din catalog (câmpul riskFreeTesting, D-2026-11-19-06).
 const notTestable = riskFreeExclusions(
@@ -103,7 +103,7 @@ const notTestable = riskFreeExclusions(
 
   <h2>Cum începem</h2>
   <p>
-    <a href="/programeaza-discutie/">Programează o discuție</a> sau <a href="/cere-oferta/">cere o ofertă</a>, iar la
+    <a href="/programeaza-discutie/">{CTA_DISCUSS}</a> sau <a href="/cere-oferta/">cere o ofertă</a>, iar la
     primul contact stabilim rolurile și produsele de testat. Întrebări: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
     sau <a href={`tel:${SITE.telephone}`}>{SITE.telephoneDisplay}</a>.
   </p>

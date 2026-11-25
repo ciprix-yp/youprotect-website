@@ -11,7 +11,7 @@ import { joinRo, type CategoryPage } from '../../lib/catalog-categories';
 import { jsonLd } from '../../lib/json-ld';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { guideHref, guidesForCategory } from '../../lib/guides';
-import { SITE } from '../../lib/site';
+import { CTA_DISCUSS, SITE } from '../../lib/site';
 import { btnPrimary, btnSecondary, breadcrumbNav, sectionTitle } from '../../lib/ui';
 
 interface Props {
@@ -115,7 +115,7 @@ const faqSchema = {
         href="/programeaza-discutie/"
         class={btnSecondary}
       >
-        Programează o discuție
+        {CTA_DISCUSS}
       </a>
     </div>
     {products.every((e) => e.data.riskFreeTesting) && <RiskFreeTesting variant="inline" class="mt-6" />}
@@ -140,7 +140,7 @@ const faqSchema = {
           </p>
         </div>
         <a href="/cere-oferta/" class={btnPrimary}>Cere ofertă</a>
-        <a href="/programeaza-discutie/" class="-mt-2 py-2 text-sm text-yp-white/75 underline underline-offset-4 hover:text-yp-yellow">sau programează o discuție</a>
+        <a href="/programeaza-discutie/" class="-mt-2 py-2 text-sm text-yp-white/75 underline underline-offset-4 hover:text-yp-yellow">sau {CTA_DISCUSS.toLowerCase()}</a>
       </div>
     </li>
   </ul>

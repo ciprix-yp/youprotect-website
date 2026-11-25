@@ -1,5 +1,6 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
+import { CTA_DISCUSS } from '../../lib/site';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 import EquipmentList from '../../components/industries/EquipmentList.astro';
 
@@ -24,7 +25,7 @@ const breadcrumbSchema = {
   heroImage="/images/scena-productie.webp"
   ctaHeading="Echipezi o echipă de producție?"
   ctaSubheading="Îți recomandăm echipamentul potrivit liniei și riscurilor tale."
-  ctaButtonText="Programează o discuție"
+  ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
   ctaMicrocopy="Consultanță gratuită, fără obligații."

@@ -11,6 +11,7 @@ import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxo
 import { activeBrandPages } from '../../lib/catalog-brands';
 import { toCardProps } from '../../lib/product-card';
 import { jsonLd } from '../../lib/json-ld';
+import { CTA_DISCUSS } from '../../lib/site';
 import { searchKey } from '../../lib/search.js';
 
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
@@ -95,7 +96,7 @@ const filterOption =
               Cere ofertă
             </a>
             <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-lg border border-yp-white/25 px-6 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow">
-              Programează o discuție
+              {CTA_DISCUSS}
             </a>
           </div>
           <RiskFreeTesting variant="inline" />
@@ -230,7 +231,7 @@ const filterOption =
           Cere ofertă
         </a>
         <a href="/programeaza-discutie/" class="inline-flex h-12 items-center justify-center rounded-lg border border-yp-white/25 px-8 text-sm font-medium text-yp-white transition-colors hover:border-yp-yellow hover:text-yp-yellow">
-          Programează o discuție
+          {CTA_DISCUSS}
         </a>
       </div>
     </div>

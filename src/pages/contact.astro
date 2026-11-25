@@ -7,7 +7,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/global/PageHeader.astro';
 import ContactIcon from '../components/global/ContactIcon.astro';
-import { SITE, LEGAL_EUID } from '../lib/site';
+import { SITE, LEGAL_EUID, CTA_DISCUSS } from '../lib/site';
 import { whatsappHref } from '../lib/whatsapp';
 import { jsonLd } from '../lib/json-ld';
 import { btnPrimary, btnSecondary, pageContainer, sectionTitle } from '../lib/ui';
@@ -163,7 +163,7 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
             Răspunzi la câteva întrebări despre echipă și activitate, apoi alegi ora discuției din calendar. Venim la
             discuție cu recomandări pentru oamenii tăi.
           </p>
-          <a href="/programeaza-discutie/" data-track-location="pagina-contact" class:list={[btnSecondary, 'mt-6']}>Programează o discuție</a>
+          <a href="/programeaza-discutie/" data-track-location="pagina-contact" class:list={[btnSecondary, 'mt-6']}>{CTA_DISCUSS}</a>
         </div>
       </div>
     </div>

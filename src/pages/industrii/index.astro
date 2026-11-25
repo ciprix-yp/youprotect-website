@@ -1,5 +1,6 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
+import { CTA_DISCUSS } from '../../lib/site';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
@@ -40,7 +41,7 @@ const industries = [
   heroImage="/hero-youprotect-highvis.webp"
   ctaHeading="Nu ești sigur ce se potrivește?"
   ctaSubheading="Spune-ne activitatea echipei tale și îți recomandăm setul potrivit."
-  ctaButtonText="Programează o discuție"
+  ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
   ctaMicrocopy="Consultanță gratuită, fără obligații."

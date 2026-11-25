@@ -12,7 +12,7 @@ import { riskFreeExclusions } from '../../lib/risk-free-scope';
 import type { BrandPage } from '../../lib/catalog-brands';
 import { PERSONALIZATION_PAGE, productsWithLogoZones } from '../../lib/personalization';
 import { jsonLd } from '../../lib/json-ld';
-import { RISK_FREE_TESTING, SITE } from '../../lib/site';
+import { CTA_DISCUSS, RISK_FREE_TESTING, SITE } from '../../lib/site';
 import { btnPrimary, btnSecondary, breadcrumbNav, sectionTitle } from '../../lib/ui';
 
 interface Props {
@@ -137,7 +137,7 @@ const faqSchema = {
         href="/programeaza-discutie/"
         class={btnSecondary}
       >
-        Programează o discuție
+        {CTA_DISCUSS}
       </a>
     </div>
     <RiskFreeTesting variant="inline" class="mt-6" />

@@ -5,7 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlobalPreFooterCTA from '../global/GlobalPreFooterCTA.astro';
 import { GUIDES, GUIDES_HREF, formatGuideDate, guideHref, type Guide } from '../../lib/guides';
 import { jsonLd } from '../../lib/json-ld';
-import { SITE } from '../../lib/site';
+import { SITE, CTA_DISCUSS } from '../../lib/site';
 
 export interface GuideFaq {
   q: string;
@@ -134,7 +134,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
   <GlobalPreFooterCTA
     heading="Vrei o recomandare pentru echipa ta?"
     subheading="Spune-ne ce face echipa și unde lucrează. Îți recomandăm echipamentul potrivit și primești ofertă pentru cantitățile tale."
-    buttonText="Programează o discuție"
+    buttonText={CTA_DISCUSS}
     secondaryButtonText="Cere ofertă"
     secondaryButtonLink="/cere-oferta/"
   />
