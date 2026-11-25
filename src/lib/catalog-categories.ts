@@ -50,7 +50,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'geci-jachete',
     slug: 'geci-de-lucru',
-    photo: 'P06',
+    photo: 'P05',
     heading: 'Geci și jachete de lucru',
     title: 'Geci și jachete de lucru pentru firme',
     intro:
@@ -61,7 +61,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'pantaloni',
     slug: 'pantaloni-de-lucru',
-    photo: 'P05',
+    photo: 'P06',
     heading: 'Pantaloni de lucru și salopete',
     title: 'Pantaloni de lucru și salopete pentru firme',
     intro:

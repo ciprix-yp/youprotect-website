@@ -10,7 +10,7 @@
     "sursa": "original",
     "latimi": [640, 960, 1440],
     "erou": false,
-    "obiectPoz": { "desktop": "50% 30%", "telefon": "50% 35%" }
+    "obiectPoz": { "desktop": "50% 12%", "telefon": "50% 12%" }
   },
   {
     "id": "M02",
@@ -153,7 +153,7 @@
     "sursa": "original",
     "latimi": [640, 960, 1440],
     "erou": false,
-    "obiectPoz": { "desktop": "62% 40%", "telefon": "62% 35%" }
+    "obiectPoz": { "desktop": "62% 20%", "telefon": "62% 35%" }
   },
   {
     "id": "P11",
