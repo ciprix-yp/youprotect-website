@@ -15,6 +15,12 @@ Security (the downloaded files are untrusted external data):
 - fixed allowlist of https hosts, checked before every request, including every redirect hop (no automatic
   redirects); Portwest serves its signed file URLs from mediahub.portwest.com itself; MASCOT originals redirect
   from mascot.picturepark.com to ids-cp-ch.picturepark.com (both listed as exact hostnames);
+- every ID is also bound to its own supplier's hosts (S: www.sirsafety.com; M: the two Picturepark hosts;
+  P: mediahub.portwest.com), checked on the first request and on every redirect; only port 443; URLs with
+  control characters or spaces are rejected; a redirect to another host drops every header except User-Agent
+  (no CSRF token or Referer leaks) and is refused for requests with a body;
+- errors reach stdout/the manifest as a fixed text or the exception class name, never as the exception text
+  (an InvalidURL message can contain the path and query of a signed URL);
 - timeout and a per-response size cap; TLS verification stays on;
 - output names come only from the fixed ID list (regex ^[MPS]\\d{2}$), the extension from the format Pillow
   detects (never from a header or URL); the resolved path must stay inside original/;
@@ -40,15 +46,20 @@ except ImportError:
 
 warnings.simplefilter("error", Image.DecompressionBombWarning)  # default limit stays on; a bomb becomes an error
 
-IDS = ("M01 M02 M04 M05 M09 M10 M12 M18 M19 P04 P05 P06 P11 P13 S01 S02 S04 S06 S08 S12 S14 S16").split()
-ID_RE = re.compile(r"^[MPS]\d{2}$")
+ID_RE = re.compile(r"^[MPS][0-9]{2}$")
 ALLOWED_HOSTS = frozenset({
     "mascot.picturepark.com",
     "ids-cp-ch.picturepark.com",  # Picturepark download node: the Original URL on mascot.* redirects here
     "mediahub.portwest.com",
     "www.sirsafety.com",
 })
+PROVIDER_HOSTS = {
+    "M": frozenset({"mascot.picturepark.com", "ids-cp-ch.picturepark.com"}),
+    "P": frozenset({"mediahub.portwest.com"}),
+    "S": frozenset({"www.sirsafety.com"}),
+}
 FORMATS = {"JPEG": "jpg", "PNG": "png", "WEBP": "webp"}
+PIL_FORMATS = list(FORMATS)
 MAX_BYTES = 60 * 1024 * 1024
 TIMEOUT = 60
 MAX_HOPS = 5
@@ -64,17 +75,42 @@ PW_SKIP = {"P11": "originalul din Media Hub are doar 2000 px, la fel ca preview-
 MASCOT_ID_RE = re.compile(r"^[0-9a-f]{32}$")
 BYNDER_ID_RE = re.compile(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{16}$")
 
-BASE = Path(__file__).resolve().parents[2] / ".catalog-work" / "images" / "actiune"
+ROOT = Path(__file__).resolve().parents[2]
+DATA = ROOT / "src" / "data" / "poze-actiune.json"
+BASE = ROOT / ".catalog-work" / "images" / "actiune"
 ORIG_DIR = BASE / "original"
 PREVIEW_DIR = BASE / "preview"
 MANIFEST = BASE / "manifest.json"
 
 
-def check_url(url):
+class FetchError(ValueError):
+    """Our own error: the message is a fixed text (no URL, no response data), so it is safe to print."""
+
+
+def check_url(url, hosts):
+    """Allow only clean https URLs on port 443 whose host is on the global list AND on `hosts` (the supplier's)."""
+    if not isinstance(url, str) or re.search(r"[\x00-\x20\x7f]", url):
+        raise FetchError("URL cu caractere de control sau spații")
     parsed = urllib.parse.urlparse(url)
-    if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS or parsed.username or parsed.password:
-        raise ValueError(f"host sau schemă nepermise: {parsed.scheme}://{parsed.hostname}")
+    try:
+        port = parsed.port  # raises ValueError on a non-numeric port
+    except ValueError:
+        raise FetchError("port nepermis") from None
+    if port not in (None, 443):
+        raise FetchError("port nepermis")
+    host = parsed.hostname
+    if parsed.scheme != "https" or host not in ALLOWED_HOSTS or host not in hosts or parsed.username or parsed.password:
+        raise FetchError("schemă sau host nepermise")
     return url
+
+
+def reason_of(err):
+    """Text safe to print/store: ours as is; anything else (URLError, InvalidURL, Pillow, ...) only by class name."""
+    if isinstance(err, FetchError):
+        return str(err)
+    if isinstance(err, urllib.error.HTTPError):
+        return f"HTTPError {err.code}"
+    return type(err).__name__
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -89,12 +125,12 @@ class Client:
         jar = http.cookiejar.CookieJar()
         self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar), NoRedirect)
 
-    def request(self, url, data=None, headers=None, max_bytes=MAX_BYTES):
+    def request(self, url, hosts, data=None, headers=None, max_bytes=MAX_BYTES):
         hdrs = {"User-Agent": UA}
         hdrs.update(headers or {})
         method = "POST" if data is not None else "GET"
         for _ in range(MAX_HOPS + 1):
-            check_url(url)
+            check_url(url, hosts)
             req = urllib.request.Request(url, data=data, headers=hdrs, method=method)  # noqa: S310 (host checked)
             try:
                 # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
@@ -102,43 +138,49 @@ class Client:
                     return self._read(resp, max_bytes)
             except urllib.error.HTTPError as err:
                 location = err.headers.get("Location")
-                if err.code in (301, 302, 303, 307, 308) and location:
-                    url = urllib.parse.urljoin(url, location)  # re-checked at the top of the loop
-                    if err.code in (301, 302, 303):
-                        method, data = "GET", None
-                    continue
-                raise
-        raise ValueError("prea multe redirecturi")
+                is_redirect = err.code in (301, 302, 303, 307, 308) and bool(location)
+                err.close()
+                if not is_redirect:
+                    raise
+                target = urllib.parse.urljoin(url, location)  # re-checked at the top of the loop
+                if urllib.parse.urlparse(target).hostname != urllib.parse.urlparse(url).hostname:
+                    if data is not None:
+                        raise FetchError("redirect pe alt host la o cerere cu corp") from None
+                    hdrs = {"User-Agent": UA}  # nothing else leaves for another host
+                url = target
+                if err.code in (301, 302, 303):
+                    method, data = "GET", None
+        raise FetchError("prea multe redirecturi")
 
     @staticmethod
     def _read(resp, max_bytes):
         declared = resp.headers.get("Content-Length")
         if declared and declared.isdigit() and int(declared) > max_bytes:
-            raise ValueError("răspuns prea mare")
+            raise FetchError("răspuns prea mare")
         body = resp.read(max_bytes + 1)
         if len(body) > max_bytes:
-            raise ValueError("răspuns prea mare")
+            raise FetchError("răspuns prea mare")
         return body
 
 
 def safe_target(image_id, ext):
     """Output path derived only from a validated ID and a Pillow-detected extension."""
     if not ID_RE.fullmatch(image_id) or ext not in FORMATS.values():
-        raise ValueError("id sau extensie invalide")
+        raise FetchError("id sau extensie invalide")
     target = (ORIG_DIR / f"{image_id}.{ext}").resolve()
     if target.parent != ORIG_DIR.resolve():
-        raise ValueError("cale în afara directorului de ieșire")
+        raise FetchError("cale în afara directorului de ieșire")
     return target
 
 
 def inspect(path):
     """Open with Pillow (default pixel limit), verify, reload fully. Returns (format, (w, h) after EXIF)."""
-    with Image.open(path) as probe:
+    with Image.open(path, formats=PIL_FORMATS) as probe:
         fmt = probe.format
         probe.verify()
     if fmt not in FORMATS:
-        raise ValueError(f"format nepermis: {fmt}")
-    with Image.open(path) as img:
+        raise FetchError("format nepermis")
+    with Image.open(path, formats=PIL_FORMATS) as img:
         img.load()
         width, height = img.size
         orientation = img.getexif().get(274, 1)
@@ -164,7 +206,7 @@ def store(image_id, body):
     """Validate the downloaded bytes and place them as original/<ID>.<ext>. Returns (path, size)."""
     tmp = (ORIG_DIR / f".{image_id}.part").resolve()
     if tmp.parent != ORIG_DIR.resolve():
-        raise ValueError("cale în afara directorului de ieșire")
+        raise FetchError("cale în afara directorului de ieșire")
     tmp.write_bytes(body)
     try:
         fmt, size = inspect(tmp)
@@ -179,26 +221,28 @@ def store(image_id, body):
 # --- suppliers ---------------------------------------------------------------------------------------------
 
 def mascot_bytes(client, entry):
+    hosts = PROVIDER_HOSTS["M"]
     source_id = str(entry.get("id_sursa", ""))
     if not MASCOT_ID_RE.fullmatch(source_id):
-        raise ValueError("id_sursa invalid")
+        raise FetchError("id_sursa invalid")
     if not getattr(client, "mascot_ready", False):
-        client.request(f"{MASCOT}/bff/silent-login", headers={"x-csrf": "1"})  # anonymous guest session
+        client.request(f"{MASCOT}/bff/silent-login", hosts, headers={"x-csrf": "1"})  # anonymous guest session
         client.mascot_ready = True
-    return client.request(f"{MASCOT}/service/Contents/downloads/{source_id}/Original", headers={"x-csrf": "1"})
+    return client.request(f"{MASCOT}/service/Contents/downloads/{source_id}/Original", hosts, headers={"x-csrf": "1"})
 
 
 def portwest_bytes(client, entry):
+    hosts = PROVIDER_HOSTS["P"]
     asset_id = str(entry.get("bynder_asset_id", ""))
     if not BYNDER_ID_RE.fullmatch(asset_id):
-        raise ValueError("bynder_asset_id invalid")
+        raise FetchError("bynder_asset_id invalid")
     if not getattr(client, "pw_csrf", None):
-        page = client.request(PW_COLLECTION_PAGE).decode("utf-8", "replace")
+        page = client.request(PW_COLLECTION_PAGE, hosts).decode("utf-8", "replace")
         match = re.search(r'csrf = "([0-9a-f]{20,64})"', page)
         if not match:
-            raise ValueError("token CSRF negăsit")
+            raise FetchError("token CSRF negăsit")
         client.pw_csrf = match.group(1)
-    detail = client.request(f"{PORTWEST}/media/detail/?mediaId={asset_id}").decode("utf-8", "replace")
+    detail = client.request(f"{PORTWEST}/media/detail/?mediaId={asset_id}", hosts).decode("utf-8", "replace")
     item_id = None
     for tag in re.findall(r"<a\b[^>]*>", detail):
         attrs = dict(re.findall(r'([\w-]+)="([^"]*)"', tag))
@@ -206,22 +250,22 @@ def portwest_bytes(client, entry):
             item_id = attrs.get("data-id", "")
             break
     if not item_id or not BYNDER_ID_RE.fullmatch(item_id):
-        raise ValueError("fișierul Original nu apare în Media Hub")
+        raise FetchError("fișierul Original nu apare în Media Hub")
     form = urllib.parse.urlencode([
         ("type", "mediaItem"), ("iframe", "false"), ("includeArchive", "true"),
         ("collectionId", PW_MOOD_COLLECTION_ID), ("addAdditionals", "true"),
         ("requestData", item_id), ("media_ids[]", item_id)]).encode()
-    answer = client.request(f"{PORTWEST}/new_download/", data=form, max_bytes=1024 * 1024, headers={
+    answer = client.request(f"{PORTWEST}/new_download/", hosts, data=form, max_bytes=1024 * 1024, headers={
         "X-Requested-With": "XMLHttpRequest", "X-CSRF-Token": client.pw_csrf, "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Referer": PW_COLLECTION_PAGE})
     signed = json.loads(answer).get("signed_url")
     if not isinstance(signed, str):
-        raise ValueError("Media Hub nu a returnat URL de descărcare")
-    return client.request(signed, headers={"Referer": PW_COLLECTION_PAGE})  # signed URL: host-checked, never logged
+        raise FetchError("Media Hub nu a returnat URL de descărcare")
+    return client.request(signed, hosts, headers={"Referer": PW_COLLECTION_PAGE})  # signed URL: host-checked, never logged
 
 
 def sirsafety_bytes(client, entry):
-    return client.request(str(entry.get("url_sursa", "")))
+    return client.request(entry.get("url_sursa", ""), PROVIDER_HOSTS["S"])
 
 
 FETCHERS = {"M": mascot_bytes, "P": portwest_bytes, "S": sirsafety_bytes}
@@ -233,7 +277,7 @@ def declared_max_side(entry):
     px = entry.get("rezolutie_originala_px")
     if isinstance(px, list) and len(px) == 2:
         return max(px)
-    match = re.fullmatch(r"(\d+)x(\d+)", str(entry.get("rezolutie_originala", "")))
+    match = re.fullmatch(r"([0-9]+)x([0-9]+)", str(entry.get("rezolutie_originala", "")))
     return max(int(match.group(1)), int(match.group(2))) if match else None
 
 
@@ -267,8 +311,8 @@ def process(client, entry):
             body = FETCHERS[image_id[0]](client, entry)
             time.sleep(PAUSE)
             path, size = store(image_id, body)
-        except Exception as err:  # reason only; never the URL
-            return use_preview(f"originalul nu a putut fi luat ({type(err).__name__}: {str(err)[:120]})")
+        except Exception as err:  # reason only: fixed text or class name, never the exception text (it can hold the URL)
+            return use_preview(f"originalul nu a putut fi luat ({reason_of(err)})")
     if max(size) <= preview_side:
         path.unlink()  # our own downloaded file, no gain over the preview
         return use_preview(f"originalul ({max(size)} px) nu aduce rezoluție peste preview ({preview_side} px)")
@@ -276,11 +320,19 @@ def process(client, entry):
     set_result(entry, "original", reason, path, size)
 
 
+def load_ids():
+    """The photo IDs, in order, from src/data/poze-actiune.json (the single source); each must match ID_RE, no duplicates."""
+    ids = [e.get("id") for e in json.loads(DATA.read_text(encoding="utf-8"))]
+    if not ids or len(set(ids)) != len(ids) or not all(isinstance(i, str) and ID_RE.fullmatch(i) for i in ids):
+        sys.exit("src/data/poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
+    return ids
+
+
 def main():
+    ids_expected = load_ids()
     entries = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    ids = [e.get("id") for e in entries]
-    if ids != IDS or not all(ID_RE.fullmatch(i) for i in ids):
-        sys.exit("manifest.json nu conține exact cele 22 de id-uri așteptate")
+    if [e.get("id") for e in entries] != ids_expected:
+        sys.exit("manifest.json nu conține exact id-urile (și ordinea) din src/data/poze-actiune.json")
     ORIG_DIR.mkdir(parents=True, exist_ok=True)
     client = Client()
     for entry in entries:

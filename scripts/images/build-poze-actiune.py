@@ -34,7 +34,7 @@ except ImportError:
 
 warnings.simplefilter("error", Image.DecompressionBombWarning)  # default pixel limit stays on
 
-IDS = ("M01 M02 M04 M05 M09 M10 M12 M18 M19 P04 P05 P06 P11 P13 S01 S02 S04 S06 S08 S12 S14 S16").split()
+ID_RE = re.compile(r"^[MPS][0-9]{2}$")
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / ".catalog-work" / "images" / "actiune"
 MANIFEST = BASE / "manifest.json"
@@ -42,7 +42,7 @@ DATA = ROOT / "src" / "data" / "poze-actiune.json"
 VARIANTS = ROOT / "src" / "data" / "poze-actiune-variante.json"
 OUT = ROOT / "public" / "images" / "actiune"
 
-SOURCE_RE = re.compile(r"^(original|preview)/([MPS]\d{2})\.(jpg|png|webp)$")
+SOURCE_RE = re.compile(r"^(original|preview)/([MPS][0-9]{2})\.(jpg|png|webp)$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 FORMATS = {"JPEG", "PNG", "WEBP"}
 BASE_WIDTHS = (640, 960, 1440)
@@ -66,12 +66,17 @@ def load_source(entry, manifest_entry):
     path = (BASE / rel).resolve()
     if path.parent != (BASE / match.group(1)).resolve():
         fail(f"{entry['id']}: cale în afara directorului așteptat")
-    with Image.open(path) as probe:
-        fmt = probe.format
-        probe.verify()
+    try:
+        with Image.open(path, formats=list(FORMATS)) as probe:
+            fmt = probe.format
+            probe.verify()
+    except FileNotFoundError:
+        fail(f"{entry['id']}: lipsește {rel}; rulează întâi scripts/images/fetch-poze-actiune.py")
+    except OSError:  # includes UnidentifiedImageError (format outside JPEG/PNG/WEBP)
+        fail(f"{entry['id']}: {rel} nu e o imagine JPEG/PNG/WEBP validă")
     if fmt not in FORMATS:
         fail(f"{entry['id']}: format nepermis {fmt}")
-    with Image.open(path) as img:
+    with Image.open(path, formats=list(FORMATS)) as img:
         img.load()
         icc = img.info.get("icc_profile")
         img = ImageOps.exif_transpose(img)
@@ -81,7 +86,8 @@ def load_source(entry, manifest_entry):
                     img.convert("RGB"), ImageCms.ImageCmsProfile(io.BytesIO(icc)), SRGB, outputMode="RGB"
                 )
             except ImageCms.PyCMSError:
-                pass  # unreadable profile: treat pixels as sRGB
+                # unreadable profile: pixels are treated as sRGB (the id only; nothing else from the file)
+                print(f"AVERTISMENT {entry['id']}: profil ICC ilizibil, pixelii sunt tratați ca sRGB")
         img = img.convert("RGB")
         return Image.frombytes("RGB", img.size, img.tobytes())  # fresh image, no metadata carried over
 
@@ -119,8 +125,12 @@ def chunk_names(data):
 def main():
     entries = json.loads(DATA.read_text(encoding="utf-8"))
     manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
-    if [e["id"] for e in entries] != IDS:
-        fail("lista de ID-uri din poze-actiune.json nu e cea fixă")
+    ids = [e["id"] for e in entries]
+    if not ids or len(set(ids)) != len(ids) or not all(ID_RE.fullmatch(i) for i in ids):
+        fail("poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
+    missing = [i for i in ids if i not in manifest]
+    if missing:
+        fail(f"manifest.json nu are intrări pentru: {' '.join(missing)}")
     OUT.mkdir(parents=True, exist_ok=True)
     out_root = OUT.resolve()
     variants = {}
