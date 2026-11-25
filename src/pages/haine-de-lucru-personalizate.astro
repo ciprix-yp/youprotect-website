@@ -22,9 +22,11 @@ const groups = (Object.keys(CATEGORIES) as CategoryKey[])
   .filter((g) => g.items.length > 0);
 
 const hiVisExample = withHiVisLimit[0];
+// Modelele de damă cu zone de logo (09 §3: întrebarea despre femei apare doar dacă fișele o confirmă).
+const womenWithZones = withZones.filter((e) => e.data.name.toLocaleLowerCase("ro-RO").includes("de damă"));
 const faq = [
   {
-    q: "Pe ce haine de lucru pot pune logo-ul firmei?",
+    q: "Pe ce haine de lucru pot pune logoul firmei?",
     a: "Pe tricouri, tricouri polo, hanorace, geci, veste, pantaloni și salopete din catalogul You Protect. Pentru modelele la care producătorul dă zonele de logo, le vezi pe această pagină, cu dimensiunile maxime. Pentru celelalte, locul și mărimea le stabilim la ofertă.",
   },
   {
@@ -40,14 +42,22 @@ const faq = [
     a: "Termenul depinde de produse, de cantitate și de tehnică. Îl primești în ofertă și îl știi înainte să comanzi.",
   },
   {
-    q: "În ce format trimit logo-ul?",
+    q: "În ce format trimit logoul?",
     a: "Ideal ca fișier vectorial: PDF, AI, EPS sau SVG. Dacă ai doar o imagine, de exemplu PNG sau JPG, trimite-o și îți spunem dacă se poate folosi.",
   },
   ...(hiVisExample
     ? [
         {
           q: "Pot pune logo pe o geacă reflectorizantă fără să pierd certificarea EN ISO 20471?",
-          a: `Da, dacă logo-ul rămâne în limita dată de producător pentru acel model. De exemplu, la ${hiVisExample.data.name}: ${hiVisExample.data.personalization!.hiVisNote}`,
+          a: `Da, dacă logoul rămâne în limita dată de producător pentru acel model. De exemplu, la ${hiVisExample.data.name}: ${hiVisExample.data.personalization!.hiVisNote}`,
+        },
+      ]
+    : []),
+  ...(womenWithZones.length > 0
+    ? [
+        {
+          q: "Aveți uniforme de lucru cu logo și pentru femei?",
+          a: `Da. În catalogul You Protect sunt și modele de damă cu zone de logo date de producător: ${joinRo(womenWithZones.map((e) => e.data.name))}. Pui logoul pe ele la fel ca pe celelalte haine.`,
         },
       ]
     : []),
@@ -88,12 +98,12 @@ const steps = [
     text: "Din catalog sau cu recomandarea noastră, după ce face echipa ta și unde lucrează.",
   },
   {
-    title: "Ne trimiți logo-ul",
+    title: "Ne trimiți logoul",
     text: "Ideal ca fișier vectorial (PDF, AI, EPS sau SVG). Dacă ai doar o imagine, trimite-o și îți spunem dacă se poate folosi.",
   },
   {
     title: "Stabilim locul, mărimea și tehnica",
-    text: "Pentru fiecare produs, în zonele indicate de producător. Tehnica o alegem după material și după logo.",
+    text: "Pentru fiecare produs, în zonele date de producător, acolo unde le dă. Tehnica o alegem după material și după logo.",
   },
   {
     title: "Primești oferta completă",
@@ -108,11 +118,10 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
   title={PERSONALIZATION_PAGE.title}
   description={PERSONALIZATION_PAGE.description}
   heroTitle="Haine de lucru personalizate cu logo"
-  heroSubtitle="Tricouri, tricouri polo, hanorace, geci, veste și pantaloni de lucru cu logo-ul firmei tale. Personalizarea o facem prin parteneri, iar locul, mărimea și tehnica le stabilim cu tine, în ofertă."
+  heroSubtitle="You Protect, din Satu Mare, livrează firmelor uniforme de lucru personalizate: tricouri și tricouri polo, hanorace, geci, veste și pantaloni de lucru cu logoul firmei tale. Personalizarea o fac partenerii noștri, iar locul, mărimea și tehnica logoului le stabilim împreună, înainte de comandă."
   breadcrumb="Haine personalizate"
   heroImage="/images/scena-personalizare.webp"
-  ctaHeading="Vrei hainele echipei cu logo-ul firmei?"
-  ctaSubheading="Spune-ne ce produse ai în vedere și câți oameni ai. Primești oferta cu personalizarea inclusă."
+  ctaHeading="Nu trebuie să știi dinainte ce haine vrei"
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Cere ofertă"
   ctaSecondaryButtonLink="/cere-oferta/"
@@ -145,8 +154,8 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
     <div class="max-w-7xl mx-auto px-4">
       <h2 id="tehnici" class={sectionHeading}>Broderie, serigrafie sau transfer termic</h2>
       <p class="mt-4 max-w-3xl text-lg text-neutral-300 leading-relaxed">
-        Personalizarea o facem prin parteneri. Care tehnică se potrivește depinde de material, de produs și de logo, așa că
-        ți-o recomandăm în ofertă, pentru fiecare produs în parte.
+        Tehnica potrivită depinde de material, de produs și de logo. Ți-o recomandăm în ofertă, pentru fiecare produs în
+        parte.
       </p>
       <dl class="mt-10 grid md:grid-cols-3 gap-6">
         {LOGO_TECHNIQUES.map((t) => (
@@ -162,10 +171,10 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
   {groups.length > 0 && (
     <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="zone-logo">
       <div class="max-w-7xl mx-auto px-4">
-        <h2 id="zone-logo" class={sectionHeading}>Unde poți pune logo-ul</h2>
+        <h2 id="zone-logo" class={sectionHeading}>Unde poți pune logoul</h2>
         <p class="mt-4 max-w-3xl text-lg text-neutral-300 leading-relaxed">
           Zonele și dimensiunile maxime de mai jos sunt cele date de {joinRo(brandsWithZones)} pentru fiecare model. Pentru
-          celelalte haine din catalog, locul și mărimea logo-ului le stabilim la ofertă.
+          celelalte haine din catalog, locul și mărimea logoului le stabilim la ofertă.
         </p>
         <div class="mt-10 space-y-10">
           {groups.map((group) => (
@@ -218,8 +227,8 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
           <h2 id="reflectorizante" class={sectionHeading}>Logo pe hainele reflectorizante, fără să pierzi certificarea</h2>
           <p class="mt-4 text-lg text-neutral-300 leading-relaxed">
             Standardul EN ISO 20471 cere, pentru fiecare clasă de vizibilitate, o suprafață minimă de material fluorescent și
-            reflectorizant. Logo-ul acoperă o parte din ea, așa că producătorul dă o limită pentru fiecare model. Ținem cont de
-            ea când stabilim mărimea logo-ului.
+            reflectorizant. Logoul acoperă o parte din ea, așa că producătorul dă o limită pentru fiecare model. Ținem cont de
+            ea când stabilim mărimea logoului.
           </p>
           <ul class="mt-8 space-y-4">
             {withHiVisLimit.map((e) => (
@@ -242,7 +251,7 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
       <div class="max-w-3xl">
         <h2 id="testare" class={sectionHeading}>Testezi hainele cu logo, pe oamenii tăi</h2>
         <p class="mt-4 text-lg text-neutral-300 leading-relaxed">
-          În programul de testare, produsele se personalizează cu logo-ul firmei, ca la o comandă obișnuită. Echipa poartă
+          În programul de testare, produsele se personalizează cu logoul firmei, ca la o comandă obișnuită. Echipa poartă
           hainele pe care le-ar purta și după comandă, iar tu vezi cum arată și cum rezistă înainte să echipezi toată firma.
         </p>
         <RiskFreeTesting variant="inline" class="mt-6" />
