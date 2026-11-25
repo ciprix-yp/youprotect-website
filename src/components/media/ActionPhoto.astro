@@ -2,8 +2,11 @@
 // Poză reală cu oameni în acțiune, citită din src/data/poze-actiune.json doar prin `id`. Randează doar <img>:
 // fără figcaption și fără credit vizibil (creditul stă în ImageObject, vezi imageObject() din src/lib/poze-actiune.ts).
 //
-// Wrapperul trebuie să aibă `overflow-hidden` (și colțuri `rounded-xl`) când `motion` e activ: `sd-media` scalează
-// poza la derulare (global.css) și fără clipping ar ieși din cadru. Fără zoom la hover: poza nu e clicabilă.
+// Wrapperul trebuie să aibă `overflow-clip` (și colțuri `rounded-xl`) când `motion` e activ: `sd-media` scalează
+// poza la derulare (global.css) și fără tăiere ar ieși din cadru. NU `overflow-hidden`: `animation-timeline: view()` se
+// leagă de cel mai apropiat strămoș cu overflow ≠ visible/clip, iar cu `hidden` wrapperul devine containerul de derulare,
+// progresul rămâne blocat la 1 și efectul nu rulează deloc (tests/scroll-timeline-overflow.test.mjs). Eroii (PageHeader)
+// folosesc `sd-hero-photo` prin `class`, nu `motion`. Fără zoom la hover: poza nu e clicabilă.
 //
 // TIPARUL pe care îl detectează tests/poze-actiune.test.mjs (taskurile următoare îl respectă, altfel testul pică):
 //   - în src/pages/**/*.astro: <ActionPhoto id="M02" … />  (id literal, între ghilimele)
@@ -21,7 +24,7 @@ interface Props {
   priority?: boolean;
   loading?: 'lazy' | 'eager';
   class?: string;
-  /** Adaugă `sd-media` (mișcare legată de derulare). Wrapperul trebuie să aibă `overflow-hidden`. */
+  /** Adaugă `sd-media` (mișcare legată de derulare). Wrapperul trebuie să aibă `overflow-clip`, nu `overflow-hidden`. */
   motion?: boolean;
   fit?: 'cover' | 'contain';
 }

@@ -57,18 +57,17 @@ const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
           (40-55 KB), nu pe cea de 960 sau 1440 px. Măsurat pe 4G throttled: LCP mai mic decât cu scenele vechi; cu 65vw (960 px)
           LCP creștea cu 0,3-1 s. Poza e puțin mai moale la 1,8x; dacă te deranjează pe iPhone, 65vw e varianta mai clară. */}
       {heroPhoto ? (
-        <div class="relative aspect-[16/10] overflow-hidden rounded-xl border border-yp-white/10 bg-yp-gray">
+        <div class="relative aspect-[16/10] overflow-clip rounded-xl border border-yp-white/10 bg-yp-gray">
           <ActionPhoto
             id={heroPhoto}
             sizes="(min-width: 1280px) 576px, (min-width: 1024px) 47vw, (min-width: 768px) 60vw, 40vw"
             priority
-            motion
-            class="absolute inset-0"
+            class="sd-hero-photo absolute inset-0"
           />
         </div>
       ) : image && (
-        <div class="relative aspect-[16/10] overflow-hidden border border-yp-white/10 bg-yp-gray">
-          <img src={image} alt="" width="1200" height="750" loading="eager" class="sd-media absolute inset-0 h-full w-full object-cover" />
+        <div class="relative aspect-[16/10] overflow-clip border border-yp-white/10 bg-yp-gray">
+          <img src={image} alt="" width="1200" height="750" loading="eager" class="sd-hero-photo absolute inset-0 h-full w-full object-cover" />
         </div>
       )}
     </div>

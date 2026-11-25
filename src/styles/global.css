@@ -221,6 +221,15 @@
       animation-timeline: scroll(root);
       animation-range: 0 100vh;
     }
+    /* Poza din antetul paginilor interioare (PageHeader): pornește la scara 1 (nu mărită ca sd-media, care la încărcare
+       e deja pe la 40% din interval) și crește ușor la derulare. Nu se translatează, ca să nu lase gol în cadrul tăiat. */
+    .sd-hero-photo {
+      animation-name: sd-hero-photo;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
     .sd-hero-content > * {
       animation-name: sd-fade-under-header;
       animation-timing-function: linear;
@@ -282,6 +291,11 @@
 @keyframes sd-hero-media {
   to {
     translate: 0 20%;
+  }
+}
+@keyframes sd-hero-photo {
+  to {
+    scale: 1.06;
   }
 }
 @keyframes sd-fade-under-header {

@@ -145,7 +145,7 @@ const faqSchema = {
     </div>
     <RiskFreeTesting variant="inline" class="mt-6" />
     {page.photo && (
-      <div class="relative mt-8 aspect-[3/2] overflow-hidden rounded-xl md:aspect-[2/1] lg:col-start-2 lg:row-start-1 lg:row-span-6 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
+      <div class="relative mt-8 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:col-start-2 lg:row-start-1 lg:row-span-6 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
         <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
       </div>
     )}

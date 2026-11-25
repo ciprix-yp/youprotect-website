@@ -91,7 +91,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
     {photo && photoBox && (
       <div class="mt-10 max-w-3xl">
         <div
-          class="w-full overflow-hidden rounded-xl"
+          class="w-full overflow-clip rounded-xl"
           style={`aspect-ratio:${photoBox.width}/${photoBox.height};max-width:min(100%,calc(28rem*${photoBox.width}/${photoBox.height}))`}
         >
           <ActionPhoto id={photo} sizes="(min-width: 768px) 768px, calc(100vw - 2rem)" motion />

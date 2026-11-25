@@ -32,7 +32,9 @@ const fill = (cols: number) => (tiles.length % cols === 0 ? 1 : (tiles.length % 
 const lgCols = ([8, 7, 6, 5] as const).reduce((best, cols) => (fill(cols) > fill(best) ? cols : best));
 ---
 
-<div class="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0" tabindex="0" role="region" aria-label="Categorii: derulează orizontal pe telefon">
+{/* EXCEPȚIE documentată (tests/scroll-timeline-overflow.test.mjs, `data-sd-exceptie`): pe telefon scrollerul orizontal e
+    containerul `view()`, deci `card-3d` nu urcă la derulare acolo; de la sm în sus (overflow-visible) efectul rulează. */}
+<div class="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0" data-sd-exceptie="scroller orizontal pe telefon" tabindex="0" role="region" aria-label="Categorii: derulează orizontal pe telefon">
   <ul class:list={['flex snap-x snap-mandatory scroll-px-4 gap-3 py-1 sm:grid sm:grid-cols-4 sm:py-0', LG_COLS[lgCols]]}>
     {tiles.map((t) => (
       <li class="w-40 shrink-0 snap-start sm:w-auto">
