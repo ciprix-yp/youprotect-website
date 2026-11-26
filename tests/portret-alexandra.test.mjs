@@ -30,7 +30,8 @@ test('portret: 4 variante (640/960/1280/1536), sub 250 KB, fără EXIF/XMP/ICC',
     assert.ok(buf.length <= 250 * 1024, `${v.file} peste 250 KB`);
     const bad = chunks(buf).filter((c) => ['EXIF', 'XMP ', 'ICCP'].includes(c));
     assert.deepEqual(bad, [], `${v.file} are metadate`);
-    assert.ok(!/Canon|Lightroom|Penes/.test(buf.toString('latin1')), `${v.file}: urme de metadate de cameră`);
+    // Doar markeri structurali de metadate (fără nume de persoane).
+    assert.ok(!/Exif\0\0|<x:xmpmeta|ns\.adobe\.com\/xap|ICC_PROFILE|Canon|Lightroom/.test(buf.toString('latin1')), `${v.file}: urme de metadate de cameră`);
   }
 });
 
