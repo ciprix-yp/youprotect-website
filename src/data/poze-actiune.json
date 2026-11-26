@@ -167,7 +167,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.3622, 0, 0.8955, 1] },
-    "obiectPoz": { "desktop": "63% 35%", "telefon": "50% 30%" }
+    "obiectPoz": { "desktop": "63% 35%", "telefon": "50% 30%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "63% 35%" }, "gradient": "standard" }
   },
   {
     "id": "M25",
@@ -181,7 +182,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.405, 0, 0.9383, 1] },
-    "obiectPoz": { "desktop": "63% 40%", "telefon": "50% 35%" }
+    "obiectPoz": { "desktop": "63% 40%", "telefon": "50% 35%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "63% 40%" }, "gradient": "standard" }
   },
   {
     "id": "M26",
@@ -195,7 +197,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.3761, 0, 0.9094, 1] },
-    "obiectPoz": { "desktop": "58% 35%", "telefon": "55% 35%" }
+    "obiectPoz": { "desktop": "58% 35%", "telefon": "55% 35%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "58% 35%" }, "gradient": "standard" }
   },
   {
     "id": "M27",
@@ -209,7 +212,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.4667, 0, 1, 1] },
-    "obiectPoz": { "desktop": "78% 35%", "telefon": "50% 30%" }
+    "obiectPoz": { "desktop": "78% 35%", "telefon": "50% 30%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "78% 35%" }, "gradient": "standard" }
   },
   {
     "id": "P04",
@@ -275,7 +279,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.3001, 0.03, 0.8172, 0.8709] },
-    "obiectPoz": { "desktop": "75% 30%", "telefon": "65% 25%" }
+    "obiectPoz": { "desktop": "75% 30%", "telefon": "65% 25%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "75% 30%" }, "gradient": "standard" }
   },
   {
     "id": "P15",
@@ -289,7 +294,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.308, 0, 0.8349, 1] },
-    "obiectPoz": { "desktop": "65% 30%", "telefon": "55% 25%" }
+    "obiectPoz": { "desktop": "65% 30%", "telefon": "55% 25%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "65% 30%" }, "gradient": "standard" }
   },
   {
     "id": "P16",
@@ -303,7 +309,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.4434, 0, 0.9641, 1] },
-    "obiectPoz": { "desktop": "75% 35%", "telefon": "60% 35%" }
+    "obiectPoz": { "desktop": "75% 35%", "telefon": "60% 35%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "75% 35%" }, "gradient": "standard" }
   },
   {
     "id": "S01",
@@ -331,7 +338,8 @@
     "latimiCorp": [640, 960, 1440],
     "erou": true,
     "portret": { "decupaj": [0.5, 0, 0.95, 1] },
-    "obiectPoz": { "desktop": "60% 35%", "telefon": "75% 35%" }
+    "obiectPoz": { "desktop": "60% 35%", "telefon": "75% 35%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "70% 30%" }, "gradient": "standard" }
   },
   {
     "id": "S04",
@@ -423,7 +431,8 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.492, 0.0476, 1, 1] },
-    "obiectPoz": { "desktop": "72% 40%", "telefon": "50% 35%" }
+    "obiectPoz": { "desktop": "72% 40%", "telefon": "50% 35%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "72% 40%" }, "gradient": "standard" }
   },
   {
     "id": "S19",
@@ -437,6 +446,7 @@
     "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "portret": { "decupaj": [0.4531, 0, 0.901, 0.9991] },
-    "obiectPoz": { "desktop": "62% 30%", "telefon": "50% 30%" }
+    "obiectPoz": { "desktop": "62% 30%", "telefon": "50% 30%" },
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "62% 30%" }, "gradient": "standard" }
   }
 ]

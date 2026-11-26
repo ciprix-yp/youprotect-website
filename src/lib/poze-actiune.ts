@@ -5,6 +5,7 @@
 // tests/poze-actiune.test.mjs; tiparul pe care îl detectează testul e descris în src/components/media/ActionPhoto.astro.
 import photos from '../data/poze-actiune.json' with { type: 'json' };
 import variants from '../data/poze-actiune-variante.json' with { type: 'json' };
+import { HERO_GRADIENTS, type HeroGradient } from './erou.ts';
 import { SITE } from './site.ts';
 
 export interface PhotoVariant {
@@ -38,6 +39,11 @@ export interface ActionPhotoData {
   /** Decupaj portret 4:5 (fracții [x0, y0, x1, y1] din originalul ÎNTREG, înainte de `decupaj`-ul de desktop) pentru telefon; variantele `-p768`/`-p960` le face scriptul. */
   portret?: { decupaj: [number, number, number, number] };
   obiectPoz: { desktop: string; telefon: string };
+  /**
+   * Doar pozele eroului rotativ al homepage-ului: cadrul (`object-position`) și presetul de gradient (HERO_GRADIENTS din
+   * src/lib/erou.ts) cu care poza apare ca erou. Vin din date, nu din CSS global.
+   */
+  eroul?: { poz: { telefon: string; desktop: string }; gradient: HeroGradient };
 }
 
 export const ACTION_PHOTOS = photos as ActionPhotoData[];
@@ -240,4 +246,27 @@ export function bodySizes(sizes: string): string {
   if (entries.length === 0 || entries[entries.length - 1] !== PHONE_FULL_WIDTH) return sizes;
   // Imediat înaintea ultimei intrări: intrările condiționate ale paginii (ex. `(min-width: 640px) 48vw`) câștigă la 640-767 px.
   return [...entries.slice(0, -1), BODY_PHONE_HIDPI, PHONE_FULL_WIDTH].join(', ');
+}
+
+/** Cadrul și clasele de gradient ale unei poze de erou rotativ; eroare dacă poza nu are `eroul` în date. */
+export function heroStyle(id: string) {
+  const { eroul } = getPhoto(id);
+  if (!eroul) throw new Error(`Poza „${id}” nu are „eroul” în src/data/poze-actiune.json.`);
+  return { poz: eroul.poz, gradient: HERO_GRADIENTS[eroul.gradient] };
+}
+
+/**
+ * Datele minime pentru scriptul din <head> care preîncarcă poza eroului aleasă la întâmplare: pe poză `[slug, lățimi erou,
+ * lățimi portret]`. Scriptul reface din ele exact `srcset`-urile din <picture> (heroSrcset/portraitSrcset): numele fișierelor
+ * sunt `<slug>-<lățime>.webp` și `<slug>-p<lățime>.webp`, lucru verificat aici (build-ul pică dacă datele nu respectă tiparul).
+ */
+export function heroPreload(ids: string[]): [string, number[], number[]][] {
+  return ids.map((id) => {
+    const { slug } = getPhoto(id);
+    const hero = heroVariants(id);
+    const portrait = portraitVariants(id);
+    for (const v of hero) if (v.file !== `${slug}-${v.width}.webp`) throw new Error(`Poza „${id}”: ${v.file} nu respectă tiparul <slug>-<lățime>.webp.`);
+    for (const v of portrait) if (v.file !== `${slug}-p${v.width}.webp`) throw new Error(`Poza „${id}”: ${v.file} nu respectă tiparul <slug>-p<lățime>.webp.`);
+    return [slug, hero.map((v) => v.width), portrait.map((v) => v.width)];
+  });
 }

@@ -29,7 +29,8 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ACTION_PHOTOS, BODY_PHONE_HIDPI, PHONE_FULL_WIDTH, bodySizes, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, photoSize, photoVariants, heroSrc, heroSrcset, heroSize, heroVariants, getPhoto } from '../src/lib/poze-actiune.ts';
+import { ACTION_PHOTOS, BODY_PHONE_HIDPI, PHONE_FULL_WIDTH, bodySizes, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, photoSize, photoVariants, heroSrc, heroSrcset, portraitSrcset as photoPortraitSrcset, heroSize, heroVariants, heroStyle, heroPreload, getPhoto } from '../src/lib/poze-actiune.ts';
+import { HERO_GRADIENTS } from '../src/lib/erou.ts';
 import { jsonLd } from '../src/lib/json-ld.ts';
 import { SITE } from '../src/lib/site.ts';
 import { CATEGORY_PAGES } from '../src/lib/catalog-categories.ts';
@@ -1209,6 +1210,55 @@ test('dist: S02 are 640/960/1440 în ghid și 768/960/1440/1920 pe homepage', (t
   };
   assert.deepEqual(srcsetOf('ghiduri/haine-de-lucru-care-rezista/index.html'), [640, 960, 1440]);
   assert.deepEqual(srcsetOf('index.html'), [768, 960, 1440, 1920]);
+});
+
+// Eroul rotativ al homepage-ului: cele 10 poze (ordinea din `heroPhotos`, index.astro), cadrul și gradientul vin din date.
+const HERO_SET = ['S02', 'M24', 'M25', 'M26', 'M27', 'P14', 'P15', 'P16', 'S18', 'S19'];
+// Tiparul claselor Tailwind dintr-un preset: culoare `yp-black` (sau transparent) cu opacitate opțională, poziții în %.
+const GRADIENT_CLASS = /^(?:(?:from|via|to)-(?:yp-black(?:\/\d{1,3})?|transparent)|(?:from|via)-\d{1,3}%)$/;
+
+test('erou: presetele de gradient sunt clase Tailwind literale și valide; „standard” e gradientul de până acum', () => {
+  assert.deepEqual(Object.keys(HERO_GRADIENTS), ['standard', 'puternic', 'foarte-puternic']);
+  assert.deepEqual(HERO_GRADIENTS.standard, {
+    telefon: 'from-yp-black from-5% via-yp-black/70 via-40% to-transparent',
+    desktop: 'from-yp-black via-yp-black/70 to-yp-black/30',
+  });
+  for (const [name, preset] of Object.entries(HERO_GRADIENTS)) {
+    for (const [where, classes] of Object.entries(preset)) {
+      const list = classes.split(' ');
+      for (const c of list) assert.match(c, GRADIENT_CLASS, `${name}.${where}: clasă nevalidă „${c}”`);
+      assert.ok(list.some((c) => c.startsWith('from-')) && list.some((c) => c.startsWith('via-')) && list.some((c) => c.startsWith('to-')), `${name}.${where}: lipsesc from/via/to`);
+    }
+  }
+  // literale în sursă (JIT): fiecare clasă apare întreagă în src/lib/erou.ts
+  const src = read('src/lib/erou.ts');
+  for (const preset of Object.values(HERO_GRADIENTS)) for (const classes of Object.values(preset)) assert.ok(src.includes(`'${classes}'`), `clase compuse, nu literale: ${classes}`);
+  assert.ok(!/\$\{/.test(src), 'interpolare în src/lib/erou.ts: clasele trebuie să fie literale');
+});
+
+test('erou: cele 10 poze au `eroul` în date (cadru telefon/desktop, preset existent); S02 păstrează cadrul și gradientul de până acum', () => {
+  for (const id of HERO_SET) {
+    const p = photos.find((x) => x.id === id);
+    assert.ok(p.erou && p.portret, `${id}: erou cu decupaj portret`);
+    assert.ok(p.eroul, `${id}: lipsește „eroul” în date`);
+    assert.ok(Object.hasOwn(HERO_GRADIENTS, p.eroul.gradient), `${id}: preset necunoscut „${p.eroul.gradient}”`);
+    for (const k of ['telefon', 'desktop']) assert.match(p.eroul.poz[k], /^\d{1,3}% \d{1,3}%$/, `${id}: poz.${k}`);
+    assert.deepEqual(heroStyle(id), { poz: p.eroul.poz, gradient: HERO_GRADIENTS[p.eroul.gradient] });
+  }
+  assert.deepEqual(photos.filter((p) => p.eroul).map((p) => p.id).sort(), [...HERO_SET].sort(), '`eroul` doar la setul rotativ');
+  assert.deepEqual(heroStyle('S02'), { poz: { telefon: '50% 25%', desktop: '70% 30%' }, gradient: HERO_GRADIENTS.standard });
+  assert.throws(() => heroStyle('M01'), /M01/);
+});
+
+test('erou: heroPreload() dă slug-ul și lățimile din care scriptul din <head> reface exact srcset-urile din <picture>', () => {
+  const data = heroPreload(HERO_SET);
+  assert.equal(data.length, HERO_SET.length);
+  for (const [i, [slug, hero, portrait]] of data.entries()) {
+    const id = HERO_SET[i];
+    const rebuilt = (prefix, widths) => widths.map((w) => `/images/actiune/${slug}-${prefix}${w}.webp ${w}w`).join(', ');
+    assert.equal(rebuilt('', hero), heroSrcset(id), `${id}: srcset erou`);
+    assert.equal(rebuilt('p', portrait), photoPortraitSrcset(id), `${id}: srcset portret`);
+  }
 });
 
 // ---------------------------------------------------------------------------------------------------------------
