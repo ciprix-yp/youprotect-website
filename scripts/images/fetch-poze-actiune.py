@@ -1,7 +1,14 @@
-"""Download the high-resolution originals of the 22 "action" photos (MASCOT, Portwest, Sir Safety).
+"""Download the high-resolution originals of the "action" photos (MASCOT, Portwest, Sir Safety).
 
 Usage (needs Pillow, which is not in the system Python; same convention as scripts/catalog/fetch_images_mascot.py):
   uv run --no-project --with pillow python -I scripts/images/fetch-poze-actiune.py
+
+Portwest downloads (P*) need the Media Hub collection, which is NOT stored in this (public) repo. It is passed with
+the environment variables PW_COLLECTION_URL (https://mediahub.portwest.com/web/<hash>/<collection-name>/) and
+PW_COLLECTION_ID (8-4-4-16 hex id), or with --collection-url / --collection-id. The values are kept locally in
+.catalog-work/images/actiune/NOTE-folosire.md. They are needed ONLY when a Portwest original has to be downloaded:
+with valid files already on disk the script makes no request and runs without them. Not secrets (used anonymously),
+but they do not belong in a public repo. The host is still checked (https, mediahub.portwest.com only).
 
 Input : scripts/images/poze-actiune-surse.json (committed; per ID only public source data: supplier, source ID or
         URL, declared original resolution, and `pixeli_din` = "original" | "preview") and src/data/poze-actiune.json
@@ -21,8 +28,8 @@ Previews are LOCAL sources. Two photos use the preview as the pixel source:
     pixels MUST stay the preview. It is a MANUAL local file, preview/P11.jpg, taken by hand from Media Hub:
     there is no automatic download, so a full regeneration from nothing is not possible without that file
     (the script says so clearly when it is missing).
-The Portwest collection URL below is a Media Hub share-style link ("web/<hash>"); the research scripts opened it
-with no login, but whether it is account-bound or public could not be verified offline, and its lifetime is not ours.
+The Portwest collection URL is a Media Hub share-style link ("web/<hash>"); the research scripts opened it with no
+login, but whether it is account-bound or public could not be verified offline, and its lifetime is not ours.
 
 Security (the downloaded files are untrusted external data):
 - fixed allowlist of https hosts, checked before every request, including every redirect hop (no automatic
@@ -41,8 +48,10 @@ Security (the downloaded files are untrusted external data):
   turned into errors), verify() + full reload, and only JPEG / PNG / WEBP are accepted;
 - nothing from the files is executed or interpreted; no secrets; cookies and signed URLs are never logged.
 """
+import argparse
 import http.cookiejar
 import json
+import os
 import re
 import sys
 import time
@@ -81,8 +90,6 @@ UA = "Mozilla/5.0 (compatible; youprotect-catalog-sync)"
 
 MASCOT = "https://mascot.picturepark.com"
 PORTWEST = "https://mediahub.portwest.com"
-PW_COLLECTION_PAGE = PORTWEST + "/web/c98f9ae4545b878/eu_row-mood-images/"
-PW_MOOD_COLLECTION_ID = "90EAF721-7B52-4DFD-848B1AAC0E5EB2E5"  # public collection id "EU_ROW mood images"
 
 MASCOT_ID_RE = re.compile(r"^[0-9a-f]{32}$")
 BYNDER_ID_RE = re.compile(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{16}$")
@@ -137,6 +144,8 @@ class Client:
     def __init__(self):
         jar = http.cookiejar.CookieJar()
         self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar), NoRedirect)
+        self.pw_collection_page = None  # Portwest Media Hub collection (URL, id): set by main() from env/arguments
+        self.pw_collection_id = None
 
     def request(self, url, hosts, data=None, headers=None, max_bytes=MAX_BYTES):
         hdrs = {"User-Agent": UA}
@@ -253,8 +262,14 @@ def portwest_bytes(client, entry):
     asset_id = str(entry.get("bynder_asset_id", ""))
     if not BYNDER_ID_RE.fullmatch(asset_id):
         raise FetchError("bynder_asset_id invalid")
+    page_url, collection_id = client.pw_collection_page, client.pw_collection_id
+    if not page_url or not collection_id:
+        raise FetchError(
+            "lipsește colecția Portwest: setează PW_COLLECTION_URL și PW_COLLECTION_ID "
+            "(sau --collection-url / --collection-id); valorile sunt în .catalog-work/images/actiune/NOTE-folosire.md"
+        )
     if not getattr(client, "pw_csrf", None):
-        page = client.request(PW_COLLECTION_PAGE, hosts).decode("utf-8", "replace")
+        page = client.request(page_url, hosts).decode("utf-8", "replace")
         match = re.search(r'csrf = "([0-9a-f]{20,64})"', page)
         if not match:
             raise FetchError("token CSRF negăsit")
@@ -270,15 +285,15 @@ def portwest_bytes(client, entry):
         raise FetchError("fișierul Original nu apare în Media Hub")
     form = urllib.parse.urlencode([
         ("type", "mediaItem"), ("iframe", "false"), ("includeArchive", "true"),
-        ("collectionId", PW_MOOD_COLLECTION_ID), ("addAdditionals", "true"),
+        ("collectionId", collection_id), ("addAdditionals", "true"),
         ("requestData", item_id), ("media_ids[]", item_id)]).encode()
     answer = client.request(f"{PORTWEST}/new_download/", hosts, data=form, max_bytes=1024 * 1024, headers={
         "X-Requested-With": "XMLHttpRequest", "X-CSRF-Token": client.pw_csrf, "Accept": "application/json",
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Referer": PW_COLLECTION_PAGE})
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Referer": page_url})
     signed = json.loads(answer).get("signed_url")
     if not isinstance(signed, str):
         raise FetchError("Media Hub nu a returnat URL de descărcare")
-    return client.request(signed, hosts, headers={"Referer": PW_COLLECTION_PAGE})  # signed URL: host-checked, never logged
+    return client.request(signed, hosts, headers={"Referer": page_url})  # signed URL: host-checked, never logged
 
 
 def sirsafety_bytes(client, entry):
@@ -350,7 +365,10 @@ def original_file(client, entry):
         path, size = store(ORIG_DIR, image_id, body)
         reason = "original descărcat și validat cu Pillow"
     if sorted(size) != sorted(entry["rezolutie_originala"]):
-        raise FetchError("rezoluția fișierului diferă de cea declarată în poze-actiune-surse.json")
+        raise FetchError(
+            "rezoluția fișierului diferă de cea declarată în poze-actiune-surse.json: "
+            f"șterge original/{image_id}.* și rulează din nou"
+        )
     return path, size, reason
 
 
@@ -372,9 +390,31 @@ def process(client, entry):
     }
 
 
+def collection_settings(argv=None, environ=None):
+    """(url, id) of the Portwest collection from arguments, else PW_COLLECTION_URL / PW_COLLECTION_ID; each may be
+    None (then it is needed only if a Portwest original has to be downloaded). A value that is present is validated
+    now: https, host mediahub.portwest.com only, clean URL; the id in the 8-4-4-16 hex format."""
+    environ = os.environ if environ is None else environ
+    parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
+    parser.add_argument("--collection-url", default=environ.get("PW_COLLECTION_URL"))
+    parser.add_argument("--collection-id", default=environ.get("PW_COLLECTION_ID"))
+    args = parser.parse_args(argv)
+    url, collection_id = args.collection_url or None, args.collection_id or None
+    if url:
+        try:
+            check_url(url, PROVIDER_HOSTS["P"])
+        except FetchError as err:
+            sys.exit(f"EROARE: PW_COLLECTION_URL / --collection-url nepermis: {err}")
+    if collection_id and not BYNDER_ID_RE.fullmatch(collection_id):
+        sys.exit("EROARE: PW_COLLECTION_ID / --collection-id invalid (format 8-4-4-16, hexazecimal majuscule)")
+    return url, collection_id
+
+
 def main():
+    pw_url, pw_id = collection_settings()
     entries = load_sources()
     client = Client()
+    client.pw_collection_page, client.pw_collection_id = pw_url, pw_id
     results, failed = [], []
     for entry in entries:
         try:

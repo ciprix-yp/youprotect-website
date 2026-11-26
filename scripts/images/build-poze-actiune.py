@@ -1,4 +1,4 @@
-"""Build the WebP variants of the 22 "action" photos served from public/images/actiune/.
+"""Build the WebP variants of the "action" photos (the list in src/data/poze-actiune.json) served from public/images/actiune/.
 
 Usage (needs Pillow, which is not in the system Python):
   mise exec uv@0.13.6 -- uv run --no-project --with pillow python -I scripts/images/build-poze-actiune.py
@@ -6,7 +6,9 @@ Usage (needs Pillow, which is not in the system Python):
 Input : src/data/poze-actiune.json (single source of truth: id, slug, source, planned widths)
         .catalog-work/images/actiune/efectiv.json (field fisier_efectiv) + original/ or preview/ files.
         Both are local (gitignored): run scripts/images/fetch-poze-actiune.py first; it reads the committed
-        scripts/images/poze-actiune-surse.json and writes efectiv.json. Previews are local sources: P11 (and any
+        scripts/images/poze-actiune-surse.json and writes efectiv.json (Portwest downloads also need
+        PW_COLLECTION_URL / PW_COLLECTION_ID, see that script; not needed when the originals already exist).
+        Previews are local sources: P11 (and any
         preview) is taken by hand from Media Hub into preview/<ID>.jpg and is never downloaded automatically, so
         a full regeneration needs that file (a missing file stops with a clear message).
 Output: public/images/actiune/<slug>-<width>.webp and src/data/poze-actiune-variante.json (real sizes).
