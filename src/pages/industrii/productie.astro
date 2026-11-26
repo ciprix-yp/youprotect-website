@@ -1,10 +1,11 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
-import { CTA_DISCUSS } from '../../lib/site';
+import { CTA_DISCUSS, RESPONSE_TIME, SITE } from '../../lib/site';
 import ActionPhoto from '../../components/media/ActionPhoto.astro';
 import { imageGraph } from '../../lib/poze-actiune';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 import EquipmentList from '../../components/industries/EquipmentList.astro';
+import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const breadcrumbSchema = {
@@ -12,21 +13,56 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Acasă", item: siteOrigin.href },
-    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii", siteOrigin).href },
+    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii/", siteOrigin).href },
     { "@type": "ListItem", position: 3, name: "Producție", item: Astro.url.href },
   ],
 };
+
+// Întrebările de pe pagină, și în FAQPage (SEO-003, 26.11.2026). ESD și „fără silicon” ca pe fișele Portwest, EN 388 și
+// HACCP/DIN 10524 ca pe fișele din catalog, spălarea industrială ca în ghidul „haine de lucru care rezistă”; legea ca în
+// ghidul de cost; termenul ofertei doar din RESPONSE_TIME.
+const faq = [
+  {
+    q: 'Ce echipament de protecție îi trebuie unui muncitor din producție?',
+    a: 'Cel cerut de evaluarea riscurilor de la locul lui de muncă: legea nu dă o listă unică. În producție, riscurile obișnuite sunt zgomotul, așchiile și stropii, tăieturile și loviturile la mâini, praful și vaporii, substanțele chimice, căldura și scânteile de la sudură. Angajatorul le dă oamenilor echipamentul gratuit și răspunde de întreținerea și înlocuirea lui (HG nr. 1.048/2006, art. 10).',
+  },
+  {
+    q: 'Ce înseamnă pantofi de protecție ESD și pantofi fără silicon?',
+    a: 'ESD vine de la descărcare electrostatică (în engleză, electrostatic discharge): pantofii ESD disipă sarcinile electrostatice care pot strica componentele electronice sensibile. Pantofii fără silicon sunt pentru locurile în care urmele de silicon creează probleme, cum sunt vopsitoriile. Pe fiecare fișă din catalog vezi dacă modelul e ESD și după ce standard.',
+  },
+  {
+    q: 'Ce mănuși de protecție se folosesc în producție?',
+    a: 'Depinde de risc. Pentru tăieturi alegi după nivelul de tăiere din EN 388, notat de la A la F, unde F e cel mai mare. Pentru lovituri la dosul palmei, mănuși anti-impact, marcate cu P în EN 388. Pentru substanțe chimice, mănuși certificate EN ISO 374-1, iar pentru sudură, mănuși certificate EN 12477.',
+  },
+  {
+    q: 'Ce haine de lucru rezistă la spălare industrială?',
+    a: 'Modelele testate după EN ISO 15797, standardul cu procedeele de spălare industrială pentru hainele de lucru, sau, la MASCOT, modelele din categoriile de întreținere industrială A0–A3. Apoi contează țesătura, întăriturile din zonele expuse și cusăturile. Cât durează un model pe echipa ta afli purtându-l și spălându-l în condițiile tale.',
+  },
+  {
+    q: 'Ce înseamnă HACCP la hainele de lucru?',
+    a: 'HACCP e sistemul de siguranță alimentară al firmei, nu o certificare a hainei. Hainele pentru industria alimentară sunt gândite pentru el: jacheta MASCOT Food & Care, de exemplu, are capsele ascunse, fără nasturi la vedere, și e aprobată DIN 10524, standardul pentru îmbrăcămintea de lucru din industria alimentară.',
+  },
+  {
+    q: 'De unde comand echipamente de protecție pentru producție în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar oferta vine ${RESPONSE_TIME}. Hainele și încălțămintea le probezi în showroom înainte de comandă, iar livrarea se face în toată România.`,
+  },
+];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
+const inlineLink = "text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow";
 ---
 
 <InnerPageLayout
-  title="Echipamente de protecție: producție și industrie"
-  description="Echipamente de protecție pentru producție: încălțăminte de protecție, pantaloni și salopete de lucru, tricouri și geci cu logo. Livrare în toată România."
-  heroTitle="Echipare pentru producție"
-  heroSubtitle="Pe linia de producție, echipamentul trebuie să reziste la uzură, să protejeze constant și să nu încetinească ritmul. Selectăm soluții potrivite mediului tău industrial, de la cap până la încălțăminte."
+  title="Echipamente de protecție pentru producție"
+  description="Echipamente de protecție pentru producție: pantofi ESD, mănuși anti-tăiere, ochelari, antifoane, haine de sudură și HACCP. You Protect, Satu Mare."
+  heroTitle="Echipamente de protecție pentru producție"
+  heroSubtitle="You Protect, din Satu Mare, echipează echipele din producție cu pantofi de protecție, mănuși, ochelari, antifoane și haine de lucru cu logo."
   breadcrumb="Producție"
   heroPhoto="M12"
   ctaHeading="Echipezi o echipă de producție?"
-  ctaSubheading="Îți recomandăm echipamentul potrivit liniei și riscurilor tale."
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
@@ -40,25 +76,29 @@ const breadcrumbSchema = {
       <div class="flex flex-col md:flex-row gap-16 md:gap-24">
         <div class="md:w-1/3 shrink-0">
           <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32">
-            Rezistență <br />la uzură.
+            Ce îi trebuie unei echipe de producție
           </h2>
         </div>
         <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 leading-relaxed">
           <p>
-            În producție, echipamentul e supus zilnic frecării, prafului, zgomotului și manipulării. Alegerea corectă reduce costul real pe termen lung și ține echipa protejată constant, nu doar la început.
+            Lista o face evaluarea riscurilor de la fiecare loc de muncă. În producție, riscurile obișnuite sunt zgomotul,
+            așchiile și stropii, tăieturile și loviturile la mâini, praful și vaporii, substanțele chimice și, la sudură,
+            căldura și scânteile. Mai jos le găsești pe categorii, cu link spre modelele din catalog.
           </p>
           <EquipmentList
             items={[
-              { text: 'Salopete și haine de lucru rezistente la uzură', category: 'pantaloni' },
-              { text: 'Protecția auzului (antifoane)', category: 'antifoane' },
-              { text: 'Protecția ochilor (ochelari și viziere)', category: 'protectia-ochilor' },
-              { text: 'Mănuși tehnice pentru manipulare și impact', category: 'manusi' },
-              { text: 'Măști și filtre pentru praf, gaze și vapori', category: 'protectia-respiratorie' },
-              { text: 'Combinezoane de protecție chimică', category: 'combinezoane' },
-              { text: 'Încălțăminte de protecție pentru mediu industrial', category: 'incaltaminte' },
-              { text: 'Personalizare cu identitatea companiei' },
+              { text: 'Pantofi de protecție, inclusiv ESD și fără silicon', category: 'incaltaminte' },
+              { text: 'Antifoane, unde zgomotul o cere', category: 'antifoane' },
+              { text: 'Ochelari și viziere de protecție (EN 166)', category: 'protectia-ochilor' },
+              { text: 'Mănuși anti-tăiere, anti-impact și de protecție chimică', category: 'manusi' },
+              { text: 'Măști FFP3 pentru praf și semimăști cu filtre pentru gaze și vapori', category: 'protectia-respiratorie' },
+              { text: 'Combinezoane de protecție chimică, de unică folosință', category: 'combinezoane' },
+              { text: 'Geci și salopete ignifuge pentru sudură', product: 'geaca-ignifuga-sudura-portwest-bizweld-bz739' },
+              { text: 'Jachete de lucru HACCP, pentru industria alimentară', product: 'jacheta-lucru-haccp-mascot-food-care-20254' },
+              { text: 'Pantaloni, salopete și tricouri polo de lucru, cu logoul firmei', category: 'pantaloni' },
             ]}
           />
+          <RiskFreeTesting variant="inline" />
           <p class="text-base text-neutral-400">
             Ce e pe listă și nu găsești încă în catalog putem aduce la cerere:
             <a href="/cere-oferta/" class="text-yp-yellow underline underline-offset-4 hover:text-white">scrie-ne în cererea de ofertă</a>
@@ -78,6 +118,30 @@ const breadcrumbSchema = {
         <a href="/produse/" class="inline-flex items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
           Vezi catalogul complet
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 bg-[#050505]" aria-labelledby="intrebari">
+    <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="max-w-3xl">
+        <h2 id="intrebari" class="text-3xl md:text-4xl font-light text-white leading-tight">
+          Întrebări frecvente despre echipamentele pentru producție
+        </h2>
+        <dl class="mt-10 space-y-8">
+          {faq.map((item) => (
+            <div>
+              <dt class="text-lg text-white font-medium">{item.q}</dt>
+              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="mt-10 text-neutral-400 leading-relaxed">
+          Pe larg, în ghidurile <a href="/ghiduri/haine-de-lucru-care-rezista/" class={inlineLink}>cum alegi haine de lucru care rezistă</a> și
+          <a href="/ghiduri/cost-echipament-protectie-muncitor/" class={inlineLink}>cât costă echipamentul de protecție pe muncitor</a>.
+          Cum pui logoul pe haine afli la <a href="/haine-de-lucru-personalizate/" class={inlineLink}>haine de lucru personalizate</a>.
+        </p>
       </div>
     </div>
   </section>
