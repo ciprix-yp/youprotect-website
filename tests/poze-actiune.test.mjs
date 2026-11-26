@@ -46,7 +46,7 @@ const variants = JSON.parse(read('src/data/poze-actiune-variante.json'));
 const EXPECTED_IDS = [
   'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19',
   'P04', 'P05', 'P06', 'P11',
-  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16',
+  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16', 'S17',
 ];
 const BRAND = {
   mascot: { suffix: '-mascot', credit: 'MASCOT', prefix: 'M' },
@@ -68,7 +68,7 @@ function webpSize(buf) {
   throw new Error(`Chunk WebP necunoscut: ${kind}`);
 }
 
-test('poze: exact cele 19 de id-uri, fără dubluri, și variante pentru fiecare', () => {
+test('poze: exact id-urile așteptate (EXPECTED_IDS), fără dubluri, și variante pentru fiecare', () => {
   assert.deepEqual(photos.map((p) => p.id).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(Object.keys(variants).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(ACTION_PHOTOS.map((p) => p.id), photos.map((p) => p.id));
@@ -643,14 +643,14 @@ function checkImageObject(obj, where) {
   assert.ok(!('license' in obj) && !('acquireLicensePage' in obj), `${where}: license/acquireLicensePage`);
 }
 
-test('json-ld: imageObject() pentru toate cele 19 e valid, trece prin jsonLd() și JSON.parse', () => {
+test('json-ld: imageObject() pentru toate pozele e valid, trece prin jsonLd() și JSON.parse', () => {
   for (const p of photos) {
     const obj = imageObject(p.id);
     checkImageObject(obj, p.id);
     assert.deepEqual(JSON.parse(jsonLd(obj)), obj);
     assert.equal(obj.creditText, p.creditText);
     assert.equal(obj.description, p.alt);
-    const big = variants[p.id].at(-1);
+    const big = variants[p.id].filter((v) => !v.portret).at(-1);
     assert.equal(obj.contentUrl, `${SITE.url}/images/actiune/${big.file}`);
     assert.equal(obj.width, big.width);
   }
@@ -807,7 +807,7 @@ function withDist(pages, fn) {
 const imgTag = (id, extra = '') =>
   `<img src="/images/actiune/${fileOf(id, 1)}" srcset="${variants[id].map((v) => `/images/actiune/${v.file} ${v.width}w`).join(', ')}" ${extra}>`;
 const ldTag = (id) =>
-  `<script type="application/ld+json">{"@graph":[{"@type":"ImageObject","contentUrl":"https://youprotect.ro/images/actiune/${variants[id].at(-1).file}"}]}</script>`;
+  `<script type="application/ld+json">{"@graph":[{"@type":"ImageObject","contentUrl":"https://youprotect.ro/images/actiune/${variants[id].filter((v) => !v.portret).at(-1).file}"}]}</script>`;
 const syntheticProblems = (pages) => withDist(pages, (dir) => distProblems(analyzeDist(dir)));
 
 test('dist (negativ): o poză Portwest pe o pagină nepermisă pică', () => {
@@ -848,7 +848,7 @@ test('dist (negativ): aceeași poză pe 3 pagini, erou și dublă pe pagină pic
   assert.deepEqual(syntheticProblems({ 'a/index.html': imgTag('M02', 'fetchpriority="high"'), 'b/index.html': imgTag('M02') }), []);
   // două elemente <img> cu aceeași poză pe o pagină
   assert.match(syntheticProblems({ 'a/index.html': imgTag('M01') + imgTag('M01') }).join('\n'), /M01: de două ori pe \/a\//);
-  // fișier din afara celor 19 și fișier inexistent
+  // fișier din afara celor din date și fișier inexistent
   assert.match(syntheticProblems({ 'a/index.html': '<img src="/images/actiune/altceva-123.webp">' }).join('\n'), /necunoscut „altceva-123\.webp”/);
   assert.match(
     withDist({ 'a/index.html': `<img src="/images/actiune/${fileOf('M01')}">` }, (dir) => {
@@ -879,7 +879,7 @@ test('dist: fără dist/ pică cu POZE_REQUIRE_DIST=1 și sare altfel', () => {
 // ---------------------------------------------------------------------------------------------------------------
 // 7. scripts/images/poze-actiune-surse.json
 
-test('surse: exact cele 19 de id-uri în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
+test('surse: exact id-urile în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
   const surse = JSON.parse(read('scripts/images/poze-actiune-surse.json'));
   assert.deepEqual(surse.map((s) => s.id), photos.map((p) => p.id));
   const KEY = { mascot: 'id_sursa', portwest: 'bynder_asset_id', sirsafety: 'url_sursa' };
@@ -1074,4 +1074,36 @@ test('NOT_PHOTO_IDS: lista de excepții nu conține id-uri reale de poză, iar o
   // și în fișierele de catalog
   assert.deepEqual(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")], { notPhotoIds: new Set(['S10']) }).problems, []);
   assert.match(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")]).problems.join('\n'), /NOT_PHOTO_IDS/);
+});
+
+test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p960 4:5, în afara srcset-ului obișnuit', () => {
+  const withPortrait = photos.filter((p) => p.portret);
+  assert.ok(withPortrait.length >= 1, 'nicio poză cu decupaj portret');
+  for (const p of withPortrait) {
+    assert.ok(p.erou, `${p.id}: decupajul portret e doar pentru eroi`);
+    const [x0, y0, x1, y1] = p.portret.decupaj;
+    assert.ok(0 <= x0 && x0 < x1 && x1 <= 1 && 0 <= y0 && y0 < y1 && y1 <= 1, `${p.id}: decupaj în afara imaginii`);
+    const portrait = variants[p.id].filter((v) => v.portret);
+    assert.deepEqual(portrait.map((v) => v.width), [768, 960], `${p.id}: variante portret`);
+    for (const v of portrait) {
+      assert.equal(v.height / v.width, 1.25, `${p.id} ${v.file}: nu e 4:5`);
+      assert.match(v.file, /-p(768|960)\.webp$/);
+    }
+    assert.ok(portrait[0].bytes <= 55 * 1024, `${p.id}: ${portrait[0].file} ${portrait[0].bytes} B (buget 55 KB)`);
+    assert.ok(!photoSrcset(p.id).includes('-p768') && !photoSrcset(p.id).includes('-p960'), `${p.id}: portretul în srcset-ul obișnuit`);
+  }
+  for (const p of photos.filter((x) => !x.portret)) {
+    assert.ok(!variants[p.id].some((v) => v.portret), `${p.id}: variante portret fără decupaj în date`);
+  }
+});
+
+test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 45 KB (portret sub 55 KB)', () => {
+  for (const p of photos.filter((x) => x.erou)) {
+    const list = variants[p.id].filter((v) => !v.portret);
+    const widths = list.map((v) => v.width);
+    assert.deepEqual(widths.slice(0, 3), [768, 960, 1440], `${p.id}: lățimi erou`);
+    assert.ok(widths.length === 3 || (widths.length === 4 && widths[3] === 1920), `${p.id}: lățimi erou ${widths}`);
+    // sursele pătrate (S06, S17) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
+    assert.ok(list[0].bytes <= 56 * 1024, `${p.id}: ${list[0].file} ${list[0].bytes} B`);
+  }
 });

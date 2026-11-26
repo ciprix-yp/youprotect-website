@@ -12,6 +12,8 @@ export interface PhotoVariant {
   height: number;
   file: string;
   bytes: number;
+  /** Decupaj portret 4:5 pentru telefon (doar eroul homepage-ului); nu intră în srcset-ul obișnuit. */
+  portret?: boolean;
 }
 
 export interface ActionPhotoData {
@@ -26,6 +28,8 @@ export interface ActionPhotoData {
   latimi: number[];
   /** Poza are voie să fie erou (prima imagine mare a unei pagini). */
   erou: boolean;
+  /** Decupaj portret 4:5 (fracții [x0, y0, x1, y1] din sursă) pentru telefon; variantele `-p768`/`-p960` le face scriptul. */
+  portret?: { decupaj: [number, number, number, number] };
   obiectPoz: { desktop: string; telefon: string };
 }
 
@@ -43,11 +47,19 @@ export function getPhoto(id: string): ActionPhotoData {
   return photo;
 }
 
-/** Variantele unei poze, de la cea mai mică la cea mai mare. */
+/** Variantele unei poze (fără decupajul portret), de la cea mai mică la cea mai mare. */
 export function photoVariants(id: string): PhotoVariant[] {
   getPhoto(id);
-  const list = VARIANTS[id];
+  const list = VARIANTS[id]?.filter((v) => !v.portret);
   if (!list || list.length === 0) throw new Error(`Poza „${id}” nu are variante în poze-actiune-variante.json.`);
+  return [...list].sort((a, b) => a.width - b.width);
+}
+
+/** Variantele decupajului portret 4:5, de la cea mai mică la cea mai mare; eroare dacă poza nu are decupaj portret. */
+export function portraitVariants(id: string): PhotoVariant[] {
+  getPhoto(id);
+  const list = VARIANTS[id]?.filter((v) => v.portret);
+  if (!list || list.length === 0) throw new Error(`Poza „${id}” nu are decupaj portret în poze-actiune-variante.json.`);
   return [...list].sort((a, b) => a.width - b.width);
 }
 
@@ -62,6 +74,13 @@ const urlOf = (v: PhotoVariant) => `${ACTION_PHOTO_DIR}${v.file}`;
 /** Valoarea pentru `srcset`, din variantele reale: „/images/actiune/x-640.webp 640w, …”. */
 export function photoSrcset(id: string): string {
   return photoVariants(id)
+    .map((v) => `${urlOf(v)} ${v.width}w`)
+    .join(', ');
+}
+
+/** `srcset` pentru decupajul portret: „/images/actiune/x-p768.webp 768w, …”. */
+export function portraitSrcset(id: string): string {
+  return portraitVariants(id)
     .map((v) => `${urlOf(v)} ${v.width}w`)
     .join(', ');
 }

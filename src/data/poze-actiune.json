@@ -177,8 +177,9 @@
     "copyrightNotice": "© Sir Safety",
     "creator": { "@type": "Organization", "name": "Sir Safety" },
     "sursa": "original",
-    "latimi": [640, 960, 1440],
-    "erou": false,
+    "latimi": [768, 960, 1440, 1920],
+    "erou": true,
+    "portret": { "decupaj": [0.5, 0, 0.95, 1] },
     "obiectPoz": { "desktop": "60% 35%", "telefon": "75% 35%" }
   },
   {
@@ -203,9 +204,9 @@
     "copyrightNotice": "© Sir Safety",
     "creator": { "@type": "Organization", "name": "Sir Safety" },
     "sursa": "original",
-    "latimi": [640, 960, 1440],
-    "erou": false,
-    "obiectPoz": { "desktop": "40% 40%", "telefon": "40% 40%" }
+    "latimi": [768, 960, 1440],
+    "erou": true,
+    "obiectPoz": { "desktop": "40% 14%", "telefon": "40% 14%" }
   },
   {
     "id": "S08",
@@ -245,5 +246,18 @@
     "latimi": [640, 960, 1440],
     "erou": false,
     "obiectPoz": { "desktop": "55% 65%", "telefon": "60% 70%" }
+  },
+  {
+    "id": "S17",
+    "furnizor": "sirsafety",
+    "slug": "bocanc-protectie-tambur-cablu-pantaloni-reflectorizanti-sir-safety",
+    "alt": "Bocanc de protecție negru, cu talpă groasă, sprijinit pe un tambur mare de cablu, sub o crăcană de pantalon reflectorizant portocaliu",
+    "creditText": "Sir Safety",
+    "copyrightNotice": "© Sir Safety",
+    "creator": { "@type": "Organization", "name": "Sir Safety" },
+    "sursa": "original",
+    "latimi": [768, 960, 1440],
+    "erou": true,
+    "obiectPoz": { "desktop": "50% 60%", "telefon": "50% 60%" }
   }
 ]
