@@ -157,26 +157,6 @@
       "bytes": 227956
     }
   ],
-  "M18": [
-    {
-      "width": 640,
-      "height": 488,
-      "file": "doi-colegi-canapea-dosar-negru-mascot-640.webp",
-      "bytes": 44452
-    },
-    {
-      "width": 960,
-      "height": 732,
-      "file": "doi-colegi-canapea-dosar-negru-mascot-960.webp",
-      "bytes": 108124
-    },
-    {
-      "width": 1440,
-      "height": 1098,
-      "file": "doi-colegi-canapea-dosar-negru-mascot-1440.webp",
-      "bytes": 203306
-    }
-  ],
   "M19": [
     {
       "width": 640,
@@ -275,26 +255,6 @@
       "height": 963,
       "file": "muncitor-trage-transpalet-vesta-reflectorizanta-portwest-1440.webp",
       "bytes": 133368
-    }
-  ],
-  "P13": [
-    {
-      "width": 640,
-      "height": 427,
-      "file": "operator-salopeta-rosie-roata-vana-portwest-640.webp",
-      "bytes": 50478
-    },
-    {
-      "width": 960,
-      "height": 640,
-      "file": "operator-salopeta-rosie-roata-vana-portwest-960.webp",
-      "bytes": 90030
-    },
-    {
-      "width": 1440,
-      "height": 960,
-      "file": "operator-salopeta-rosie-roata-vana-portwest-1440.webp",
-      "bytes": 153876
     }
   ],
   "S01": [
@@ -421,26 +381,6 @@
       "height": 768,
       "file": "muncitor-fier-beton-arata-talpa-incaltaminte-sir-safety-1152.webp",
       "bytes": 73150
-    }
-  ],
-  "S14": [
-    {
-      "width": 640,
-      "height": 427,
-      "file": "lucrator-halat-alb-carne-cruda-sir-safety-640.webp",
-      "bytes": 26498
-    },
-    {
-      "width": 960,
-      "height": 640,
-      "file": "lucrator-halat-alb-carne-cruda-sir-safety-960.webp",
-      "bytes": 44536
-    },
-    {
-      "width": 1440,
-      "height": 960,
-      "file": "lucrator-halat-alb-carne-cruda-sir-safety-1440.webp",
-      "bytes": 74612
     }
   ],
   "S16": [

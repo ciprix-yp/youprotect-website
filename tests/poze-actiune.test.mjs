@@ -19,9 +19,13 @@
 //     sunt interzise în afara src/lib/poze-actiune.ts, ActionPhoto.astro și fișierelor din DYNAMIC_OK (cu variabilele de mai sus).
 //   - în dist/: fiecare pagină HTML se analizează după fișierele /images/actiune/*.webp pe care le conține (img, srcset,
 //     style, source, JSON-LD), cu aceleași reguli. Asta prinde orice ocolire din sursă.
+//   - secțiunea 8 (ocolirile din afara codului): în src/ css/md/mdx/json cu /images/actiune/ sau slug de poză, în dist/ css/js
+//     cu /images/actiune/ și, în public/, orice fișier din afara images/actiune/ cu aceiași octeți (SHA-256) ca o variantă.
+//   - literalii `[MPS]NN` care nu sunt poze se scriu altfel (`S-10`) sau intră în NOT_PHOTO_IDS (goală acum).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,9 +44,9 @@ const variants = JSON.parse(read('src/data/poze-actiune-variante.json'));
 // 1. Integritatea datelor
 
 const EXPECTED_IDS = [
-  'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M18', 'M19',
-  'P04', 'P05', 'P06', 'P11', 'P13',
-  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S14', 'S16',
+  'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19',
+  'P04', 'P05', 'P06', 'P11',
+  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16',
 ];
 const BRAND = {
   mascot: { suffix: '-mascot', credit: 'MASCOT', prefix: 'M' },
@@ -64,7 +68,7 @@ function webpSize(buf) {
   throw new Error(`Chunk WebP necunoscut: ${kind}`);
 }
 
-test('poze: exact cele 22 de id-uri, fără dubluri, și variante pentru fiecare', () => {
+test('poze: exact cele 19 de id-uri, fără dubluri, și variante pentru fiecare', () => {
   assert.deepEqual(photos.map((p) => p.id).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(Object.keys(variants).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(ACTION_PHOTOS.map((p) => p.id), photos.map((p) => p.id));
@@ -152,6 +156,14 @@ const NOT_USAGE = new Set(['src/components/media/ActionPhoto.astro', 'src/lib/po
 const CATALOG_FILES = new Set(['src/lib/catalog-brands.ts', 'src/lib/catalog-categories.ts']);
 const PHOTO_CALLS = ['photoSrc', 'photoSrcset', 'photoSize', 'imageObject', 'imageObjects', 'imageGraph', 'imageRef', 'getPhoto'];
 const MAX_PAGES_PER_PHOTO = 2;
+/**
+ * Excepțiile regulii fail-closed: valori de forma `[MPS]NN` care apar între ghilimele în sursă, dar NU sunt id-uri de
+ * poză (ex. un cod de produs). Goală acum. Preferă să scrii valoarea altfel (`'S-10'`); adaugă aici doar dacă nu se
+ * poate. Un id de poză real nu poate fi exceptat (testul „NOT_PHOTO_IDS” pică).
+ */
+export const NOT_PHOTO_IDS = new Set([]);
+/** Mesajul comun al regulii fail-closed pe literali `[MPS]NN`. */
+const NOT_PHOTO_HINT = 'dacă nu e id de poză, scrie valoarea altfel (ex. `S-10`) sau adaugă excepția în NOT_PHOTO_IDS';
 
 const toPosix = (p) => p.split(sep).join('/');
 
@@ -197,7 +209,7 @@ export function catalogRefs(pages) {
  * Întoarce { refs: [{ id, page, hero, render, file }], problems: string[] }. `render` = poza e afișată de pagină
  * (id/photo/heroPhoto); altfel e doar menționată (imageGraph, photoSrc, un literal oarecare) și nu intră la „de două ori”.
  */
-export function analyzeUsage(files, { catalog = [], slugs = photos.map((p) => p.slug) } = {}) {
+export function analyzeUsage(files, { catalog = [], slugs = photos.map((p) => p.slug), notPhotoIds = NOT_PHOTO_IDS } = {}) {
   const refs = catalogRefs(catalog);
   const problems = [];
   for (const { path, text } of files) {
@@ -246,10 +258,10 @@ export function analyzeUsage(files, { catalog = [], slugs = photos.map((p) => p.
 
     // 3. orice alt literal [MPS]NN este o referință (fără randare)
     for (const m of text.matchAll(new RegExp(`(${Q})([MPS][0-9]{2})\\1`, 'g'))) {
-      if (isConsumed(m.index)) continue;
+      if (isConsumed(m.index) || notPhotoIds.has(m[2])) continue;
       if (isCatalog) {
         if (!/(?<![-\w.?$])(?:photo|heroPhoto)\s*:\s*$/.test(text.slice(Math.max(0, m.index - 40), m.index)) || m[1] === '`') {
-          bad(`„${m[2]}” în catalog doar ca \`photo: 'ID'\` sau \`heroPhoto: 'ID'\``);
+          bad(`„${m[2]}” în catalog doar ca \`photo: 'ID'\` sau \`heroPhoto: 'ID'\`; ${NOT_PHOTO_HINT}`);
         }
         continue;
       }
@@ -279,7 +291,7 @@ export function analyzeUsage(files, { catalog = [], slugs = photos.map((p) => p.
     if (isCatalog || found.length === 0) continue;
     const page = routeOf(path);
     if (!page) {
-      bad(`poze („${found.map((f) => f.id).join('”, „')}”) într-un fișier din care nu se deduce pagina`);
+      bad(`poze („${found.map((f) => f.id).join('”, „')}”) într-un fișier din care nu se deduce pagina; ${NOT_PHOTO_HINT}`);
       continue;
     }
     for (const f of found) refs.push({ ...f, page, file: path });
@@ -592,7 +604,7 @@ test('portwest (negativ): P* pe pagini nepermise pică', () => {
   assert.ok(!fakePages.has('/industrii/altele/'));
   // permise
   assert.equal(bad('src/pages/industrii/logistica.astro', '<ActionPhoto id="P05" sizes="x" />').length, 0);
-  assert.equal(bad('src/lib/x.ts', '', [{ slug: 'portwest', photo: 'P13' }]).length, 0);
+  assert.equal(bad('src/lib/x.ts', '', [{ slug: 'portwest', photo: 'P11' }]).length, 0);
   assert.equal(bad('src/lib/x.ts', '', [{ slug: slugs[0], photo: 'P04' }]).length, 0);
   // Poze non-Portwest oriunde
   assert.equal(bad('src/pages/index.astro', '<ActionPhoto id="M01" sizes="x" />').length, 0);
@@ -631,7 +643,7 @@ function checkImageObject(obj, where) {
   assert.ok(!('license' in obj) && !('acquireLicensePage' in obj), `${where}: license/acquireLicensePage`);
 }
 
-test('json-ld: imageObject() pentru toate cele 22 e valid, trece prin jsonLd() și JSON.parse', () => {
+test('json-ld: imageObject() pentru toate cele 19 e valid, trece prin jsonLd() și JSON.parse', () => {
   for (const p of photos) {
     const obj = imageObject(p.id);
     checkImageObject(obj, p.id);
@@ -836,7 +848,7 @@ test('dist (negativ): aceeași poză pe 3 pagini, erou și dublă pe pagină pic
   assert.deepEqual(syntheticProblems({ 'a/index.html': imgTag('M02', 'fetchpriority="high"'), 'b/index.html': imgTag('M02') }), []);
   // două elemente <img> cu aceeași poză pe o pagină
   assert.match(syntheticProblems({ 'a/index.html': imgTag('M01') + imgTag('M01') }).join('\n'), /M01: de două ori pe \/a\//);
-  // fișier din afara celor 22 și fișier inexistent
+  // fișier din afara celor 19 și fișier inexistent
   assert.match(syntheticProblems({ 'a/index.html': '<img src="/images/actiune/altceva-123.webp">' }).join('\n'), /necunoscut „altceva-123\.webp”/);
   assert.match(
     withDist({ 'a/index.html': `<img src="/images/actiune/${fileOf('M01')}">` }, (dir) => {
@@ -867,7 +879,7 @@ test('dist: fără dist/ pică cu POZE_REQUIRE_DIST=1 și sare altfel', () => {
 // ---------------------------------------------------------------------------------------------------------------
 // 7. scripts/images/poze-actiune-surse.json
 
-test('surse: exact cele 22 de id-uri în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
+test('surse: exact cele 19 de id-uri în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
   const surse = JSON.parse(read('scripts/images/poze-actiune-surse.json'));
   assert.deepEqual(surse.map((s) => s.id), photos.map((p) => p.id));
   const KEY = { mascot: 'id_sursa', portwest: 'bynder_asset_id', sirsafety: 'url_sursa' };
@@ -899,4 +911,164 @@ test('surse: exact cele 22 de id-uri în ordinea din date, cheia de sursă pe fu
       assert.doesNotMatch(v, /\?|[&;]|(^|[^a-z])(sig|token|cookie|signature|expires|key)([^a-z]|$)/i, `${s.id}.${k}: parametri sau secrete în valoare`);
     }
   }
+});
+
+test('surse: linkul colecției Portwest Media Hub nu stă în repo (scripts/images/)', () => {
+  for (const name of readdirSync(join(ROOT, 'scripts/images'))) {
+    if (!/\.(py|json|md)$/.test(name)) continue;
+    assert.doesNotMatch(read(`scripts/images/${name}`), /mediahub\.portwest\.com\/web\/[0-9a-f]{8,}/i, `${name}: URL de colecție Media Hub în repo`);
+  }
+});
+
+// ---------------------------------------------------------------------------------------------------------------
+// 8. Ocolirile din afara codului: css/md/mdx/json din src/, css/js din dist/, copii ale variantelor în public/
+
+/**
+ * Fișierele din src/ care nu sunt cod analizat de analyzeUsage: css (inclusiv src/styles/*.css), md, mdx, json.
+ * Orice `/images/actiune/` sau slug de poză în ele e problemă (o poză cerută așa nu se poate atribui unei pagini).
+ * Excluderi: doar src/data/poze-actiune*.json (datele pozelor își conțin propriile slug-uri/fișiere; sunt singura sursă).
+ * src/content/products/*.json NU e exclus: nu dă fals-pozitive (fișele de produs nu conțin căi sau slug-uri de poze).
+ */
+const DATA_EXCLUDED = /^src\/data\/poze-actiune[^/]*\.json$/;
+const dataFiles = walk(join(ROOT, 'src'), (n) => /\.(css|md|mdx|json)$/.test(n))
+  .map((abs) => ({ path: toPosix(relative(ROOT, abs)), text: readFileSync(abs, 'utf8') }))
+  .filter((f) => !DATA_EXCLUDED.test(f.path));
+
+export function assetRefProblems(files, slugs = photos.map((p) => p.slug)) {
+  const problems = [];
+  for (const { path, text } of files) {
+    if (DATA_EXCLUDED.test(path)) continue;
+    if (/images\\?\/actiune/.test(text)) problems.push(`${path}: calea /images/actiune/ în sursă (poza se cere doar prin id, nu se poate atribui unei pagini)`);
+    for (const s of slugs) if (text.includes(s)) problems.push(`${path}: slug-ul pozei „${s}” în sursă (nu se poate atribui unei pagini)`);
+  }
+  return problems;
+}
+
+/** Căile `/images/actiune/` din fișierele css/js/mjs din `distDir` (chunk-uri, stiluri): nu se pot atribui unei pagini. */
+export function distAssetProblems(distDir) {
+  return walk(distDir, (n) => /\.(css|js|mjs)$/.test(n))
+    .filter((f) => /images\\?\/actiune/.test(readFileSync(f, 'utf8')))
+    .map((f) => `${toPosix(relative(distDir, f))}: calea /images/actiune/ într-un fișier css/js (nu se poate atribui unei pagini)`);
+}
+
+/**
+ * Fișiere din `publicDir`, în afara images/actiune/, cu aceiași octeți (SHA-256) ca vreo variantă din
+ * images/actiune/: o copie redenumită ocolește scanarea după nume. Hash-ul se calculează doar pentru fișierele cu
+ * dimensiunea unei variante (aceiași octeți implică aceeași dimensiune), deci e rapid și rezultatul e identic cu
+ * hash-ul pe toate.
+ */
+export function publicCopyProblems(publicDir) {
+  const actionDir = join(publicDir, 'images/actiune');
+  const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex');
+  const variantFiles = existsSync(actionDir) ? readdirSync(actionDir).map((n) => join(actionDir, n)) : [];
+  const variantHashes = new Map(variantFiles.map((f) => [sha(f), toPosix(relative(publicDir, f))]));
+  const variantSizes = new Set(variantFiles.map((f) => statSync(f).size));
+  const problems = [];
+  for (const file of walk(publicDir, () => true)) {
+    const rel = toPosix(relative(publicDir, file));
+    if (rel.startsWith('images/actiune/') || !variantSizes.has(statSync(file).size)) continue;
+    const twin = variantHashes.get(sha(file));
+    if (twin) problems.push(`public/${rel}: aceiași octeți ca varianta ${twin} (copie a unei poze de acțiune în afara images/actiune/)`);
+  }
+  return problems;
+}
+
+test('ocolire: în src/ (css, md, mdx, json) niciun /images/actiune/ și niciun slug de poză', () => {
+  assert.ok(dataFiles.some((f) => f.path === 'src/styles/global.css'), 'scanarea nu vede src/styles/*.css');
+  assert.ok(dataFiles.some((f) => f.path.startsWith('src/content/products/')), 'scanarea nu vede fișele de produs');
+  assert.deepEqual(assetRefProblems(dataFiles), []);
+});
+
+test('ocolire: public/ nu conține copii ale variantelor în afara images/actiune/ (SHA-256)', () => {
+  assert.deepEqual(publicCopyProblems(join(ROOT, 'public')), []);
+});
+
+test('ocolire: public/images/actiune/ conține exact variantele din date (fără orfane)', () => {
+  const expected = Object.values(variants).flatMap((l) => l.map((v) => v.file)).sort();
+  assert.deepEqual(readdirSync(join(ROOT, 'public/images/actiune')).sort(), expected);
+});
+
+test('ocolire: în dist/ niciun css/js nu conține /images/actiune/', (t) => {
+  if (!distAvailable(t)) return;
+  assert.deepEqual(distAssetProblems(DIST), []);
+});
+
+test('ocolire (negativ): url(/images/actiune/…) într-un .css din src/ pică, și slug-ul în md/json', () => {
+  const portwestFile = variants.P04[0].file;
+  const css = (text) => assetRefProblems([page('src/styles/x.css', text)]);
+  assert.match(css(`.a{background:url(/images/actiune/${portwestFile})}`).join('\n'), /calea \/images\/actiune\//);
+  assert.match(css(`.a{background:url("/images/actiune/${portwestFile}")}`).join('\n'), /calea \/images\/actiune\//);
+  assert.match(css(`.a{background:url(/images\\/actiune\\/x-portwest-960.webp)}`).join('\n'), /calea \/images\/actiune\//);
+  assert.match(css(`/* ${photos.find((p) => p.id === 'P04').slug} */`).join('\n'), /slug-ul pozei/);
+  assert.match(assetRefProblems([page('src/content/x.md', `![](/images/actiune/${portwestFile})`)]).join('\n'), /calea/);
+  assert.match(assetRefProblems([page('src/content/x.json', `{"img":"${photos[0].slug}"}`)]).join('\n'), /slug-ul pozei/);
+  assert.deepEqual(css('.a{background:url(/images/altceva.webp)}'), []);
+  // datele pozelor sunt singura excepție
+  assert.deepEqual(assetRefProblems([page('src/data/poze-actiune.json', `{"slug":"${photos[0].slug}"}`)]), []);
+});
+
+test('ocolire (negativ): /images/actiune/ într-un css/js din dist/ pică', () => {
+  const portwestFile = variants.P04[0].file;
+  for (const [name, body] of [
+    ['_astro/a.css', `.x{background-image:url(/images/actiune/${portwestFile})}`],
+    ['_astro/b.js', `export default "/images/actiune/${portwestFile}"`],
+    ['_astro/c.js', `const u="\\/images\\/actiune\\/${portwestFile}"`],
+  ]) {
+    const dir = mkdtempSync(join(tmpdir(), 'poze-distasset-'));
+    try {
+      mkdirSync(join(dir, '_astro'), { recursive: true });
+      writeFileSync(join(dir, name), body);
+      assert.match(distAssetProblems(dir).join('\n'), /calea \/images\/actiune\//, name);
+      writeFileSync(join(dir, name), 'export default 1');
+      assert.deepEqual(distAssetProblems(dir), [], `${name} curat`);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+});
+
+test('ocolire (negativ): copia unei variante, redenumită în public/, pică (SHA-256)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'poze-public-'));
+  try {
+    mkdirSync(join(dir, 'images/actiune'), { recursive: true });
+    mkdirSync(join(dir, 'images/produse'), { recursive: true });
+    const bytes = readFileSync(join(ROOT, 'public/images/actiune', variants.M02[0].file));
+    writeFileSync(join(dir, 'images/actiune', variants.M02[0].file), bytes);
+    writeFileSync(join(dir, 'images/produse/altceva.webp'), Buffer.from('alt continut'));
+    assert.deepEqual(publicCopyProblems(dir), []);
+    writeFileSync(join(dir, 'images/produse/nume-nevinovat.webp'), bytes); // aceiași octeți, alt nume
+    assert.match(publicCopyProblems(dir).join('\n'), /images\/produse\/nume-nevinovat\.webp: aceiași octeți ca varianta images\/actiune\//);
+    // altă extensie / alt director: tot pică (conținutul contează, nu numele)
+    writeFileSync(join(dir, 'logo.png'), bytes);
+    assert.equal(publicCopyProblems(dir).length, 2);
+    // aceeași dimensiune, alți octeți: nu pică
+    writeFileSync(join(dir, 'images/produse/nume-nevinovat.webp'), Buffer.alloc(bytes.length, 1));
+    writeFileSync(join(dir, 'logo.png'), Buffer.alloc(bytes.length, 2));
+    assert.deepEqual(publicCopyProblems(dir), []);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('NOT_PHOTO_IDS: lista de excepții e goală, nu conține id-uri reale, iar o excepție funcționează', () => {
+  assert.equal(NOT_PHOTO_IDS.size, 0, 'NOT_PHOTO_IDS: adaugă aici doar valori care nu sunt id-uri de poză');
+  for (const id of NOT_PHOTO_IDS) assert.ok(!photos.some((p) => p.id === id), `NOT_PHOTO_IDS conține id-ul real ${id}`);
+  const code = "const cod = 'S10';"; // aici S10 e un cod de produs, nu o poză
+  const file = [page('src/lib/x.ts', code)];
+  // fără excepție: fail-closed, cu mesajul care spune ce să faci
+  const without = analyzeUsage(file, { notPhotoIds: new Set() }).problems.join('\n') + usageProblems(analyzeUsage(file, { notPhotoIds: new Set() }).refs, PHOTOS).join('\n');
+  assert.match(without, /nu se deduce pagina/);
+  assert.match(without, /dacă nu e id de poză, scrie valoarea altfel \(ex\. `S-10`\) sau adaugă excepția în NOT_PHOTO_IDS/);
+  assert.match(analyzeUsage([page('src/lib/x.ts', "const a = 'M12';")]).problems.join('\n'), /NOT_PHOTO_IDS/);
+  // scrisă altfel, trece
+  assert.deepEqual(analyzeUsage([page('src/lib/x.ts', "const cod = 'S-10';")]).problems, []);
+  // cu excepția: trece, fără referințe
+  const withExc = analyzeUsage(file, { notPhotoIds: new Set(['S10']) });
+  assert.deepEqual(withExc.problems, []);
+  assert.deepEqual(withExc.refs, []);
+  // excepția e pe valoare: alt literal tot pică
+  assert.match(analyzeUsage([page('src/lib/x.ts', "const a = 'S10'; const b = 'S11';")], { notPhotoIds: new Set(['S10']) }).problems.join('\n'), /„S11”/);
+  // și în fișierele de catalog
+  assert.deepEqual(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")], { notPhotoIds: new Set(['S10']) }).problems, []);
+  assert.match(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")]).problems.join('\n'), /NOT_PHOTO_IDS/);
 });

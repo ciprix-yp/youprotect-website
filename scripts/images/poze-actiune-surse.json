@@ -49,13 +49,6 @@
     "rezolutie_originala": [5760, 3840]
   },
   {
-    "id": "M18",
-    "furnizor": "mascot",
-    "pixeli_din": "original",
-    "id_sursa": "2f88fe72ea844df08cb3cb09c4945d82",
-    "rezolutie_originala": [4720, 3598]
-  },
-  {
     "id": "M19",
     "furnizor": "mascot",
     "pixeli_din": "original",
@@ -90,13 +83,6 @@
     "bynder_asset_id": "688DAC4B-3DF9-4876-82F58C56DD9F7B5B",
     "rezolutie_originala": [2000, 1333],
     "nota": "Preview-ul Media Hub (2000x1338) e sursa pixelilor; originalul declarat are 2000x1333. Fișier local, obținut manual din Media Hub: nu se descarcă automat."
-  },
-  {
-    "id": "P13",
-    "furnizor": "portwest",
-    "pixeli_din": "original",
-    "bynder_asset_id": "D1C87919-F38F-4BD3-84190FA6BE0FE371",
-    "rezolutie_originala": [4368, 2912]
   },
   {
     "id": "S01",
@@ -139,13 +125,6 @@
     "pixeli_din": "preview",
     "url_sursa": "https://www.sirsafety.com/assets/img/Sir_loc_2021_11_19_3559.jpg",
     "rezolutie_originala": [1152, 768]
-  },
-  {
-    "id": "S14",
-    "furnizor": "sirsafety",
-    "pixeli_din": "original",
-    "url_sursa": "https://www.sirsafety.com/assets/img/S_2.jpg",
-    "rezolutie_originala": [2362, 1575]
   },
   {
     "id": "S16",

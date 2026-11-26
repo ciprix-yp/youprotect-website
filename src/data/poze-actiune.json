@@ -91,19 +91,6 @@
     "obiectPoz": { "desktop": "50% 30%", "telefon": "50% 30%" }
   },
   {
-    "id": "M18",
-    "furnizor": "mascot",
-    "slug": "doi-colegi-canapea-dosar-negru-mascot",
-    "alt": "Un bărbat și o femeie, în ținute de birou, stau pe o canapea și discută zâmbind pe marginea unui dosar negru",
-    "creditText": "MASCOT",
-    "copyrightNotice": "© MASCOT",
-    "creator": { "@type": "Organization", "name": "MASCOT" },
-    "sursa": "original",
-    "latimi": [640, 960, 1440],
-    "erou": false,
-    "obiectPoz": { "desktop": "40% 50%", "telefon": "38% 50%" }
-  },
-  {
     "id": "M19",
     "furnizor": "mascot",
     "slug": "barbat-camasa-alba-scara-exterioara-mascot",
@@ -167,19 +154,6 @@
     "latimi": [640, 960, 1440],
     "erou": false,
     "obiectPoz": { "desktop": "73% 50%", "telefon": "75% 50%" }
-  },
-  {
-    "id": "P13",
-    "furnizor": "portwest",
-    "slug": "operator-salopeta-rosie-roata-vana-portwest",
-    "alt": "Operator în salopetă roșie, cu cască, antifoane și ochelari, învârte roata unei vane mari într-o instalație industrială",
-    "creditText": "Portwest",
-    "copyrightNotice": "© Portwest",
-    "creator": { "@type": "Organization", "name": "Portwest" },
-    "sursa": "original",
-    "latimi": [640, 960, 1440],
-    "erou": false,
-    "obiectPoz": { "desktop": "60% 40%", "telefon": "62% 40%" }
   },
   {
     "id": "S01",
@@ -258,19 +232,6 @@
     "latimi": [640, 960, 1152],
     "erou": false,
     "obiectPoz": { "desktop": "60% 50%", "telefon": "62% 50%" }
-  },
-  {
-    "id": "S14",
-    "furnizor": "sirsafety",
-    "slug": "lucrator-halat-alb-carne-cruda-sir-safety",
-    "alt": "Lucrător în halat alb, cu plasă de păr, cască și ochelari, lângă un morman de carne crudă pe o masă de inox",
-    "creditText": "Sir Safety",
-    "copyrightNotice": "© Sir Safety",
-    "creator": { "@type": "Organization", "name": "Sir Safety" },
-    "sursa": "original",
-    "latimi": [640, 960, 1440],
-    "erou": false,
-    "obiectPoz": { "desktop": "55% 50%", "telefon": "60% 50%" }
   },
   {
     "id": "S16",
