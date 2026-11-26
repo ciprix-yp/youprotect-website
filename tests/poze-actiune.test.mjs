@@ -44,9 +44,9 @@ const variants = JSON.parse(read('src/data/poze-actiune-variante.json'));
 // 1. Integritatea datelor
 
 const EXPECTED_IDS = [
-  'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19', 'M20', 'M21', 'M22', 'M23',
-  'P04', 'P05', 'P06', 'P11',
-  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16', 'S17',
+  'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19', 'M20', 'M21', 'M22', 'M23', 'M24', 'M25', 'M26', 'M27',
+  'P04', 'P05', 'P06', 'P11', 'P14', 'P15', 'P16',
+  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16', 'S17', 'S18', 'S19',
 ];
 const BRAND = {
   mascot: { suffix: '-mascot', credit: 'MASCOT', prefix: 'M' },
@@ -1112,6 +1112,39 @@ test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p
   }
   for (const p of photos.filter((x) => !x.portret)) {
     assert.ok(!variants[p.id].some((v) => v.portret), `${p.id}: variante portret fără decupaj în date`);
+  }
+});
+
+// Setul rotativ al eroului homepage-ului (M24–M27, P14–P16, S18, S19) + S02: toate au decupaj portret 4:5 din ORIGINALUL ÎNTREG
+// (fracțiile din `portret.decupaj` înmulțite cu rezoluția din surse dau pixeli întregi, raport 4:5 și cel puțin 960 px lățime).
+const ROTATIVE = ['M24', 'M25', 'M26', 'M27', 'P14', 'P15', 'P16', 'S18', 'S19'];
+const PORTRAIT_768_PRODUCTION = 56144; // octeții portretului p768 al lui S02 în producție: plafonul pentru pozele noi
+
+test('poze: setul rotativ al eroului (9 poze noi) are decupaj portret 4:5 valid din originalul întreg, 768/960/1440/1920 și portret 768/960', () => {
+  const surse = JSON.parse(read('scripts/images/poze-actiune-surse.json'));
+  for (const id of ROTATIVE) {
+    const p = photos.find((x) => x.id === id);
+    const s = surse.find((x) => x.id === id);
+    assert.ok(p && s, `${id}: lipsește din date sau din surse`);
+    assert.equal(p.erou, true, `${id}: erou`);
+    assert.deepEqual(p.latimi, [768, 960, 1440, 1920], `${id}: latimi`);
+    assert.ok(p.portret && s.decupaj, `${id}: portret și decupaj de desktop`);
+    const [W, H] = s.rezolutie_originala;
+    const [x0, y0, x1, y1] = p.portret.decupaj;
+    assert.ok(0 <= x0 && x0 < x1 && x1 <= 1 && 0 <= y0 && y0 < y1 && y1 <= 1, `${id}: fracții în afara [0,1]`);
+    const w = Math.round(x1 * W) - Math.round(x0 * W);
+    const h = Math.round(y1 * H) - Math.round(y0 * H);
+    assert.ok(Math.abs(w / h - 0.8) <= 0.01, `${id}: decupajul portret ${w}x${h} nu e 4:5`);
+    assert.ok(w >= 960, `${id}: decupajul portret ${w} px < 960 px (upscaling)`);
+    const { x, y, latime, inaltime } = s.decupaj;
+    assert.ok(Math.abs(latime / inaltime - 16 / 9) <= 0.01, `${id}: decupajul de desktop nu e 16:9`);
+    assert.ok(x + latime <= W && y + inaltime <= H, `${id}: decupajul de desktop iese din original`);
+    const list = variants[id];
+    assert.deepEqual(list.filter((v) => !v.portret).map((v) => v.width), [768, 960, 1440, 1920], `${id}: variante desktop`);
+    const portrait = list.filter((v) => v.portret);
+    assert.deepEqual(portrait.map((v) => v.width), [768, 960], `${id}: variante portret`);
+    assert.ok(portrait[0].bytes <= PORTRAIT_768_PRODUCTION, `${id}: ${portrait[0].file} ${portrait[0].bytes} B > ${PORTRAIT_768_PRODUCTION} B`);
+    assert.ok(list.every((v) => !v.doar), `${id}: \`doar\` doar la pozele cu două seturi`);
   }
 });
 
