@@ -23,6 +23,11 @@
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
+  /* Două culori din paleta implicită, fixate la valorile din Tailwind 3: în v4 paleta e în oklch, iar red-400 devine
+     mai saturat (#ff6467), neutral-400 puțin mai închis (#a1a1a1). Restul nuanțelor neutral-* folosite coincid. */
+  --color-red-400: #f87171;
+  --color-neutral-400: #a3a3a3;
+
   --font-heading: Montserrat, "Montserrat Fallback", sans-serif;
   --font-body: "YP Text", "YP Text Fallback", sans-serif;
   --font-accent: Playfair Display, serif;
