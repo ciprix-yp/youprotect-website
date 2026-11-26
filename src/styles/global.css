@@ -205,6 +205,7 @@
    Doar unde browserul le are (Chrome, Edge, Safari 26+); în rest pagina rămâne cum era. Oprite cu „reduce motion”.
    - .sd-hero-media / .sd-hero-content: poza din hero alunecă mai încet decât pagina; textul se stinge sub header.
    - .sd-media: pozele din pagină pornesc ușor mărite și se așază la mărimea normală spre mijlocul ecranului.
+   - .sd-hero-photo: poza din antetul paginilor interioare (PageHeader) crește ușor la derulare, de la scara 1.
    - .sd-step: linia galbenă de deasupra pasului se trage pe măsură ce pasul urcă în ecran.
    - .sd-check: bifele apar una câte una.
    - .sd-expand: blocul galben pornește ca un card cu colțuri rotunjite și se lărgește până la margini.
