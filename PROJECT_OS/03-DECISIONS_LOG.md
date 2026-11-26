@@ -721,3 +721,17 @@
 - Textul vine din constanta `CTA_DISCUSS` (`src/lib/site.ts`), iar un test oprește revenirea numelui vechi (branch-ul
   `cta-hai-sa-discutam`).
 - Impact: intrările vechi din acest jurnal păstrează numele de atunci.
+
+## D-2026-11-26-01
+- Câmp opțional „luna comenzii” în formulare (owner, 26.11.2026): un select în pasul „contact” al ambelor formulare
+  (`consultation` și `quote`), sub câmpul „detalii”. Întrebarea: „În ce lună comanzi de obicei echipamente?
+  (opțional)”.
+- Cheia în `answers` e `luna_comenzii`, cu eticheta „În ce lună comandă de obicei”. Cele 14 valori sunt ianuarie …
+  decembrie, „De mai multe ori pe an” și „Nu știu încă”. Lista e în `src/lib/lead-limits.js`, definită o singură dată
+  și folosită și de pagină, și de server; serverul păstrează doar aceste valori, orice altă valoare e ignorată, iar
+  cererea rămâne validă.
+- Fără migrare D1, fără intent nou, fără schimbare de contract CRM (CRM păstrează orice răspuns cu cheia de cel mult
+  40 de caractere) și fără pas nou obligatoriu.
+- Motiv: obiecția 3 din `09-HARTA-CUVINTE-CHEIE.md` §5 („cumpărăm o dată sau de două ori pe an, reveniți în luna X”).
+  Lista de ofertă ține 30 de zile și nu acoperă „luna X”.
+- Impact: echipa vede în cerere (în email și în CRM) când să revină. Nu există memento automat.
