@@ -26,9 +26,71 @@
   src: url("/fonts/yp-text-700.woff2") format("woff2");
 }
 
+/* Fonturi de rezervă potrivite (26.11.2026): cât timp vine fontul real (font-display: swap), textul se afișează în Arial
+   cu metrici ajustate, ca titlul și paragrafele să aibă același număr de rânduri și aceeași înălțime înainte și după swap.
+   Formulele (valorile sunt calculate din fișierele woff2 și din Arial, nu ghicite):
+     size-adjust = lățimea medie a unui caracter din fontul real / cea din Arial, pe texte românești reale de pe site
+     ascent-override = ascent hhea / unitsPerEm / size-adjust; descent la fel (în valoare absolută); line-gap 0 (ca la fonturile reale)
+   Montserrat 300/500: Arial; 700: Arial Bold. YP Text 300/400: Arial; 700: Arial Bold. Fără local(), fontul de rezervă
+   rămâne cel generic. Când schimbi fontul real, recalculezi valorile. */
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-weight: 300;
+  src: local("Arial"), local("Liberation Sans"), local("Arimo");
+  size-adjust: 110.39%;
+  ascent-override: 87.69%;
+  descent-override: 22.74%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-weight: 500;
+  src: local("Arial"), local("Liberation Sans"), local("Arimo");
+  size-adjust: 113.37%;
+  ascent-override: 85.39%;
+  descent-override: 22.14%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-weight: 700;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold");
+  size-adjust: 109.6%;
+  ascent-override: 88.32%;
+  descent-override: 22.9%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "YP Text Fallback";
+  font-weight: 300;
+  src: local("Arial"), local("Liberation Sans"), local("Arimo");
+  size-adjust: 96.88%;
+  ascent-override: 101.87%;
+  descent-override: 21.98%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "YP Text Fallback";
+  font-weight: 400;
+  src: local("Arial"), local("Liberation Sans"), local("Arimo");
+  size-adjust: 98.19%;
+  ascent-override: 100.52%;
+  descent-override: 21.69%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "YP Text Fallback";
+  font-weight: 700;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold");
+  size-adjust: 93.06%;
+  ascent-override: 106.06%;
+  descent-override: 22.89%;
+  line-gap-override: 0%;
+}
+
 @layer base {
   html {
-    font-family: 'YP Text', sans-serif;
+    font-family: 'YP Text', 'YP Text Fallback', sans-serif;
   }
 
   /* Elementele AOS încă neanimate (fade-left/right) sunt translatate lateral și lățeau pagina
@@ -41,7 +103,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', 'Montserrat Fallback', sans-serif;
     font-weight: 700;
   }
 
