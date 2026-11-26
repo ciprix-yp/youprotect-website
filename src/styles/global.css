@@ -1,7 +1,32 @@
 @import 'tailwindcss' source(none);
 /* Clasele se caută doar în src/ (ca în `content` din Tailwind 3): fără asta Tailwind 4 scanează tot repo-ul, inclusiv teste și documente. */
 @source '../**/*.{astro,html,js,jsx,md,mdx,ts,tsx}';
-@config '../../tailwind.config.mjs';
+
+@theme {
+  --color-yp-black: #0A0A0A;
+  --color-yp-yellow: #E3FC02;
+  --color-yp-green: #0F766E;
+  --color-yp-gray: #2E2E2E;
+  --color-yp-white: #FFFFFF;
+  /* Suprafețele cardurilor (un pas peste fundal) și fondul cald al pozelor de produs (design premium, 20.11.2026). */
+  --color-yp-surface: #121212;
+  --color-yp-surface-2: #181818;
+  --color-yp-well: #EFEEEA;
+
+  /* Margine luminoasă fină sus + umbră adâncă: cardul pare ridicat de pe fundal. */
+  --shadow-card: inset 0 1px 0 0 rgba(255,255,255,0.06), 0 24px 48px -28px rgba(0,0,0,0.95);
+  --shadow-card-hover: inset 0 1px 0 0 rgba(255,255,255,0.09), 0 36px 64px -30px rgba(0,0,0,1), 0 0 0 1px rgba(227,252,2,0.25);
+
+  /* Curbele de mișcare ale site-ului (fluiditate, 20.11.2026; după skill-ul apple-design / review-animations):
+     out-strong pentru ce apare sau răspunde la o acțiune, drawer pentru ce se mută pe ecran (curba iOS).
+     Nu se numește „--ease-out”: ar înlocui curba standard a utilitarului `ease-out` din Tailwind. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --font-heading: Montserrat, "Montserrat Fallback", sans-serif;
+  --font-body: "YP Text", "YP Text Fallback", sans-serif;
+  --font-accent: Playfair Display, serif;
+}
 
 /* Fontul de text: subset din Lato 2.015 (OFL), redenumit „YP Text” (vezi public/fonts/YP-Text-OFL.txt).
    Lato de la Google Fonts nu are ă, ș, ț: literele apăreau într-un font de rezervă, mai gros. */
@@ -118,12 +143,6 @@
   }
 }
 
-/* Mișcare (fluiditate, 20.11.2026): aceleași curbe în tot site-ul (sunt și în tailwind.config.mjs). */
-:root {
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-}
-
 /* Tranzițiile între pagini: pagina nouă apare cu un fade scurt, iar poza produsului trece din card în fișa produsului
    și înapoi (scripts/fluid.ts dă numele „product-photo” cardului apăsat). Unde browserul nu le are (Firefox mai vechi),
    navigarea rămâne normală. Cu „reduce motion” sunt oprite. */
@@ -135,7 +154,7 @@
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 200ms;
-  animation-timing-function: var(--ease-out);
+  animation-timing-function: var(--ease-out-strong);
 }
 ::view-transition-group(product-photo),
 ::view-transition-old(product-photo),
@@ -150,8 +169,8 @@
 /* Meniul de pe telefon coboară din header în 200 ms și urcă înapoi pe același drum, mai repede (150 ms). */
 #mobile-menu {
   transition:
-    opacity 200ms var(--ease-out),
-    translate 200ms var(--ease-out),
+    opacity 200ms var(--ease-out-strong),
+    translate 200ms var(--ease-out-strong),
     display 200ms allow-discrete;
 }
 #mobile-menu.hidden {
@@ -185,13 +204,13 @@
   }
 }
 .step-in-forward {
-  animation: yp-step-in-forward 240ms var(--ease-out) both;
+  animation: yp-step-in-forward 240ms var(--ease-out-strong) both;
 }
 .step-in-back {
-  animation: yp-step-in-back 240ms var(--ease-out) both;
+  animation: yp-step-in-back 240ms var(--ease-out-strong) both;
 }
 .reveal-in {
-  animation: yp-fade-in 150ms var(--ease-out) both;
+  animation: yp-fade-in 150ms var(--ease-out-strong) both;
 }
 
 /* Confirmarea de la „Adaugă la ofertă” (Header.astro, scripts/quote-list.ts): coboară 8 px de sub antet, din direcția
@@ -221,8 +240,8 @@
   translate: 0 -8px;
   pointer-events: none;
   transition:
-    opacity 150ms var(--ease-out),
-    translate 150ms var(--ease-out);
+    opacity 150ms var(--ease-out-strong),
+    translate 150ms var(--ease-out-strong);
 }
 .quote-toast[data-open] {
   opacity: 1;
@@ -430,7 +449,7 @@
   .card-3d {
     transform-style: preserve-3d;
     transition:
-      transform 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out-strong),
       box-shadow 0.35s ease,
       border-color 0.25s ease;
   }
@@ -442,7 +461,7 @@
   }
   .card-3d .tilt-pop {
     transform: translateZ(0);
-    transition: transform 0.4s var(--ease-out);
+    transition: transform 0.4s var(--ease-out-strong);
   }
   .card-3d.is-tilting .tilt-pop {
     transform: translateZ(24px);
