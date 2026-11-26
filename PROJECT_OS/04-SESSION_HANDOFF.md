@@ -48,7 +48,7 @@ verificate înainte de merge.
 
 ## Sesiunea 2026-11-26: poze reale în acțiune (PR #93)
 
-- PR #93 (`feat/poze-actiune`, D-2026-11-26-01): 19 poze reale cu oameni în acțiune (MASCOT, Portwest, Sir Safety) pe
+- PR #93 (`feat/poze-actiune`, D-2026-11-26-02): 19 poze reale cu oameni în acțiune (MASCOT, Portwest, Sir Safety) pe
   site, prin `ActionPhoto` și `src/data/poze-actiune.json`; pozele generate cu AI de pe /cum-lucram/ sunt înlocuite.
   Live în preview-ul PR-ului, nu în `main`. Regulile sunt în `08-GHID_CONTINUT.md` §9.
 - Urmează: aprobarea lui Ciprian pe iPhone, apoi merge după OK. PR-uri separate, după acesta: antetul cu poza deasupra

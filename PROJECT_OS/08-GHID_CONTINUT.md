@@ -226,7 +226,7 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     `sd-step` (linia pasului se trage), `sd-check` (bifele apar pe rând), `sd-expand` (blocul galben se lărgește),
     `sd-rise` și `.card-3d` (cardurile urcă, doar pe ecranele tactile; cu mouse-ul se înclină). Textul rămâne pe loc.
     Proprietățile se scriu separat, nu cu prescurtarea `animation` (`tests/scroll-animations.test.mjs`).
-- Poze reale în acțiune (26.11.2026, D-2026-11-26-01):
+- Poze reale în acțiune (26.11.2026, D-2026-11-26-02):
   - Punerea: pozele se pun doar prin `ActionPhoto` (`src/components/media/ActionPhoto.astro`), cu datele din
     `src/data/poze-actiune.json` (alt, credit, `obiectPoz` pentru telefon și desktop, lățimi). Variantele le generează
     `scripts/images/build-poze-actiune.py`; nu se editează de mână. Eroul paginii e `heroPhoto` pe
