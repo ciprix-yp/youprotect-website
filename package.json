@@ -23,7 +23,7 @@
     "astro": "^7.4.13",
     "react": "^19.2.3",
     "react-dom": "^19.3.1",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^4.3.5"
   },
   "description": "Project OS: - `/Users/homefolder/youprotect-website/PROJECT_OS/README.md` - `/Users/homefolder/youprotect-website/PROJECT_OS/06-DEPLOY_FLOW.md`",
   "main": "index.js",
