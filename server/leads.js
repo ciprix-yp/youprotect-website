@@ -1,7 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { DETAILS_MAX_LENGTH, EMAIL_REGEX, ORDER_MONTH_ANSWERS, ORDER_MONTH_KEY } from '../src/lib/lead-limits.js';
+import { CRM_ANSWER_MAX_LENGTH, DETAILS_MAX_LENGTH, EMAIL_REGEX, ORDER_MONTH_ANSWERS, ORDER_MONTH_KEY } from '../src/lib/lead-limits.js';
 import { QUOTE_LIST_MAX, isProductSlug } from '../src/lib/quote-list.js';
 import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
 import { LEAD_QUESTIONS } from '../src/lib/lead-questions.js';
@@ -63,6 +63,15 @@ function normalizeAnswer(value) {
     return items.length ? items.join('; ') : null;
   }
   return normalizeString(value, MAX_ANSWER_LENGTH);
+}
+
+/** Taie textul la `max` caractere, fără să rupă o pereche surrogate și fără spații la capăt. */
+function capText(text, max) {
+  if (text.length <= max) return text;
+  let cut = text.slice(0, max);
+  const last = cut.charCodeAt(cut.length - 1);
+  if (last >= 0xd800 && last <= 0xdbff) cut = cut.slice(0, -1);
+  return cut.trimEnd();
 }
 
 /** Adresa paginii unui produs. @param {string} slug */
@@ -142,6 +151,9 @@ export function parseLead(payload) {
   if (products.length > 1) {
     answers.unshift({ question: 'produse', label: 'Produse din lista de ofertă', answer: products.map(productUrl).join('\n') });
   }
+
+  // Ultima apărare: orice răspuns încape în limita importerului CRM (trunchiere, cererea nu se pierde).
+  for (const a of answers) a.answer = capText(a.answer, CRM_ANSWER_MAX_LENGTH);
 
   return {
     ok: true,

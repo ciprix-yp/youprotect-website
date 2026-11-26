@@ -305,6 +305,48 @@ test('luna comenzii: cererea completă încape în limitele CRM (≤ 30 de răsp
   }
 });
 
+test('parseLead: răspunsul final nu depășește 2000 de caractere (limita importerului CRM), prin trunchiere', () => {
+  const quote = (data) => parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', ...data } });
+  // 8 elemente × 300 + „; ” + „ (Specificat: …)” = peste 2700 de caractere înainte de plafon.
+  const items = Array.from({ length: 8 }, (_, i) => String(i).repeat(300));
+  const r = quote({ q3: items, q_other: { q3: 'o'.repeat(300) } });
+  assert.equal(r.ok, true);
+  const q3 = r.lead.answers.find((a) => a.question === 'q3').answer;
+  assert.ok(q3.length <= 2000, `${q3.length}`);
+  assert.ok(q3.length > 1900); // se taie doar surplusul
+  assert.ok(q3.startsWith(`${items[0]}; ${items[1]}; `)); // începutul rămâne neschimbat
+  assert.equal(q3, q3.trimEnd());
+  // Sub limită: identic.
+  const small = quote({ q3: ['Mănuși', 'Căști'], q_other: { q3: 'altceva' } }).lead.answers.find((a) => a.question === 'q3');
+  assert.equal(small.answer, 'Mănuși; Căști (Specificat: altceva)');
+  // Exact la limită nu se taie.
+  const exact = quote({ q4: 'a'.repeat(300), q_other: { q4: 'b'.repeat(300) } }).lead.answers.find((a) => a.question === 'q4');
+  assert.equal(exact.answer.length, 300 + ' (Specificat: '.length + 300 + 1);
+});
+
+test('parseLead: trunchierea nu rupe o pereche surrogate și nu lasă spații la capăt', () => {
+  const quote = (data) => parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', ...data } });
+  // Șase elemente de 300 + 5 × „; ” = 1810, apoi „; ” (1812): al șaptelea element începe la 1812. 187 de „a” ajung la
+  // 1999, iar emoji-ul (două unități) ocupă pozițiile 1999 și 2000: tăierea la 2000 ar lăsa jumătate de pereche.
+  const items = [...Array.from({ length: 6 }, () => 'x'.repeat(300)), `${'a'.repeat(187)}😀${'b'.repeat(50)}`];
+  const q3 = quote({ q3: items }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.equal(q3.length, 1999); // jumătatea de pereche s-a scos
+  assert.equal(q3.isWellFormed(), true);
+  assert.equal(q3.includes('�'), false);
+  assert.ok(q3.endsWith('a'));
+  // Emoji întreg, chiar la limită: rămâne.
+  const fits = [...items.slice(0, 6), `${'a'.repeat(186)}😀${'b'.repeat(50)}`];
+  const kept = quote({ q3: fits }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.equal(kept.length, 2000);
+  assert.equal(kept.isWellFormed(), true);
+  assert.ok(kept.endsWith('😀'));
+  // Spațiul rămas la capătul tăieturii se scoate.
+  const spaced = [...items.slice(0, 6), `${'a'.repeat(186)}  ${'b'.repeat(50)}`];
+  const trimmed = quote({ q3: spaced }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.equal(trimmed, trimmed.trimEnd());
+  assert.ok(trimmed.length < 2000);
+});
+
 test('luna comenzii: ajunge neschimbată din formular prin D1 în GET /api/crm/leads (ambele intenții)', async () => {
   const db = fakeD1();
   stubFetch(200);

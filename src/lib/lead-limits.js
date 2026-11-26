@@ -4,6 +4,10 @@
 /** „Cantități, mărimi, coduri”: răspunsul `detalii` din cererea de ofertă. */
 export const DETAILS_MAX_LENGTH = 1000;
 
+/** Cel mult atâtea caractere într-un răspuns din `answers`: limita importerului CRM (Prospector), D-2026-11-20-14.
+ *  Un răspuns mai lung ar face rândul neimportabil și ar bloca coada CRM-ului. */
+export const CRM_ANSWER_MAX_LENGTH = 2000;
+
 /** „În ce lună comandă firma de obicei echipamente”: întrebare opțională din pasul de contact (obiecția „reveniți în
  *  luna X”). Cheia și lista sunt definite doar aici; pagina le folosește pentru select, serverul pentru validare.
  *  Cheia are cel mult 40 de caractere (limita importerului CRM). */

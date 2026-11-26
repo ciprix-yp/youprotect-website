@@ -738,4 +738,6 @@
   sau alte câmpuri.”
 - De anunțat CRM-ului (Prospector): cheia `luna_comenzii` și lista valorilor, ca pentru `detalii` și `produse`;
   notițele sunt în corpul PR-ului.
+- Plafon de 2000 de caractere pe orice răspuns (limita importerului CRM, D-2026-11-20-14), prin trunchiere
+  (`CRM_ANSWER_MAX_LENGTH`, `src/lib/lead-limits.js`).
 - Impact: echipa vede în cerere (în email și în CRM) când să revină. Nu există memento automat.
