@@ -56,14 +56,19 @@ SOURCE_RE = re.compile(r"^(original|preview)/([MPS][0-9]{2})\.(jpg|png|webp)$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 FORMATS = {"JPEG", "PNG", "WEBP"}
 BASE_WIDTHS = (640, 960, 1440)
-# Eroii (erou: true) nu au 640: pe telefon (390 px CSS, DPR 3) 640 px dă 1,79x și muchii moi; 768 px la q~70 cântărește
-# la fel de puțin sau mai puțin și nu încetinește LCP (măsurat, task 12). Lățimi eroi: 768/960/1440/1920.
+# Lățimi. Poza obișnuită: 640/960/1440. Eroii (erou: true) nu au 640: pe telefon (390 px CSS, DPR 3) 640 px dă 1,79x și
+# muchii moi, așa că au 768/960/1440/1920 (măsurat, task 12). Excepții în planned_widths(): sursa pătrată (raport < 1,2)
+# are eroul doar 768/960/1440, iar nicio lățime nu depășește sursa (fără upscaling; după decupajul `decupaj`, dacă există).
 HERO_WIDTHS = (768, 960, 1440, 1920)
-MAX_BYTES = 250 * 1024
-# byte budget per width (ideal range from the brief); quality goes down until a file fits
+MAX_BYTES = 250 * 1024  # limita dură, ca în tests/image-weight.test.mjs: peste ea scriptul se oprește cu EROARE
+# Bugetul de octeți per lățime (țintă, nu limită dură): calitatea scade cu QUALITY_STEP până când fișierul încape.
+# Eroii la 768 px (telefon): 45 KB. Dacă și la QUALITY_MIN (q50) fișierul rămâne peste buget, se păstrează la q50 și
+# main() tipărește pe stderr `AVERTISMENT: ...` (azi: S01, S06 și S17 la 768 px, ieșiți la q50 peste 45 KB; bugetul
+# nu s-a schimbat, e doar o abatere cunoscută, sub limita de 250 KB). Testul din tests/poze-actiune.test.mjs acceptă
+# eroii la 768 px până la 56 KB (toleranță peste cei 45 KB) și portretul 4:5 la 768 px până la 55 KB (PORTRAIT_BUDGET).
 BUDGET = {640: 70 * 1024, 768: 45 * 1024, 960: 120 * 1024, 1440: 200 * 1024, 1920: 240 * 1024}
 QUALITY_START, QUALITY_MIN, QUALITY_STEP = 80, 50, 2
-# 768 (eroii) pornește de la q70: la q80 ar depăși bugetul, iar măsurătoarea LCP s-a făcut pe q~70
+# 768 (eroii) pornește de la q70: la q80 ar depăși bugetul de 45 KB, iar măsurătoarea LCP s-a făcut pe q~70
 QUALITY_START_BY_WIDTH = {768: 70}
 SRGB = ImageCms.createProfile("sRGB")
 CROP_KEYS = ("x", "y", "latime", "inaltime")
@@ -171,10 +176,23 @@ def portrait_crop(src, box):
     return crop
 
 
+def default_budget(width):
+    return BUDGET.get(width, BUDGET[1440] if width > 960 else BUDGET[960])
+
+
+def warn_over_budget(label, width, size, budget):
+    """Fișierul a rămas peste buget chiar la QUALITY_MIN: se păstrează (sub MAX_BYTES), dar abaterea se vede."""
+    if size > budget:
+        print(
+            f"AVERTISMENT: {label} {width}px rămas peste buget la q{QUALITY_MIN}: {size} B > {budget} B",
+            file=sys.stderr,
+        )
+
+
 def encode(img, budget=None, quality=None):
     width = img.size[0]
     if budget is None:
-        budget = BUDGET.get(width, BUDGET[1440] if width > 960 else BUDGET[960])
+        budget = default_budget(width)
     if quality is None:
         quality = QUALITY_START_BY_WIDTH.get(width, QUALITY_START)
     while True:
@@ -223,6 +241,7 @@ def main():
             h = round(src.size[1] * w / src.size[0])
             img = src if w == src.size[0] else src.resize((w, h), Image.LANCZOS)
             data, quality = encode(img)
+            warn_over_budget(entry["id"], w, len(data), default_budget(img.size[0]))
             if len(data) > MAX_BYTES:
                 fail(f"{entry['id']} {w}: {len(data) // 1024} KB peste limita de 250 KB")
             if {"EXIF", "XMP ", "ICCP"} & set(chunk_names(data)):
@@ -242,6 +261,7 @@ def main():
                 h = round(crop.size[1] * w / crop.size[0])
                 img = crop.resize((w, h), Image.LANCZOS)
                 data, quality = encode(img, PORTRAIT_BUDGET[w], PORTRAIT_QUALITY_START[w])
+                warn_over_budget(f"{entry['id']} portret", w, len(data), PORTRAIT_BUDGET[w])
                 if len(data) > MAX_BYTES or {"EXIF", "XMP ", "ICCP"} & set(chunk_names(data)):
                     fail(f"{entry['id']} portret {w}: prea mare sau cu metadate")
                 name = f"{entry['slug']}-p{w}.webp"
