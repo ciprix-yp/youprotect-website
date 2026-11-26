@@ -14,6 +14,19 @@ pune:
 3. **„De ce să te cred?”** Dovada: standardul, documentul, procesul, condiția scrisă, un client real.
 4. **„Ce fac acum și ce risc?”** Pasul următor și ce se întâmplă după clic.
 
+**Cititorul e eroul, You Protect e ghidul** (owner, 25.11.2026: „vreau să punem leadul în rolul de erou, să scriem
+pe limbajul său, să-i vorbim lui”):
+
+- Eroul are o sarcină: să-și echipeze oamenii potrivit, în buget și fără bătăi de cap. Ghidul îl ajută cu înțelegere
+  (îi cunoaștem situația) și cu autoritate (dovezi: standarde, documente, showroom-ul, testarea, recenziile reale).
+- Subiectul frazelor e „tu”, „echipa ta”, „oamenii tăi”. „Noi” apare doar ca să spună ce facem pentru el.
+- Titlurile vorbesc despre rezultatul lui, nu despre noi. De evitat, exemplu de pe site: „Suntem partenerul local
+  pentru companiile din Satu Mare…”.
+- Povestea noastră (Despre noi) e dovada că suntem ghidul potrivit, nu subiectul paginii.
+- Cuvintele lui: expresiile din căutări (`09-HARTA-CUVINTE-CHEIE.md` §2–3), obiecțiile (09 §5) și recenziile reale
+  (`src/data/testimonials.json`), nu jargonul nostru.
+- Mizele se spun ca fapt (ce se întâmplă dacă echipamentul nu e potrivit sau nu e purtat), nu ca frică (§3).
+
 Reguli:
 
 - Fiecare secțiune răspunde în principal la o singură întrebare (tabelul din §7).
@@ -25,6 +38,8 @@ Reguli:
   acțiune, nu cât timp stă pe pagină.
 - Întrebarea 3 e frâna întrebării 1: fără promisiuni, frică sau superlative ca să prinzi atenția (regulile de adevăr,
   §3).
+- Obiecțiile reale ale clienților și pagina care răspunde la fiecare sunt în `09-HARTA-CUVINTE-CHEIE.md` §5. Fiecare
+  pagină principală răspunde la obiecțiile din dreptul ei.
 
 ## 1. Vocea
 
@@ -146,11 +161,14 @@ promisiuni nesusținute.
 Reguli comune:
 
 - H1 cu keyword și, unde are sens, locația („… pentru construcții, în Satu Mare”).
-- CTA: primar „Cere ofertă”, secundar „Programează o discuție” (același nume peste tot, ca pagina la care duce); blocul
-  „Testezi fără riscuri” unde e relevant.
-- CTA-ul se alege după stadiul cititorului. Pe ghiduri, pasul următor e mic (categoria, calculatorul, ghidul conex).
-  Pe categorii și produse: „Cere ofertă” sau lista de ofertă. Pe Cum lucrăm și Despre noi, „Programează o discuție”
-  poate fi butonul principal.
+- CTA: numele sunt „Cere ofertă”, „Hai să discutăm” și „Vezi catalogul”, același nume peste tot, ca pagina la care
+  duce butonul. „Hai să discutăm” duce la `/programeaza-discutie/` (adresa nu se schimbă); textul vine din `CTA_DISCUSS`
+  (`src/lib/site.ts`).
+- Butonul principal e „Cere ofertă” pe paginile comerciale (categorii, produse, industrii, homepage) și „Hai să
+  discutăm” pe Cum lucrăm și Despre noi (owner, 25.11.2026). Pe categorii și produse, pasul poate fi și lista de
+  ofertă.
+- Pe ghiduri, pasul următor e mic (categoria, calculatorul, ghidul conex).
+- Blocul „Testezi fără riscuri” apare unde e relevant.
 - Întrebările frecvente urmează regulile GEO din §6.
 - SEO stă în scheletul paginii (titlu, H1, primul paragraf, H2, descrierea din Google, întrebări frecvente), nu în
   fiecare paragraf.
@@ -171,8 +189,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
 - Clasele comune sunt în `src/lib/ui.ts`: `pageContainer` (`max-w-7xl` + `px-4`, ca antetul și footer-ul),
   `pageTitle`, `pageIntro`, `sectionTitle`, `btnPrimary`, `btnSecondary`, `readingColumn` (text lung: max. ~70 de
   caractere pe rând).
-- Butoane: înălțime 48 px (`h-12`), fără săgeți. Același nume pentru aceeași acțiune: „Cere ofertă”, „Programează o
-  discuție”, „Vezi catalogul”.
+- Butoane: înălțime 48 px (`h-12`), fără săgeți. Același nume pentru aceeași acțiune: „Cere ofertă”, „Hai să
+  discutăm”, „Vezi catalogul”.
 - Fără etichete mici în majuscule deasupra titlurilor, fără cuvinte colorate în titluri, fără animații declanșate la
   derulare cu cronometru (tip AOS). Mișcarea la derulare e permisă doar legată de poziția paginii (clasele `sd-*`, vezi
   „Mișcare” mai jos).
