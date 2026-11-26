@@ -242,5 +242,20 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     `overflow-clip`, NU `overflow-hidden`: un `overflow: hidden` face din wrapper un container de derulare pentru
     `view()`, iar efectul rămâne blocat la progres 1 (măsurat în Chrome și WebKit). Excepție documentată: dalele din
     scrollerul orizontal `CategoryTiles` pe telefon (`data-sd-exceptie`).
-  - Telefon: pe paginile de categorie poza vine DUPĂ grila de produse sub 1024 px; altfel devine LCP și împinge grila
-    pe al doilea ecran (măsurat 0,9 → 2,9 s). Eroii folosesc varianta de 768 px pe telefon (≈2x).
+  - Telefon: pe paginile de categorie ȘI pe cele de brand poza (și textul „despre marcă”, „Testezi fără riscuri”) vine
+    DUPĂ grila de produse sub 1024 px; altfel devine LCP și împinge grila pe al doilea ecran (măsurat 0,9 → 2,9 s).
+    Eroii folosesc varianta de 768 px pe telefon (≈2x).
+  - `sizes` ~2x: pozele din corp trec prin `bodySizes` (în `ActionPhoto`), așa că la 390 px și DPR 3 `currentSrc` are
+    cel mult 960 px; regula se aplică și când pagina dă propriul `sizes`.
+  - Antet cu poza întâi pe telefon (sub `lg`): poza 3:2, pe toată lățimea, deasupra breadcrumb-ului și a H1, fără ramă
+    și fără colțuri. Desktopul rămâne ca înainte.
+  - Eroul homepage-ului vine dintr-o singură sursă, constanta `heroPhoto` din `src/pages/index.astro`; nu se pune un
+    ID de poză în alt loc din pagină.
+  - Fonturi (LCP): pe paginile cu poză-erou se preîncarcă doar fontul H1 (Montserrat 300), nu cele de text
+    (`preloadFonts={["heading-300"]}`). Montserrat și YP Text au fonturi de rezervă cu metrici (`size-adjust`,
+    ascent/descent); un titlu lung poate avea totuși un rând în plus la swap.
+  - Recenziile de pe homepage: fără autoplay. Caruselul e un rând cu scroll-snap, cu săgeți cu `aria-label` și
+    tastatură.
+  - Portretul real (ex. Alexandra Pop pe /despre-noi/): o fotografie primită de la owner, în afara `poze-actiune.json`,
+    fără metadate și fără credit vizibil atâta timp cât autorul nu e confirmat; creditul se pune doar după ce autorul e
+    confirmat.

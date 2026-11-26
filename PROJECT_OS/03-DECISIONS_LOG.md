@@ -765,3 +765,35 @@
 - Impact: datele și regulile sunt în `src/data/poze-actiune.json`, în componenta `ActionPhoto` și în teste
   (`tests/poze-actiune.test.mjs`). Variantele WebP se regenerează cu scripturile din `scripts/images/`. Nota de
   folosire locală e `.catalog-work/images/actiune/NOTE-folosire.md` (ignorată de git). Regulile pe scurt: `08-GHID_CONTINUT.md` §9.
+
+## D-2026-11-26-03
+- Design pe telefon, poze și LCP (PR #104, înlocuiește #102). Fără decizii de produs noi dincolo de cele aprobate de
+  owner; mai jos sunt faptele livrate.
+- Antet cu poza întâi pe telefon: sub `lg`, poza 3:2 stă pe toată lățimea, deasupra breadcrumb-ului și a H1, fără ramă
+  și fără colțuri. Pe desktop antetul nu s-a schimbat.
+- Grila întâi pe telefon pe paginile de categorie ȘI pe cele de brand (decizia owner-ului). Pe brand, „despre marcă” și
+  „Testezi fără riscuri” stau sub grilă pe telefon; textul e neschimbat. Pe desktop nu s-a schimbat nimic.
+- `sizes` ~2x pentru pozele din corp: la 390 px și DPR 3, `currentSrc` are cel mult 960 px. Regula vine din `bodySizes`
+  în `ActionPhoto`, deci o aplică și paginile care dau propriul `sizes`.
+- Eroul homepage-ului: poză reală de furnizor în loc de imaginea veche cu marcaj YP. Owner-ul a ales varianta A: S02 pe
+  homepage, S06 pe /industrii/ și S17 (poză nouă, Sir Safety: bocanc pe tambur) pe /echipamente-protectie-satu-mare/;
+  S17 e aprobată prin alegerea lui. `/hero-youprotect-highvis.webp` a fost scos. Sursa eroului homepage-ului e o singură
+  constantă (`heroPhoto`, `src/pages/index.astro`), pregătită pentru o selecție rotativă într-un PR următor; rotația nu
+  e implementată.
+- LCP: pe paginile cu poză-erou nu se mai preîncarcă fonturile de text, doar fontul H1 (Montserrat 300). Montserrat și
+  YP Text au fonturi de rezervă cu metrici potrivite (`size-adjust`, ascent/descent). Limite: titlurile lungi pot avea
+  încă o diferență de un rând la swap pe câteva pagini; neverificat pe iPhone real.
+- /cum-lucram/: titlurile pașilor au o singură culoare, fără cifre-fantomă de 180 px (sunt 3 pași). Recenziile de pe
+  homepage nu mai derulează singure: rând cu scroll-snap, săgeți cu `aria-label` și tastatură. /industrii/constructii/
+  are a doua poză (S12).
+- /despre-noi/: portretul Alexandrei Pop în erou (fotografie primită de la owner), fără credit, pentru că autorul nu e
+  confirmat; metadatele EXIF sunt scoase din variante, iar poza nu e în `poze-actiune.json`. Banda cu M02 vine înaintea
+  CTA-ului final. „Echipa PRO” rămâne doar cu text.
+- Scriptul `build-poze-actiune.py`: comentariile de buget corectate (45 KB la 768 px pentru eroi; S01, S06 și S17 ies
+  peste buget la q50, sub limita de 250 KB) și `AVERTISMENT` pe stderr când un fișier rămâne peste buget la calitatea
+  minimă. Ieșirea e neschimbată.
+- Teste noi sau înăsprite: `tests/scroll-timeline-overflow.test.mjs` ia clasele cu overflow hidden/auto/scroll și din
+  CSS-ul compilat (`truncate`, `line-clamp-*`, variante responsive) și numără `data-sd-exceptie` pe element: cel mult
+  una pe pagină, doar scrollerul din `CategoryTiles`, doar pe `/` și `/produse/`.
+- Impact: regulile pe scurt sunt în `08-GHID_CONTINUT.md` §9. Un erou nou se schimbă dintr-un singur loc; la o poză
+  nouă se rulează scriptul de imagini și testele din CI.
