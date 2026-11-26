@@ -9,7 +9,7 @@ import {
 } from '../../lib/quote-categories.js';
 import { RESPONSE_TIME, SITE } from '../../lib/site';
 import { DOMAINS } from '../../lib/domains.js';
-import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../../lib/lead-limits.js';
+import { DETAILS_MAX_LENGTH, EMAIL_REGEX, ORDER_MONTH_ANSWERS, ORDER_MONTH_KEY } from '../../lib/lead-limits.js';
 import { postLead } from '../../lib/post-lead.js';
 import { LEAD_QUESTIONS } from '../../lib/lead-questions.js';
 import { BOOKING_PREFILL_KEY } from '../../lib/session-keys.js';
@@ -92,6 +92,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
     q7: '',
     personalizare: '',
     detalii: '',
+    [ORDER_MONTH_KEY]: '',
     q_other: {},
   });
 
@@ -214,6 +215,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           ...formData,
           produse: items.length ? items : undefined,
           categorie: category ?? undefined,
+          [ORDER_MONTH_KEY]: formData[ORDER_MONTH_KEY] || undefined,
           [HONEYPOT_FIELD]: honeypot || undefined,
         },
       });
@@ -311,6 +313,28 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
                 : 'Ex.: 20 de perechi de bocanci, mărimile 40–46; 30 de geci reflectorizante M–2XL'
             }
           />
+        </div>
+        <div>
+          <label htmlFor={`f-${ORDER_MONTH_KEY}`} className="block text-sm font-medium text-neutral-300 mb-1">
+            În ce lună comanzi de obicei echipamente? (opțional)
+          </label>
+          <select
+            id={`f-${ORDER_MONTH_KEY}`}
+            className={`${inputClass} min-h-[44px] text-base [color-scheme:dark]`}
+            value={formData[ORDER_MONTH_KEY]}
+            onChange={(e) => updateField(ORDER_MONTH_KEY, e.target.value)}
+            aria-describedby={`f-${ORDER_MONTH_KEY}-hint`}
+          >
+            <option value="">Alege luna (poți sări peste)</option>
+            {ORDER_MONTH_ANSWERS.map((answer) => (
+              <option key={answer} value={answer}>
+                {answer}
+              </option>
+            ))}
+          </select>
+          <p id={`f-${ORDER_MONTH_KEY}-hint`} className="text-sm text-neutral-400 mt-1">
+            Dacă firma ta comandă o dată sau de două ori pe an, revenim în luna potrivită.
+          </p>
         </div>
       </div>
       <p className="text-sm text-neutral-400 leading-relaxed">

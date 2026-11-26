@@ -1,7 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../src/lib/lead-limits.js';
+import { CRM_ANSWER_MAX_LENGTH, DETAILS_MAX_LENGTH, EMAIL_REGEX, ORDER_MONTH_ANSWERS, ORDER_MONTH_KEY } from '../src/lib/lead-limits.js';
 import { QUOTE_LIST_MAX, isProductSlug } from '../src/lib/quote-list.js';
 import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
 import { LEAD_QUESTIONS } from '../src/lib/lead-questions.js';
@@ -44,13 +44,24 @@ export const QUESTION_LABELS = {
 
 export const INTENT_LABELS = { quote: 'Cerere de ofertă', consultation: 'Programare discuție' };
 const DETAILS_LABELS = { quote: 'Cantități, mărimi, coduri', consultation: 'Despre ce vrea să vorbim' };
+const ORDER_MONTH_LABEL = 'În ce lună comandă de obicei';
 
+/** Taie textul la `max` unități, fără să rupă o pereche surrogate, apoi scoate spațiile de la capăt. */
+function cutText(text, max) {
+  if (text.length <= max) return text;
+  let cut = text.slice(0, max);
+  const last = cut.charCodeAt(cut.length - 1);
+  if (last >= 0xd800 && last <= 0xdbff) cut = cut.slice(0, -1);
+  return cut.trimEnd();
+}
+
+/** Text curat: bine format (un surrogate singur devine U+FFFD, ca importerul CRM să primească UTF-8 valid), fără
+ *  spații la capete, tăiat la `maxLength` fără să rupă un caracter. `toWellFormed` există în Node 20+ și în Workers. */
 export function normalizeString(value, maxLength = null) {
   if (typeof value !== 'string') return null;
-  const trimmed = value.trim();
+  const trimmed = value.toWellFormed().trim();
   if (!trimmed) return null;
-  if (maxLength && trimmed.length > maxLength) return trimmed.slice(0, maxLength);
-  return trimmed;
+  return maxLength ? cutText(trimmed, maxLength) : trimmed;
 }
 
 function normalizeAnswer(value) {
@@ -63,6 +74,9 @@ function normalizeAnswer(value) {
   }
   return normalizeString(value, MAX_ANSWER_LENGTH);
 }
+
+/** Plafonul final pe un răspuns din `answers` (limita importerului CRM): aceeași tăiere sigură. */
+const capText = cutText;
 
 /** Adresa paginii unui produs. @param {string} slug */
 export const productUrl = (slug) => `${SITE_URL}/produse/${slug}/`;
@@ -116,6 +130,11 @@ export function parseLead(payload) {
   if (details) {
     answers.push({ question: 'detalii', label: DETAILS_LABELS[intent], answer: details });
   }
+  // Luna comenzii (opțional, ambele intenții): doar valorile din listă; orice altceva se ignoră, cererea rămâne validă.
+  const orderMonth = normalizeString(data[ORDER_MONTH_KEY]);
+  if (orderMonth && ORDER_MONTH_ANSWERS.includes(orderMonth)) {
+    answers.push({ question: ORDER_MONTH_KEY, label: ORDER_MONTH_LABEL, answer: orderMonth });
+  }
   // Categoria din /cere-oferta/?categorie=<slug> (cardurile de pe homepage). Doar slug-uri din listă.
   const category = intent === 'quote' ? quoteCategoryLabel(data.categorie) : null;
   if (category) answers.unshift({ question: 'categorie', label: 'Categoria aleasă pe site', answer: category });
@@ -136,6 +155,9 @@ export function parseLead(payload) {
   if (products.length > 1) {
     answers.unshift({ question: 'produse', label: 'Produse din lista de ofertă', answer: products.map(productUrl).join('\n') });
   }
+
+  // Ultima apărare: orice răspuns încape în limita importerului CRM (trunchiere, cererea nu se pierde).
+  for (const a of answers) a.answer = capText(a.answer, CRM_ANSWER_MAX_LENGTH);
 
   return {
     ok: true,

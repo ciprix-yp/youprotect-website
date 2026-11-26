@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEAD_QUESTIONS } from '../src/lib/lead-questions.js';
 import { QUESTIONS, QUESTION_LABELS } from '../server/leads.js';
+import { ORDER_MONTH_ANSWERS, ORDER_MONTH_KEY } from '../src/lib/lead-limits.js';
 import { CATEGORY_PRODUCTS_OPTION, QUOTE_CATEGORIES } from '../src/lib/quote-categories.js';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -27,6 +28,43 @@ test('întrebările: serverul și formularul folosesc aceeași listă, fiecare c
   assert.match(form, /\[\.\.\.LEAD_QUESTIONS\.quote, 'contact'\]/);
   for (const id of new Set(Object.values(LEAD_QUESTIONS).flat())) {
     assert.match(form, new RegExp(`stepId === '${id}'`), `formularul nu are pasul ${id}`);
+  }
+});
+
+test('luna comenzii: lista și cheia sunt definite o singură dată, în lead-limits.js', () => {
+  assert.equal(ORDER_MONTH_ANSWERS.length, 14);
+  assert.equal(new Set(ORDER_MONTH_ANSWERS).size, 14);
+  for (const answer of ORDER_MONTH_ANSWERS) {
+    assert.ok(answer.length <= 40, answer);
+    assert.doesNotMatch(answer, /[<>\n\r]/, answer);
+    assert.equal(answer, answer.trim());
+  }
+  assert.ok(ORDER_MONTH_KEY.length <= 40); // limita importerului CRM
+  assert.equal(ORDER_MONTH_KEY, 'luna_comenzii');
+  for (const intent of Object.keys(QUESTIONS)) assert.equal(QUESTIONS[intent].includes(ORDER_MONTH_KEY), false, intent);
+
+  const form = read('src/components/forms/MultiStepForm.tsx');
+  const limitsImport = (text) => text.match(/import\s*\{[^}]*\}\s*from\s*'[^']*lead-limits\.js'/)?.[0] ?? '';
+  for (const name of ['ORDER_MONTH_KEY', 'ORDER_MONTH_ANSWERS']) {
+    assert.match(limitsImport(form), new RegExp(`\\b${name}\\b`), `formularul nu importă ${name} din lead-limits.js`);
+  }
+  assert.match(form, /ORDER_MONTH_ANSWERS\.map\(/);
+  // Literalele (cheia și cele 14 valori) între orice fel de ghilimele: ' " `. Regex-ul vine din lista importată.
+  const quotedLiteral = new RegExp(
+    `['"\`](${[ORDER_MONTH_KEY, ...ORDER_MONTH_ANSWERS].join('|')})['"\`]`,
+  );
+  assert.doesNotMatch(form, quotedLiteral);
+  assert.doesNotMatch(form, new RegExp(ORDER_MONTH_KEY)); // cheia nu apare nici fără ghilimele
+
+  const server = read('server/leads.js');
+  for (const name of ['ORDER_MONTH_KEY', 'ORDER_MONTH_ANSWERS']) {
+    assert.match(limitsImport(server), new RegExp(`\\b${name}\\b`), `serverul nu importă ${name} din lead-limits.js`);
+  }
+  assert.doesNotMatch(server, quotedLiteral);
+
+  for (const file of SRC) {
+    if (file.endsWith('lead-limits.js')) continue;
+    assert.doesNotMatch(readFileSync(file, 'utf8'), /De mai multe ori pe an/, file);
   }
 });
 

@@ -3,8 +3,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { parseLead, leadEmail, environmentOf, safeEqual, HONEYPOT_FIELD, MAX_LEADS_PER_IP_PER_HOUR } from '../server/leads.js';
-import { computeTco, parseTcoInputs } from '../src/lib/tco.js';
+import { QUOTE_LIST_MAX, PRODUCT_SLUG_MAX_LENGTH } from '../src/lib/quote-list.js';
+import { parseLead, leadEmail, productUrl, environmentOf, safeEqual, HONEYPOT_FIELD, MAX_LEADS_PER_IP_PER_HOUR } from '../server/leads.js';
+import { computeTco, parseTcoInputs, TCO_CATEGORIES } from '../src/lib/tco.js';
+import { DOMAINS } from '../src/lib/domains.js';
+import { CRM_ANSWER_MAX_LENGTH, DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
+import { PERSONALIZATION_ANSWERS, QUOTE_CATEGORIES } from '../src/lib/quote-categories.js';
 import { onRequestPost as submitLead } from '../functions/api/submit-lead.js';
 import { onRequestGet as crmGet, onRequestPost as crmPost } from '../functions/api/crm/leads.js';
 
@@ -141,6 +145,331 @@ test('parseLead: personalizarea, doar cu valorile convenite cu CRM-ul, după pro
   }
   const consultation = parseLead({ intent: 'consultation', data: { ...valid.data, personalizare: 'Da' } });
   assert.equal(consultation.lead.answers.some((a) => a.question === 'personalizare'), false);
+});
+
+const MONTH_ANSWERS = [
+  'ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie',
+  'noiembrie', 'decembrie', 'De mai multe ori pe an', 'Nu știu încă',
+];
+const withMonth = (intent, value) =>
+  parseLead({ intent, data: { ...valid.data, q1: intent === 'quote' ? '16–40' : 'Administrator', luna_comenzii: value } });
+const monthAnswer = (r) => r.lead.answers.find((a) => a.question === 'luna_comenzii');
+
+test('parseLead: luna comenzii, cele 14 valori din listă, la ambele intenții, după „detalii”', () => {
+  for (const intent of ['quote', 'consultation']) {
+    for (const month of MONTH_ANSWERS) {
+      const r = withMonth(intent, month);
+      assert.equal(r.ok, true);
+      assert.deepEqual(monthAnswer(r), { question: 'luna_comenzii', label: 'În ce lună comandă de obicei', answer: month });
+    }
+  }
+  const r = parseLead({ intent: 'quote', data: { ...valid.data, detalii: 'ceva', luna_comenzii: 'martie' } });
+  assert.deepEqual(r.lead.answers.map((a) => a.question).slice(-2), ['detalii', 'luna_comenzii']);
+});
+
+test('parseLead: luna comenzii lipsă, goală sau nepermisă se ignoră, cererea rămâne validă', () => {
+  const nothing = withMonth('quote', undefined);
+  assert.equal(monthAnswer(nothing), undefined);
+  // Spațiile din jur se taie (ca la celelalte câmpuri), deci „martie ” e identic cu „martie”.
+  assert.equal(monthAnswer(withMonth('quote', ' martie ')).answer, 'martie');
+  for (const empty of ['', '   ']) assert.equal(monthAnswer(withMonth('quote', empty)), undefined);
+  const bad = [
+    'Martie', 'Ianuarie', 'martie\niulie', '<b>martie</b>', '<script>alert(1)</script>', 'constructor', '__proto__',
+    'toString', 'martie; iulie', ['martie'], 3, true, { 0: 'martie' }, 'x'.repeat(5000),
+  ];
+  for (const intent of ['quote', 'consultation']) {
+    for (const value of bad) {
+      const r = withMonth(intent, value);
+      assert.equal(r.ok, true, JSON.stringify(value));
+      assert.equal(monthAnswer(r), undefined, JSON.stringify(value));
+      // Restul răspunsurilor rămân.
+      assert.equal(r.lead.answers[0].question, 'q1');
+    }
+  }
+});
+
+test('email: luna comenzii apare ca text simplu, valoarea nepermisă nu ajunge în email', () => {
+  const base = { id: 'id', createdAt: '2026-11-26T00:00:00Z', environment: 'production', sourceUrl: null };
+  const ok = leadEmail({ ...withMonth('quote', 'martie').lead, ...base });
+  assert.match(ok.text, /^- În ce lună comandă de obicei: martie$/m);
+  const bad = leadEmail({ ...withMonth('quote', '<script>x</script>\nBcc: a@b.ro').lead, ...base });
+  assert.equal(bad.text.includes('În ce lună'), false);
+  // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag -- fals pozitiv: șir de test într-o aserțiune, nu HTML randat
+  assert.equal(bad.text.includes('<script>'), false);
+  assert.equal(bad.text.includes('Bcc:'), false);
+});
+
+test('submit-lead: luna comenzii ajunge în coloana answers din D1', async () => {
+  const db = fakeD1();
+  stubFetch(200);
+  const body = { intent: 'consultation', data: { ...valid.data, luna_comenzii: 'De mai multe ori pe an' } };
+  const c = ctx(body, { env: { LEADS_DB: db, RESEND_API_KEY: 'k' } });
+  const res = await submitLead(c);
+  assert.equal(res.status, 200);
+  await Promise.all(c.pending);
+  const saved = JSON.parse(db.rows[0].answers);
+  assert.deepEqual(saved.find((a) => a.question === 'luna_comenzii'), {
+    question: 'luna_comenzii',
+    label: 'În ce lună comandă de obicei',
+    answer: 'De mai multe ori pe an',
+  });
+  // Valoare nepermisă: cererea se salvează, fără cheia în answers.
+  const db2 = fakeD1();
+  const c2 = ctx({ ...body, data: { ...body.data, luna_comenzii: 'Martie' } }, { env: { LEADS_DB: db2, RESEND_API_KEY: 'k' } });
+  assert.equal((await submitLead(c2)).status, 200);
+  await Promise.all(c2.pending);
+  assert.equal(JSON.parse(db2.rows[0].answers).some((a) => a.question === 'luna_comenzii'), false);
+});
+
+test('parseLead: luna comenzii, variante care arată ca o lună dar nu sunt în listă (Unicode, caractere de control)', () => {
+  const lookalikes = [
+    'mar\u200Btie', // zero-width space în interior
+    'martie\u200B', // zero-width space la capăt (trim() nu-l taie)
+    'mar\u0000tie', // NUL
+    'martie\u0007', // caracter de control la capăt
+    'm\u0430rtie', // „а” chirilic (U+0430) în loc de „a”
+    '\u0456unie', // „і” chirilic (U+0456) în loc de „i”
+    '\uFF4D\uFF41\uFF52\uFF54\uFF49\uFF45', // litere full-width
+    '\u201Emartie\u201D',
+    '\u00ABmartie\u00BB',
+    'martie\u0301', // accent combinat
+    'Nu s\u0327tiu încă', // s + U+0327 (sedilă combinată), nu „ș” (U+0219)
+    'Nu \u015Ftiu încă', // „ş” cu sedilă (U+015F), nu cu virgulă (U+0219)
+    'Nu știu încă'.normalize('NFD'), // „ș” ca s + U+0326 (virgulă combinată)
+    'De mai multe ori pe an.', // punct în plus
+    'De  mai multe ori pe an', // spațiu dublu
+    'Nu stiu inca', // fără diacritice
+  ];
+  for (const intent of ['quote', 'consultation']) {
+    for (const value of lookalikes) {
+      const r = withMonth(intent, value);
+      assert.equal(r.ok, true, JSON.stringify(value));
+      assert.equal(monthAnswer(r), undefined, JSON.stringify(value));
+    }
+  }
+  // Spațiile Unicode de la capete (NBSP, BOM, tab, CR/LF) se taie ca la celelalte câmpuri; se salvează oricum valoarea
+  // exactă din listă, nu cea trimisă de client.
+  for (const padded of ['\u00A0martie\u00A0', '\uFEFFmartie', '\t\nmartie\r\n', `${' '.repeat(50_000)}martie`]) {
+    const r = withMonth('quote', padded);
+    assert.equal(monthAnswer(r).answer, 'martie');
+    assert.ok(MONTH_ANSWERS.includes(monthAnswer(r).answer));
+  }
+});
+
+test('parseLead: luna comenzii nu se poate strecura prin q_other, __proto__ sau constructor', () => {
+  const base = { name: 'Ion', company: 'Exemplu SRL', email: 'ion@exemplu.ro', phone: '0722123456', q1: '16–40' };
+  // q_other se aplică doar întrebărilor din formular: nici nu schimbă luna, nici nu o adaugă.
+  const viaOther = parseLead({ intent: 'quote', data: { ...base, q_other: { luna_comenzii: 'iulie' } } });
+  assert.equal(viaOther.ok, true);
+  assert.equal(monthAnswer(viaOther), undefined);
+  const both = parseLead({ intent: 'quote', data: { ...base, luna_comenzii: 'martie', q_other: { luna_comenzii: 'iulie' } } });
+  assert.equal(monthAnswer(both).answer, 'martie');
+  // JSON-ul de la client are „__proto__” ca proprietate proprie, nu ca prototip.
+  const raw = '{"name":"Ion","company":"Exemplu SRL","email":"ion@exemplu.ro","q1":"16–40",'
+    + '"__proto__":{"luna_comenzii":"martie"},"constructor":{"luna_comenzii":"martie"},"q_other":{"__proto__":{"luna_comenzii":"x"}}}';
+  for (const intent of ['quote', 'consultation']) {
+    const r = parseLead({ intent, data: JSON.parse(raw) });
+    assert.equal(r.ok, true);
+    assert.equal(monthAnswer(r), undefined);
+  }
+  assert.equal(Object.prototype.luna_comenzii, undefined);
+  // Cu valoare permisă, luna nu intră de două ori.
+  const r = withMonth('quote', 'martie');
+  assert.equal(r.lead.answers.filter((a) => a.question === 'luna_comenzii').length, 1);
+});
+
+test('luna comenzii: cererea completă încape în limitele CRM (≤ 30 de răspunsuri, cheie ≤ 40, răspuns ≤ 2000)', () => {
+  const cats = Object.keys(TCO_CATEGORIES);
+  const calculator = {
+    domain: DOMAINS[0], employees: 200, durability: 3, adminHours: 40, hourCost: 150, categories: cats,
+    prices: Object.fromEntries(cats.map((c) => [c, 4999.99])),
+    qualityPrices: Object.fromEntries(cats.map((c) => [c, 4999.99])),
+    months: Object.fromEntries(cats.map((c) => [c, 6])),
+    qty: Object.fromEntries(cats.map((c) => [c, 50])),
+  };
+  const produse = Array.from({ length: 15 }, (_, i) => `produs-cod${i}-${'x'.repeat(60)}`);
+  const r = parseLead({
+    intent: 'quote',
+    data: {
+      name: 'Ion', company: 'Exemplu SRL', email: 'ion@exemplu.ro', phone: '0722123456',
+      q1: '16–40', q2: DOMAINS[0], q3: ['Încălțăminte de protecție'], personalizare: PERSONALIZATION_ANSWERS[0], q4: 'a', q5: ['b'],
+      q6: 'c', q7: 'd', detalii: 'x'.repeat(DETAILS_MAX_LENGTH), luna_comenzii: 'De mai multe ori pe an',
+      categorie: Object.keys(QUOTE_CATEGORIES)[0], calculator, produse,
+    },
+  });
+  assert.equal(r.ok, true);
+  assert.ok(r.lead.answers.length <= 30, `răspunsuri: ${r.lead.answers.length}`);
+  assert.ok(monthAnswer(r));
+  for (const a of r.lead.answers) {
+    assert.ok(a.question.length <= 40, a.question);
+    assert.ok(a.answer.length <= 2000, `${a.question}: ${a.answer.length}`);
+  }
+});
+
+test('parseLead: răspunsul final nu depășește 2000 de caractere (limita importerului CRM), prin trunchiere', () => {
+  const quote = (data) => parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', ...data } });
+  // 8 elemente × 300 + „; ” + „ (Specificat: …)” = peste 2700 de caractere înainte de plafon.
+  const items = Array.from({ length: 8 }, (_, i) => String(i).repeat(300));
+  const r = quote({ q3: items, q_other: { q3: 'o'.repeat(300) } });
+  assert.equal(r.ok, true);
+  const q3 = r.lead.answers.find((a) => a.question === 'q3').answer;
+  assert.ok(q3.length <= 2000, `${q3.length}`);
+  assert.ok(q3.length > 1900); // se taie doar surplusul
+  assert.ok(q3.startsWith(`${items[0]}; ${items[1]}; `)); // începutul rămâne neschimbat
+  assert.equal(q3, q3.trimEnd());
+  // Sub limită: identic.
+  const small = quote({ q3: ['Mănuși', 'Căști'], q_other: { q3: 'altceva' } }).lead.answers.find((a) => a.question === 'q3');
+  assert.equal(small.answer, 'Mănuși; Căști (Specificat: altceva)');
+  // Exact la limită nu se taie.
+  const exact = quote({ q4: 'a'.repeat(300), q_other: { q4: 'b'.repeat(300) } }).lead.answers.find((a) => a.question === 'q4');
+  assert.equal(exact.answer.length, 300 + ' (Specificat: '.length + 300 + 1);
+});
+
+test('parseLead: trunchierea nu rupe o pereche surrogate și nu lasă spații la capăt', () => {
+  const quote = (data) => parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', ...data } });
+  // Șase elemente de 300 + 5 × „; ” = 1810, apoi „; ” (1812): al șaptelea element începe la 1812. 187 de „a” ajung la
+  // 1999, iar emoji-ul (două unități) ocupă pozițiile 1999 și 2000: tăierea la 2000 ar lăsa jumătate de pereche.
+  const items = [...Array.from({ length: 6 }, () => 'x'.repeat(300)), `${'a'.repeat(187)}😀${'b'.repeat(50)}`];
+  const q3 = quote({ q3: items }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.equal(q3.length, 1999); // jumătatea de pereche s-a scos
+  assert.equal(q3.isWellFormed(), true);
+  assert.equal(q3.includes('�'), false);
+  assert.ok(q3.endsWith('a'));
+  // Emoji întreg, chiar la limită: rămâne.
+  const fits = [...items.slice(0, 6), `${'a'.repeat(186)}😀${'b'.repeat(50)}`];
+  const kept = quote({ q3: fits }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.equal(kept.length, 2000);
+  assert.equal(kept.isWellFormed(), true);
+  assert.ok(kept.endsWith('😀'));
+  // Spațiul rămas la capătul tăieturii se scoate.
+  const spaced = [...items.slice(0, 6), `${'a'.repeat(186)}  ${'b'.repeat(50)}`];
+  const trimmed = quote({ q3: spaced }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.equal(trimmed, trimmed.trimEnd());
+  assert.ok(trimmed.length < 2000);
+});
+
+test('luna comenzii: ajunge neschimbată din formular prin D1 în GET /api/crm/leads (ambele intenții)', async () => {
+  const db = fakeD1();
+  stubFetch(200);
+  const env = { LEADS_DB: db, RESEND_API_KEY: 'k', CRM_SYNC_TOKEN: TOKEN };
+  for (const intent of ['quote', 'consultation']) {
+    const body = { intent, data: { ...valid.data, q1: intent === 'quote' ? '16–40' : 'Administrator', detalii: 'ceva', luna_comenzii: 'Nu știu încă' } };
+    const c = ctx(body, { env, ip: intent === 'quote' ? '203.0.113.10' : '203.0.113.11' });
+    assert.equal((await submitLead(c)).status, 200);
+    await Promise.all(c.pending);
+  }
+  const auth = { Authorization: `Bearer ${TOKEN}` };
+  const { leads } = await (await crmGet({ request: new Request('https://youprotect.ro/api/crm/leads', { headers: auth }), env })).json();
+  assert.equal(leads.length, 2);
+  for (const lead of leads) {
+    assert.deepEqual(lead.answers.find((a) => a.question === 'luna_comenzii'), {
+      question: 'luna_comenzii',
+      label: 'În ce lună comandă de obicei',
+      answer: 'Nu știu încă',
+    });
+    assert.ok(lead.answers.some((a) => a.question === 'detalii'));
+  }
+});
+
+test('plafonul de 2000: pe ambele răspunsuri multiple (q3, q5), cu luna și produsele neatinse, prin D1 → GET /api/crm/leads', async () => {
+  const items = Array.from({ length: 8 }, (_, i) => String(i).repeat(300));
+  const slugs = Array.from({ length: 15 }, (_, i) => `${'a'.repeat(97)}-${String(i).padStart(2, '0')}`);
+  const db = fakeD1();
+  stubFetch(200);
+  const env = { LEADS_DB: db, RESEND_API_KEY: 'k', CRM_SYNC_TOKEN: TOKEN };
+  const body = {
+    intent: 'quote',
+    data: {
+      ...valid.data, produs: undefined, produse: slugs, q1: '16–40', q3: items, q5: items,
+      q_other: { q3: 'o'.repeat(300), q5: 'p'.repeat(300) }, detalii: 'rând 1\nrând 2\n'.repeat(60), luna_comenzii: 'iulie',
+    },
+  };
+  const c = ctx(body, { env });
+  assert.equal((await submitLead(c)).status, 200);
+  await Promise.all(c.pending);
+  const { leads } = await (
+    await crmGet({ request: new Request('https://youprotect.ro/api/crm/leads', { headers: { Authorization: `Bearer ${TOKEN}` } }), env })
+  ).json();
+  const answers = leads[0].answers;
+  assert.ok(answers.length <= 30);
+  for (const a of answers) {
+    assert.ok(a.answer.length <= 2000, `${a.question}: ${a.answer.length}`);
+    assert.ok(a.question.length <= 40, a.question);
+  }
+  for (const key of ['q3', 'q5']) {
+    const a = answers.find((x) => x.question === key).answer;
+    assert.ok(a.length > 1900 && a.length <= 2000, `${key}: ${a.length}`);
+  }
+  // Răspunsurile multi-linie care încap nu se ating: toate cele 15 adrese, întregi, și „detalii” identic.
+  const urls = answers.find((a) => a.question === 'produse').answer.split('\n');
+  assert.equal(urls.length, 15);
+  for (const url of urls) assert.match(url, /^https:\/\/youprotect\.ro\/produse\/[a-z0-9-]+\/$/);
+  assert.equal(answers.find((a) => a.question === 'detalii').answer, 'rând 1\nrând 2\n'.repeat(60).trim());
+  // Luna comenzii rămâne, după „detalii”, chiar dacă alte răspunsuri s-au tăiat.
+  assert.deepEqual(answers.slice(-2).map((a) => a.question), ['detalii', 'luna_comenzii']);
+  assert.equal(answers.at(-1).answer, 'iulie');
+});
+
+test('plafonul de 2000: o jumătate de pereche surrogate trimisă de client la limită nu ajunge în răspuns', () => {
+  // „\ud83d” singur (JSON valid) pe poziția 1999, urmat de text: tăierea la 2000 ar lăsa un surrogate orfan.
+  const items = [...Array.from({ length: 6 }, () => 'x'.repeat(300)), `${'a'.repeat(187)}\ud83d${'b'.repeat(50)}`];
+  const q3 = parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q3: items } }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.ok(q3.length <= 2000);
+  assert.equal(q3.isWellFormed(), true);
+  // Și sub limită, un surrogate orfan devine U+FFFD (normalizeString folosește toWellFormed).
+  const small = parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q4: 'ok\ud83d' } }).lead.answers.find((a) => a.question === 'q4');
+  assert.equal(small.answer, 'ok�');
+});
+
+test('parseLead: răspunsurile sunt text bine format; tăierea la limită nu rupe emoji-uri și surrogatele singure devin U+FFFD', () => {
+  const emoji = '😀';
+  const lead = (data) => ({ intent: 'quote', data: { ...valid.data, q1: '16–40', ...data } });
+  const wellFormedEverywhere = (r) => {
+    assert.equal(r.ok, true);
+    for (const a of r.lead.answers) assert.equal(a.answer.isWellFormed(), true, `${a.question}: ${JSON.stringify(a.answer.slice(-4))}`);
+    const { text, subject } = leadEmail({ ...r.lead, id: 'id', createdAt: '2026-11-26T00:00:00Z', environment: 'production', sourceUrl: null });
+    assert.equal(text.isWellFormed(), true);
+    assert.equal(subject.isWellFormed(), true);
+    assert.equal(JSON.stringify(r.lead.answers).includes('\\ud'), false); // fără escape-uri de surrogate în JSON-ul din D1
+  };
+
+  // „detalii”: emoji pe pozițiile 999–1000 (limita e 1000): se scoate jumătatea de pereche.
+  const detalii = `${'a'.repeat(999)}${emoji}${'b'.repeat(20)}`;
+  const d = parseLead(lead({ detalii }));
+  wellFormedEverywhere(d);
+  assert.equal(d.lead.answers.find((a) => a.question === 'detalii').answer, 'a'.repeat(999));
+  // Emoji care încape întreg (998–999): rămâne.
+  const d2 = parseLead(lead({ detalii: `${'a'.repeat(998)}${emoji}${'b'.repeat(20)}` }));
+  wellFormedEverywhere(d2);
+  assert.equal(d2.lead.answers.find((a) => a.question === 'detalii').answer, `${'a'.repeat(998)}${emoji}`);
+
+  // Element de q3: emoji pe 299–300 (limita pe element e 300).
+  const q3 = parseLead(lead({ q3: [`${'c'.repeat(299)}${emoji}${'d'.repeat(10)}`, 'Mănuși'] }));
+  wellFormedEverywhere(q3);
+  assert.equal(q3.lead.answers.find((a) => a.question === 'q3').answer, `${'c'.repeat(299)}; Mănuși`);
+
+  // „\ud800” singur, trimis direct în JSON, la fel în mijloc și la capăt, în text liber și în element de listă.
+  const raw = JSON.parse('{"a":"x\\ud800y","b":"\\udc00","c":"fin\\ud83d"}');
+  const lone = parseLead(lead({ detalii: raw.a, q4: raw.b, q5: [raw.c], q_other: { q4: raw.a } }));
+  wellFormedEverywhere(lone);
+  const byKey = Object.fromEntries(lone.lead.answers.map((a) => [a.question, a.answer]));
+  assert.equal(byKey.detalii, 'x�y');
+  assert.equal(byKey.q4, '� (Specificat: x�y)');
+  assert.equal(byKey.q5, 'fin�');
+
+  // Plafonul final de 2000: emoji pe 1999–2000, ca la testul de plafon, rămâne bine format.
+  const long = [...Array.from({ length: 6 }, () => 'x'.repeat(300)), `${'a'.repeat(187)}${emoji}${'b'.repeat(50)}`];
+  wellFormedEverywhere(parseLead(lead({ q3: long })));
+});
+
+test('produse: lista maximă încape în plafonul de 2000, deci tăietura nu rupe o adresă', () => {
+  const longestUrl = productUrl('x'.repeat(PRODUCT_SLUG_MAX_LENGTH));
+  // Adresele sunt câte una pe rând: n × (adresă + „\n”) − „\n”-ul de la urmă.
+  assert.ok(QUOTE_LIST_MAX * (longestUrl.length + 1) <= CRM_ANSWER_MAX_LENGTH, `${QUOTE_LIST_MAX * (longestUrl.length + 1)}`);
+  const slugs = Array.from({ length: QUOTE_LIST_MAX }, (_, i) => `${String(i).padStart(2, '0')}-${'x'.repeat(PRODUCT_SLUG_MAX_LENGTH - 3)}`);
+  const r = parseLead({ ...valid, data: { ...valid.data, produs: undefined, produse: slugs } });
+  const list = r.lead.answers.find((a) => a.question === 'produse').answer;
+  assert.deepEqual(list.split('\n'), slugs.map(productUrl));
 });
 
 test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/tco.test.mjs)', () => {
