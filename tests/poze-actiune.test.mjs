@@ -729,8 +729,53 @@ export function routeOfHtml(rel) {
  * ele (și numai ele) nu se numără la „de două ori pe pagină” și, pentru P14-P16 pe „/”, la regula Portwest; <noscript>-ul eroului
  * (prima poză, doar fără JS) se numără normal, ca un <img> obișnuit. Orice alt <template> sau <img> rămâne analizat ca înainte.
  */
-const HERO_TEMPLATE = /<template id="erou-\d+">[\s\S]*?<\/template>/g;
-const LD_SCRIPT = /<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g;
+/**
+ * Blocurile `<tag …>…</tag>` din HTML, găsite cu indexOf (fără regex, insensibil la majuscule): [{ start, end, open, inner }].
+ * Doar pentru EXTRAGERE și numărare în teste (nu curăță HTML); `accept` alege blocurile după eticheta de deschidere.
+ */
+export function htmlBlocks(html, tag, accept = () => true) {
+  const lower = html.toLowerCase();
+  const blocks = [];
+  let from = 0;
+  for (;;) {
+    const start = lower.indexOf(`<${tag}`, from);
+    if (start < 0) break;
+    const after = lower[start + tag.length + 1];
+    if (!['>', ' ', '\n', '\t', '\r', '/'].includes(after)) {
+      from = start + 1; // alt tag cu același prefix (ex. <scripts>)
+      continue;
+    }
+    const openEnd = lower.indexOf('>', start);
+    if (openEnd > 0 && lower[openEnd - 1] === '/') {
+      // etichetă auto-închisă (în .astro: `<script … set:html={…} />`): bloc fără conținut
+      const selfClosed = { start, end: openEnd + 1, open: html.slice(start, openEnd + 1), inner: '' };
+      if (accept(selfClosed)) blocks.push(selfClosed);
+      from = openEnd + 1;
+      continue;
+    }
+    const closeStart = openEnd < 0 ? -1 : lower.indexOf(`</${tag}`, openEnd);
+    const closeEnd = closeStart < 0 ? -1 : lower.indexOf('>', closeStart);
+    if (closeEnd < 0) break;
+    const block = { start, end: closeEnd + 1, open: html.slice(start, openEnd + 1), inner: html.slice(openEnd + 1, closeStart) };
+    if (accept(block)) blocks.push(block);
+    from = closeEnd + 1;
+  }
+  return blocks;
+}
+/** Textul HTML fără blocurile date (rezultat al lui htmlBlocks pe același text). */
+export function withoutBlocks(html, blocks) {
+  let out = '';
+  let pos = 0;
+  for (const b of blocks) {
+    out += html.slice(pos, b.start);
+    pos = b.end;
+  }
+  return out + html.slice(pos);
+}
+const isHeroTemplate = (b) => /\sid="erou-\d+"/.test(b.open);
+const isLdScript = (b) => /\stype="application\/ld\+json"/.test(b.open);
+const heroTemplateBlocks = (html) => htmlBlocks(html, 'template', isHeroTemplate);
+const ldScriptBlocks = (html) => htmlBlocks(html, 'script', isLdScript);
 
 export function analyzeDist(distDir, fileToId = FILE_TO_ID) {
   const refs = [];
@@ -746,9 +791,11 @@ export function analyzeDist(distDir, fileToId = FILE_TO_ID) {
     const imgCount = new Map();
     const ids = new Set();
     // în afara template-urilor eroului (excepția de mai sus): <img> numărate la „de două ori” și poze care nu sunt doar în JSON-LD
-    const outside = html.replace(HERO_TEMPLATE, '');
+    // Excepția e doar pentru „/” (HERO_SET_PORTWEST.page): pe orice altă pagină un <template id="erou-N"> se numără ca tot restul.
+    const onHome = route === HERO_SET_PORTWEST.page;
+    const outside = onHome ? withoutBlocks(html, heroTemplateBlocks(html)) : html;
     const strayIds = new Set(
-      [...outside.replace(LD_SCRIPT, '').matchAll(/images\\?\/actiune\\?\/([A-Za-z0-9._-]+)/g)].map((m) => fileToId.get(m[1].replace(/\.+$/, ''))).filter(Boolean),
+      [...withoutBlocks(outside, ldScriptBlocks(outside)).matchAll(/images\\?\/actiune\\?\/([A-Za-z0-9._-]+)/g)].map((m) => fileToId.get(m[1].replace(/\.+$/, ''))).filter(Boolean),
     );
     for (const name of names) {
       const id = fileToId.get(name);
@@ -769,7 +816,7 @@ export function analyzeDist(distDir, fileToId = FILE_TO_ID) {
       }
     }
     for (const [id, n] of imgCount) if (n > 1) problems.push(`${id}: de două ori pe ${route} (${n} elemente <img>)`);
-    for (const id of ids) refs.push({ id, page: route, hero: hero.has(id), render: true, file: rel, heroSet: !strayIds.has(id) });
+    for (const id of ids) refs.push({ id, page: route, hero: hero.has(id), render: true, file: rel, heroSet: onHome && !strayIds.has(id) });
   }
   return { refs, problems, pages: htmlFiles.length };
 }
@@ -833,7 +880,7 @@ test('dist: în dist/ toate ImageObject-urile de acțiune au creditul și fără
 // Eroul rotativ al homepage-ului pe dist/index.html: template-uri, noscript, scripturile inline, JSON-LD, CSS-ul gradientelor
 
 /** Scripturile inline (fără src, fără JSON-LD) din HTML: [{ code }] */
-const inlineScripts = (html) => [...html.matchAll(/<script(?![^>]*\b(?:src|type)=)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+const inlineScripts = (html) => htmlBlocks(html, 'script', (b) => !/\s(?:src|type)=/.test(b.open)).map((b) => b.inner);
 const ATTR = { srcset: /\ssrcset="([^"]*)"/, sizes: /\ssizes="([^"]*)"/, media: /\smedia="([^"]*)"/, alt: /\salt="([^"]*)"/ };
 const attr = (tag, name) => ATTR[name].exec(tag)?.[1];
 const homeHtml = () => readFileSync(join(DIST, 'index.html'), 'utf8');
@@ -879,7 +926,7 @@ test('dist: homepage-ul are 10 template-uri ale eroului, în ordinea heroPhotos,
     assert.equal(tpl.source.srcset, photoPortraitSrcset(id), `${id}: srcset portret`);
     assert.equal(tpl.img.sizes, '100vw', `${id}: sizes pe <img>`);
     assert.equal(tpl.img.srcset, heroSrcset(id), `${id}: srcset erou`);
-    assert.equal(tpl.img.alt?.replaceAll('&#38;', '&'), getPhoto(id).alt.replaceAll('&', '&'), `${id}: alt`);
+    assert.equal(tpl.img.alt?.replaceAll('&#38;', '&'), getPhoto(id).alt, `${id}: alt`); // Astro scrie „&” ca „&#38;” în atribute
     assert.match(tpl.img.tag, /\bloading="eager"/);
     assert.match(tpl.img.tag, /\bfetchpriority="high"/);
     assert.match(tpl.html, /<div class="absolute inset-0 bg-gradient-to-t md:hidden /, `${id}: gradient de telefon`);
@@ -973,23 +1020,28 @@ test('dist: scripturile inline ale eroului nu citesc și nu scriu nimic din afar
     assert.ok(code, `scriptul „${name}” lipsește`);
     assert.doesNotMatch(code, FORBIDDEN, `scriptul „${name}” folosește o interfață interzisă`);
   }
-  // singurul loc unde se tușește un atribut al <html> e data-erou
+  // singurul atribut al <html> pe care îl scrie scriptul e data-erou
   assert.deepEqual([...headScriptOf(html).matchAll(/setAttribute\(\s*"([^"]+)"/g)].map((m) => m[1]).sort(), ['data-erou', 'fetchpriority', 'imagesizes', 'imagesrcset']);
   // scriptul din sursă, nu doar din dist: aceleași reguli pe src/pages/index.astro și HeroPhotoSet.astro (în afara comentariilor de documentare)
+  // (blocurile <script …is:inline…> se extrag fără regex, cu orice ordine a atributelor, inclusiv `slot="head"` și `define:vars`)
+  const inlineSource = (file) => htmlBlocks(read(file), 'script', (b) => /\bis:inline\b/.test(b.open));
   for (const file of ['src/pages/index.astro', 'src/components/home/HeroPhotoSet.astro']) {
-    const m = /<script is:inline[\s\S]*?<\/script>/g;
-    for (const block of read(file).match(m) ?? []) assert.doesNotMatch(block, FORBIDDEN, `${file}: interfață interzisă într-un script inline`);
+    const blocks = inlineSource(file);
+    assert.ok(blocks.length >= 1, `${file}: niciun script is:inline găsit (testul nu mai verifică nimic)`);
+    for (const block of blocks) assert.doesNotMatch(block.open + block.inner, FORBIDDEN, `${file}: interfață interzisă într-un script inline`);
   }
+  assert.ok(inlineSource('src/pages/index.astro').some((b) => b.inner.includes('data-erou')), 'scriptul din <head> (data-erou) nu e în src/pages/index.astro');
+  assert.ok(inlineSource('src/components/home/HeroPhotoSet.astro').some((b) => b.inner.includes('data-erou')), 'scriptul de clonare (data-erou) nu e în HeroPhotoSet.astro');
   const bytes = Buffer.from(html);
-  const tpl = html.match(/<template id="erou-\d+">[\s\S]*?<\/template>/g).join('') + html.match(/<noscript>[\s\S]*?<\/noscript>/g)[0] + headScriptOf(html) + cloneScriptOf(html);
+  const tpl = heroTemplateBlocks(html).map((b) => html.slice(b.start, b.end)).join('') + htmlBlocks(html, 'noscript')[0].inner + headScriptOf(html) + cloneScriptOf(html);
   t.diagnostic(`HTML homepage ${bytes.length} B brut, ${brotliCompressSync(bytes).length} B brotli, ${gzipSync(bytes).length} B gzip; partea eroului (template-uri, noscript, scripturi) ${Buffer.byteLength(tpl)} B brut, ${brotliCompressSync(Buffer.from(tpl)).length} B brotli`);
 });
 
 test('dist: JSON-LD al homepage-ului are ImageObject pentru cele 10 poze ale eroului și M12, cu creditul furnizorului; fără credit vizibil în erou; P* doar în set', (t) => {
   if (!distAvailable(t)) return;
   const html = homeHtml();
-  const nodes = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap((m) => {
-    const parsed = JSON.parse(m[1]);
+  const nodes = ldScriptBlocks(html).flatMap((b) => {
+    const parsed = JSON.parse(b.inner);
     return parsed['@graph'] ?? [parsed];
   });
   const images = nodes.filter((n) => n['@type'] === 'ImageObject' && String(n['@id']).includes('#imagine-actiune-'));
@@ -1001,9 +1053,10 @@ test('dist: JSON-LD al homepage-ului are ImageObject pentru cele 10 poze ale ero
     assert.equal(node.copyrightNotice, `© ${BRAND[getPhoto(id).furnizor].credit}`);
   }
   const hero = /<section id="hero"[\s\S]*?<\/section>/.exec(html)[0];
-  assert.doesNotMatch(hero.replace(/<script[\s\S]*?<\/script>/g, ''), /<figcaption|Foto:|Credit:|©/, 'credit vizibil în erou');
+  assert.doesNotMatch(withoutBlocks(hero, htmlBlocks(hero, 'script')), /<figcaption|Foto:|Credit:|©/, 'credit vizibil în erou');
   // nicio poză Portwest pe „/” în afara template-urilor eroului și a JSON-LD
-  const stray = html.replace(/<template id="erou-\d+">[\s\S]*?<\/template>/g, '').replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>/g, '');
+  const noTemplates = withoutBlocks(html, heroTemplateBlocks(html));
+  const stray = withoutBlocks(noTemplates, ldScriptBlocks(noTemplates));
   for (const p of photos.filter((x) => x.furnizor === 'portwest')) {
     for (const v of variants[p.id]) assert.ok(!stray.includes(v.file), `${p.id}: ${v.file} pe „/” în afara template-urilor`);
   }
@@ -1012,7 +1065,9 @@ test('dist: JSON-LD al homepage-ului are ImageObject pentru cele 10 poze ale ero
 test('dist: clasele presetelor de gradient ale eroului există în CSS-ul generat', (t) => {
   if (!distAvailable(t)) return;
   const css = walk(DIST, (n) => n.endsWith('.css')).map((f) => readFileSync(f, 'utf8')).join('\n');
-  const selector = (c) => `.${c.replace(/[/%]/g, '\\$&')}`;
+  // selectorul CSS al unei clase Tailwind: `/` și `%` se escapează cu `\` (fără alte caractere speciale în presetele noastre)
+  const selector = (c) => `.${[...c].map((ch) => (ch === '/' || ch === '%' ? `\\${ch}` : ch)).join('')}`;
+  for (const preset of Object.values(HERO_GRADIENTS)) for (const c of [...preset.telefon.split(' '), ...preset.desktop.split(' ')]) assert.ok(!c.includes('\\'), `backslash în clasa ${c}`);
   for (const [name, preset] of Object.entries(HERO_GRADIENTS)) {
     for (const classes of Object.values(preset)) {
       for (const c of classes.split(' ')) assert.ok(css.includes(selector(c)), `preset „${name}”: clasa ${c} lipsește din CSS`);
@@ -1125,7 +1180,7 @@ test('erou rotativ (sursă): lista heroPhotos din index.astro dă 10 eroi pe „
   assert.equal(bad('src/pages/index.astro', '<ActionPhoto id="P14" sizes="x" />').length, 1, 'P14 ca <ActionPhoto> pe „/”, în afara listei');
   assert.equal(bad('src/pages/index.astro', 'const x = "P14";').length, 1, 'P14 ca literal oarecare pe „/”');
   assert.equal(bad('src/pages/index.astro', '<PageHeader heroPhoto="P14" />').length, 1, 'P14 ca heroPhoto pe „/”');
-  // lista accepă doar literale
+  // lista acceptă doar literale
   assert.match(analyze('src/pages/index.astro', 'const heroPhotos = ["S02", other];').problems.join('\n'), /heroPhotos: doar literale/);
   // utilizare: S02 are voie pe 2 pagini („/” și ghid), nu pe a treia; una din cele 9 nu are voie ca erou pe a doua pagină
   const usage = (files) => {
@@ -1161,6 +1216,18 @@ test('erou rotativ (dist sintetic): template-urile eroului și noscript nu numă
   assert.match(syntheticProblems({ 'industrii/constructii/index.html': heroTemplates(['P14']) }).join('\n'), /P14 \(Portwest\) pe \/industrii\/constructii\//);
   // dublura obișnuită rămâne prinsă: două <img> ale aceleiași poze în afara template-urilor
   assert.match(portwest(heroTemplates(['S02']) + imgTag('M24') + imgTag('M24')), /M24: de două ori pe \//);
+  // excepția template-urilor eroului e doar pe „/”: pe altă pagină un <template id="erou-3"> cu o poză dublată pică
+  assert.match(
+    syntheticProblems({ 'a/index.html': `<template id="erou-3">${imgTag('M01')}</template>${imgTag('M01')}` }).join('\n'),
+    /M01: de două ori pe \/a\//,
+  );
+  assert.match(syntheticProblems({ 'a/index.html': `<template id="erou-3">${imgTag('P14')}</template>` }).join('\n'), /P14 \(Portwest\) pe \/a\//);
+  // extragerea blocurilor HTML: majuscule, atribute în orice ordine, prefix asemănător
+  const sample = '<SCRIPT slot="head" is:inline>a</SCRIPT><scripts>x</scripts><script\n is:inline define:vars={{ H: 1 }}>b</Script >';
+  assert.deepEqual(htmlBlocks(sample, 'script').map((b) => b.inner), ['a', 'b']);
+  assert.deepEqual(htmlBlocks(sample, 'script', (b) => /define:vars/.test(b.open)).map((b) => b.inner), ['b']);
+  assert.equal(withoutBlocks(sample, htmlBlocks(sample, 'script')), '<scripts>x</scripts>');
+  assert.deepEqual(htmlBlocks('<script a={1} /><script b>c</script>', 'script').map((b) => b.inner), ['', 'c']);
   // S02 pe o a treia pagină și o poză a setului ca erou pe a doua pagină pică
   assert.match(
     syntheticProblems({ ...home(heroTemplates(['S02'])), 'ghiduri/g/index.html': imgTag('S02'), 'industrii/x/index.html': imgTag('S02') }).join('\n'),
