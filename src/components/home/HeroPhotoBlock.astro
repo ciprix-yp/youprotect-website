@@ -1,0 +1,21 @@
+---
+// Poza unui erou rotativ + gradientele ei, exact markup-ul pe care homepage-ul îl avea înainte pentru poza eroului:
+// <picture> 4:5 pe telefon (<768 px) și 16:9 de la 768 px în sus (ActionPhoto cu `portret` și `priority`), plus gradientul
+// de telefon și cel de desktop. Cadrul (`poz`) și presetul de gradient vin din date (`eroul` în src/data/poze-actiune.json,
+// presetele în src/lib/erou.ts). Folosit de HeroPhotoSet.astro (10 <template> și <noscript>); `sizes="100vw"` și
+// `<source sizes="50vw">` (ActionPhoto) trebuie să rămână identice cu `imagesizes` din scriptul de preîncărcare din index.astro.
+import ActionPhoto from '../media/ActionPhoto.astro';
+import { heroStyle } from '../../lib/poze-actiune';
+
+interface Props {
+  /** Id-ul pozei (din `heroPhotos`, index.astro). */
+  id: string;
+}
+
+const heroPhoto = Astro.props.id;
+const { poz, gradient } = heroStyle(heroPhoto);
+---
+
+<ActionPhoto id={heroPhoto} portret priority sizes="100vw" poz={poz} class="sd-hero-media md:opacity-80" />
+<div class:list={['absolute inset-0 bg-gradient-to-t md:hidden', gradient.telefon]}></div>
+<div class:list={['absolute inset-0 hidden bg-gradient-to-t md:block', gradient.desktop]}></div>

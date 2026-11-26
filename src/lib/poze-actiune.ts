@@ -256,17 +256,18 @@ export function heroStyle(id: string) {
 }
 
 /**
- * Datele minime pentru scriptul din <head> care preîncarcă poza eroului aleasă la întâmplare: pe poză `[slug, lățimi erou,
- * lățimi portret]`. Scriptul reface din ele exact `srcset`-urile din <picture> (heroSrcset/portraitSrcset): numele fișierelor
+ * Datele minime pentru scriptul din <head> care preîncarcă poza eroului aleasă la întâmplare: directorul pozelor și, pe poză,
+ * `[slug, lățimi erou, lățimi portret]`. Scriptul reface din ele exact `srcset`-urile din <picture> (heroSrcset/portraitSrcset): numele fișierelor
  * sunt `<slug>-<lățime>.webp` și `<slug>-p<lățime>.webp`, lucru verificat aici (build-ul pică dacă datele nu respectă tiparul).
  */
-export function heroPreload(ids: string[]): [string, number[], number[]][] {
-  return ids.map((id) => {
+export function heroPreload(ids: string[]): { dir: string; photos: [string, number[], number[]][] } {
+  const photos = ids.map((id) => {
     const { slug } = getPhoto(id);
     const hero = heroVariants(id);
     const portrait = portraitVariants(id);
     for (const v of hero) if (v.file !== `${slug}-${v.width}.webp`) throw new Error(`Poza „${id}”: ${v.file} nu respectă tiparul <slug>-<lățime>.webp.`);
     for (const v of portrait) if (v.file !== `${slug}-p${v.width}.webp`) throw new Error(`Poza „${id}”: ${v.file} nu respectă tiparul <slug>-p<lățime>.webp.`);
-    return [slug, hero.map((v) => v.width), portrait.map((v) => v.width)];
+    return [slug, hero.map((v) => v.width), portrait.map((v) => v.width)] as [string, number[], number[]];
   });
+  return { dir: ACTION_PHOTO_DIR, photos };
 }

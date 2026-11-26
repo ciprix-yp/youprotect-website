@@ -11,6 +11,8 @@
 // TIPARUL pe care îl detectează tests/poze-actiune.test.mjs (taskurile următoare îl respectă, altfel testul pică):
 //   - în src/pages/**/*.astro: <ActionPhoto id="M02" … />  (id literal, între ghilimele)
 //   - erou (prima poză mare a paginii, LCP): `heroPhoto="M02"` ca prop pe antet/hero (sau `<ActionPhoto id="M02" priority />`)
+//   - eroul rotativ al homepage-ului: `const heroPhotos = ["S02", "M24", …]` în src/pages/index.astro (lista literală, fiecare id
+//     numărat ca erou și randat o dată pe „/”); HeroPhotoBlock.astro randează poza cu `id={heroPhoto}` (dinamic, permis doar acolo)
 //   - în src/lib/catalog-brands.ts și catalog-categories.ts: `photo: 'S01'` / `heroPhoto: 'M02'` în intrarea paginii
 //     (BrandLanding/CategoryLanding le randează cu <ActionPhoto id={page.photo} />, singurele unde id-ul poate fi dinamic)
 //   - o poză: max. 2 pagini, niciodată de 2 ori pe aceeași pagină, erou pe o singură pagină; P* doar lângă produse Portwest.
