@@ -803,3 +803,42 @@
   una pe pagină, doar scrollerul din `CategoryTiles`, doar pe `/` și `/produse/`.
 - Impact: regulile pe scurt sunt în `08-GHID_CONTINUT.md` §9. Un erou nou se schimbă dintr-un singur loc; la o poză
   nouă se rulează scriptul de imagini și testele din CI.
+
+## D-2026-11-26-04
+- Eroul homepage-ului rotativ, cu 10 poze (decis de owner; urmează D-2026-11-26-03, unde rotația era doar pregătită).
+  La fiecare încărcare se alege la întâmplare una din cele 10 poze aprobate: S02, M24–M27, P14–P16, S18, S19. Fără
+  auto-slide, timer sau carusel. Fiecare poză are `eroul` în `src/data/poze-actiune.json` (cadrul `poz` și presetul de
+  gradient din `src/lib/erou.ts`). Contrastul textului alb de pe erou, măsurat pe pixelii randați (Chrome real, textul
+  ascuns, p95 de luminanță sub liniile de text, WCAG) la 390×844 și 1440×900: toate cele 10 trec cu `standard`, cu cel
+  puțin 4,5:1 (minim 4,72:1, P16 la 1440 px). Presetele `puternic` și `foarte-puternic` există dacă se cere marjă mai mare.
+- Excepția Portwest (decisă de owner pe 26.11.2026: „Le punem și pe Portwest”), după ce i s-a semnalat licența Media Hub
+  („solely for the marketing, promotion, sale and distribution of Portwest products”): P14, P15 și P16 pot apărea ca
+  erou rotativ pe „/”, nu lângă produse Portwest. Excepția e strictă și impusă de test: doar pagina „/”, doar aceste
+  trei ID-uri, doar ca parte din set; orice alt P* în afara paginilor Portwest pică testul ca înainte. Riscul de licență
+  rămâne al owner-ului.
+- Fără stocare pe dispozitiv: nicio cookie, localStorage, sessionStorage sau IndexedDB și niciun parametru în URL.
+  Motiv: ePrivacy art. 5(3); o preferință de afișare nu e „strict necesară”. Alegerea e doar `Math.random` la fiecare
+  încărcare: o reîncărcare poate da altă poză, iar întoarcerea din bfcache păstrează poza.
+- Cum e făcut și de ce: pagina rămâne statică (fără Pages Functions sau middleware, deci fără cache pe variante). Un
+  script inline mic în `<head>` alege indexul (`data-erou` pe `<html>`) și adaugă preload-ul, cu `media` separat pe
+  telefon (decupajul portret 4:5) și desktop, iar `imagesrcset` și `imagesizes` sunt identice cu cele din `<picture>`.
+  Eroul vine din 10 `<template>` inerte (markup produs de Astro), din care unul e clonat la parsare, înainte de primul
+  desen: fără flash, iar preload scanner-ul nu descarcă S02 degeaba. S02 stă și în `<noscript>`, pentru vizitatorii
+  fără JavaScript. Alternative respinse: cookie sau localStorage (ePrivacy); alegere pe server sau edge (pagina nu mai
+  e statică); 10 `<img>` în pagină (se descarcă toate sau, cu `lazy`, întârzie LCP); fundal CSS (fără `srcset` și art
+  direction bune pentru LCP).
+- JSON-LD: ImageObject pentru toate cele 10 poze (și M12), cu `creditText` și `copyrightNotice`, fără `license`; credit
+  vizibil nu apare, ca până acum.
+- Remediere din #104: S02 are din nou variantele de corp 640/960/1440 pentru ghiduri, separate de cele de erou
+  (768/960/1440/1920 plus decupajul portret). Ghidurile servesc aceeași variantă ca înainte de #104. Scriptul de imagini
+  ia decupajul portret din originalul întreg și are opțiunea `--only` (originalele M20–M23 și S17 lipsesc local din
+  `efectiv.json`).
+- LCP oficial: măsurat de QA, vezi PR.
+- Limite cunoscute: HTML-ul homepage-ului crește cu ~22 KB brut (~1,7 KB brotli) din cele 10 template-uri; mecanismul se
+  bazează pe comportamentul preload scanner-ului din Chrome (verificat doar în Chrome, neverificat pe iPhone sau Safari);
+  Googlebot randează cu JavaScript, deci vede o poză aleasă la întâmplare (JSON-LD le descrie pe toate zece); S19
+  (Sir Safety) nu e confirmat că nu e imagine generată cu AI; marjele de contrast sunt mici la câteva poze.
+- Impact: regulile sunt în `tests/poze-actiune.test.mjs` (`HERO_SET_PORTWEST`, testele pe dist ale eroului) și datele
+  `eroul` în `poze-actiune.json`. O poză nouă în set: `erou: true`, `portret` și `eroul` în date, id-ul în `heroPhotos`
+  din `src/pages/index.astro`, apoi scriptul de imagini cu `--only` și măsurarea contrastului; scoaterea ei înseamnă
+  ștergerea din `heroPhotos`. Pe scurt, în `08-GHID_CONTINUT.md` §9.

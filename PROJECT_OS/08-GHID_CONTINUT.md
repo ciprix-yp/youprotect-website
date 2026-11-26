@@ -253,7 +253,7 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     (vezi `bodySizes()` și `sizesEntries()` în `src/lib/poze-actiune.ts`).
   - Antet cu poza întâi pe telefon (sub `lg`): poza 3:2, pe toată lățimea, deasupra breadcrumb-ului și a H1, fără ramă
     și fără colțuri. Desktopul rămâne ca înainte.
-  - Eroul homepage-ului e rotativ (decis de Ciprian, 26.11.2026): la fiecare încărcare se vede la întâmplare una din cele
+  - Eroul homepage-ului e rotativ (decis de Ciprian, 26.11.2026, D-2026-11-26-04): la fiecare încărcare se vede la întâmplare una din cele
     10 poze din array-ul `heroPhotos` din `src/pages/index.astro` (S02, M24–M27, P14–P16, S18, S19; S02 e și cea fără
     JavaScript). Singura sursă e acel array; nu se pune un ID de poză în alt loc din pagină. Alegerea e doar
     `Math.random` la încărcare: fără cookie, localStorage, sessionStorage, IndexedDB și fără index în URL (ePrivacy
