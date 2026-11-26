@@ -17,6 +17,11 @@ Input : src/data/poze-actiune.json (single source of truth: id, slug, source, pl
         original (after EXIF rotation, before `decupaj`), independent of the desktop crop: it may extend outside it.
 Output: public/images/actiune/<slug>-<width>.webp and src/data/poze-actiune-variante.json (real sizes).
 
+Partial run: `--only ID[,ID...]` (IDs from poze-actiune.json) processes just those photos and MERGES their variants into the
+existing poze-actiune-variante.json: the other entries stay byte for byte as they are, keys in the order of
+poze-actiune.json. efectiv.json / originals are needed only for the listed IDs (useful when other originals are missing
+locally). Without `--only` everything is rebuilt and the file is rewritten, as before.
+
 Per photo: EXIF rotation, sRGB, LANCZOS resize (never upscaled), WebP with adaptive quality (starts at
 q80, goes down until the file is under its byte budget; the hard limit is 250 KB, as in
 tests/image-weight.test.mjs). All metadata is dropped: the pixels are copied into a fresh image and the
@@ -31,6 +36,7 @@ Security (inputs are untrusted files):
 - output names come only from src/data/poze-actiune.json (slug and widths are validated), never from
   external data; each output path must resolve inside public/images/actiune/.
 """
+import argparse
 import io
 import json
 import re
@@ -234,22 +240,42 @@ def chunk_names(data):
     return names
 
 
-def main():
+def parse_only(argv, ids):
+    """The set of IDs from `--only ID[,ID...]`, or None when the option is absent. Each ID must match ID_RE and be in `ids`."""
+    parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
+    parser.add_argument("--only", default=None, help="doar aceste ID-uri (separate prin virgulă); restul rămân neatinse")
+    raw = parser.parse_args(argv).only
+    if raw is None:
+        return None
+    only = raw.split(",")
+    if len(set(only)) != len(only) or not all(ID_RE.fullmatch(i) and i in ids for i in only):
+        fail("--only cere id-uri unice, în formatul [MPS]NN, din poze-actiune.json")
+    return set(only)
+
+
+def merge_variants(ids, existing, fresh):
+    """Variants for a partial run: fresh ones for the processed IDs, the existing ones untouched, in the order of `ids`."""
+    return {i: fresh[i] if i in fresh else existing[i] for i in ids if i in fresh or i in existing}
+
+
+def main(argv=None):
     entries = json.loads(DATA.read_text(encoding="utf-8"))
-    if not MANIFEST.exists():
-        fail(f"lipsește {MANIFEST.relative_to(ROOT)}; rulează întâi scripts/images/fetch-poze-actiune.py")
-    manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
     ids = [e["id"] for e in entries]
     if not ids or len(set(ids)) != len(ids) or not all(ID_RE.fullmatch(i) for i in ids):
         fail("poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
+    only = parse_only(sys.argv[1:] if argv is None else argv, set(ids))
+    if not MANIFEST.exists():
+        fail(f"lipsește {MANIFEST.relative_to(ROOT)}; rulează întâi scripts/images/fetch-poze-actiune.py")
+    manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
     crops = load_crops(set(ids))
-    missing = [i for i in ids if i not in manifest]
+    todo = [e for e in entries if only is None or e["id"] in only]
+    missing = [e["id"] for e in todo if e["id"] not in manifest]
     if missing:
         fail(f"efectiv.json nu are intrări pentru: {' '.join(missing)}")
     OUT.mkdir(parents=True, exist_ok=True)
     out_root = OUT.resolve()
     variants = {}
-    for entry in entries:
+    for entry in todo:
         if not SLUG_RE.fullmatch(entry["slug"]):
             fail(f"{entry['id']}: slug invalid")
         full = load_source(entry, manifest[entry["id"]])
@@ -304,6 +330,13 @@ def main():
                     {"width": w, "height": h, "file": name, "bytes": len(data), "portret": True}
                 )
                 print(f"{entry['id']} portret {w}x{h} q{quality} {len(data) // 1024} KB")
+    if only is not None:
+        if not VARIANTS.exists():
+            fail(f"--only cere un {VARIANTS.name} existent (altfel rulează fără --only)")
+        variants = merge_variants(ids, json.loads(VARIANTS.read_text(encoding="utf-8")), variants)
+        absent = [i for i in ids if i not in variants]
+        if absent:
+            print(f"AVERTISMENT: fără variante pentru {' '.join(absent)} (nici în fișier, nici în --only)", file=sys.stderr)
     VARIANTS.write_text(json.dumps(variants, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 

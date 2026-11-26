@@ -73,7 +73,7 @@ with tempfile.TemporaryDirectory() as tmp:
     (root / "surse.json").write_text(json.dumps([{"id": "S99", "decupaj": desktop_box}]), encoding="utf-8")
     bpa.BASE, bpa.DATA, bpa.MANIFEST, bpa.SOURCES = root, root / "data.json", root / "efectiv.json", root / "surse.json"
     bpa.VARIANTS, bpa.OUT = root / "variante.json", root / "out"
-    bpa.main()
+    bpa.main([])
     variants = json.loads(bpa.VARIANTS.read_text(encoding="utf-8"))["S99"]
     widths = [v["width"] for v in variants if not v.get("portret")]
     check(widths == [768, 960, 1440, 1600], f"lățimile pe imaginea de desktop: {widths}")
