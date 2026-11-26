@@ -13,6 +13,8 @@ interface Props {
   ogType?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** false pe paginile al căror LCP e o poză-erou: preload-urile de fonturi ar concura cu poza pentru lățimea de bandă. */
+  preloadFonts?: boolean;
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   ogType = "website",
   ogImage = SITE.defaultOgImage,
   noindex = false,
+  preloadFonts = true,
 } = Astro.props;
 
 // OG/Twitter cer URL-uri absolute. `new URL` ignoră baza dacă input-ul e deja absolut.
@@ -38,8 +41,11 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preload" href="/fonts/yp-text-300.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/yp-text-400.woff2" as="font" type="font/woff2" crossorigin />
+    {/* Preload-urile pornesc în același moment cu poza-erou și, pe 4G lent, îi iau jumătate din bandă: LCP-ul pozei
+        trecea de 2 s (măsurat 26.11.2026: fără preload ~1,0 s, cu preload ~2,1 s). Paginile cu poză-erou le opresc
+        (preloadFonts={false}); fontul de text se aplică atunci cu font-display: swap, imediat ce ajunge. */}
+    {preloadFonts && <link rel="preload" href="/fonts/yp-text-300.woff2" as="font" type="font/woff2" crossorigin />}
+    {preloadFonts && <link rel="preload" href="/fonts/yp-text-400.woff2" as="font" type="font/woff2" crossorigin />}
     <slot name="head" />
     <script is:inline>
       // Tranziția înapoi spre o listă de produse (vezi scripts/fluid.ts): cardul produsului de unde vii primește
