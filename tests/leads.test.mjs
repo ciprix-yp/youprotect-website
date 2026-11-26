@@ -370,6 +370,56 @@ test('luna comenzii: ajunge neschimbată din formular prin D1 în GET /api/crm/l
   }
 });
 
+test('plafonul de 2000: pe ambele răspunsuri multiple (q3, q5), cu luna și produsele neatinse, prin D1 → GET /api/crm/leads', async () => {
+  const items = Array.from({ length: 8 }, (_, i) => String(i).repeat(300));
+  const slugs = Array.from({ length: 15 }, (_, i) => `${'a'.repeat(97)}-${String(i).padStart(2, '0')}`);
+  const db = fakeD1();
+  stubFetch(200);
+  const env = { LEADS_DB: db, RESEND_API_KEY: 'k', CRM_SYNC_TOKEN: TOKEN };
+  const body = {
+    intent: 'quote',
+    data: {
+      ...valid.data, produs: undefined, produse: slugs, q1: '16–40', q3: items, q5: items,
+      q_other: { q3: 'o'.repeat(300), q5: 'p'.repeat(300) }, detalii: 'rând 1\nrând 2\n'.repeat(60), luna_comenzii: 'iulie',
+    },
+  };
+  const c = ctx(body, { env });
+  assert.equal((await submitLead(c)).status, 200);
+  await Promise.all(c.pending);
+  const { leads } = await (
+    await crmGet({ request: new Request('https://youprotect.ro/api/crm/leads', { headers: { Authorization: `Bearer ${TOKEN}` } }), env })
+  ).json();
+  const answers = leads[0].answers;
+  assert.ok(answers.length <= 30);
+  for (const a of answers) {
+    assert.ok(a.answer.length <= 2000, `${a.question}: ${a.answer.length}`);
+    assert.ok(a.question.length <= 40, a.question);
+  }
+  for (const key of ['q3', 'q5']) {
+    const a = answers.find((x) => x.question === key).answer;
+    assert.ok(a.length > 1900 && a.length <= 2000, `${key}: ${a.length}`);
+  }
+  // Răspunsurile multi-linie care încap nu se ating: toate cele 15 adrese, întregi, și „detalii” identic.
+  const urls = answers.find((a) => a.question === 'produse').answer.split('\n');
+  assert.equal(urls.length, 15);
+  for (const url of urls) assert.match(url, /^https:\/\/youprotect\.ro\/produse\/[a-z0-9-]+\/$/);
+  assert.equal(answers.find((a) => a.question === 'detalii').answer, 'rând 1\nrând 2\n'.repeat(60).trim());
+  // Luna comenzii rămâne, după „detalii”, chiar dacă alte răspunsuri s-au tăiat.
+  assert.deepEqual(answers.slice(-2).map((a) => a.question), ['detalii', 'luna_comenzii']);
+  assert.equal(answers.at(-1).answer, 'iulie');
+});
+
+test('plafonul de 2000: o jumătate de pereche surrogate trimisă de client la limită nu ajunge în răspuns', () => {
+  // „\ud83d” singur (JSON valid) pe poziția 1999, urmat de text: tăierea la 2000 ar lăsa un surrogate orfan.
+  const items = [...Array.from({ length: 6 }, () => 'x'.repeat(300)), `${'a'.repeat(187)}\ud83d${'b'.repeat(50)}`];
+  const q3 = parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q3: items } }).lead.answers.find((a) => a.question === 'q3').answer;
+  assert.ok(q3.length <= 2000);
+  assert.equal(q3.isWellFormed(), true);
+  // Sub limită, un surrogate orfan nu e atins de plafon (nu-l validează; serverul nu-l inventează).
+  const small = parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q4: 'ok\ud83d' } }).lead.answers.find((a) => a.question === 'q4');
+  assert.equal(small.answer, 'ok\ud83d');
+});
+
 test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/tco.test.mjs)', () => {
   const input = parseTcoInputs({
     employees: 10, categories: ['incaltaminte', 'necunoscut'], prices: { incaltaminte: 200 }, qualityPrices: { incaltaminte: 300 },
