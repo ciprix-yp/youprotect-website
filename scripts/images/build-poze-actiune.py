@@ -57,7 +57,7 @@ BASE_WIDTHS = (640, 960, 1440)
 HERO_WIDTHS = (768, 960, 1440, 1920)
 MAX_BYTES = 250 * 1024
 # byte budget per width (ideal range from the brief); quality goes down until a file fits
-BUDGET = {640: 70 * 1024, 768: 56 * 1024, 960: 120 * 1024, 1440: 200 * 1024, 1920: 240 * 1024}
+BUDGET = {640: 70 * 1024, 768: 45 * 1024, 960: 120 * 1024, 1440: 200 * 1024, 1920: 240 * 1024}
 QUALITY_START, QUALITY_MIN, QUALITY_STEP = 80, 50, 2
 # 768 (eroii) pornește de la q70: la q80 ar depăși bugetul, iar măsurătoarea LCP s-a făcut pe q~70
 QUALITY_START_BY_WIDTH = {768: 70}
