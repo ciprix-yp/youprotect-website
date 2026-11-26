@@ -29,7 +29,7 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ACTION_PHOTOS, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, getPhoto } from '../src/lib/poze-actiune.ts';
+import { ACTION_PHOTOS, BODY_PHONE_HIDPI, PHONE_FULL_WIDTH, bodySizes, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, getPhoto } from '../src/lib/poze-actiune.ts';
 import { jsonLd } from '../src/lib/json-ld.ts';
 import { SITE } from '../src/lib/site.ts';
 import { CATEGORY_PAGES } from '../src/lib/catalog-categories.ts';
@@ -46,7 +46,7 @@ const variants = JSON.parse(read('src/data/poze-actiune-variante.json'));
 const EXPECTED_IDS = [
   'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19', 'M20', 'M21', 'M22', 'M23',
   'P04', 'P05', 'P06', 'P11',
-  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16',
+  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16', 'S17',
 ];
 const BRAND = {
   mascot: { suffix: '-mascot', credit: 'MASCOT', prefix: 'M' },
@@ -68,7 +68,7 @@ function webpSize(buf) {
   throw new Error(`Chunk WebP necunoscut: ${kind}`);
 }
 
-test('poze: exact cele 23 de id-uri, fără dubluri, și variante pentru fiecare', () => {
+test('poze: exact id-urile așteptate (EXPECTED_IDS), fără dubluri, și variante pentru fiecare', () => {
   assert.deepEqual(photos.map((p) => p.id).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(Object.keys(variants).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(ACTION_PHOTOS.map((p) => p.id), photos.map((p) => p.id));
@@ -149,6 +149,7 @@ const DYNAMIC_OK = new Set([
   'src/components/global/PageHeader.astro',
   'src/components/global/GlobalInnerHero.astro',
   'src/layouts/InnerPageLayout.astro',
+  'src/pages/index.astro', // `const heroPhoto = "S02"` (literal, numărat) citit de ActionPhoto și imageGraph
 ]);
 const ALLOWED_EXPR = /^(?:page\.photo|photo|heroPhoto)$/;
 /** Fișierele care definesc sau documentează pozele: nu sunt „utilizări”. */
@@ -192,7 +193,9 @@ function callArgs(text, open) {
 
 const Q = '["\'`]';
 const LITERAL_ARGS = new RegExp(`^\\[?(?:${Q}[MPS][0-9]{2}${Q},?)*\\]?(?:,[0-9]+)?$`);
-const DYNAMIC_ARGS = /^\[?(?:page\.photo|photo|heroPhoto)\]?(?:,[0-9]+)?$/;
+// În DYNAMIC_OK: elemente = variabila așteptată sau literal (ex. imageGraph(["M12", heroPhoto])), nu orice expresie.
+const DYN_ITEM = `(?:page\\.photo|photo|heroPhoto|${Q}[MPS][0-9]{2}${Q})`;
+const DYNAMIC_ARGS = new RegExp(`^\\[?${DYN_ITEM}(?:,${DYN_ITEM})*\\]?(?:,[0-9]+)?$`);
 
 /** Paginile din date: { slug, photo?, heroPhoto? } -> referințe la /produse/<slug>/. */
 export function catalogRefs(pages) {
@@ -643,14 +646,14 @@ function checkImageObject(obj, where) {
   assert.ok(!('license' in obj) && !('acquireLicensePage' in obj), `${where}: license/acquireLicensePage`);
 }
 
-test('json-ld: imageObject() pentru toate cele 23 e valid, trece prin jsonLd() și JSON.parse', () => {
+test('json-ld: imageObject() pentru toate pozele e valid, trece prin jsonLd() și JSON.parse', () => {
   for (const p of photos) {
     const obj = imageObject(p.id);
     checkImageObject(obj, p.id);
     assert.deepEqual(JSON.parse(jsonLd(obj)), obj);
     assert.equal(obj.creditText, p.creditText);
     assert.equal(obj.description, p.alt);
-    const big = variants[p.id].at(-1);
+    const big = variants[p.id].filter((v) => !v.portret).at(-1);
     assert.equal(obj.contentUrl, `${SITE.url}/images/actiune/${big.file}`);
     assert.equal(obj.width, big.width);
   }
@@ -807,7 +810,7 @@ function withDist(pages, fn) {
 const imgTag = (id, extra = '') =>
   `<img src="/images/actiune/${fileOf(id, 1)}" srcset="${variants[id].map((v) => `/images/actiune/${v.file} ${v.width}w`).join(', ')}" ${extra}>`;
 const ldTag = (id) =>
-  `<script type="application/ld+json">{"@graph":[{"@type":"ImageObject","contentUrl":"https://youprotect.ro/images/actiune/${variants[id].at(-1).file}"}]}</script>`;
+  `<script type="application/ld+json">{"@graph":[{"@type":"ImageObject","contentUrl":"https://youprotect.ro/images/actiune/${variants[id].filter((v) => !v.portret).at(-1).file}"}]}</script>`;
 const syntheticProblems = (pages) => withDist(pages, (dir) => distProblems(analyzeDist(dir)));
 
 test('dist (negativ): o poză Portwest pe o pagină nepermisă pică', () => {
@@ -848,7 +851,7 @@ test('dist (negativ): aceeași poză pe 3 pagini, erou și dublă pe pagină pic
   assert.deepEqual(syntheticProblems({ 'a/index.html': imgTag('M02', 'fetchpriority="high"'), 'b/index.html': imgTag('M02') }), []);
   // două elemente <img> cu aceeași poză pe o pagină
   assert.match(syntheticProblems({ 'a/index.html': imgTag('M01') + imgTag('M01') }).join('\n'), /M01: de două ori pe \/a\//);
-  // fișier din afara celor 23 și fișier inexistent
+  // fișier din afara celor din date și fișier inexistent
   assert.match(syntheticProblems({ 'a/index.html': '<img src="/images/actiune/altceva-123.webp">' }).join('\n'), /necunoscut „altceva-123\.webp”/);
   assert.match(
     withDist({ 'a/index.html': `<img src="/images/actiune/${fileOf('M01')}">` }, (dir) => {
@@ -879,7 +882,7 @@ test('dist: fără dist/ pică cu POZE_REQUIRE_DIST=1 și sare altfel', () => {
 // ---------------------------------------------------------------------------------------------------------------
 // 7. scripts/images/poze-actiune-surse.json
 
-test('surse: exact cele 23 de id-uri în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
+test('surse: exact id-urile în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
   const surse = JSON.parse(read('scripts/images/poze-actiune-surse.json'));
   assert.deepEqual(surse.map((s) => s.id), photos.map((p) => p.id));
   const KEY = { mascot: 'id_sursa', portwest: 'bynder_asset_id', sirsafety: 'url_sursa' };
@@ -1083,4 +1086,103 @@ test('NOT_PHOTO_IDS: lista de excepții nu conține id-uri reale de poză, iar o
   // și în fișierele de catalog
   assert.deepEqual(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")], { notPhotoIds: new Set(['S10']) }).problems, []);
   assert.match(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")]).problems.join('\n'), /NOT_PHOTO_IDS/);
+});
+
+// Ținta din scriptul de imagini (build-poze-actiune.py) pentru varianta de 768 px a eroilor e 45 KB, dar nu e impusă:
+// scriptul doar avertizează când un fișier rămâne peste ea la calitatea minimă. Aici verificăm toleranța reală
+// (limita sub care trebuie să rămână fișierele livrate acum); valorile sunt cele de dinainte, nu s-au schimbat.
+const HERO_768_MAX = 56 * 1024;
+const PORTRAIT_768_MAX = 55 * 1024;
+
+test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p960 4:5, în afara srcset-ului obișnuit', () => {
+  const withPortrait = photos.filter((p) => p.portret);
+  assert.ok(withPortrait.length >= 1, 'nicio poză cu decupaj portret');
+  for (const p of withPortrait) {
+    assert.ok(p.erou, `${p.id}: decupajul portret e doar pentru eroi`);
+    const [x0, y0, x1, y1] = p.portret.decupaj;
+    assert.ok(0 <= x0 && x0 < x1 && x1 <= 1 && 0 <= y0 && y0 < y1 && y1 <= 1, `${p.id}: decupaj în afara imaginii`);
+    const portrait = variants[p.id].filter((v) => v.portret);
+    assert.deepEqual(portrait.map((v) => v.width), [768, 960], `${p.id}: variante portret`);
+    for (const v of portrait) {
+      assert.equal(v.height / v.width, 1.25, `${p.id} ${v.file}: nu e 4:5`);
+      assert.match(v.file, /-p(768|960)\.webp$/);
+    }
+    assert.ok(portrait[0].bytes <= PORTRAIT_768_MAX, `${p.id}: ${portrait[0].file} ${portrait[0].bytes} B (toleranță ${PORTRAIT_768_MAX} B)`);
+    assert.ok(!photoSrcset(p.id).includes('-p768') && !photoSrcset(p.id).includes('-p960'), `${p.id}: portretul în srcset-ul obișnuit`);
+  }
+  for (const p of photos.filter((x) => !x.portret)) {
+    assert.ok(!variants[p.id].some((v) => v.portret), `${p.id}: variante portret fără decupaj în date`);
+  }
+});
+
+test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 56 KB (ținta de 45 KB din script nu e impusă)', () => {
+  for (const p of photos.filter((x) => x.erou)) {
+    const list = variants[p.id].filter((v) => !v.portret);
+    const widths = list.map((v) => v.width);
+    assert.deepEqual(widths.slice(0, 3), [768, 960, 1440], `${p.id}: lățimi erou`);
+    assert.ok(widths.length === 3 || (widths.length === 4 && widths[3] === 1920), `${p.id}: lățimi erou ${widths}`);
+    // sursele pătrate (S06, S17) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
+    assert.ok(list[0].bytes <= HERO_768_MAX, `${p.id}: ${list[0].file} ${list[0].bytes} B (toleranță ${HERO_768_MAX} B)`);
+  }
+});
+
+// ---------------------------------------------------------------------------------------------------------------
+// Pozele din corp pe telefon 3x: `sizes` normalizat de ActionPhoto (bodySizes), ca browserul să aleagă 960 px, nu 1440 px.
+
+test('bodySizes: regula de telefon 3x se pune imediat înaintea ultimei intrări calc(100vw - 2rem); restul trece neschimbat', () => {
+  const rule = BODY_PHONE_HIDPI;
+  assert.equal(PHONE_FULL_WIDTH, 'calc(100vw - 2rem)');
+  assert.match(rule, /^\(max-width: 767px\) and \(min-resolution: 2\.5dppx\) calc\(\(100vw - 2rem\) \* 0\.75\)$/);
+  assert.equal(bodySizes('calc(100vw - 2rem)'), `${rule}, calc(100vw - 2rem)`);
+  assert.equal(
+    bodySizes('(min-width: 1280px) 1248px, calc(100vw - 2rem)'),
+    `(min-width: 1280px) 1248px, ${rule}, calc(100vw - 2rem)`,
+  );
+  assert.equal(
+    bodySizes('(min-width: 768px) 768px,calc(100vw - 2rem)'),
+    `(min-width: 768px) 768px, ${rule}, calc(100vw - 2rem)`,
+  );
+  // intrările condiționate ale paginii (ex. 640-767 px) rămân ÎNAINTEA regulii, deci câștigă în intervalul lor
+  assert.equal(
+    bodySizes('(min-width: 1024px) 38vw, (min-width: 640px) 48vw, calc(100vw - 2rem)'),
+    `(min-width: 1024px) 38vw, (min-width: 640px) 48vw, ${rule}, calc(100vw - 2rem)`,
+  );
+  const parts = bodySizes('(min-width: 640px) 48vw, calc(100vw - 2rem)').split(', ');
+  assert.ok(parts.indexOf('(min-width: 640px) 48vw') < parts.indexOf(rule), 'regula nu trebuie să preceadă intrările paginii');
+  assert.equal(parts[parts.length - 1], PHONE_FULL_WIDTH);
+  // alte valori implicite pe telefon: neschimbate (eroi, 70vw, 100vw, intrări cu calc înăuntru care nu sunt ultima)
+  for (const same of ['100vw', '40vw', '(min-width: 1024px) 38vw, 70vw', '(min-width: 640px) calc(100vw - 2rem), 70vw', 'calc(100vw - 2rem) 1px']) {
+    assert.equal(bodySizes(same), same, same);
+  }
+  // regula nu atinge niciun viewport de la 768 px în sus și nici DPR sub 2,5
+  assert.match(rule, /max-width: 767px/);
+  assert.match(rule, /min-resolution: 2\.5dppx/);
+});
+
+test('ActionPhoto: pozele din corp trec prin bodySizes; eroii (priority) și decupajul portret își păstrează sizes', () => {
+  const src = read('src/components/media/ActionPhoto.astro');
+  assert.match(src, /import \{[^}]*\bbodySizes\b[^}]*\} from '\.\.\/\.\.\/lib\/poze-actiune'/);
+  assert.match(src, /const imgSizes = priority \|\| portret \? sizes : bodySizes\(sizes\)/);
+  assert.equal((src.match(/sizes=\{imgSizes\}/g) ?? []).length, 2, 'ambele <img> folosesc imgSizes');
+  assert.ok(!/ sizes=\{sizes\}/.test(src), 'niciun <img> cu sizes brut');
+  assert.match(src, /if \(!sizes\) throw/, 'sizes rămâne obligatoriu');
+});
+
+test('dist: pozele din corp cu calc(100vw - 2rem) pe telefon au regula 3x; eroii (fetchpriority=high) nu', (t) => {
+  if (!distAvailable(t)) return;
+  let withRule = 0;
+  for (const file of walk(DIST, (n) => n.endsWith('.html'))) {
+    const html = readFileSync(file, 'utf8');
+    for (const tag of html.match(/<img\b[^>]*\bclass="[^"]*\baction-photo\b[^>]*>/g) ?? []) {
+      const sizes = /\bsizes="([^"]*)"/.exec(tag)?.[1];
+      assert.ok(sizes, `${relative(DIST, file)}: poză fără sizes`);
+      const hero = /fetchpriority="high"/.test(tag);
+      const entries = sizes.replaceAll('&#38;', '&').split(/,\s*(?![^(]*\))/);
+      if (hero) continue;
+      // regula stă imediat înaintea ultimei intrări (calc(100vw - 2rem)), după intrările condiționate ale paginii
+      if (entries.at(-2) === BODY_PHONE_HIDPI && entries.at(-1) === PHONE_FULL_WIDTH) withRule += 1;
+      else if (entries.at(-1) === PHONE_FULL_WIDTH) assert.fail(`${relative(DIST, file)}: sizes fără regula 3x: ${sizes}`);
+    }
+  }
+  assert.ok(withRule > 0, 'nicio poză din corp cu regula 3x în dist/: verificarea nu vede nimic');
 });

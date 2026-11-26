@@ -371,10 +371,10 @@
   ],
   "S02": [
     {
-      "width": 640,
-      "height": 360,
-      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-640.webp",
-      "bytes": 41052
+      "width": 768,
+      "height": 432,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-768.webp",
+      "bytes": 39954
     },
     {
       "width": 960,
@@ -387,6 +387,26 @@
       "height": 810,
       "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-1440.webp",
       "bytes": 120882
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-1920.webp",
+      "bytes": 177152
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-p768.webp",
+      "bytes": 56144,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-p960.webp",
+      "bytes": 84476,
+      "portret": true
     }
   ],
   "S04": [
@@ -411,10 +431,10 @@
   ],
   "S06": [
     {
-      "width": 640,
-      "height": 640,
-      "file": "doi-muncitori-cara-grinda-lemn-depozit-sir-safety-640.webp",
-      "bytes": 62270
+      "width": 768,
+      "height": 768,
+      "file": "doi-muncitori-cara-grinda-lemn-depozit-sir-safety-768.webp",
+      "bytes": 49752
     },
     {
       "width": 960,
@@ -487,6 +507,26 @@
       "height": 810,
       "file": "pasi-incaltaminte-protectie-santier-sir-safety-1440.webp",
       "bytes": 112150
+    }
+  ],
+  "S17": [
+    {
+      "width": 768,
+      "height": 768,
+      "file": "bocanc-protectie-tambur-cablu-pantaloni-reflectorizanti-sir-safety-768.webp",
+      "bytes": 56170
+    },
+    {
+      "width": 960,
+      "height": 960,
+      "file": "bocanc-protectie-tambur-cablu-pantaloni-reflectorizanti-sir-safety-960.webp",
+      "bytes": 121096
+    },
+    {
+      "width": 1440,
+      "height": 1440,
+      "file": "bocanc-protectie-tambur-cablu-pantaloni-reflectorizanti-sir-safety-1440.webp",
+      "bytes": 200214
     }
   ]
 }

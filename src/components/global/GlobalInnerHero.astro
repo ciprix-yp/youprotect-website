@@ -3,6 +3,7 @@
 // breadcrumb, titlu și butoane ca în catalog, cu fotografia paginii în dreapta. Proprietățile au rămas cele vechi, ca
 // paginile să nu se schimbe.
 import PageHeader, { type Crumb } from './PageHeader.astro';
+import PortraitHero from './PortraitHero.astro';
 
 export interface Props {
   title: string;
@@ -11,6 +12,8 @@ export interface Props {
   imagePath?: string;
   /** Id de poză de acțiune pentru erou; înlocuiește `imagePath`. */
   heroPhoto?: string;
+  /** Doar /despre-noi/: antet cu portretul fondatoarei (PortraitHero) în loc de PageHeader. Opțional; fără el nimic nu se schimbă. */
+  portrait?: boolean;
   ctaButtonText?: string;
   ctaSecondaryButtonText?: string;
   ctaSecondaryButtonLink?: string;
@@ -21,8 +24,9 @@ const {
   title,
   subtitle,
   breadcrumb = title,
-  imagePath = '/hero-youprotect-highvis.webp',
+  imagePath,
   heroPhoto,
+  portrait = false,
   ctaButtonText,
   ctaSecondaryButtonText,
   ctaSecondaryButtonLink,
@@ -36,13 +40,24 @@ const parent = segments.length > 1 ? PARENTS[segments[0]] : undefined;
 const crumbs: Crumb[] = [...(parent ? [parent] : []), { label: breadcrumb }];
 ---
 
-<PageHeader
-  title={title}
-  intro={subtitle}
-  crumbs={crumbs}
-  image={heroPhoto ? undefined : imagePath}
-  heroPhoto={heroPhoto}
-  primary={ctaButtonText ? { label: ctaButtonText, href: '/programeaza-discutie/' } : undefined}
-  secondary={ctaSecondaryButtonText ? { label: ctaSecondaryButtonText, href: ctaSecondaryButtonLink || '/produse/' } : undefined}
-  microcopy={ctaMicrocopy}
-/>
+{portrait ? (
+  <PortraitHero
+    title={title}
+    intro={subtitle}
+    crumbs={crumbs}
+    primary={ctaButtonText ? { label: ctaButtonText, href: '/programeaza-discutie/' } : undefined}
+    secondary={ctaSecondaryButtonText ? { label: ctaSecondaryButtonText, href: ctaSecondaryButtonLink || '/produse/' } : undefined}
+    microcopy={ctaMicrocopy}
+  />
+) : (
+  <PageHeader
+    title={title}
+    intro={subtitle}
+    crumbs={crumbs}
+    image={heroPhoto ? undefined : imagePath}
+    heroPhoto={heroPhoto}
+    primary={ctaButtonText ? { label: ctaButtonText, href: '/programeaza-discutie/' } : undefined}
+    secondary={ctaSecondaryButtonText ? { label: ctaSecondaryButtonText, href: ctaSecondaryButtonLink || '/produse/' } : undefined}
+    microcopy={ctaMicrocopy}
+  />
+)}

@@ -28,8 +28,8 @@ export default {
         drawer: 'cubic-bezier(0.32, 0.72, 0, 1)',
       },
       fontFamily: {
-        'heading': ['Montserrat', 'sans-serif'],
-        'body': ['"YP Text"', 'sans-serif'],
+        'heading': ['Montserrat', '"Montserrat Fallback"', 'sans-serif'],
+        'body': ['"YP Text"', '"YP Text Fallback"', 'sans-serif'],
         'accent': ['Playfair Display', 'serif'],
       },
     },

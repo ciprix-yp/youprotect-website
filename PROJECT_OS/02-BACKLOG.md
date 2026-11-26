@@ -231,8 +231,9 @@ Format task:
     `src/lib/quote-categories.js`, iar serverul o adaugă la răspunsuri ca „Categoria aleasă pe site”.
   - **Echipe de 1–4 persoane** — `DONE`. Nu intră în formular. Sub întrebarea despre mărimea echipei, formularul le
     trimite pe WhatsApp.
-  - **Recenzii în buclă** — `DONE`. Caruselul derulează continuu, iar pe mobil nu se mai oprește după o atingere.
-    Are buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele e gata (D-2026-11-18-04). Cheia
+  - **Recenzii în buclă** — `DONE`. (26.11.2026, PR #104: caruselul nu mai derulează singur; e un rând cu
+    scroll-snap, cu săgeți și tastatură, deci butonul de pauză a căzut odată cu autoplay-ul.) Înainte: caruselul
+    derula continuu, iar pe mobil nu se oprea după o atingere. Avea buton de pauză (WCAG 2.2.2). Preluarea lunară a recenziilor de 4–5 stele e gata (D-2026-11-18-04). Cheia
     Places API e în Cloudflare Pages (producție), iar secretul GitHub `CF_PAGES_DEPLOY_HOOK` e pus. Pe 18.11.2026
     seara, site-ul arăta deja 4 recenzii preluate de la Google, pe lângă cele 5 din repo.
   - **Măsurare** — `DONE`. GA4 `G-TV8YEFYQD5`, încărcat doar după acord, și Cloudflare Web Analytics, fără cookie-uri

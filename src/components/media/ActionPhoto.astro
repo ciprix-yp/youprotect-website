@@ -14,11 +14,14 @@
 //   - în src/lib/catalog-brands.ts și catalog-categories.ts: `photo: 'S01'` / `heroPhoto: 'M02'` în intrarea paginii
 //     (BrandLanding/CategoryLanding le randează cu <ActionPhoto id={page.photo} />, singurele unde id-ul poate fi dinamic)
 //   - o poză: max. 2 pagini, niciodată de 2 ori pe aceeași pagină, erou pe o singură pagină; P* doar lângă produse Portwest.
-import { getPhoto, photoSize, photoSrc, photoSrcset } from '../../lib/poze-actiune';
+import { bodySizes, getPhoto, photoSize, photoSrc, photoSrcset, portraitSrcset } from '../../lib/poze-actiune';
 
 interface Props {
   id: string;
-  /** Obligatoriu: atributul `sizes`, ca browserul să aleagă varianta potrivită. */
+  /**
+   * Obligatoriu: atributul `sizes`, ca browserul să aleagă varianta potrivită. La pozele din corp (fără `priority`/`portret`),
+   * ultima intrare `calc(100vw - 2rem)` primește automat regula de telefon 3x din `bodySizes()` (src/lib/poze-actiune.ts: 960 px, nu 1440 px).
+   */
   sizes: string;
   /** Erou/LCP: loading="eager" + fetchpriority="high". */
   priority?: boolean;
@@ -27,28 +30,56 @@ interface Props {
   /** Adaugă `sd-media` (mișcare legată de derulare). Wrapperul trebuie să aibă `overflow-clip`, nu `overflow-hidden`. */
   motion?: boolean;
   fit?: 'cover' | 'contain';
+  /** Doar eroul homepage-ului: pe telefon (<768 px) se servește decupajul portret 4:5 al pozei (variantele `-p768`/`-p960`). */
+  portret?: boolean;
+  /** Suprascrie `obiectPoz` din date pentru acest loc (când aceeași poză are alt cadru pe pagină). */
+  poz?: { telefon?: string; desktop?: string };
 }
 
-const { id, sizes, priority = false, loading, class: className, motion = false, fit = 'cover' } = Astro.props;
+const { id, sizes, priority = false, loading, class: className, motion = false, fit = 'cover', portret = false, poz } = Astro.props;
 if (!sizes) throw new Error(`ActionPhoto „${id}”: lipsește „sizes”.`);
 const photo = getPhoto(id);
 const { width, height } = photoSize(id);
+const pozTelefon = poz?.telefon ?? photo.obiectPoz.telefon;
+const pozDesktop = poz?.desktop ?? photo.obiectPoz.desktop;
+// Pozele din corp: pe telefon cu densitate mare, varianta de 960 px (vezi bodySizes). Eroii și decupajul portret își au sizes-ul lor.
+const imgSizes = priority || portret ? sizes : bodySizes(sizes);
 const lazy = (priority ? 'eager' : (loading ?? 'lazy')) === 'lazy';
 ---
 
-<img
-  src={photoSrc(id, 960)}
-  srcset={photoSrcset(id)}
-  sizes={sizes}
-  width={width}
-  height={height}
-  alt={photo.alt}
-  loading={lazy ? 'lazy' : 'eager'}
-  decoding="async"
-  fetchpriority={priority ? 'high' : undefined}
-  class:list={['action-photo h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover', { 'sd-media': motion }, className]}
-  style={`--op-desktop:${photo.obiectPoz.desktop};--op-telefon:${photo.obiectPoz.telefon}`}
-/>
+{portret && (
+  <picture class="contents">
+    <source media="(max-width: 767px)" srcset={portraitSrcset(id)} sizes="50vw" />
+    <img
+      src={photoSrc(id, 960)}
+      srcset={photoSrcset(id)}
+      sizes={imgSizes}
+      width={width}
+      height={height}
+      alt={photo.alt}
+      loading={lazy ? 'lazy' : 'eager'}
+      decoding="async"
+      fetchpriority={priority ? 'high' : undefined}
+      class:list={['action-photo h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover', { 'sd-media': motion }, className]}
+      style={`--op-desktop:${pozDesktop};--op-telefon:${pozTelefon}`}
+    />
+  </picture>
+)}
+{!portret && (
+  <img
+    src={photoSrc(id, 960)}
+    srcset={photoSrcset(id)}
+    sizes={imgSizes}
+    width={width}
+    height={height}
+    alt={photo.alt}
+    loading={lazy ? 'lazy' : 'eager'}
+    decoding="async"
+    fetchpriority={priority ? 'high' : undefined}
+    class:list={['action-photo h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover', { 'sd-media': motion }, className]}
+    style={`--op-desktop:${pozDesktop};--op-telefon:${pozTelefon}`}
+  />
+)}
 
 <style>
   /* Telefon: cadrul din obiectPoz.telefon; de la 768 px în sus: obiectPoz.desktop. */

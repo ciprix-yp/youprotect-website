@@ -51,9 +51,13 @@ verificate înainte de merge.
 - PR #93 (`feat/poze-actiune`, D-2026-11-26-02): 19 poze reale cu oameni în acțiune (MASCOT, Portwest, Sir Safety) pe
   site, prin `ActionPhoto` și `src/data/poze-actiune.json`; pozele generate cu AI de pe /cum-lucram/ sunt înlocuite.
   Live în preview-ul PR-ului, nu în `main`. Regulile sunt în `08-GHID_CONTINUT.md` §9.
-- Urmează: aprobarea lui Ciprian pe iPhone, apoi merge după OK. PR-uri separate, după acesta: antetul cu poza deasupra
-  titlului pe telefon, /despre-noi/ după machetă, poza nouă de pe homepage, titlurile galbene de pe /cum-lucram/,
-  recenziile fără autoplay, cardurile de catalog pe model.
+- Urmează: aprobarea lui Ciprian pe iPhone, apoi merge după OK. PR-uri separate, după acesta: cardurile de catalog pe
+  model.
+- Făcut în PR #104 (`feat/design-mobil-2`, înlocuiește #102, D-2026-11-26-03): antetul cu poza deasupra titlului pe
+  telefon, grila întâi pe categorie și pe brand, /despre-noi/ cu portretul Alexandrei Pop, poza nouă de pe homepage
+  (S02, din constanta `heroPhoto`), titlurile pașilor de pe /cum-lucram/ într-o singură culoare, recenziile fără
+  autoplay. Rămâne pentru un PR următor: selecția rotativă a eroului homepage-ului (doar pregătită); verificarea pe
+  iPhone real a fonturilor de rezervă.
 
 ## Sesiunea 2026-11-17: cererile pe D1, baza Railway retrasă
 

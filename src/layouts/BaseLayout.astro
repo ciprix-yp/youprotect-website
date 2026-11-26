@@ -6,6 +6,18 @@ import Analytics from "../components/global/Analytics.astro";
 import { SITE, sameAs } from "../lib/site";
 import "../styles/vendor";
 import "../styles/global.css";
+// Același fișier pe care îl cere CSS-ul din @fontsource (h1 și titlurile): `?url` dă calea cu hash din build.
+import headingLatin300 from "@fontsource/montserrat/files/montserrat-latin-300-normal.woff2?url";
+// ă, ș, ț sunt în subsetul latin-ext: fără el glifele cu diacritice din h1 se schimbă vizibil la swap.
+import headingLatinExt300 from "@fontsource/montserrat/files/montserrat-latin-ext-300-normal.woff2?url";
+
+const FONT_FILES = {
+  "text-300": "/fonts/yp-text-300.woff2",
+  "text-400": "/fonts/yp-text-400.woff2",
+  "heading-300": headingLatin300,
+  "heading-300-ext": headingLatinExt300,
+} as const;
+type FontKey = keyof typeof FONT_FILES;
 
 interface Props {
   title: string;
@@ -13,6 +25,8 @@ interface Props {
   ogType?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** true: fonturile de text; lista: doar acelea ("text-300" | "text-400" | "heading-300" | "heading-300-ext"); false: niciunul. Lista scurtă pe paginile al căror LCP e o poză-erou: preload-urile de fonturi ar concura cu poza pentru lățimea de bandă. */
+  preloadFonts?: boolean | FontKey[];
 }
 
 const {
@@ -21,7 +35,9 @@ const {
   ogType = "website",
   ogImage = SITE.defaultOgImage,
   noindex = false,
+  preloadFonts = true,
 } = Astro.props;
+const preloaded: FontKey[] = preloadFonts === true ? ["text-300", "text-400"] : preloadFonts === false ? [] : preloadFonts;
 
 // OG/Twitter cer URL-uri absolute. `new URL` ignoră baza dacă input-ul e deja absolut.
 const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
@@ -38,8 +54,10 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preload" href="/fonts/yp-text-300.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/yp-text-400.woff2" as="font" type="font/woff2" crossorigin />
+    {/* Preload-urile pornesc în același moment cu poza-erou și, pe 4G lent, îi iau jumătate din bandă: LCP-ul pozei
+        trecea de 2 s (măsurat 26.11.2026: fără preload ~1,0 s, cu preload ~2,1 s). Paginile cu poză-erou le opresc
+        (preloadFonts={["heading-300"]}): preîncarcă doar fontul h1-ului, ca titlul să nu se schimbe vizibil; fontul de text se aplică atunci cu font-display: swap, imediat ce ajunge. */}
+    {preloaded.map((k) => <link rel="preload" href={FONT_FILES[k]} as="font" type="font/woff2" crossorigin />)}
     <slot name="head" />
     <script is:inline>
       // Tranziția înapoi spre o listă de produse (vezi scripts/fluid.ts): cardul produsului de unde vii primește

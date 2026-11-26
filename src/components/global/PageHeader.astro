@@ -1,7 +1,10 @@
 ---
-// Antetul unei pagini interioare, în stilul catalogului: breadcrumb, H1, intro, butoane, iar opțional o fotografie în
-// dreapta (pe telefon, sub text). Toate paginile interioare îl folosesc, ca titlurile, butoanele și marginile să fie la
-// fel peste tot.
+// Antetul unei pagini interioare, în stilul catalogului: breadcrumb, H1, intro, butoane, iar opțional o fotografie.
+// De la 1024 px (`lg`) fotografia stă în dreapta textului; sub 1024 px (telefon și tabletă) stă DEASUPRA breadcrumb-ului și a
+// H1, pe toată lățimea ecranului, 3:2, fără ramă și fără colțuri rotunjite (review design 25.11.2026, R2/ii1: pe telefon poza
+// venea după 42-94 de cuvinte și ajungea sub bannerul de cookie-uri). Există un singur <img>; ordinea de pe telefon vine din
+// CSS (`order-first`), iar în DOM rămân breadcrumb, H1, text, poză (cititoarele de ecran și motoarele de căutare citesc H1
+// înaintea pozei). Toate paginile interioare îl folosesc, ca titlurile, butoanele și marginile să fie la fel peste tot.
 import ActionPhoto from '../media/ActionPhoto.astro';
 import { breadcrumbNav, btnPrimary, btnSecondary, pageContainer, pageIntro, pageTitle } from '../../lib/ui';
 
@@ -24,11 +27,17 @@ export interface Props {
 
 const { title, intro, crumbs, image, heroPhoto, primary, secondary, microcopy } = Astro.props;
 const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
+const hasPhoto = Boolean(image || heroPhoto);
+// Cadrul pozei. Sub `lg`: `order-first` o duce deasupra breadcrumb-ului, `-mx-4` anulează padding-ul lui pageContainer
+// (full-bleed; sub 1024 px containerul are lățimea ecranului), 3:2, fără ramă. De la `lg`: ca înainte (16:10, ramă, în
+// coloana din dreapta). `overflow-clip`, NU `overflow-hidden`: vezi comentariul din ActionPhoto și
+// tests/scroll-timeline-overflow.test.mjs.
+const photoFrame = 'relative order-first -mx-4 mb-2 aspect-[3/2] overflow-clip bg-yp-gray lg:order-none lg:col-start-2 lg:row-start-2 lg:mx-0 lg:mb-0 lg:aspect-[16/10] lg:self-center lg:border lg:border-yp-white/10';
 ---
 
 <section class="border-b border-yp-white/10">
-  <div class:list={[pageContainer, 'py-8 md:py-12']}>
-    <nav aria-label="Breadcrumb" class={breadcrumbNav}>
+  <div class:list={[pageContainer, hasPhoto ? 'flex flex-col pb-8 md:pb-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-x-8 lg:pt-12' : 'py-8 md:py-12']}>
+    <nav aria-label="Breadcrumb" class:list={[breadcrumbNav, hasPhoto && 'lg:col-span-2']}>
       {trail.map((c, i) => (
         <>
           {i > 0 && <span class="mx-2" aria-hidden="true">/</span>}
@@ -40,38 +49,38 @@ const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
         </>
       ))}
     </nav>
-    <div class:list={['grid gap-8', (image || heroPhoto) && 'lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center']}>
-      <div class="max-w-3xl">
-        <h1 class={pageTitle}>{title}</h1>
-        {intro && <p class={pageIntro}>{intro}</p>}
-        <slot />
-        {(primary || secondary) && (
-          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-            {primary && <a href={primary.href} class={btnPrimary}>{primary.label}</a>}
-            {secondary && <a href={secondary.href} class={btnSecondary}>{secondary.label}</a>}
-          </div>
-        )}
-        {microcopy && <p class="mt-3 text-sm text-yp-white/60">{microcopy}</p>}
-      </div>
-      {/* `sizes` sub 768 px declară 40vw, mai puțin decât lățimea reală (poza ocupă toată coloana, ~358 px pe iPhone 390):
-          așa browserul alege cea mai mică variantă care acoperă 40vw x DPR. Eroii au variantele 768/960/1440/1920, deci pe telefon
-          (390-430 px, DPR 2 sau 3: 40vw x DPR = 312-516 px) iese mereu 768 px (39-57 KB), adică ~2,1x pe iPhone, nu 640 px (1,79x,
-          muchii moi). Cu 65vw ar ieși 960 px (+0,3-1 s LCP pe 4G throttled, măsurat). Între 768 și 1023 px: 60vw (iPad, 960 px la
-          DPR 2); de la 1024 px: coloana reală (47vw, apoi 576 px). */}
-      {heroPhoto ? (
-        <div class="relative aspect-[16/10] overflow-clip rounded-xl border border-yp-white/10 bg-yp-gray">
-          <ActionPhoto
-            id={heroPhoto}
-            sizes="(min-width: 1280px) 576px, (min-width: 1024px) 47vw, (min-width: 768px) 60vw, 40vw"
-            priority
-            class="sd-hero-photo absolute inset-0"
-          />
-        </div>
-      ) : image && (
-        <div class="relative aspect-[16/10] overflow-clip border border-yp-white/10 bg-yp-gray">
-          <img src={image} alt="" width="1200" height="750" loading="eager" class="sd-hero-photo absolute inset-0 h-full w-full object-cover" />
+    <div class:list={['max-w-3xl', hasPhoto && 'lg:col-start-1 lg:row-start-2 lg:self-center']}>
+      <h1 class={pageTitle}>{title}</h1>
+      {intro && <p class={pageIntro}>{intro}</p>}
+      <slot />
+      {(primary || secondary) && (
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          {primary && <a href={primary.href} class={btnPrimary}>{primary.label}</a>}
+          {secondary && <a href={secondary.href} class={btnSecondary}>{secondary.label}</a>}
         </div>
       )}
+      {microcopy && <p class="mt-3 text-sm text-yp-white/60">{microcopy}</p>}
     </div>
+    {/* `sizes`: sub 1024 px poza ocupă ACUM tot ecranul (100vw), dar `sizes` rămâne intenționat mai mic (40vw sub 768 px,
+        60vw între 768 și 1023 px), ca browserul să nu coboare la varianta de 1440 px. Eroii au variantele 768/960/1440/1920:
+        pe telefon (390-430 px, DPR 2 sau 3: 40vw x DPR = 312-516 px) iese mereu 768 px (39-57 KB), adică ~2x pe un ecran de
+        390 px cu DPR 3 (768 / 390 = 1,97x, muchii destul de clare) și fără a plăti 1440 px pe 4G (100vw x DPR 3 = 1170 px
+        ar alege 1440). Cu 65vw ar ieși 960 px (+0,3-1 s LCP pe 4G throttled, măsurat). Între 768 și 1023 px: 60vw (iPad,
+        960 px la DPR 2); de la 1024 px: coloana reală (47vw, apoi 576 px). Dacă lățimea de afișare sub lg se schimbă,
+        refă măsurătoarea cu `currentSrc` în Chrome real. */}
+    {heroPhoto ? (
+      <div class:list={[photoFrame, 'lg:rounded-xl']}>
+        <ActionPhoto
+          id={heroPhoto}
+          sizes="(min-width: 1280px) 576px, (min-width: 1024px) 47vw, (min-width: 768px) 60vw, 40vw"
+          priority
+          class="sd-hero-photo absolute inset-0"
+        />
+      </div>
+    ) : image && (
+      <div class={photoFrame}>
+        <img src={image} alt="" width="1200" height="750" loading="eager" class="sd-hero-photo absolute inset-0 h-full w-full object-cover" />
+      </div>
+    )}
   </div>
 </section>

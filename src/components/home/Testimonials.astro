@@ -18,277 +18,135 @@ function formatDate(dateStr: string | null): string {
 }
 ---
 
-<div class="testimonials-carousel relative opacity-0">
-  <!-- Nav buttons (desktop only) -->
-  <button
-    class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 min-[1340px]:-translate-x-5 z-10 w-10 h-10 bg-yp-black border border-white/20 rounded-lg hidden md:flex items-center justify-center text-white hover:border-yp-yellow hover:text-yp-yellow transition-colors"
-    aria-label="Anterior"
+{/* Rând orizontal cu scroll-snap, fără derulare automată (ii5, review design 26.11.2026). Lățimile cardurilor vin din CSS
+    (1 / 2 / 3 pe rând), deci pagina nu se mișcă la încărcare. Vizitatorul derulează cu degetul, cu săgețile sau de la tastatură. */}
+<div class="testimonials-carousel">
+  <div
+    class="carousel-track flex snap-x snap-mandatory gap-6 overflow-x-auto py-1 lg:gap-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yp-yellow"
+    tabindex="0"
+    role="region"
+    aria-roledescription="carusel"
+    aria-label="Recenzii Google: derulează orizontal sau folosește săgețile stânga și dreapta"
   >
-    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-    </svg>
-  </button>
-  <button
-    class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 min-[1340px]:translate-x-5 z-10 w-10 h-10 bg-yp-black border border-white/20 rounded-lg hidden md:flex items-center justify-center text-white hover:border-yp-yellow hover:text-yp-yellow transition-colors"
-    aria-label="Următor"
-  >
-    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-    </svg>
-  </button>
+    {testimonials.map((t) => (
+      <article class="carousel-card flex w-full flex-none snap-start flex-col gap-6 rounded-lg border border-white/10 bg-yp-black p-8 transition-colors group hover:border-yp-yellow/30 md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-4rem)/3)]">
+        <!-- Stars -->
+        <div class="flex gap-1" role="img" aria-label={`${t.rating} stele din 5`}>
+          {Array.from({ length: t.rating }).map(() => (
+            <svg class="w-5 h-5 text-yp-yellow fill-current" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          ))}
+        </div>
 
-  <!-- Viewport -->
-  <div class="carousel-outer overflow-hidden">
-    <div class="carousel-track flex gap-6 lg:gap-8">
-      {testimonials.map((t) => (
-        <article class="carousel-card flex-none flex flex-col bg-yp-black border border-white/10 rounded-lg p-8 gap-6 hover:border-yp-yellow/30 transition-colors group">
-          <!-- Stars -->
-          <div class="flex gap-1" role="img" aria-label={`${t.rating} stele din 5`}>
-            {Array.from({ length: t.rating }).map(() => (
-              <svg class="w-5 h-5 text-yp-yellow fill-current" viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-              </svg>
-            ))}
+        <!-- Review text -->
+        <blockquote class="flex-1 text-neutral-300 text-sm leading-relaxed group-hover:text-white transition-colors">
+          <span class="text-yp-yellow text-3xl font-serif leading-none select-none mr-1" aria-hidden="true">"</span>
+          {t.review_text}
+        </blockquote>
+
+        <!-- Author -->
+        <div class="flex items-center gap-4 pt-6 border-t border-white/5">
+          <!-- Avatar: initials as base, photo overlaid on top -->
+          <div class="relative w-12 h-12 flex-shrink-0">
+            <div class="w-12 h-12 rounded-lg bg-yp-yellow/10 border border-yp-yellow/20 flex items-center justify-center">
+              <span class="text-yp-yellow text-sm font-medium tracking-wide">{getInitials(t.author_name)}</span>
+            </div>
+            {t.author_photo_url && (
+              <img
+                src={t.author_photo_url}
+                alt={t.author_name}
+                class="absolute inset-0 w-12 h-12 rounded-lg object-cover border border-white/10"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+                onerror="this.remove()"
+              />
+            )}
           </div>
 
-          <!-- Review text -->
-          <blockquote class="flex-1 text-neutral-300 text-sm leading-relaxed group-hover:text-white transition-colors">
-            <span class="text-yp-yellow text-3xl font-serif leading-none select-none mr-1" aria-hidden="true">"</span>
-            {t.review_text}
-          </blockquote>
-
-          <!-- Author -->
-          <div class="flex items-center gap-4 pt-6 border-t border-white/5">
-            <!-- Avatar: initials as base, photo overlaid on top -->
-            <div class="relative w-12 h-12 flex-shrink-0">
-              <div class="w-12 h-12 rounded-lg bg-yp-yellow/10 border border-yp-yellow/20 flex items-center justify-center">
-                <span class="text-yp-yellow text-sm font-medium tracking-wide">{getInitials(t.author_name)}</span>
-              </div>
-              {t.author_photo_url && (
-                <img
-                  src={t.author_photo_url}
-                  alt={t.author_name}
-                  class="absolute inset-0 w-12 h-12 rounded-lg object-cover border border-white/10"
-                  loading="lazy"
-                  referrerpolicy="no-referrer"
-                  onerror="this.remove()"
-                />
-              )}
-            </div>
-
-            <div class="flex-1 min-w-0">
-              <p class="text-white font-medium text-sm truncate">{t.author_name}</p>
-              {t.date_posted && (
-                <p class="text-neutral-400 text-xs mt-0.5">{formatDate(t.date_posted)}</p>
-              )}
-            </div>
-
-            <!-- Google badge -->
-            <div class="flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" title="Recenzie Google">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-label="Google">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-            </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-white font-medium text-sm truncate">{t.author_name}</p>
+            {t.date_posted && (
+              <p class="text-neutral-400 text-xs mt-0.5">{formatDate(t.date_posted)}</p>
+            )}
           </div>
-        </article>
-      ))}
-    </div>
+
+          <!-- Google badge -->
+          <div class="flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" title="Recenzie Google">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-label="Google">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+    ))}
   </div>
 
-  <!-- Pauză + puncte. Butoanele au cel puțin 24×24px (ținta tactilă minimă, WCAG 2.5.8). -->
-  <!-- Derularea automată are buton de pauză (WCAG 2.2.2): se oprește doar la cererea vizitatorului, la mouse peste
-       recenzii sau cât timp focusul de la tastatură e în ele. -->
-  <div class="flex items-center justify-center gap-3 mt-8">
+  {/* Săgeți: butoane de 44×44 px, la toate lățimile. La capete devin aria-disabled (rămân în ordinea de tab, ca focusul să nu se piardă).
+      Rândul pornește `invisible` (rezervă locul, deci fără CLS la prima randare, și nu are săgeți moarte fără JS: invisible scoate
+      butoanele din arborele de accesibilitate și din ordinea de tab). JS-ul îl arată când rândul de recenzii chiar derulează și îl
+      ascunde (`hidden`) când toate recenziile încap (scrollWidth <= clientWidth). */}
+  <div class="carousel-arrows invisible mt-8 flex items-center justify-center gap-3">
     <button
       type="button"
-      class="carousel-pause w-11 h-11 flex items-center justify-center rounded-lg border border-white/15 text-neutral-300 hover:text-yp-yellow hover:border-yp-yellow transition-colors"
-      aria-label="Oprește derularea recenziilor"
+      class="carousel-prev flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-white/20 bg-yp-black text-white transition-colors hover:border-yp-yellow hover:text-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yp-yellow aria-disabled:cursor-default aria-disabled:opacity-40 aria-disabled:hover:border-white/20 aria-disabled:hover:text-white"
+      aria-label="Recenzia anterioară"
+      aria-disabled="true"
     >
-      <svg class="icon-pause w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
-      <svg class="icon-play w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
     </button>
-    <div class="flex gap-1" role="tablist" aria-label="Navigare testimoniale">
-      {testimonials.map((_, i) => (
-        <button
-          class="carousel-dot h-11 min-w-8 px-1 flex items-center justify-center"
-          role="tab"
-          aria-label={`Testimonial ${i + 1}`}
-          aria-selected={i === 0 ? 'true' : 'false'}
-          data-index={String(i)}
-        >
-          <span class={`h-2 rounded-full transition-[width,background-color] duration-300 ease-out-strong ${i === 0 ? 'w-6 bg-yp-yellow' : 'w-2 bg-white/20 hover:bg-white/40'}`}></span>
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      class="carousel-next flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-white/20 bg-yp-black text-white transition-colors hover:border-yp-yellow hover:text-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yp-yellow aria-disabled:cursor-default aria-disabled:opacity-40 aria-disabled:hover:border-white/20 aria-disabled:hover:text-white"
+      aria-label="Recenzia următoare"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
   </div>
 </div>
 
 <script>
-  // Carusel în buclă: N clone înainte și N după originale; după animație, poziția „sare” fără animație pe originalul
-  // echivalent, ca derularea să nu se termine niciodată.
-  const container = document.querySelector<HTMLElement>('.testimonials-carousel');
-  if (!container) throw new Error('No carousel');
+  const root = document.querySelector<HTMLElement>('.testimonials-carousel');
+  const track = root?.querySelector<HTMLElement>('.carousel-track');
+  const prev = root?.querySelector<HTMLButtonElement>('.carousel-prev');
+  const next = root?.querySelector<HTMLButtonElement>('.carousel-next');
+  const arrows = root?.querySelector<HTMLElement>('.carousel-arrows');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const outer    = container.querySelector<HTMLElement>('.carousel-outer')!;
-  const track    = container.querySelector<HTMLElement>('.carousel-track')!;
-  const prevBtn  = container.querySelector<HTMLButtonElement>('.carousel-prev');
-  const nextBtn  = container.querySelector<HTMLButtonElement>('.carousel-next');
-  const pauseBtn = container.querySelector<HTMLButtonElement>('.carousel-pause')!;
-  const dots     = Array.from(container.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (root && track && prev && next) {
+    // Un card = lățimea lui + spațiul dintre carduri.
+    const step = () => {
+      const first = track.firstElementChild as HTMLElement | null;
+      return first ? first.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0) : track.clientWidth;
+    };
+    const move = (dir: 1 | -1) => track.scrollBy({ left: dir * step(), behavior: reduce.matches ? 'auto' : 'smooth' });
 
-  const INTERVAL_MS = 5000;
-  const originals = Array.from(track.querySelectorAll<HTMLElement>('.carousel-card'));
-  const N = originals.length;
+    const sync = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const scrolls = max > 1;
+      arrows?.classList.remove('invisible');
+      arrows?.classList.toggle('flex', scrolls);
+      arrows?.classList.toggle('hidden', !scrolls);
+      prev.setAttribute('aria-disabled', String(track.scrollLeft <= 1));
+      next.setAttribute('aria-disabled', String(track.scrollLeft >= max - 1));
+    };
 
-  for (let i = N - 1; i >= 0; i--) {
-    const c = originals[i].cloneNode(true) as HTMLElement;
-    c.setAttribute('aria-hidden', 'true');
-    track.prepend(c);
-  }
-  originals.forEach(card => {
-    const c = card.cloneNode(true) as HTMLElement;
-    c.setAttribute('aria-hidden', 'true');
-    track.append(c);
-  });
-
-  // DOM order: [lc0..lc(N-1)] [orig0..orig(N-1)] [tc0..tc(N-1)]
-  // indices:    0 .. N-1        N .. 2N-1           2N .. 3N-1
-  let idx = N;
-  let busy = false;
-  let settleTimer: number | undefined;
-
-  function ipv(): number {
-    return window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-  }
-
-  function gap(): number {
-    return parseFloat(getComputedStyle(track).columnGap) || 24;
-  }
-
-  function cardWidth(): number {
-    const cards = track.querySelectorAll<HTMLElement>('.carousel-card');
-    return cards.length ? cards[0].offsetWidth + gap() : 0;
-  }
-
-  function setWidths() {
-    if (!outer.offsetWidth) return;
-    const w = (outer.offsetWidth - gap() * (ipv() - 1)) / ipv();
-    track.querySelectorAll<HTMLElement>('.carousel-card').forEach(c => (c.style.width = w + 'px'));
-  }
-
-  /** Întoarce true dacă mutarea e animată (atunci se termină la transitionend). */
-  function render(animated: boolean): boolean {
-    const anim = animated && !reduceMotion.matches;
-    track.style.transition = anim ? 'transform 450ms cubic-bezier(0.32, 0.72, 0, 1)' : 'none';
-    track.style.transform = `translateX(-${idx * cardWidth()}px)`;
-    return anim;
-  }
-
-  function syncDots() {
-    const active = ((idx % N) + N) % N;
-    dots.forEach((d, i) => {
-      const dot = d.firstElementChild as HTMLElement;
-      dot.classList.toggle('w-6',          i === active);
-      dot.classList.toggle('bg-yp-yellow', i === active);
-      dot.classList.toggle('w-2',          i !== active);
-      dot.classList.toggle('bg-white/20',  i !== active);
-      d.setAttribute('aria-selected', String(i === active));
+    prev.addEventListener('click', () => { if (prev.getAttribute('aria-disabled') !== 'true') move(-1); });
+    next.addEventListener('click', () => { if (next.getAttribute('aria-disabled') !== 'true') move(1); });
+    track.addEventListener('keydown', (e) => {
+      if (e.target !== track || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+      e.preventDefault();
+      move(e.key === 'ArrowRight' ? 1 : -1);
     });
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
   }
-
-  // După fiecare mutare: din zona de clone, sare pe originalul echivalent.
-  function settle() {
-    clearTimeout(settleTimer);
-    busy = false;
-    if (idx >= 2 * N) {
-      idx -= N; render(false);
-    } else if (idx <= N - ipv()) {
-      idx += N; render(false);
-    }
-  }
-
-  function go(target: number) {
-    if (busy) return;
-    idx = target;
-    syncDots();
-    if (render(true)) {
-      busy = true;
-      // Plasă de siguranță: dacă transitionend nu vine (tab în fundal, animație întreruptă), caruselul nu rămâne blocat.
-      settleTimer = window.setTimeout(settle, 800);
-    } else {
-      settle();
-    }
-  }
-
-  track.addEventListener('transitionend', (e) => {
-    if (e.target === track && e.propertyName === 'transform') settle();
-  });
-
-  // Derulare automată, fără oprire. Pauză doar când: vizitatorul apasă pauză, mouse-ul e peste recenzii,
-  // focusul de la tastatură e în carusel sau tab-ul nu e vizibil. O atingere pe mobil nu o mai oprește.
-  let paused = false;
-  let hovering = false;
-  let keyboardFocus = false;
-  let timer: number | undefined;
-
-  function schedule() {
-    clearInterval(timer);
-    timer = undefined;
-    if (paused || hovering || keyboardFocus || document.hidden) return;
-    timer = window.setInterval(() => go(idx + 1), INTERVAL_MS);
-  }
-
-  function setPaused(value: boolean) {
-    paused = value;
-    pauseBtn.setAttribute('aria-label', paused ? 'Pornește derularea recenziilor' : 'Oprește derularea recenziilor');
-    pauseBtn.querySelector('.icon-pause')?.classList.toggle('hidden', paused);
-    pauseBtn.querySelector('.icon-play')?.classList.toggle('hidden', !paused);
-    schedule();
-  }
-
-  container.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hovering = true; schedule(); } });
-  container.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hovering = false; schedule(); } });
-  container.addEventListener('focusin', (e) => {
-    keyboardFocus = (e.target as HTMLElement).matches(':focus-visible');
-    schedule();
-  });
-  container.addEventListener('focusout', (e) => {
-    if (!container.contains(e.relatedTarget as Node | null)) { keyboardFocus = false; schedule(); }
-  });
-  document.addEventListener('visibilitychange', schedule);
-  pauseBtn.addEventListener('click', () => setPaused(!paused));
-
-  // Init
-  setWidths();
-  render(false);
-  syncDots();
-  requestAnimationFrame(() => {
-    container.style.transition = 'opacity 0.4s';
-    container.style.opacity = '1';
-  });
-
-  // Controale manuale: după fiecare, intervalul o ia de la capăt.
-  prevBtn?.addEventListener('click', () => { go(idx - 1); schedule(); });
-  nextBtn?.addEventListener('click', () => { go(idx + 1); schedule(); });
-  dots.forEach((d, i) => d.addEventListener('click', () => { go(N + i); schedule(); }));
-
-  let resizeT: ReturnType<typeof setTimeout>;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeT);
-    resizeT = setTimeout(() => { setWidths(); render(false); }, 100);
-  });
-
-  // Swipe pe mobil
-  let tx = 0;
-  outer.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-  outer.addEventListener('touchend', e => {
-    const d = tx - e.changedTouches[0].clientX;
-    if (Math.abs(d) > 50) { go(idx + (d > 0 ? 1 : -1)); schedule(); }
-  }, { passive: true });
-
-  schedule();
 </script>

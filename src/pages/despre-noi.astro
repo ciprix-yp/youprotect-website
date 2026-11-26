@@ -5,6 +5,9 @@
 // 3 rânduri la 390 px (~25 de cuvinte): pe telefon, butonul principal trebuie să încapă în primul ecran.
 import { getCollection } from "astro:content";
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import ActionPhoto from "../components/media/ActionPhoto.astro";
+import { jsonLd } from "../lib/json-ld";
+import { imageGraph } from "../lib/poze-actiune";
 import { activeBrandPages } from "../lib/catalog-brands";
 import { CTA_DISCUSS, RESPONSE_TIME } from "../lib/site";
 
@@ -23,7 +26,7 @@ const brandsText =
   heroTitle="Nu vindem doar norme."
   heroSubtitle="You Protect, din Satu Mare, livrează din 2022 echipamente de protecție și haine de lucru. Felul în care îți echipezi oamenii arată cât îi respecți."
   breadcrumb="Despre noi"
-  heroImage="/images/mascot-premium-1-v2.webp"
+  heroPortrait
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi cum lucrăm"
   ctaSecondaryButtonLink="/cum-lucram/"
@@ -245,41 +248,10 @@ const brandsText =
   <!-- Team & Leader Section -->
   <section class="py-16 md:py-24 bg-[#0a0a0a] border-y border-white/5">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="flex flex-col lg:flex-row items-center gap-16">
-        <div class="w-full lg:w-5/12 order-2 lg:order-1">
-          <!-- Team Photo Placeholder without harsh boxes -->
-          <div
-            class="aspect-[3/4] overflow-clip rounded-sm relative group bg-neutral-900"
-          >
-            <!-- Using an existing artifact image for visual impact while preserving real data -->
-            <img
-              src="/images/alexandra-founder.jpg"
-              alt="Alexandra Pop - Fondator You Protect, expert în echipamente de siguranță și haine de lucru"
-              class="sd-media w-full h-full object-cover object-[center_10%] opacity-90"
-              loading="lazy"
-              decoding="async"
-            />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/30 to-transparent"
-            >
-            </div>
-
-            <div class="absolute bottom-8 left-8">
-              <div class="w-8 h-1 bg-yp-yellow mb-4"></div>
-              <h3 class="text-3xl font-medium text-white mb-1">
-                Alexandra Pop
-              </h3>
-              <p
-                class="text-sm text-yp-yellow"
-              >
-                Fondator
-              </p>
-            </div>
-          </div>
-        </div>
-
+      <div class="flex flex-col">
+        <!-- Portretul Alexandrei Pop (Fondator) e acum în antetul paginii (PortraitHero); secțiunea rămâne doar cu text. -->
         <div
-          class="w-full lg:w-7/12 order-1 lg:order-2"
+          class="w-full max-w-3xl"
         >
           <h2 class="text-4xl md:text-5xl font-light text-white mb-8">
             Echipa PRO
@@ -317,6 +289,14 @@ const brandsText =
       </div>
     </div>
   </section>
+
+  <!-- Poza cu oameni în acțiune, chiar înaintea CTA-ului final (review design 26.11.2026, 4a; M02 e erou pe /industrii/constructii/,
+       aici a doua folosire, non-erou). Fără legendă; creditul stă doar în ImageObject. `sd-expand` pe <figure> FĂRĂ overflow-hidden:
+       cardul cu colțuri rotunjite se lărgește la toată lățimea la derulare (clip-path, global.css). -->
+  <figure class="sd-expand relative m-0 aspect-[4/5] md:aspect-[21/9]">
+    <ActionPhoto id="M02" sizes="(min-width: 768px) 100vw, calc(100vw - 2rem)" />
+  </figure>
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M02"]))} />
 
   <!-- BLOC 6: CTA FINAL -->
   <section class="py-16 md:py-24 bg-yp-yellow relative overflow-hidden">
