@@ -49,13 +49,18 @@ test('luna comenzii: lista și cheia sunt definite o singură dată, în lead-li
     assert.match(limitsImport(form), new RegExp(`\\b${name}\\b`), `formularul nu importă ${name} din lead-limits.js`);
   }
   assert.match(form, /ORDER_MONTH_ANSWERS\.map\(/);
-  assert.doesNotMatch(form, /'ianuarie'|'decembrie'|luna_comenzii/);
+  // Literalele (cheia și cele 14 valori) între orice fel de ghilimele: ' " `. Regex-ul vine din lista importată.
+  const quotedLiteral = new RegExp(
+    `['"\`](${[ORDER_MONTH_KEY, ...ORDER_MONTH_ANSWERS].join('|')})['"\`]`,
+  );
+  assert.doesNotMatch(form, quotedLiteral);
+  assert.doesNotMatch(form, new RegExp(ORDER_MONTH_KEY)); // cheia nu apare nici fără ghilimele
 
   const server = read('server/leads.js');
   for (const name of ['ORDER_MONTH_KEY', 'ORDER_MONTH_ANSWERS']) {
     assert.match(limitsImport(server), new RegExp(`\\b${name}\\b`), `serverul nu importă ${name} din lead-limits.js`);
   }
-  assert.doesNotMatch(server, /'ianuarie'|'decembrie'|'luna_comenzii'|'De mai multe ori pe an'/);
+  assert.doesNotMatch(server, quotedLiteral);
 
   for (const file of SRC) {
     if (file.endsWith('lead-limits.js')) continue;
