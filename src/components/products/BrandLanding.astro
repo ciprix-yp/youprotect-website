@@ -125,16 +125,16 @@ const faqSchema = {
       (ordinea din DOM: titlu, introducere, despre, butoane, testare), poza pe coloana 2 pe toate rândurile textului, grila dedesubt
       pe ambele coloane (desktop ca înainte). Ordinea tastaturii urmează DOM-ul, adică desktopul. */}
   <div class:list={['flex flex-col', page.photo && 'lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:grid-rows-[repeat(5,auto)_1fr_auto] lg:gap-x-10']}>
-    <h1 class="max-w-3xl text-3xl md:text-4xl font-light text-yp-white leading-tight lg:max-w-none">{page.heading}</h1>
-    <p class="mt-4 max-w-3xl text-base text-yp-white/80 leading-relaxed lg:max-w-none">
+    <h1 class:list={['max-w-3xl text-3xl md:text-4xl font-light text-yp-white leading-tight', page.photo && 'lg:max-w-none']}>{page.heading}</h1>
+    <p class:list={['mt-4 max-w-3xl text-base text-yp-white/80 leading-relaxed', page.photo && 'lg:max-w-none']}>
       You Protect vinde produse {page.name} firmelor și livrează în toată România. Primești ofertă pentru cantitățile echipei tale,
       poți testa produsele înainte de comanda mare{notTestable.length > 0 && ', în condițiile programului'}, iar hainele le poți
       personaliza cu logo-ul firmei.
     </p>
-    <p class="order-2 mt-10 max-w-3xl text-sm text-yp-white/60 leading-relaxed lg:order-none lg:mt-3 lg:max-w-none">
+    <p class:list={['order-2 mt-10 max-w-3xl text-sm text-yp-white/60 leading-relaxed lg:order-none lg:mt-3', page.photo && 'lg:max-w-none']}>
       {page.about} Sursa: <a href={page.source.url} rel="noopener" class="underline underline-offset-4 hover:text-yp-yellow">{page.source.label}</a>.
     </p>
-    <div class="mt-6 flex max-w-3xl flex-col gap-3 sm:flex-row lg:max-w-none">
+    <div class:list={['mt-6 flex max-w-3xl flex-col gap-3 sm:flex-row', page.photo && 'lg:max-w-none']}>
       <a
         href="/cere-oferta/"
         class={btnPrimary}
@@ -148,7 +148,7 @@ const faqSchema = {
         {CTA_DISCUSS}
       </a>
     </div>
-    <RiskFreeTesting variant="inline" class="order-2 mt-6 max-w-3xl lg:order-none lg:max-w-none" />
+    <RiskFreeTesting variant="inline" class:list={['order-2 mt-6 max-w-3xl lg:order-none', page.photo && 'lg:max-w-none']} />
 
     <!-- O singură grilă, în ordinea categoriilor: categoria e pe fiecare card, fără rânduri pe jumătate goale. -->
     <ul class:list={['order-1 mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:order-none lg:mt-12 lg:grid-cols-4', page.photo && 'lg:col-span-full lg:row-start-7']} aria-label={`Modele ${page.name}`}>

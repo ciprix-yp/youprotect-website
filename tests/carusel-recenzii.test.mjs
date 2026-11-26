@@ -43,6 +43,13 @@ for (const file of files) {
     assert.match(src, /aria-label="Recenzia următoare"/);
   });
 
+  test(`${file.replace(COMPONENTS, '')}: rândul de săgeți pornește invisible (fără săgeți moarte fără JS, fără CLS) și se ascunde când nu e nimic de derulat`, () => {
+    assert.match(src, /class="carousel-arrows invisible /);
+    assert.match(src, /classList\.remove\('invisible'\)/);
+    assert.match(src, /const scrolls = max > 1/);
+    assert.match(src, /classList\.toggle\('hidden', !scrolls\)/);
+  });
+
   test(`${file.replace(COMPONENTS, '')}: rândul are scroll-snap, focus de la tastatură și derulare instant cu reduce motion`, () => {
     assert.match(src, /snap-x/);
     assert.match(src, /tabindex="0"/);

@@ -85,8 +85,11 @@ function formatDate(dateStr: string | null): string {
     ))}
   </div>
 
-  <!-- Săgeți: butoane de 44×44 px, la toate lățimile. La capete devin aria-disabled (rămân în ordinea de tab, ca focusul să nu se piardă). -->
-  <div class="mt-8 flex items-center justify-center gap-3">
+  {/* Săgeți: butoane de 44×44 px, la toate lățimile. La capete devin aria-disabled (rămân în ordinea de tab, ca focusul să nu se piardă).
+      Rândul pornește `invisible` (rezervă locul, deci fără CLS la prima randare, și nu are săgeți moarte fără JS: invisible scoate
+      butoanele din arborele de accesibilitate și din ordinea de tab). JS-ul îl arată când rândul de recenzii chiar derulează și îl
+      ascunde (`hidden`) când toate recenziile încap (scrollWidth <= clientWidth). */}
+  <div class="carousel-arrows invisible mt-8 flex items-center justify-center gap-3">
     <button
       type="button"
       class="carousel-prev flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-white/20 bg-yp-black text-white transition-colors hover:border-yp-yellow hover:text-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yp-yellow aria-disabled:cursor-default aria-disabled:opacity-40 aria-disabled:hover:border-white/20 aria-disabled:hover:text-white"
@@ -114,6 +117,7 @@ function formatDate(dateStr: string | null): string {
   const track = root?.querySelector<HTMLElement>('.carousel-track');
   const prev = root?.querySelector<HTMLButtonElement>('.carousel-prev');
   const next = root?.querySelector<HTMLButtonElement>('.carousel-next');
+  const arrows = root?.querySelector<HTMLElement>('.carousel-arrows');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   if (root && track && prev && next) {
@@ -126,6 +130,10 @@ function formatDate(dateStr: string | null): string {
 
     const sync = () => {
       const max = track.scrollWidth - track.clientWidth;
+      const scrolls = max > 1;
+      arrows?.classList.remove('invisible');
+      arrows?.classList.toggle('flex', scrolls);
+      arrows?.classList.toggle('hidden', !scrolls);
       prev.setAttribute('aria-disabled', String(track.scrollLeft <= 1));
       next.setAttribute('aria-disabled', String(track.scrollLeft >= max - 1));
     };

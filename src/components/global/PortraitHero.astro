@@ -82,7 +82,8 @@ const sizes = '(min-width: 1280px) 659px, (min-width: 1024px) 52vw, (max-width: 
           class="sd-hero-media h-full w-full object-cover"
         />
       </div>
-      <figcaption class="absolute bottom-3.5 left-4 text-sm leading-snug lg:bottom-7 lg:left-[16%]">
+      {/* aria-hidden: numele și rolul sunt deja în alt-ul pozei, iar cititoarele de ecran l-ar auzi de două ori; textul rămâne vizibil. */}
+      <figcaption aria-hidden="true" class="absolute bottom-3.5 left-4 text-sm leading-snug lg:bottom-7 lg:left-[16%]">
         <strong class="block font-normal text-yp-white">Alexandra Pop</strong>
         <span class="text-yp-white/60">Fondator</span>
       </figcaption>
