@@ -1,7 +1,7 @@
 // Logica cererilor din formularul de pe site, folosită de functions/api/submit-lead.js și
 // functions/api/crm/leads.js. Fără dependențe: rulează în Cloudflare Pages Functions și în `node --test`.
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { DETAILS_MAX_LENGTH, EMAIL_REGEX } from '../src/lib/lead-limits.js';
+import { DETAILS_MAX_LENGTH, EMAIL_REGEX, ORDER_MONTH_ANSWERS, ORDER_MONTH_KEY } from '../src/lib/lead-limits.js';
 import { QUOTE_LIST_MAX, isProductSlug } from '../src/lib/quote-list.js';
 import { HONEYPOT_FIELD } from '../src/lib/honeypot.js';
 import { LEAD_QUESTIONS } from '../src/lib/lead-questions.js';
@@ -44,6 +44,7 @@ export const QUESTION_LABELS = {
 
 export const INTENT_LABELS = { quote: 'Cerere de ofertă', consultation: 'Programare discuție' };
 const DETAILS_LABELS = { quote: 'Cantități, mărimi, coduri', consultation: 'Despre ce vrea să vorbim' };
+const ORDER_MONTH_LABEL = 'În ce lună comandă de obicei';
 
 export function normalizeString(value, maxLength = null) {
   if (typeof value !== 'string') return null;
@@ -115,6 +116,11 @@ export function parseLead(payload) {
   const details = normalizeString(data.detalii, DETAILS_MAX_LENGTH);
   if (details) {
     answers.push({ question: 'detalii', label: DETAILS_LABELS[intent], answer: details });
+  }
+  // Luna comenzii (opțional, ambele intenții): doar valorile din listă; orice altceva se ignoră, cererea rămâne validă.
+  const orderMonth = normalizeString(data[ORDER_MONTH_KEY]);
+  if (orderMonth && ORDER_MONTH_ANSWERS.includes(orderMonth)) {
+    answers.push({ question: ORDER_MONTH_KEY, label: ORDER_MONTH_LABEL, answer: orderMonth });
   }
   // Categoria din /cere-oferta/?categorie=<slug> (cardurile de pe homepage). Doar slug-uri din listă.
   const category = intent === 'quote' ? quoteCategoryLabel(data.categorie) : null;

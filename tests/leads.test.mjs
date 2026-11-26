@@ -143,6 +143,80 @@ test('parseLead: personalizarea, doar cu valorile convenite cu CRM-ul, după pro
   assert.equal(consultation.lead.answers.some((a) => a.question === 'personalizare'), false);
 });
 
+const MONTH_ANSWERS = [
+  'ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie',
+  'noiembrie', 'decembrie', 'De mai multe ori pe an', 'Nu știu încă',
+];
+const withMonth = (intent, value) =>
+  parseLead({ intent, data: { ...valid.data, q1: intent === 'quote' ? '16–40' : 'Administrator', luna_comenzii: value } });
+const monthAnswer = (r) => r.lead.answers.find((a) => a.question === 'luna_comenzii');
+
+test('parseLead: luna comenzii, cele 14 valori din listă, la ambele intenții, după „detalii”', () => {
+  for (const intent of ['quote', 'consultation']) {
+    for (const month of MONTH_ANSWERS) {
+      const r = withMonth(intent, month);
+      assert.equal(r.ok, true);
+      assert.deepEqual(monthAnswer(r), { question: 'luna_comenzii', label: 'În ce lună comandă de obicei', answer: month });
+    }
+  }
+  const r = parseLead({ intent: 'quote', data: { ...valid.data, detalii: 'ceva', luna_comenzii: 'martie' } });
+  assert.deepEqual(r.lead.answers.map((a) => a.question).slice(-2), ['detalii', 'luna_comenzii']);
+});
+
+test('parseLead: luna comenzii lipsă, goală sau nepermisă se ignoră, cererea rămâne validă', () => {
+  const nothing = withMonth('quote', undefined);
+  assert.equal(monthAnswer(nothing), undefined);
+  // Spațiile din jur se taie (ca la celelalte câmpuri), deci „martie ” e identic cu „martie”.
+  assert.equal(monthAnswer(withMonth('quote', ' martie ')).answer, 'martie');
+  for (const empty of ['', '   ']) assert.equal(monthAnswer(withMonth('quote', empty)), undefined);
+  const bad = [
+    'Martie', 'Ianuarie', 'martie\niulie', '<b>martie</b>', '<script>alert(1)</script>', 'constructor', '__proto__',
+    'toString', 'martie; iulie', ['martie'], 3, true, { 0: 'martie' }, 'x'.repeat(5000),
+  ];
+  for (const intent of ['quote', 'consultation']) {
+    for (const value of bad) {
+      const r = withMonth(intent, value);
+      assert.equal(r.ok, true, JSON.stringify(value));
+      assert.equal(monthAnswer(r), undefined, JSON.stringify(value));
+      // Restul răspunsurilor rămân.
+      assert.equal(r.lead.answers[0].question, 'q1');
+    }
+  }
+});
+
+test('email: luna comenzii apare ca text simplu, valoarea nepermisă nu ajunge în email', () => {
+  const base = { id: 'id', createdAt: '2026-11-26T00:00:00Z', environment: 'production', sourceUrl: null };
+  const ok = leadEmail({ ...withMonth('quote', 'martie').lead, ...base });
+  assert.match(ok.text, /^- În ce lună comandă de obicei: martie$/m);
+  const bad = leadEmail({ ...withMonth('quote', '<script>x</script>\nBcc: a@b.ro').lead, ...base });
+  assert.equal(bad.text.includes('În ce lună'), false);
+  // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag -- fals pozitiv: șir de test într-o aserțiune, nu HTML randat
+  assert.equal(bad.text.includes('<script>'), false);
+  assert.equal(bad.text.includes('Bcc:'), false);
+});
+
+test('submit-lead: luna comenzii ajunge în coloana answers din D1', async () => {
+  const db = fakeD1();
+  stubFetch(200);
+  const body = { intent: 'consultation', data: { ...valid.data, luna_comenzii: 'De mai multe ori pe an' } };
+  const c = ctx(body, { env: { LEADS_DB: db, RESEND_API_KEY: 'k' } });
+  const res = await submitLead(c);
+  assert.equal(res.status, 200);
+  await Promise.all(c.pending);
+  const saved = JSON.parse(db.rows[0].answers);
+  assert.deepEqual(saved.find((a) => a.question === 'luna_comenzii'), {
+    question: 'luna_comenzii',
+    label: 'În ce lună comandă de obicei',
+    answer: 'De mai multe ori pe an',
+  });
+  // Valoare nepermisă: cererea se salvează, fără cheia în answers.
+  const db2 = fakeD1();
+  const c2 = ctx({ ...body, data: { ...body.data, luna_comenzii: 'Martie' } }, { env: { LEADS_DB: db2, RESEND_API_KEY: 'k' } });
+  assert.equal((await submitLead(c2)).status, 200);
+  await Promise.all(c2.pending);
+  assert.equal(JSON.parse(db2.rows[0].answers).some((a) => a.question === 'luna_comenzii'), false);
+});
+
 test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/tco.test.mjs)', () => {
   const input = parseTcoInputs({
     employees: 10, categories: ['incaltaminte', 'necunoscut'], prices: { incaltaminte: 200 }, qualityPrices: { incaltaminte: 300 },
