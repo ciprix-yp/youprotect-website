@@ -13,6 +13,8 @@ interface Props {
     breadcrumb?: string;
     heroImage?: string;
     heroPhoto?: string;
+    /** Doar /despre-noi/: antet cu portretul fondatoarei (PortraitHero). */
+    heroPortrait?: boolean;
     ctaHeading?: string;
     ctaSubheading?: string;
     ctaSubtitle?: string;
@@ -33,6 +35,7 @@ const {
     breadcrumb,
     heroImage,
     heroPhoto,
+    heroPortrait = false,
     ctaHeading,
     ctaSubheading,
     ctaButtonText,
@@ -43,7 +46,7 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogType={ogType} ogImage={ogImage} preloadFonts={heroPhoto ? ["heading-300"] : true}>
+<BaseLayout title={title} description={description} ogType={ogType} ogImage={ogImage} preloadFonts={heroPhoto || heroPortrait ? ["heading-300"] : true}>
     <!-- Consistent Inner Page Header -->
     <GlobalInnerHero
         title={heroTitle}
@@ -51,6 +54,7 @@ const {
         breadcrumb={breadcrumb}
         imagePath={heroImage}
         heroPhoto={heroPhoto}
+        portrait={heroPortrait}
         ctaButtonText={ctaButtonText}
         ctaSecondaryButtonText={ctaSecondaryButtonText}
         ctaSecondaryButtonLink={ctaSecondaryButtonLink}

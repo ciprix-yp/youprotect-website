@@ -1,0 +1,115 @@
+---
+// Antetul cu portretul fondatoarei, doar pentru /despre-noi/ (review design 26.11.2026, R8 / recomandarea 4a). Variantă de
+// antet separată de PageHeader (care rămâne neschimbat pentru restul paginilor): GlobalInnerHero o alege când primește
+// `portrait`. Portretul e LCP: <img> eager, fetchpriority high, cu variantele reale din src/data/portret-alexandra.json.
+//
+// Telefon: portretul 4:5, pe toată lățimea (full-bleed), cel mult 62svh, fără ramă și fără colțuri. Fondul negru al pozei
+// se topește în #0A0A0A printr-o mască pe ultimii ~38% din înălțime. Breadcrumb-ul stă peste negrul pozei (sus-stânga),
+// legenda „Alexandra Pop / Fondator” jos-stânga. Sub poză: H1, introducerea și butoanele.
+// Desktop (lg): două coloane, textul în stânga (centrat vertical), portretul în dreapta, mască pe stânga, dreapta și jos.
+//
+// Mișcare: `sd-hero-media` pe <img> (alunecă mai încet decât pagina) și `sd-hero-content` pe text (se stinge sub antet).
+// Nicio ramură nu are `overflow-hidden`, ci `overflow-clip`: vezi tests/scroll-timeline-overflow.test.mjs.
+// Pozei nu i se pune credit: autorul nu e confirmat (creditul se adaugă doar dacă owner-ul îl dă). Nu intră în
+// src/data/poze-actiune.json (acela e pentru pozele de furnizor).
+import data from '../../data/portret-alexandra.json';
+import { breadcrumbNav, btnPrimary, btnSecondary, pageIntro, pageTitle } from '../../lib/ui';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+export interface Props {
+  title: string;
+  intro?: string;
+  /** Fără „Acasă”: se adaugă singur. Ultimul element e pagina curentă. */
+  crumbs: Crumb[];
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  microcopy?: string;
+}
+
+const { title, intro, crumbs, primary, secondary, microcopy } = Astro.props;
+const trail: Crumb[] = [{ label: 'Acasă', href: '/' }, ...crumbs];
+
+const variants = [...data.variants].sort((a, b) => a.width - b.width);
+const biggest = variants[variants.length - 1];
+const at = (w: number) => (variants.find((v) => v.width >= w) ?? biggest).file;
+const srcset = variants.map((v) => `/images/${v.file} ${v.width}w`).join(', ');
+// `sizes`: de la 1280 px coloana are 659 px ((1280 - 32 - 40) · 6/11); între 1024 și 1279 px ~52vw; pe telefon cu densitate
+// >= 2,5 dppx se cere 70vw (390 px · 3 · 0,7 = 819 px, 430 px · 3 · 0,7 = 903 px: varianta de 960 px, ~2,5x pe ecran, nu
+// 1280 px; fondul întunecat și masca iartă diferența). Restul (tabletă, telefon DPR 1-2): toată lățimea.
+const sizes = '(min-width: 1280px) 659px, (min-width: 1024px) 52vw, (max-width: 767px) and (min-resolution: 2.5dppx) 70vw, 100vw';
+---
+
+<section class="border-b border-yp-white/10">
+  <div class="mx-auto grid max-w-7xl lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[1fr_auto_1fr] lg:gap-x-10 lg:px-4">
+    <nav aria-label="Breadcrumb" class:list={[breadcrumbNav, 'relative z-10 col-start-1 row-start-1 mb-0 self-start px-4 lg:self-end lg:px-0']}>
+      {trail.map((c, i) => (
+        <>
+          {i > 0 && <span class="mx-2" aria-hidden="true">/</span>}
+          {c.href && i < trail.length - 1 ? (
+            <a href={c.href} class="inline-flex min-h-11 items-center transition-colors hover:text-yp-yellow">{c.label}</a>
+          ) : (
+            <span class="text-yp-white" aria-current="page">{c.label}</span>
+          )}
+        </>
+      ))}
+    </nav>
+    <div class="sd-hero-content col-start-1 row-start-2 px-4 pb-10 pt-3 md:pb-12 lg:px-0 lg:pb-0 lg:pt-4">
+      <h1 class={pageTitle}>{title}</h1>
+      {intro && <p class:list={[pageIntro, 'max-w-3xl']}>{intro}</p>}
+      {(primary || secondary) && (
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          {primary && <a href={primary.href} class={btnPrimary}>{primary.label}</a>}
+          {secondary && <a href={secondary.href} class={btnSecondary}>{secondary.label}</a>}
+        </div>
+      )}
+      {microcopy && <p class="mt-3 text-sm text-yp-white/60">{microcopy}</p>}
+    </div>
+    <figure class="portrait-frame relative col-start-1 row-start-1 m-0 aspect-[4/5] max-h-[62svh] w-full overflow-clip lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:aspect-auto lg:h-[min(calc(100svh-80px),820px)] lg:max-h-none">
+      <div class="portrait-fade absolute inset-0 overflow-clip">
+        <img
+          src={`/images/${at(960)}`}
+          srcset={srcset}
+          sizes={sizes}
+          width={biggest.width}
+          height={biggest.height}
+          alt="Alexandra Pop, fondatoarea You Protect"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          class="sd-hero-media h-full w-full object-cover"
+        />
+      </div>
+      <figcaption class="absolute bottom-3.5 left-4 text-sm leading-snug lg:bottom-7 lg:left-[16%]">
+        <strong class="block font-normal text-yp-white">Alexandra Pop</strong>
+        <span class="text-yp-white/60">Fondator</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  /* Fondul negru al pozei se topește în #0A0A0A (yp-black): mască pe ultimii ~38% din înălțime (telefon) și pe
+     stânga, dreapta și jos (desktop), ca dreptunghiul pozei să nu se vadă pe fundal. Masca stă pe wrapper, nu pe <img>:
+     imaginea alunecă (sd-hero-media), masca rămâne pe loc. */
+  .portrait-fade {
+    -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  }
+  .portrait-frame img {
+    object-position: 50% 14%;
+  }
+  @media (min-width: 1024px) {
+    .portrait-frame img {
+      object-position: 50% 18%;
+    }
+    .portrait-fade {
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%), linear-gradient(to bottom, #000 72%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%), linear-gradient(to bottom, #000 72%, transparent 100%);
+      mask-composite: intersect;
+    }
+  }
+</style>

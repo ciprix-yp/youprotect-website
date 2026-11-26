@@ -1,0 +1,28 @@
+{
+  "variants": [
+    {
+      "width": 640,
+      "height": 960,
+      "file": "portret-alexandra-pop-640.webp",
+      "bytes": 43562
+    },
+    {
+      "width": 960,
+      "height": 1440,
+      "file": "portret-alexandra-pop-960.webp",
+      "bytes": 81108
+    },
+    {
+      "width": 1280,
+      "height": 1920,
+      "file": "portret-alexandra-pop-1280.webp",
+      "bytes": 121892
+    },
+    {
+      "width": 1536,
+      "height": 2304,
+      "file": "portret-alexandra-pop-1536.webp",
+      "bytes": 162104
+    }
+  ]
+}
