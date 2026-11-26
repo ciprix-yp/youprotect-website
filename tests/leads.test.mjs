@@ -4,7 +4,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
 import { parseLead, leadEmail, environmentOf, safeEqual, HONEYPOT_FIELD, MAX_LEADS_PER_IP_PER_HOUR } from '../server/leads.js';
-import { computeTco, parseTcoInputs } from '../src/lib/tco.js';
+import { computeTco, parseTcoInputs, TCO_CATEGORIES } from '../src/lib/tco.js';
+import { DOMAINS } from '../src/lib/domains.js';
+import { DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
+import { PERSONALIZATION_ANSWERS, QUOTE_CATEGORIES } from '../src/lib/quote-categories.js';
 import { onRequestPost as submitLead } from '../functions/api/submit-lead.js';
 import { onRequestGet as crmGet, onRequestPost as crmPost } from '../functions/api/crm/leads.js';
 
@@ -215,6 +218,115 @@ test('submit-lead: luna comenzii ajunge în coloana answers din D1', async () =>
   assert.equal((await submitLead(c2)).status, 200);
   await Promise.all(c2.pending);
   assert.equal(JSON.parse(db2.rows[0].answers).some((a) => a.question === 'luna_comenzii'), false);
+});
+
+test('parseLead: luna comenzii, variante care arată ca o lună dar nu sunt în listă (Unicode, caractere de control)', () => {
+  const lookalikes = [
+    'mar​tie', // zero-width space în interior
+    'martie​', // zero-width space la capăt (trim() nu-l taie)
+    'mar\u0000tie', // NUL
+    'martie\u0007', // caracter de control la capăt
+    'mаrtie', // „а” chirilic în loc de „a”
+    'іunie', // „і” chirilic în loc de „i”
+    'ｍａｒｔｉｅ', // litere full-width
+    '„martie”',
+    '«martie»',
+    'martié', // accent combinat
+    'Nu ştiu încă', // „ș” ca s + virgulă combinată (NFD), nu U+0219
+    'Nu ştiu încă', // „ş” cu sedilă (U+015F), nu cu virgulă (U+0219)
+    'Nu știu încă'.normalize('NFD'),
+    'De mai multe ori pe an.', // punct în plus
+    'De  mai multe ori pe an', // spațiu dublu
+    'Nu stiu inca', // fără diacritice
+  ];
+  for (const intent of ['quote', 'consultation']) {
+    for (const value of lookalikes) {
+      const r = withMonth(intent, value);
+      assert.equal(r.ok, true, JSON.stringify(value));
+      assert.equal(monthAnswer(r), undefined, JSON.stringify(value));
+    }
+  }
+  // Spațiile Unicode de la capete (NBSP, BOM, tab, CR/LF) se taie ca la celelalte câmpuri; se salvează oricum valoarea
+  // exactă din listă, nu cea trimisă de client.
+  for (const padded of [' martie ', '﻿martie', '\t\nmartie\r\n', `${' '.repeat(50_000)}martie`]) {
+    const r = withMonth('quote', padded);
+    assert.equal(monthAnswer(r).answer, 'martie');
+    assert.ok(MONTH_ANSWERS.includes(monthAnswer(r).answer));
+  }
+});
+
+test('parseLead: luna comenzii nu se poate strecura prin q_other, __proto__ sau constructor', () => {
+  const base = { name: 'Ion', company: 'Exemplu SRL', email: 'ion@exemplu.ro', phone: '0722123456', q1: '16–40' };
+  // q_other se aplică doar întrebărilor din formular: nici nu schimbă luna, nici nu o adaugă.
+  const viaOther = parseLead({ intent: 'quote', data: { ...base, q_other: { luna_comenzii: 'iulie' } } });
+  assert.equal(viaOther.ok, true);
+  assert.equal(monthAnswer(viaOther), undefined);
+  const both = parseLead({ intent: 'quote', data: { ...base, luna_comenzii: 'martie', q_other: { luna_comenzii: 'iulie' } } });
+  assert.equal(monthAnswer(both).answer, 'martie');
+  // JSON-ul de la client are „__proto__” ca proprietate proprie, nu ca prototip.
+  const raw = '{"name":"Ion","company":"Exemplu SRL","email":"ion@exemplu.ro","q1":"16–40",'
+    + '"__proto__":{"luna_comenzii":"martie"},"constructor":{"luna_comenzii":"martie"},"q_other":{"__proto__":{"luna_comenzii":"x"}}}';
+  for (const intent of ['quote', 'consultation']) {
+    const r = parseLead({ intent, data: JSON.parse(raw) });
+    assert.equal(r.ok, true);
+    assert.equal(monthAnswer(r), undefined);
+  }
+  assert.equal(Object.prototype.luna_comenzii, undefined);
+  // Cu valoare permisă, luna nu intră de două ori.
+  const r = withMonth('quote', 'martie');
+  assert.equal(r.lead.answers.filter((a) => a.question === 'luna_comenzii').length, 1);
+});
+
+test('luna comenzii: cererea completă încape în limitele CRM (≤ 30 de răspunsuri, cheie ≤ 40, răspuns ≤ 2000)', () => {
+  const cats = Object.keys(TCO_CATEGORIES);
+  const calculator = {
+    domain: DOMAINS[0], employees: 200, durability: 3, adminHours: 40, hourCost: 150, categories: cats,
+    prices: Object.fromEntries(cats.map((c) => [c, 4999.99])),
+    qualityPrices: Object.fromEntries(cats.map((c) => [c, 4999.99])),
+    months: Object.fromEntries(cats.map((c) => [c, 6])),
+    qty: Object.fromEntries(cats.map((c) => [c, 50])),
+  };
+  const produse = Array.from({ length: 15 }, (_, i) => `produs-cod${i}-${'x'.repeat(60)}`);
+  const r = parseLead({
+    intent: 'quote',
+    data: {
+      name: 'Ion', company: 'Exemplu SRL', email: 'ion@exemplu.ro', phone: '0722123456',
+      q1: '16–40', q2: DOMAINS[0], q3: ['Încălțăminte de protecție'], personalizare: PERSONALIZATION_ANSWERS[0], q4: 'a', q5: ['b'],
+      q6: 'c', q7: 'd', detalii: 'x'.repeat(DETAILS_MAX_LENGTH), luna_comenzii: 'De mai multe ori pe an',
+      categorie: Object.keys(QUOTE_CATEGORIES)[0], calculator, produse,
+    },
+  });
+  assert.equal(r.ok, true);
+  assert.ok(r.lead.answers.length <= 30, `răspunsuri: ${r.lead.answers.length}`);
+  assert.ok(monthAnswer(r));
+  for (const a of r.lead.answers) {
+    assert.ok(a.question.length <= 40, a.question);
+    assert.ok(a.answer.length <= 2000, `${a.question}: ${a.answer.length}`);
+  }
+});
+
+test('luna comenzii: ajunge neschimbată din formular prin D1 în GET /api/crm/leads (ambele intenții)', async () => {
+  const db = fakeD1();
+  stubFetch(200);
+  const env = { LEADS_DB: db, RESEND_API_KEY: 'k', CRM_SYNC_TOKEN: TOKEN };
+  for (const intent of ['quote', 'consultation']) {
+    const body = { intent, data: { ...valid.data, q1: intent === 'quote' ? '16–40' : 'Administrator', detalii: 'ceva', luna_comenzii: 'Nu știu încă' } };
+    const c = ctx(body, { env, ip: intent === 'quote' ? '203.0.113.10' : '203.0.113.11' });
+    assert.equal((await submitLead(c)).status, 200);
+    await Promise.all(c.pending);
+  }
+  const auth = { Authorization: `Bearer ${TOKEN}` };
+  const { leads } = await (await crmGet({ request: new Request('https://youprotect.ro/api/crm/leads', { headers: auth }), env })).json();
+  assert.equal(leads.length, 2);
+  for (const lead of leads) {
+    assert.deepEqual(lead.answers.find((a) => a.question === 'luna_comenzii'), {
+      question: 'luna_comenzii',
+      label: 'În ce lună comandă de obicei',
+      answer: 'Nu știu încă',
+    });
+    // Același text ca în emailul trimis echipei.
+    assert.ok(lead.answers.some((a) => a.question === 'detalii'));
+  }
 });
 
 test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/tco.test.mjs)', () => {
