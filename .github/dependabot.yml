@@ -8,6 +8,11 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7 # let a new release age before adopting it (supply-chain safety)
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action"
+          - "github/codeql-action/*"
   - package-ecosystem: npm
     directory: /
     schedule:
