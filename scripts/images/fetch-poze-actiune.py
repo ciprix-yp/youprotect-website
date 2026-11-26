@@ -4,7 +4,7 @@ Usage (needs Pillow, which is not in the system Python; same convention as scrip
   uv run --no-project --with pillow python -I scripts/images/fetch-poze-actiune.py
 
 Portwest downloads (P*) need the Media Hub collection, which is NOT stored in this (public) repo. It is passed with
-the environment variables PW_COLLECTION_URL (https://mediahub.portwest.com/web/<hash>/<collection-name>/) and
+the environment variables PW_COLLECTION_URL (the link of the EU_ROW mood images collection in Media Hub) and
 PW_COLLECTION_ID (8-4-4-16 hex id), or with --collection-url / --collection-id. The values are kept locally in
 .catalog-work/images/actiune/NOTE-folosire.md. They are needed ONLY when a Portwest original has to be downloaded:
 with valid files already on disk the script makes no request and runs without them. Not secrets (used anonymously),

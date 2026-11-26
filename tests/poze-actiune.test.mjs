@@ -914,9 +914,13 @@ test('surse: exact cele 19 de id-uri în ordinea din date, cheia de sursă pe fu
 });
 
 test('surse: linkul colecției Portwest Media Hub nu stă în repo (scripts/images/)', () => {
+  const COLLECTION_PATH = /\/web\/[0-9a-f]{8,}\//i; // fără numele hostului: ancorat pe calea cu hash, nu pe text de URL
+  assert.match('https://exemplu.test/web/0123456789abcdef/nume-colectie/', COLLECTION_PATH);
+  assert.doesNotMatch('PW_COLLECTION_URL (the link of the EU_ROW mood images collection)', COLLECTION_PATH);
+  assert.doesNotMatch('https://exemplu.test/web/<hash>/<collection-name>/', COLLECTION_PATH);
   for (const name of readdirSync(join(ROOT, 'scripts/images'))) {
     if (!/\.(py|json|md)$/.test(name)) continue;
-    assert.doesNotMatch(read(`scripts/images/${name}`), /mediahub\.portwest\.com\/web\/[0-9a-f]{8,}/i, `${name}: URL de colecție Media Hub în repo`);
+    assert.doesNotMatch(read(`scripts/images/${name}`), COLLECTION_PATH, `${name}: cale de colecție Media Hub (/web/<hash>/) în repo`);
   }
 });
 
