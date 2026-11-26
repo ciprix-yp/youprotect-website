@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' source(none);
+/* Clasele se caută doar în src/ (ca în `content` din Tailwind 3): fără asta Tailwind 4 scanează tot repo-ul, inclusiv teste și documente. */
+@source '../**/*.{astro,html,js,jsx,md,mdx,ts,tsx}';
+@config '../../tailwind.config.mjs';
 
 /* Fontul de text: subset din Lato 2.015 (OFL), redenumit „YP Text” (vezi public/fonts/YP-Text-OFL.txt).
    Lato de la Google Fonts nu are ă, ș, ț: literele apăreau într-un font de rezervă, mai gros. */
