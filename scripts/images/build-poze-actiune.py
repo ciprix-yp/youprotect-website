@@ -120,7 +120,7 @@ def planned_widths(entry, source_width, source_height):
 # imaginea sursă, cu raportul 4:5 (în pixeli). Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în
 # variante; `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
 PORTRAIT_WIDTHS = (768, 960)
-PORTRAIT_BUDGET = {768: 55 * 1024, 960: 100 * 1024}
+PORTRAIT_BUDGET = {768: 45 * 1024, 960: 100 * 1024}
 PORTRAIT_QUALITY_START = {768: 70, 960: 70}
 
 
