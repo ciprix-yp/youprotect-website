@@ -42,7 +42,7 @@ const INPUT_STEPS = 3;
 
 
 const inputClass =
-  'w-full bg-[#0a0a0a] border border-white/15 rounded-md px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-none focus:border-yp-yellow transition-colors';
+  'w-full bg-[#0a0a0a] border border-white/15 rounded-md px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-hidden focus:border-yp-yellow transition-colors';
 
 const toggleClass = (selected: boolean) =>
   `min-h-[44px] px-4 py-2 rounded-md border text-sm text-left transition-colors ${
@@ -134,7 +134,7 @@ function PriceInput({
             setText(e.target.value);
             onChange(parsePrice(e.target.value));
           }}
-          className={`w-full min-h-11 bg-[#0a0a0a] border rounded-md px-3 py-2 text-white tabular-nums text-right focus:outline-none focus:border-yp-yellow ${
+          className={`w-full min-h-11 bg-[#0a0a0a] border rounded-md px-3 py-2 text-white tabular-nums text-right focus:outline-hidden focus:border-yp-yellow ${
             invalid ? 'border-red-400/70' : 'border-white/15'
           }`}
         />
@@ -157,7 +157,7 @@ function Select({ id, value, onChange, children }: { id: string; value: number; 
         id={id}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full min-h-11 appearance-none bg-[#0a0a0a] border border-white/15 rounded-md pl-3 pr-10 py-2 text-base text-white [color-scheme:dark] focus:outline-none focus:border-yp-yellow"
+        className="w-full min-h-11 appearance-none bg-[#0a0a0a] border border-white/15 rounded-md pl-3 pr-10 py-2 text-base text-white [color-scheme:dark] focus:outline-hidden focus:border-yp-yellow"
       >
         {children}
       </select>
@@ -271,7 +271,7 @@ export default function TCOCalculator() {
 
   const heading = (title: string, description?: string) => (
     <div className="mb-8">
-      <h2 ref={headingRef} tabIndex={-1} className="text-2xl md:text-3xl font-medium text-white mb-2 focus:outline-none">
+      <h2 ref={headingRef} tabIndex={-1} className="text-2xl md:text-3xl font-medium text-white mb-2 focus:outline-hidden">
         {title}
       </h2>
       {description && <p className="text-neutral-400">{description}</p>}
@@ -630,7 +630,7 @@ export default function TCOCalculator() {
             <button
               type="button"
               onClick={next}
-              className="w-full bg-yp-yellow text-yp-black px-6 py-3 min-h-[44px] rounded font-medium text-sm hover:bg-white transition-colors"
+              className="w-full bg-yp-yellow text-yp-black px-6 py-3 min-h-[44px] rounded-sm font-medium text-sm hover:bg-white transition-colors"
             >
               {offersTesting ? 'Vreau produse pentru testare' : 'Vreau oferta'}
             </button>
@@ -689,7 +689,7 @@ export default function TCOCalculator() {
               type="button"
               onClick={back}
               disabled={submitting}
-              className="px-6 py-3 min-h-[44px] rounded text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5"
+              className="px-6 py-3 min-h-[44px] rounded-sm text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5"
             >
               {id === 'rezultat' ? 'Modifică datele' : 'Înapoi'}
             </button>
@@ -701,7 +701,7 @@ export default function TCOCalculator() {
               type="button"
               onClick={id === 'contact' ? submit : next}
               disabled={submitting}
-              className="bg-yp-yellow text-yp-black px-8 py-3 min-h-[44px] rounded font-medium text-sm hover:bg-white transition-colors disabled:opacity-70"
+              className="bg-yp-yellow text-yp-black px-8 py-3 min-h-[44px] rounded-sm font-medium text-sm hover:bg-white transition-colors disabled:opacity-70"
             >
               {id === 'contact' ? (submitting ? 'Se trimite…' : 'Trimite') : step === INPUT_STEPS - 1 ? 'Vezi rezultatul' : 'Următorul pas'}
             </button>

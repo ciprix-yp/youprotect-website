@@ -129,7 +129,7 @@ const singleImage = primary.images.length <= 1;
         {primary.images.map((img, i) => (
           <button
             type="button"
-            class="thumb img-well shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
+            class="thumb img-well shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-yp-yellow"
             data-src={img.src}
             aria-label={`Imaginea ${i + 1}`}
             aria-current={i === 0 ? 'true' : 'false'}
@@ -176,7 +176,7 @@ const singleImage = primary.images.length <= 1;
           {p.colours.map((c, i) => (
             <button
               type="button"
-              class="swatch flex min-h-11 items-center gap-2 rounded-lg px-3 border border-yp-white/20 aria-[pressed=true]:border-yp-yellow aria-[pressed=true]:bg-yp-yellow/[0.06] text-xs text-yp-white/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
+              class="swatch flex min-h-11 items-center gap-2 rounded-lg px-3 border border-yp-white/20 aria-[pressed=true]:border-yp-yellow aria-[pressed=true]:bg-yp-yellow/[0.06] text-xs text-yp-white/80 transition-colors focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-yp-yellow"
               data-images={JSON.stringify(c.images)}
               data-name={c.name}
               aria-pressed={i === 0 ? 'true' : 'false'}
@@ -399,7 +399,7 @@ const singleImage = primary.images.length <= 1;
     <div class="divide-y divide-yp-white/10 border-y border-yp-white/10">
       {p.faq.map((item) => (
         <details class="group">
-          <summary class="cursor-pointer list-none flex justify-between gap-4 py-4 text-yp-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow">
+          <summary class="cursor-pointer list-none flex justify-between gap-4 py-4 text-yp-white focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-yp-yellow">
             <span>{item.q}</span>
             <span class="text-yp-yellow group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
           </summary>
