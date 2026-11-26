@@ -183,8 +183,8 @@ const waHref = whatsappHref(Astro.url.pathname);
         <div class="mt-6">
           <h4 class="text-yp-white/70 text-sm font-heading mb-2">Program</h4>
           <p class="text-yp-white/50 text-sm">
-            Luni - Vineri: 09:00 - 17:00<br />
-            Sâmbătă - Duminică: Închis
+            Luni–vineri, 09:00–17:00<br />
+            Sâmbătă și duminică: închis
           </p>
         </div>
       </div>
@@ -201,7 +201,7 @@ const waHref = whatsappHref(Astro.url.pathname);
           © {currentYear} {SITE.legal.name}. Toate drepturile rezervate.
         </p>
         <div
-          class="flex flex-wrap items-center justify-center md:justify-end gap-2 md:gap-4 mt-4 md:mt-0"
+          class="flex flex-col md:flex-row md:flex-wrap items-center justify-center md:justify-end gap-1 md:gap-4 mt-4 md:mt-0"
         >
           <span>CUI {SITE.legal.cui}</span>
           <span class="hidden md:inline">•</span>

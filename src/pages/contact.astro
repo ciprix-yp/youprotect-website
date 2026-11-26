@@ -4,8 +4,10 @@
 // (src/lib/site.ts), ca footer-ul, schema și pagina să spună același lucru. Fără formular nou: cererile intră tot prin
 // /cere-oferta/ și /programeaza-discutie/, deci în CRM au același format.
 // Fără hartă încorporată: un iframe Google Maps ar pune cookie-uri fără acord și ar cere excepții în CSP (_headers).
-// Texte rescrise pe 26.11.2026 (SEO-003): intro cu cine e You Protect și unde (09 §5, obiecția 8: pagina se înțelege și
-// trimisă unui coleg), termenul de răspuns doar din RESPONSE_TIME, fraza de lângă „Hai să discutăm” ca în 09 §5.
+// Texte rescrise pe 26.11.2026 (SEO-003): H1-ul spune cine, intro-ul unde (09 §5, obiecția 8: pagina se înțelege și
+// trimisă unui coleg), fără să repete „You Protect” sau programul, care stă la telefon și la showroom. Termenul de
+// răspuns doar din RESPONSE_TIME; fraza de lângă „Hai să discutăm” ca în 09 §5. Pe telefon, butoanele au toată
+// lățimea, ca în antet și ca butoanele Maps/Waze de mai sus.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/global/PageHeader.astro';
 import ContactIcon from '../components/global/ContactIcon.astro';
@@ -81,7 +83,7 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
 
   <PageHeader
     title="Contact You Protect"
-    intro="You Protect, din Satu Mare, îți răspunde la telefon, pe WhatsApp și pe email și te primește în showroom-ul din Vetiș, luni–vineri, 09:00–17:00."
+    intro="Ne găsești în Vetiș, județul Satu Mare: la telefon, pe WhatsApp, pe email sau în showroom."
     crumbs={[{ label: 'Contact' }]}
   />
 
@@ -158,7 +160,7 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
             <a href="/produse/" class={link}>catalog</a> în lista de ofertă și ceri prețul pentru toate odată. Oferta o
             primești {RESPONSE_TIME}.
           </p>
-          <a href="/cere-oferta/" data-track-location="pagina-contact" class:list={[btnPrimary, 'mt-6']}>Cere ofertă</a>
+          <a href="/cere-oferta/" data-track-location="pagina-contact" class:list={[btnPrimary, 'mt-6 w-full sm:w-auto']}>Cere ofertă</a>
         </div>
         <div class="border-t border-yp-white/10 pt-6">
           <h3 class="font-heading text-lg font-light text-yp-white">Vrei să alegem împreună</h3>
@@ -166,7 +168,7 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
             Răspunzi la câteva întrebări despre echipă și activitate, apoi îți alegi ziua și ora din calendar. Dacă nu
             alegi, revenim noi {RESPONSE_TIME}. Venim la discuție cu recomandări pentru oamenii tăi.
           </p>
-          <a href="/programeaza-discutie/" data-track-location="pagina-contact" class:list={[btnSecondary, 'mt-6']}>{CTA_DISCUSS}</a>
+          <a href="/programeaza-discutie/" data-track-location="pagina-contact" class:list={[btnSecondary, 'mt-6 w-full sm:w-auto']}>{CTA_DISCUSS}</a>
         </div>
       </div>
     </div>
