@@ -46,7 +46,7 @@ const variants = JSON.parse(read('src/data/poze-actiune-variante.json'));
 const EXPECTED_IDS = [
   'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19', 'M20', 'M21', 'M22', 'M23',
   'P04', 'P05', 'P06', 'P11',
-  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16',
+  'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16', 'S17',
 ];
 const BRAND = {
   mascot: { suffix: '-mascot', credit: 'MASCOT', prefix: 'M' },
@@ -1098,7 +1098,7 @@ test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p
       assert.equal(v.height / v.width, 1.25, `${p.id} ${v.file}: nu e 4:5`);
       assert.match(v.file, /-p(768|960)\.webp$/);
     }
-    assert.ok(portrait[0].bytes <= 61 * 1024, `${p.id}: ${portrait[0].file} ${portrait[0].bytes} B (buget 45 KB, plafon 61 KB: S06 e la calitatea minimă)`);
+    assert.ok(portrait[0].bytes <= 55 * 1024, `${p.id}: ${portrait[0].file} ${portrait[0].bytes} B (buget 55 KB)`);
     assert.ok(!photoSrcset(p.id).includes('-p768') && !photoSrcset(p.id).includes('-p960'), `${p.id}: portretul în srcset-ul obișnuit`);
   }
   for (const p of photos.filter((x) => !x.portret)) {
@@ -1106,13 +1106,13 @@ test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p
   }
 });
 
-test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 45 KB (portret sub 61 KB)', () => {
+test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 45 KB (portret sub 55 KB)', () => {
   for (const p of photos.filter((x) => x.erou)) {
     const list = variants[p.id].filter((v) => !v.portret);
     const widths = list.map((v) => v.width);
     assert.deepEqual(widths.slice(0, 3), [768, 960, 1440], `${p.id}: lățimi erou`);
     assert.ok(widths.length === 3 || (widths.length === 4 && widths[3] === 1920), `${p.id}: lățimi erou ${widths}`);
-    // sursele pătrate (S06) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
+    // sursele pătrate (S06, S17) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
     assert.ok(list[0].bytes <= 56 * 1024, `${p.id}: ${list[0].file} ${list[0].bytes} B`);
   }
 });
