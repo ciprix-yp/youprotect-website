@@ -1587,7 +1587,7 @@ test('dist: S02 are 640/960/1440 în ghid și 768/960/1440/1920 pe homepage', (t
 const GRADIENT_CLASS = /^(?:(?:from|via|to)-(?:yp-black(?:\/\d{1,3})?|transparent)|(?:from|via)-\d{1,3}%)$/;
 
 test('erou: presetele de gradient sunt clase Tailwind literale și valide; „standard” e gradientul de până acum', () => {
-  assert.deepEqual(Object.keys(HERO_GRADIENTS), ['standard', 'puternic', 'foarte-puternic']);
+  assert.deepEqual(Object.keys(HERO_GRADIENTS), ['standard', 'mediu', 'puternic', 'foarte-puternic']);
   assert.deepEqual(HERO_GRADIENTS.standard, {
     telefon: 'from-yp-black from-5% via-yp-black/70 via-40% to-transparent',
     desktop: 'from-yp-black via-yp-black/70 to-yp-black/30',
@@ -1619,11 +1619,12 @@ test('erou: cele 10 poze au `eroul` în date (cadru telefon/desktop, preset exis
   assert.throws(() => heroStyle('M01'), /M01/);
 });
 
-// Contrastul textului alb de pe erou, măsurat pe 26.11.2026 (Chrome real, captură cu textul ascuns, p95 al luminanței sub liniile de
-// text, WCAG): cu presetul „standard” toate cele 10 poze au cel puțin 4,5:1 la 390×844 (DPR 3) și 1440×900; minimul e 4,72:1 (P16,
-// 1440 px), iar la 768/1024/1280/1920 px minimul e 4,81:1 (P16, 1280 px). De aceea toate folosesc „standard”. Dacă schimbi un preset
-// sau un cadru (`poz`), re-măsoară contrastul pe toate pozele și pe ambele viewport-uri și actualizează lista de mai jos.
-const HERO_GRADIENTS_IN_USE = { S02: 'standard', M24: 'standard', M25: 'standard', M26: 'standard', M27: 'standard', P14: 'standard', P15: 'standard', P16: 'standard', S18: 'standard', S19: 'standard' };
+// Contrastul textului alb de pe erou, măsurat pe 26.11.2026 PE LINII (Chrome real, captură cu textul ascuns, p95 al luminanței
+// pixelilor de sub fiecare linie, minimul peste linii, toate elementele de text, WCAG) la 390 (DPR 3), 768, 1024, 1440 și 1920 px.
+// Cu „standard” cădeau sub 4,6:1: M24 (4,44 la 1920 px), P14 (4,48 la 768 px) și P16 (4,35 la 1440 px); acestea folosesc „mediu”
+// (minim 5,49:1). Restul trec cu „standard” (minim 4,74:1, M26 la 1440 px). Dacă schimbi un preset sau un cadru (`poz`), re-măsoară
+// contrastul pe toate pozele și pe toate lățimile și actualizează lista de mai jos.
+const HERO_GRADIENTS_IN_USE = { S02: 'standard', M24: 'mediu', M25: 'standard', M26: 'standard', M27: 'standard', P14: 'mediu', P15: 'standard', P16: 'mediu', S18: 'standard', S19: 'standard' };
 
 test('erou: presetele de gradient folosite sunt cele măsurate pentru contrast, iar S02 are gradientul și cadrul de pe main', () => {
   assert.deepEqual(Object.fromEntries(HERO_SET.map((id) => [id, photos.find((p) => p.id === id).eroul.gradient])), HERO_GRADIENTS_IN_USE);

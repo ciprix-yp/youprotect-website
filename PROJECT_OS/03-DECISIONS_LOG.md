@@ -808,9 +808,12 @@
 - Eroul homepage-ului rotativ, cu 10 poze (decis de owner; urmează D-2026-11-26-03, unde rotația era doar pregătită).
   La fiecare încărcare se alege la întâmplare una din cele 10 poze aprobate: S02, M24–M27, P14–P16, S18, S19. Fără
   auto-slide, timer sau carusel. Fiecare poză are `eroul` în `src/data/poze-actiune.json` (cadrul `poz` și presetul de
-  gradient din `src/lib/erou.ts`). Contrastul textului alb de pe erou, măsurat pe pixelii randați (Chrome real, textul
-  ascuns, p95 de luminanță sub liniile de text, WCAG) la 390×844 și 1440×900: toate cele 10 trec cu `standard`, cu cel
-  puțin 4,5:1 (minim 4,72:1, P16 la 1440 px). Presetele `puternic` și `foarte-puternic` există dacă se cere marjă mai mare.
+  gradient din `src/lib/erou.ts`). Contrastul textului alb de pe erou, măsurat pe pixelii randați, PE LINII (Chrome real,
+  textul ascuns, p95 de luminanță sub fiecare linie, minimul peste linii, toate elementele de text, WCAG) la 390 (DPR 3),
+  768, 1024, 1440 și 1920 px: cu `standard` cădeau sub 4,6:1 M24 (4,44 la 1920 px), P14 (4,48 la 768 px) și P16 (4,35 la
+  1440 px). Acestea trei folosesc presetul `mediu` (desktop mai întunecat: via 75%, la capăt 40%); restul rămân pe
+  `standard`. Minimul general e 4,74:1 (M26, 1440 px); cu `mediu` M24, P14 și P16 au cel puțin 5,49:1. Presetele
+  `puternic` și `foarte-puternic` există dacă se cere marjă mai mare.
 - Excepția Portwest (decisă de owner pe 26.11.2026: „Le punem și pe Portwest”), după ce i s-a semnalat licența Media Hub
   („solely for the marketing, promotion, sale and distribution of Portwest products”): P14, P15 și P16 pot apărea ca
   erou rotativ pe „/”, nu lângă produse Portwest. Excepția e strictă și impusă de test: doar pagina „/”, doar aceste
@@ -837,7 +840,7 @@
 - Limite cunoscute: HTML-ul homepage-ului crește cu ~22 KB brut (~1,7 KB brotli) din cele 10 template-uri; mecanismul se
   bazează pe comportamentul preload scanner-ului din Chrome (verificat doar în Chrome, neverificat pe iPhone sau Safari);
   Googlebot randează cu JavaScript, deci vede o poză aleasă la întâmplare (JSON-LD le descrie pe toate zece); S19
-  (Sir Safety) nu e confirmat că nu e imagine generată cu AI; marjele de contrast sunt mici la câteva poze.
+  (Sir Safety) nu e confirmat că nu e imagine generată cu AI; marja de contrast e mică la M26 (4,74:1) și la câteva poze pe `standard` (≈ 4,8–5,5:1).
 - Impact: regulile sunt în `tests/poze-actiune.test.mjs` (`HERO_SET_PORTWEST`, testele pe dist ale eroului) și datele
   `eroul` în `poze-actiune.json`. O poză nouă în set: `erou: true`, `portret` și `eroul` în date, id-ul în `heroPhotos`
   din `src/pages/index.astro`, apoi scriptul de imagini cu `--only` și măsurarea contrastului; scoaterea ei înseamnă

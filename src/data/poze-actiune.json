@@ -168,7 +168,7 @@
     "erou": true,
     "portret": { "decupaj": [0.3622, 0, 0.8955, 1] },
     "obiectPoz": { "desktop": "63% 35%", "telefon": "50% 30%" },
-    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "63% 35%" }, "gradient": "standard" }
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "63% 35%" }, "gradient": "mediu" }
   },
   {
     "id": "M25",
@@ -280,7 +280,7 @@
     "erou": true,
     "portret": { "decupaj": [0.3001, 0.03, 0.8172, 0.8709] },
     "obiectPoz": { "desktop": "75% 30%", "telefon": "65% 25%" },
-    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "75% 30%" }, "gradient": "standard" }
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "75% 30%" }, "gradient": "mediu" }
   },
   {
     "id": "P15",
@@ -310,7 +310,7 @@
     "erou": true,
     "portret": { "decupaj": [0.4434, 0, 0.9641, 1] },
     "obiectPoz": { "desktop": "75% 35%", "telefon": "60% 35%" },
-    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "75% 35%" }, "gradient": "standard" }
+    "eroul": { "poz": { "telefon": "50% 25%", "desktop": "75% 35%" }, "gradient": "mediu" }
   },
   {
     "id": "S01",
