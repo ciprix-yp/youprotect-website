@@ -8,11 +8,14 @@ import "../styles/vendor";
 import "../styles/global.css";
 // Același fișier pe care îl cere CSS-ul din @fontsource (h1 și titlurile): `?url` dă calea cu hash din build.
 import headingLatin300 from "@fontsource/montserrat/files/montserrat-latin-300-normal.woff2?url";
+// ă, ș, ț sunt în subsetul latin-ext: fără el glifele cu diacritice din h1 se schimbă vizibil la swap.
+import headingLatinExt300 from "@fontsource/montserrat/files/montserrat-latin-ext-300-normal.woff2?url";
 
 const FONT_FILES = {
   "text-300": "/fonts/yp-text-300.woff2",
   "text-400": "/fonts/yp-text-400.woff2",
   "heading-300": headingLatin300,
+  "heading-300-ext": headingLatinExt300,
 } as const;
 type FontKey = keyof typeof FONT_FILES;
 
@@ -22,7 +25,7 @@ interface Props {
   ogType?: string;
   ogImage?: string;
   noindex?: boolean;
-  /** true: fonturile de text; lista: doar acelea ("text-300" | "text-400" | "heading-300"); false: niciunul. Lista scurtă pe paginile al căror LCP e o poză-erou: preload-urile de fonturi ar concura cu poza pentru lățimea de bandă. */
+  /** true: fonturile de text; lista: doar acelea ("text-300" | "text-400" | "heading-300" | "heading-300-ext"); false: niciunul. Lista scurtă pe paginile al căror LCP e o poză-erou: preload-urile de fonturi ar concura cu poza pentru lățimea de bandă. */
   preloadFonts?: boolean | FontKey[];
 }
 

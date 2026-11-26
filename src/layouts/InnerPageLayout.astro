@@ -46,7 +46,7 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogType={ogType} ogImage={ogImage} preloadFonts={heroPhoto || heroPortrait ? ["heading-300"] : true}>
+<BaseLayout title={title} description={description} ogType={ogType} ogImage={ogImage} preloadFonts={heroPhoto || heroPortrait ? ["heading-300", "heading-300-ext"] : true}>
     <!-- Consistent Inner Page Header -->
     <GlobalInnerHero
         title={heroTitle}
