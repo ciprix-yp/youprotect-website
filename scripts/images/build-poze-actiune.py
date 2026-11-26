@@ -13,6 +13,8 @@ Input : src/data/poze-actiune.json (single source of truth: id, slug, source, pl
         a full regeneration needs that file (a missing file stops with a clear message).
         scripts/images/poze-actiune-surse.json, only for the optional `decupaj` of an ID: {x, y, latime, inaltime}
         in pixels of the source after EXIF rotation (M20: the left edge, with other brands on the equipment, is cut).
+        The portrait crop (`portret.decupaj` in poze-actiune.json, fractions [x0, y0, x1, y1]) is relative to the WHOLE
+        original (after EXIF rotation, before `decupaj`), independent of the desktop crop: it may extend outside it.
 Output: public/images/actiune/<slug>-<width>.webp and src/data/poze-actiune-variante.json (real sizes).
 
 Per photo: EXIF rotation, sRGB, LANCZOS resize (never upscaled), WebP with adaptive quality (starts at
@@ -169,21 +171,26 @@ def planned_body_widths(source_width):
 
 
 # Decupajul portret (4:5) al eroului homepage-ului pe telefon: `portret.decupaj` = [x0, y0, x1, y1] în fracții din
-# imaginea sursă, cu raportul 4:5 (în pixeli). Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în
-# variante; `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
+# ORIGINALUL ÎNTREG (după rotația EXIF, ÎNAINTE de `decupaj` din poze-actiune-surse.json), cu raportul 4:5 (în pixeli).
+# Decupajul de desktop (16:9, `decupaj`) și cel de telefon (4:5) sunt independente: cel de telefon poate ieși din cel de
+# desktop (ex. original 5820x3880, desktop y=374..3648, telefon y=0..3880). Lățimile eroului pe desktop
+# (planned_widths) se calculează tot pe imaginea de desktop, deci nu depind de decupajul portret.
+# Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în variante;
+# `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
 PORTRAIT_WIDTHS = (768, 960)
 PORTRAIT_BUDGET = {768: 55 * 1024, 960: 100 * 1024}
 PORTRAIT_QUALITY_START = {768: 70, 960: 70}
 
 
-def portrait_crop(src, box):
+def portrait_crop(full, box):
+    """Decupajul 4:5 din imaginea ÎNTREAGĂ `full` (nu din cea decupată pentru desktop); fracțiile sunt relative la `full`."""
     if not (isinstance(box, list) and len(box) == 4 and all(isinstance(v, (int, float)) for v in box)):
         fail("portret.decupaj trebuie să fie [x0, y0, x1, y1]")
     x0, y0, x1, y1 = box
     if not (0 <= x0 < x1 <= 1 and 0 <= y0 < y1 <= 1):
         fail("portret.decupaj în afara imaginii")
-    w, h = src.size
-    crop = src.crop((round(x0 * w), round(y0 * h), round(x1 * w), round(y1 * h)))
+    w, h = full.size
+    crop = full.crop((round(x0 * w), round(y0 * h), round(x1 * w), round(y1 * h)))
     if abs(crop.size[0] / crop.size[1] - 0.8) > 0.01:
         fail(f"portret.decupaj nu e 4:5 (e {crop.size[0]}x{crop.size[1]})")
     if crop.size[0] < max(PORTRAIT_WIDTHS):
@@ -245,7 +252,8 @@ def main():
     for entry in entries:
         if not SLUG_RE.fullmatch(entry["slug"]):
             fail(f"{entry['id']}: slug invalid")
-        src = load_source(entry, manifest[entry["id"]])
+        full = load_source(entry, manifest[entry["id"]])
+        src = full
         if entry["id"] in crops:
             src = apply_crop(entry, src, crops[entry["id"]])
         widths = planned_widths(entry, src.size[0], src.size[1])
@@ -279,7 +287,7 @@ def main():
             variants[entry["id"]].append(record)
             print(f"{entry['id']} {w}x{h} q{quality} {len(data) // 1024} KB")
         if entry.get("portret"):
-            crop = portrait_crop(src, entry["portret"].get("decupaj"))
+            crop = portrait_crop(full, entry["portret"].get("decupaj"))
             for w in PORTRAIT_WIDTHS:
                 h = w * 5 // 4  # exact 4:5 (testul cere raportul 1,25), nu round() pe decupajul aproximativ
                 img = crop.resize((w, h), Image.LANCZOS)

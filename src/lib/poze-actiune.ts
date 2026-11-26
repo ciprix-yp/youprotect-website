@@ -35,7 +35,7 @@ export interface ActionPhotoData {
   latimiCorp?: number[];
   /** Poza are voie să fie erou (prima imagine mare a unei pagini). */
   erou: boolean;
-  /** Decupaj portret 4:5 (fracții [x0, y0, x1, y1] din sursă) pentru telefon; variantele `-p768`/`-p960` le face scriptul. */
+  /** Decupaj portret 4:5 (fracții [x0, y0, x1, y1] din originalul ÎNTREG, înainte de `decupaj`-ul de desktop) pentru telefon; variantele `-p768`/`-p960` le face scriptul. */
   portret?: { decupaj: [number, number, number, number] };
   obiectPoz: { desktop: string; telefon: string };
 }
