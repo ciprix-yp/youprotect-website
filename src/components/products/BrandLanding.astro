@@ -161,7 +161,7 @@ const faqSchema = {
 
     {page.photo && (
       <div class="relative order-3 mt-10 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:order-none lg:col-start-2 lg:row-span-6 lg:row-start-1 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
-        <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, (min-width: 640px) calc(100vw - 2rem), 70vw" motion class="absolute inset-0" />
+        <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
       </div>
     )}
   </div>

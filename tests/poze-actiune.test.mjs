@@ -29,7 +29,7 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ACTION_PHOTOS, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, getPhoto } from '../src/lib/poze-actiune.ts';
+import { ACTION_PHOTOS, BODY_PHONE_HIDPI, PHONE_FULL_WIDTH, bodySizes, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, getPhoto } from '../src/lib/poze-actiune.ts';
 import { jsonLd } from '../src/lib/json-ld.ts';
 import { SITE } from '../src/lib/site.ts';
 import { CATEGORY_PAGES } from '../src/lib/catalog-categories.ts';
@@ -1115,4 +1115,56 @@ test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pă
     // sursele pătrate (S06) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
     assert.ok(list[0].bytes <= 56 * 1024, `${p.id}: ${list[0].file} ${list[0].bytes} B`);
   }
+});
+
+// ---------------------------------------------------------------------------------------------------------------
+// Pozele din corp pe telefon 3x: `sizes` normalizat de ActionPhoto (bodySizes), ca browserul să aleagă 960 px, nu 1440 px.
+
+test('bodySizes: ultima intrare calc(100vw - 2rem) primește regula de telefon 3x în față; restul trece neschimbat', () => {
+  const rule = BODY_PHONE_HIDPI;
+  assert.equal(PHONE_FULL_WIDTH, 'calc(100vw - 2rem)');
+  assert.match(rule, /^\(max-width: 767px\) and \(min-resolution: 2\.5dppx\) calc\(\(100vw - 2rem\) \* 0\.75\)$/);
+  assert.equal(bodySizes('calc(100vw - 2rem)'), `${rule}, calc(100vw - 2rem)`);
+  assert.equal(
+    bodySizes('(min-width: 1280px) 1248px, calc(100vw - 2rem)'),
+    `${rule}, (min-width: 1280px) 1248px, calc(100vw - 2rem)`,
+  );
+  assert.equal(
+    bodySizes('(min-width: 768px) 768px,calc(100vw - 2rem)'),
+    `${rule}, (min-width: 768px) 768px, calc(100vw - 2rem)`,
+  );
+  // alte valori implicite pe telefon: neschimbate (eroi, 70vw, 100vw, intrări cu calc înăuntru care nu sunt ultima)
+  for (const same of ['100vw', '40vw', '(min-width: 1024px) 38vw, 70vw', '(min-width: 640px) calc(100vw - 2rem), 70vw', 'calc(100vw - 2rem) 1px']) {
+    assert.equal(bodySizes(same), same, same);
+  }
+  // regula nu atinge niciun viewport de la 768 px în sus și nici DPR sub 2,5
+  assert.match(rule, /max-width: 767px/);
+  assert.match(rule, /min-resolution: 2\.5dppx/);
+});
+
+test('ActionPhoto: pozele din corp trec prin bodySizes; eroii (priority) și decupajul portret își păstrează sizes', () => {
+  const src = read('src/components/media/ActionPhoto.astro');
+  assert.match(src, /import \{[^}]*\bbodySizes\b[^}]*\} from '\.\.\/\.\.\/lib\/poze-actiune'/);
+  assert.match(src, /const imgSizes = priority \|\| portret \? sizes : bodySizes\(sizes\)/);
+  assert.equal((src.match(/sizes=\{imgSizes\}/g) ?? []).length, 2, 'ambele <img> folosesc imgSizes');
+  assert.ok(!/ sizes=\{sizes\}/.test(src), 'niciun <img> cu sizes brut');
+  assert.match(src, /if \(!sizes\) throw/, 'sizes rămâne obligatoriu');
+});
+
+test('dist: pozele din corp cu calc(100vw - 2rem) pe telefon au regula 3x; eroii (fetchpriority=high) nu', (t) => {
+  if (!distAvailable(t)) return;
+  let withRule = 0;
+  for (const file of walk(DIST, (n) => n.endsWith('.html'))) {
+    const html = readFileSync(file, 'utf8');
+    for (const tag of html.match(/<img\b[^>]*\bclass="[^"]*\baction-photo\b[^>]*>/g) ?? []) {
+      const sizes = /\bsizes="([^"]*)"/.exec(tag)?.[1];
+      assert.ok(sizes, `${relative(DIST, file)}: poză fără sizes`);
+      const hero = /fetchpriority="high"/.test(tag);
+      const entries = sizes.replaceAll('&#38;', '&').split(/,\s*(?![^(]*\))/);
+      if (hero) continue;
+      if (sizes.startsWith(BODY_PHONE_HIDPI)) withRule += 1;
+      else if (entries.at(-1) === PHONE_FULL_WIDTH) assert.fail(`${relative(DIST, file)}: sizes fără regula 3x: ${sizes}`);
+    }
+  }
+  assert.ok(withRule > 0, 'nicio poză din corp cu regula 3x în dist/: verificarea nu vede nimic');
 });
