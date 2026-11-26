@@ -177,6 +177,92 @@
       "bytes": 71892
     }
   ],
+  "M20": [
+    {
+      "width": 768,
+      "height": 644,
+      "file": "patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot-768.webp",
+      "bytes": 41648
+    },
+    {
+      "width": 960,
+      "height": 805,
+      "file": "patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot-960.webp",
+      "bytes": 74452
+    },
+    {
+      "width": 1440,
+      "height": 1207,
+      "file": "patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot-1440.webp",
+      "bytes": 132022
+    },
+    {
+      "width": 1920,
+      "height": 1610,
+      "file": "patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot-1920.webp",
+      "bytes": 202922
+    }
+  ],
+  "M21": [
+    {
+      "width": 640,
+      "height": 427,
+      "file": "geaca-reflectorizanta-galbena-logo-pe-piept-mascot-640.webp",
+      "bytes": 19310
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "geaca-reflectorizanta-galbena-logo-pe-piept-mascot-960.webp",
+      "bytes": 37824
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "geaca-reflectorizanta-galbena-logo-pe-piept-mascot-1440.webp",
+      "bytes": 85916
+    }
+  ],
+  "M22": [
+    {
+      "width": 640,
+      "height": 613,
+      "file": "masina-de-brodat-logo-fir-alb-mascot-640.webp",
+      "bytes": 26958
+    },
+    {
+      "width": 960,
+      "height": 919,
+      "file": "masina-de-brodat-logo-fir-alb-mascot-960.webp",
+      "bytes": 45638
+    },
+    {
+      "width": 1440,
+      "height": 1378,
+      "file": "masina-de-brodat-logo-fir-alb-mascot-1440.webp",
+      "bytes": 75196
+    }
+  ],
+  "M23": [
+    {
+      "width": 640,
+      "height": 360,
+      "file": "folie-transfer-termic-dezlipita-logo-alb-mascot-640.webp",
+      "bytes": 8896
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "folie-transfer-termic-dezlipita-logo-alb-mascot-960.webp",
+      "bytes": 14812
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "folie-transfer-termic-dezlipita-logo-alb-mascot-1440.webp",
+      "bytes": 24742
+    }
+  ],
   "P04": [
     {
       "width": 640,

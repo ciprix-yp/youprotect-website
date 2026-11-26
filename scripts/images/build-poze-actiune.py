@@ -11,6 +11,8 @@ Input : src/data/poze-actiune.json (single source of truth: id, slug, source, pl
         Previews are local sources: P11 (and any
         preview) is taken by hand from Media Hub into preview/<ID>.jpg and is never downloaded automatically, so
         a full regeneration needs that file (a missing file stops with a clear message).
+        scripts/images/poze-actiune-surse.json, only for the optional `decupaj` of an ID: {x, y, latime, inaltime}
+        in pixels of the source after EXIF rotation (M20: the left edge, with other brands on the equipment, is cut).
 Output: public/images/actiune/<slug>-<width>.webp and src/data/poze-actiune-variante.json (real sizes).
 
 Per photo: EXIF rotation, sRGB, LANCZOS resize (never upscaled), WebP with adaptive quality (starts at
@@ -21,6 +23,7 @@ written files are checked for EXIF/XMP/ICC chunks. Idempotent: the same input gi
 Security (inputs are untrusted files):
 - only the fixed ID list is processed; the source path comes from a validated manifest field, must match
   (original|preview)/<ID>.(jpg|png|webp) and resolve inside the expected directory;
+- a crop box must be exactly {x, y, latime, inaltime}, non-negative integers, non-empty and inside the source;
 - Pillow keeps its default pixel limit (decompression-bomb warnings become errors); verify() + reload;
   only JPEG / PNG / WEBP are accepted;
 - output names come only from src/data/poze-actiune.json (slug and widths are validated), never from
@@ -45,6 +48,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / ".catalog-work" / "images" / "actiune"
 MANIFEST = BASE / "efectiv.json"
 DATA = ROOT / "src" / "data" / "poze-actiune.json"
+SOURCES = ROOT / "scripts" / "images" / "poze-actiune-surse.json"
 VARIANTS = ROOT / "src" / "data" / "poze-actiune-variante.json"
 OUT = ROOT / "public" / "images" / "actiune"
 
@@ -62,6 +66,7 @@ QUALITY_START, QUALITY_MIN, QUALITY_STEP = 80, 50, 2
 # 768 (eroii) pornește de la q70: la q80 ar depăși bugetul, iar măsurătoarea LCP s-a făcut pe q~70
 QUALITY_START_BY_WIDTH = {768: 70}
 SRGB = ImageCms.createProfile("sRGB")
+CROP_KEYS = ("x", "y", "latime", "inaltime")
 
 
 def fail(message):
@@ -102,6 +107,35 @@ def load_source(entry, manifest_entry):
         return Image.frombytes("RGB", img.size, img.tobytes())  # fresh image, no metadata carried over
 
 
+def load_crops(ids):
+    """The optional `decupaj` per ID from poze-actiune-surse.json, validated (the bounds are checked per image)."""
+    crops = {}
+    for source in json.loads(SOURCES.read_text(encoding="utf-8")):
+        box = source.get("decupaj")
+        if box is None:
+            continue
+        if source.get("id") not in ids:
+            fail("poze-actiune-surse.json: decupaj pentru un id care nu e în poze-actiune.json")
+        valid = (
+            isinstance(box, dict)
+            and set(box) == set(CROP_KEYS)
+            and all(type(box[k]) is int and box[k] >= 0 for k in CROP_KEYS)
+            and box["latime"] > 0
+            and box["inaltime"] > 0
+        )
+        if not valid:
+            fail(f"{source['id']}: decupaj invalid (cere exact x, y, latime, inaltime, numere întregi nenegative)")
+        crops[source["id"]] = box
+    return crops
+
+
+def apply_crop(entry, src, box):
+    x, y, w, h = (box[k] for k in CROP_KEYS)
+    if x + w > src.size[0] or y + h > src.size[1]:
+        fail(f"{entry['id']}: decupajul iese din imagine ({src.size[0]}x{src.size[1]})")
+    return src.crop((x, y, x + w, y + h))
+
+
 def planned_widths(entry, source_width):
     widths = []
     for w in (HERO_WIDTHS if entry["erou"] else BASE_WIDTHS):
@@ -140,6 +174,7 @@ def main():
     ids = [e["id"] for e in entries]
     if not ids or len(set(ids)) != len(ids) or not all(ID_RE.fullmatch(i) for i in ids):
         fail("poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
+    crops = load_crops(set(ids))
     missing = [i for i in ids if i not in manifest]
     if missing:
         fail(f"efectiv.json nu are intrări pentru: {' '.join(missing)}")
@@ -150,6 +185,8 @@ def main():
         if not SLUG_RE.fullmatch(entry["slug"]):
             fail(f"{entry['id']}: slug invalid")
         src = load_source(entry, manifest[entry["id"]])
+        if entry["id"] in crops:
+            src = apply_crop(entry, src, crops[entry["id"]])
         widths = planned_widths(entry, src.size[0])
         if widths != entry["latimi"]:
             fail(f"{entry['id']}: latimi din JSON {entry['latimi']} != calculate {widths}")

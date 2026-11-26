@@ -21,13 +21,15 @@ Idempotent: a valid file already on disk is kept and not downloaded again (no re
 original must have the declared resolution. There is no silent fallback to a preview: an ID without a valid file
 is reported and no manifest is written.
 
-Previews are LOCAL sources. Two photos use the preview as the pixel source:
+Previews are LOCAL sources. Four photos use the preview as the pixel source:
   - S12 (Sir Safety): the preview is the public file itself (same URL, 1152x768 as declared), so it is fetched
     into preview/S12.jpg when missing;
   - P11 (Portwest): the Media Hub preview (2000x1338) differs from the declared original (2000x1333) and the
     pixels MUST stay the preview. It is a MANUAL local file, preview/P11.jpg, taken by hand from Media Hub:
     there is no automatic download, so a full regeneration from nothing is not possible without that file
-    (the script says so clearly when it is missing).
+    (the script says so clearly when it is missing);
+  - M22 and M23 (MASCOT): stills from the short LogoService video (the time and crop are in the `nota` of
+    poze-actiune-surse.json), MANUAL local files preview/M22.jpg and preview/M23.jpg, never downloaded.
 The Portwest collection URL is a Media Hub share-style link ("web/<hash>"); the research scripts opened it with no
 login, but whether it is account-bound or public could not be verified offline, and its lifetime is not ours.
 
@@ -340,14 +342,15 @@ def load_sources():
 
 def preview_file(client, entry):
     """The local preview file (preview/<ID>.<ext>). Sir Safety previews have a public URL and are fetched when
-    missing; every other preview (P11) is a manual local source from Media Hub and is never downloaded."""
+    missing; every other preview (P11 from Media Hub, M22/M23 video stills) is a manual local source and is never
+    downloaded."""
     image_id = entry["id"]
     path, size = existing_file(PREVIEW_DIR, image_id)
     if path is not None:
         return path, size, "preview local, revalidat cu Pillow"
     if image_id[0] != "S":
         raise FetchError(
-            f"lipsește preview-ul local preview/{image_id}.jpg: e o sursă manuală (previzualizarea din Media Hub), "
+            f"lipsește preview-ul local preview/{image_id}.jpg: e o sursă manuală (vezi nota din poze-actiune-surse.json), "
             "fără descărcare automată; pune fișierul acolo"
         )
     path, size = store(PREVIEW_DIR, image_id, FETCHERS["S"](client, entry))

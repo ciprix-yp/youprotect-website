@@ -122,7 +122,7 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
   heroTitle="Haine de lucru personalizate cu logo"
   heroSubtitle="You Protect, din Satu Mare, livrează firmelor uniforme de lucru personalizate: tricouri și tricouri polo, hanorace, geci, veste și pantaloni de lucru cu logoul firmei tale. Personalizarea o fac partenerii noștri, iar locul, mărimea și tehnica logoului le stabilim împreună, înainte de comandă."
   breadcrumb="Haine personalizate"
-  heroImage="/images/scena-personalizare.webp"
+  heroPhoto="M20"
   ctaHeading="Nu trebuie să știi dinainte ce haine vrei"
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Cere ofertă"
@@ -132,7 +132,7 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
   <script type="application/ld+json" set:html={jsonLd(serviceSchema)} />
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
-  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M04"]))} />
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M20", "M21", "M22", "M23"]))} />
 
   <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="cum-functioneaza">
     <div class="max-w-7xl mx-auto px-4">
@@ -146,9 +146,6 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
           </li>
         ))}
       </ol>
-      <div class="mt-10 aspect-[3/2] overflow-clip rounded-xl sm:aspect-[2/1]">
-        <ActionPhoto id="M04" sizes="(min-width: 1280px) 1248px, calc(100vw - 2rem)" motion />
-      </div>
       <p class="mt-8 text-neutral-300">
         Nu știi încă ce haine să alegi? <a href="/produse/" class="text-yp-yellow underline underline-offset-4 hover:text-white">Vezi catalogul</a>
         sau <a href="/programeaza-discutie/" class="text-yp-yellow underline underline-offset-4 hover:text-white">vorbește cu un consultant</a>.
@@ -171,17 +168,32 @@ const sectionHeading = "text-3xl md:text-4xl font-light text-white leading-tight
           </div>
         ))}
       </dl>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2">
+        <div class="relative aspect-[4/3] overflow-clip rounded-xl border border-white/10 bg-yp-gray">
+          <ActionPhoto id="M22" sizes="(min-width: 1280px) 612px, (min-width: 640px) 48vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
+        </div>
+        <div class="relative aspect-[4/3] overflow-clip rounded-xl border border-white/10 bg-yp-gray">
+          <ActionPhoto id="M23" sizes="(min-width: 1280px) 612px, (min-width: 640px) 48vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
+        </div>
+      </div>
     </div>
   </section>
 
   {groups.length > 0 && (
     <section class="py-20 lg:py-28 bg-[#0a0a0a] border-y border-white/5" aria-labelledby="zone-logo">
       <div class="max-w-7xl mx-auto px-4">
-        <h2 id="zone-logo" class={sectionHeading}>Unde poți pune logoul</h2>
-        <p class="mt-4 max-w-3xl text-lg text-neutral-300 leading-relaxed">
-          Zonele și dimensiunile maxime de mai jos sunt cele date de {joinRo(brandsWithZones)} pentru fiecare model. Pentru
-          celelalte haine din catalog, locul și mărimea logoului le stabilim la ofertă.
-        </p>
+        <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:items-center">
+          <div>
+            <h2 id="zone-logo" class={sectionHeading}>Unde poți pune logoul</h2>
+            <p class="mt-4 max-w-3xl text-lg text-neutral-300 leading-relaxed">
+              Zonele și dimensiunile maxime de mai jos sunt cele date de {joinRo(brandsWithZones)} pentru fiecare model. Pentru
+              celelalte haine din catalog, locul și mărimea logoului le stabilim la ofertă.
+            </p>
+          </div>
+          <div class="relative aspect-[3/2] overflow-clip rounded-xl border border-white/10 bg-yp-gray">
+            <ActionPhoto id="M21" sizes="(min-width: 1280px) 548px, (min-width: 1024px) 42vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
+          </div>
+        </div>
         <div class="mt-10 space-y-10">
           {groups.map((group) => (
             <div>
