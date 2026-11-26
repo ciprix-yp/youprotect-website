@@ -132,5 +132,12 @@
     "pixeli_din": "original",
     "url_sursa": "https://www.sirsafety.com/assets/img/Calz-Estive-Desk.jpg",
     "rezolutie_originala": [3840, 2160]
+  },
+  {
+    "id": "S17",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/L1-2.jpg",
+    "rezolutie_originala": [2048, 2048]
   }
 ]
