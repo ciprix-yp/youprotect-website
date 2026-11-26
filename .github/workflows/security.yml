@@ -20,7 +20,7 @@ jobs:
       contents: read
       pull-requests: read # gitleaks-action lists the PR's commits (403 without it)
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
@@ -32,7 +32,7 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: semgrep scan --config p/default --config p/owasp-top-ten --config .semgrep/ --exclude .semgrep --error
 
   # CodeQL and dependency review need GitHub Advanced Security on private repos.
@@ -51,7 +51,7 @@ jobs:
         # javascript-typescript, python, java-kotlin, go, csharp, ruby, c-cpp, swift, actions
         language: [javascript-typescript, python, actions]
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
           languages: ${{ matrix.language }}
@@ -62,7 +62,7 @@ jobs:
   dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Dependency review (PRs)
         if: ${{ github.event_name == 'pull_request' && (!github.event.repository.private || vars.GHAS_ENABLED == 'true') }}
         uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
