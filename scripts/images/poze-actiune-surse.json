@@ -56,6 +56,39 @@
     "rezolutie_originala": [5760, 3840]
   },
   {
+    "id": "M20",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "7c61f599c654465dba46651921a9acec",
+    "rezolutie_originala": [5760, 3840],
+    "decupaj": { "x": 1180, "y": 0, "latime": 4580, "inaltime": 3840 },
+    "nota": "L06 din selecția pentru personalizare (aprobată 25.11.2026). Decupajul scoate marginea din stânga, cu transpaleta și utilajul pe care se citesc alte mărci."
+  },
+  {
+    "id": "M21",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "ca5a5d70416a49359170a2b8654f929c",
+    "rezolutie_originala": [5784, 3856],
+    "nota": "L03 din selecția pentru personalizare (aprobată 25.11.2026), etichetată în portal MASCOT LogoService."
+  },
+  {
+    "id": "M22",
+    "furnizor": "mascot",
+    "pixeli_din": "preview",
+    "id_sursa": "4ae694e7bc9b47a0bfdf3281f36320e9",
+    "rezolutie_originala": [3840, 2160],
+    "nota": "L09: cadru din videoclipul scurt LogoService (3840x2160) la 26,0 s, jumătatea stângă a ecranului împărțit, fără banda de subtitrare (x 0-1918, y 0-1836). Fișier local, pus manual în preview/M22.jpg: nu se descarcă automat. Nu din versiunile lungi Presentation Video."
+  },
+  {
+    "id": "M23",
+    "furnizor": "mascot",
+    "pixeli_din": "preview",
+    "id_sursa": "4ae694e7bc9b47a0bfdf3281f36320e9",
+    "rezolutie_originala": [3840, 2160],
+    "nota": "L08: cadru întreg din videoclipul scurt LogoService (3840x2160) la 32,5 s. Fișier local, pus manual în preview/M23.jpg: nu se descarcă automat. Nu din versiunile lungi Presentation Video."
+  },
+  {
     "id": "P04",
     "furnizor": "portwest",
     "pixeli_din": "original",

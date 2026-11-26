@@ -44,7 +44,7 @@ const variants = JSON.parse(read('src/data/poze-actiune-variante.json'));
 // 1. Integritatea datelor
 
 const EXPECTED_IDS = [
-  'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19',
+  'M01', 'M02', 'M04', 'M05', 'M09', 'M10', 'M12', 'M19', 'M20', 'M21', 'M22', 'M23',
   'P04', 'P05', 'P06', 'P11',
   'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16',
 ];
@@ -68,7 +68,7 @@ function webpSize(buf) {
   throw new Error(`Chunk WebP necunoscut: ${kind}`);
 }
 
-test('poze: exact cele 19 de id-uri, fără dubluri, și variante pentru fiecare', () => {
+test('poze: exact cele 23 de id-uri, fără dubluri, și variante pentru fiecare', () => {
   assert.deepEqual(photos.map((p) => p.id).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(Object.keys(variants).sort(), [...EXPECTED_IDS].sort());
   assert.deepEqual(ACTION_PHOTOS.map((p) => p.id), photos.map((p) => p.id));
@@ -643,7 +643,7 @@ function checkImageObject(obj, where) {
   assert.ok(!('license' in obj) && !('acquireLicensePage' in obj), `${where}: license/acquireLicensePage`);
 }
 
-test('json-ld: imageObject() pentru toate cele 19 e valid, trece prin jsonLd() și JSON.parse', () => {
+test('json-ld: imageObject() pentru toate cele 23 e valid, trece prin jsonLd() și JSON.parse', () => {
   for (const p of photos) {
     const obj = imageObject(p.id);
     checkImageObject(obj, p.id);
@@ -848,7 +848,7 @@ test('dist (negativ): aceeași poză pe 3 pagini, erou și dublă pe pagină pic
   assert.deepEqual(syntheticProblems({ 'a/index.html': imgTag('M02', 'fetchpriority="high"'), 'b/index.html': imgTag('M02') }), []);
   // două elemente <img> cu aceeași poză pe o pagină
   assert.match(syntheticProblems({ 'a/index.html': imgTag('M01') + imgTag('M01') }).join('\n'), /M01: de două ori pe \/a\//);
-  // fișier din afara celor 19 și fișier inexistent
+  // fișier din afara celor 23 și fișier inexistent
   assert.match(syntheticProblems({ 'a/index.html': '<img src="/images/actiune/altceva-123.webp">' }).join('\n'), /necunoscut „altceva-123\.webp”/);
   assert.match(
     withDist({ 'a/index.html': `<img src="/images/actiune/${fileOf('M01')}">` }, (dir) => {
@@ -879,7 +879,7 @@ test('dist: fără dist/ pică cu POZE_REQUIRE_DIST=1 și sare altfel', () => {
 // ---------------------------------------------------------------------------------------------------------------
 // 7. scripts/images/poze-actiune-surse.json
 
-test('surse: exact cele 19 de id-uri în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
+test('surse: exact cele 23 de id-uri în ordinea din date, cheia de sursă pe furnizor, fără semnături', () => {
   const surse = JSON.parse(read('scripts/images/poze-actiune-surse.json'));
   assert.deepEqual(surse.map((s) => s.id), photos.map((p) => p.id));
   const KEY = { mascot: 'id_sursa', portwest: 'bynder_asset_id', sirsafety: 'url_sursa' };
@@ -895,6 +895,15 @@ test('surse: exact cele 19 de id-uri în ordinea din date, cheia de sursă pe fu
     for (const k of ALL_KEYS) if (k !== own) assert.ok(!(k in s), `${s.id}: cheia ${k} nu e a furnizorului ${s.furnizor}`);
     assert.ok(Array.isArray(s.rezolutie_originala) && s.rezolutie_originala.length === 2 && s.rezolutie_originala.every(Number.isInteger), `${s.id}: rezolutie_originala`);
     if (s.furnizor === 'mascot') assert.match(s.id_sursa, /^[0-9a-f]{32}$/, s.id);
+    if ('decupaj' in s) {
+      // decupajul (build-poze-actiune.py): exact x, y, latime, inaltime, întregi nenegativi, nevid, în rezoluția originalului
+      const d = s.decupaj;
+      assert.deepEqual(Object.keys(d).sort(), ['inaltime', 'latime', 'x', 'y'], `${s.id}: cheile decupajului`);
+      assert.ok(Object.values(d).every((n) => Number.isInteger(n) && n >= 0) && d.latime > 0 && d.inaltime > 0, `${s.id}: decupaj`);
+      if (s.pixeli_din === 'original') {
+        assert.ok(d.x + d.latime <= s.rezolutie_originala[0] && d.y + d.inaltime <= s.rezolutie_originala[1], `${s.id}: decupajul iese din original`);
+      }
+    }
     if (s.furnizor === 'portwest') assert.match(s.bynder_asset_id, /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{16}$/i, s.id);
     if (s.furnizor === 'sirsafety') {
       const u = new URL(s.url_sursa);

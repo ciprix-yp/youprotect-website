@@ -104,6 +104,58 @@
     "obiectPoz": { "desktop": "25% 40%", "telefon": "25% 40%" }
   },
   {
+    "id": "M20",
+    "furnizor": "mascot",
+    "slug": "patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot",
+    "alt": "Patru oameni în haine de lucru la fel, roșu cu negru, merg zâmbind printr-un depozit cu rafturi",
+    "creditText": "MASCOT",
+    "copyrightNotice": "© MASCOT",
+    "creator": { "@type": "Organization", "name": "MASCOT" },
+    "sursa": "original",
+    "latimi": [768, 960, 1440, 1920],
+    "erou": true,
+    "obiectPoz": { "desktop": "50% 45%", "telefon": "50% 45%" }
+  },
+  {
+    "id": "M21",
+    "furnizor": "mascot",
+    "slug": "geaca-reflectorizanta-galbena-logo-pe-piept-mascot",
+    "alt": "Geacă galbenă reflectorizantă întinsă pe o masă, cu logoul MASCOT WORKWEAR pe piept",
+    "creditText": "MASCOT",
+    "copyrightNotice": "© MASCOT",
+    "creator": { "@type": "Organization", "name": "MASCOT" },
+    "sursa": "original",
+    "latimi": [640, 960, 1440],
+    "erou": false,
+    "obiectPoz": { "desktop": "50% 50%", "telefon": "50% 50%" }
+  },
+  {
+    "id": "M22",
+    "furnizor": "mascot",
+    "slug": "masina-de-brodat-logo-fir-alb-mascot",
+    "alt": "Mașină de brodat cu mai multe ace coase un logo cu fir alb pe material bleumarin, prins în ramă",
+    "creditText": "MASCOT",
+    "copyrightNotice": "© MASCOT",
+    "creator": { "@type": "Organization", "name": "MASCOT" },
+    "sursa": "preview",
+    "latimi": [640, 960, 1440],
+    "erou": false,
+    "obiectPoz": { "desktop": "50% 70%", "telefon": "50% 70%" }
+  },
+  {
+    "id": "M23",
+    "furnizor": "mascot",
+    "slug": "folie-transfer-termic-dezlipita-logo-alb-mascot",
+    "alt": "O mână dezlipește folia de transfer de pe un logo alb abia presat pe o geacă bleumarin",
+    "creditText": "MASCOT",
+    "copyrightNotice": "© MASCOT",
+    "creator": { "@type": "Organization", "name": "MASCOT" },
+    "sursa": "preview",
+    "latimi": [640, 960, 1440],
+    "erou": false,
+    "obiectPoz": { "desktop": "80% 50%", "telefon": "80% 50%" }
+  },
+  {
     "id": "P04",
     "furnizor": "portwest",
     "slug": "doi-colegi-citesc-plan-langa-excavator-portwest",
