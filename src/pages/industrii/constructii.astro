@@ -1,8 +1,9 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
-import { CTA_DISCUSS } from '../../lib/site';
+import { CTA_DISCUSS, RESPONSE_TIME, SITE } from '../../lib/site';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 import EquipmentList from '../../components/industries/EquipmentList.astro';
+import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const breadcrumbSchema = {
@@ -10,21 +11,51 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Acasă", item: siteOrigin.href },
-    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii", siteOrigin).href },
+    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii/", siteOrigin).href },
     { "@type": "ListItem", position: 3, name: "Construcții", item: Astro.url.href },
   ],
 };
+
+// Întrebările de pe pagină, și în FAQPage (SEO-003, 26.11.2026). Legea și clasele, la fel ca în ghidurile S1P/S3 și
+// EN ISO 20471; termenul ofertei doar din RESPONSE_TIME.
+const faq = [
+  {
+    q: 'Ce echipament de protecție îi trebuie unui muncitor pe șantier?',
+    a: 'Cel cerut de evaluarea riscurilor de la locul lui de muncă: legea nu dă o listă unică. Pe șantier, riscurile obișnuite sunt căderile de obiecte, lucrul la înălțime, terenul ud sau denivelat, tăieturile, zgomotul și praful, iar pentru ele există bocanci de protecție S3 sau S7, căști, mănuși, haine reflectorizante, antifoane, măști pentru praf și hamuri. Angajatorul le dă oamenilor gratuit și răspunde de întreținerea și înlocuirea lor (HG nr. 1.048/2006, art. 10).',
+  },
+  {
+    q: 'Ce bocanci de protecție sunt potriviți pe șantier: S1P sau S3?',
+    a: 'Decide evaluarea riscurilor, pe care o face angajatorul (HG nr. 1.048/2006, art. 14). Încălțămintea S1P nu are cerințe de rezistență la apă și nici talpă cu crampoane, așa că pentru lucrul afară, pe teren denivelat sau pe ud, clasele potrivite sunt S3 sau S7. S7 adaugă rezistența la apă a încălțămintei întregi, conform EN ISO 20345:2022.',
+  },
+  {
+    q: 'Ce clasă de vizibilitate trebuie să aibă hainele reflectorizante pe șantier?',
+    a: 'Clasa o alege angajatorul, după evaluarea riscurilor (HG nr. 1.048/2006, art. 14). Orientativ, Centexbel recomandă clasa 2 pentru lucrări rutiere și construcții urbane și clasa 3 pentru drumuri cu viteză mare și lucru noaptea pe autostradă. Clasa 3 este cel mai înalt nivel de vizibilitate din EN ISO 20471.',
+  },
+  {
+    q: 'Pot pune logoul firmei pe hainele de lucru pentru construcții?',
+    a: 'Da, pe hainele cu zone de logo date de producător: tricouri, hanorace, geci, veste și pantaloni de lucru. La hainele reflectorizante, logoul rămâne în limita dată de producător pentru fiecare model, ca să nu pierzi certificarea EN ISO 20471.',
+  },
+  {
+    q: 'De unde comand echipamente de protecție pentru construcții în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar oferta vine ${RESPONSE_TIME}. Hainele și încălțămintea le probezi în showroom înainte de comandă, iar livrarea se face în toată România.`,
+  },
+];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
+const inlineLink = "text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow";
 ---
 
 <InnerPageLayout
   title="Echipamente de protecție pentru construcții"
-  description="Echipamente de protecție pentru construcții: încălțăminte S3 și S7, geci reflectorizante, haine de lucru personalizate cu logo. Livrare în toată România."
-  heroTitle="Echipare pentru construcții"
-  heroSubtitle="Pe șantier, echipamentul nu e o formalitate — e diferența dintre o zi de muncă sigură și un accident. Selectăm echipamente de protecție rezistente, conforme și confortabile pentru întreaga echipă."
+  description="Echipamente de protecție pentru construcții: bocanci S3 și S7, căști, haine reflectorizante și de lucru cu logo. You Protect, Satu Mare, livrare în toată țara."
+  heroTitle="Echipamente de protecție pentru construcții"
+  heroSubtitle="You Protect, din Satu Mare, echipează firmele de construcții cu bocanci S3 și S7, căști, haine reflectorizante și haine de lucru cu logo."
   breadcrumb="Construcții"
   heroImage="/images/scena-constructii.webp"
   ctaHeading="Echipezi o echipă de șantier?"
-  ctaSubheading="Îți recomandăm setul complet, conform riscurilor reale din teren."
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
@@ -37,24 +68,26 @@ const breadcrumbSchema = {
       <div class="flex flex-col md:flex-row gap-16 md:gap-24">
         <div class="md:w-1/3 shrink-0">
           <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32">
-            Protecție reală <br />pe șantier.
+            Ce îi trebuie unei echipe de șantier
           </h2>
         </div>
         <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 leading-relaxed">
           <p>
-            Construcțiile expun oamenii la riscuri multiple: căderi de obiecte, suprafețe alunecoase, umezeală, tăieturi și praf. De aceea echipamentul trebuie ales pe categorii clare de protecție, nu pe cel mai mic preț.
+            Lista o face evaluarea riscurilor de la fiecare loc de muncă. Pe șantier, riscurile obișnuite sunt căderile de
+            obiecte, lucrul la înălțime, terenul ud sau denivelat, tăieturile, zgomotul și praful. Mai jos le găsești pe
+            categorii, cu link spre modelele din catalog.
           </p>
           <EquipmentList
             items={[
-              { text: 'Bocanci de protecție S3 (rezistență la apă, talpă și bombeu conforme)', category: 'incaltaminte' },
-              { text: 'Căști de protecție', category: 'casti-protectie' },
-              { text: 'Protecția auzului (antifoane)', category: 'antifoane' },
-              { text: 'Mănuși pentru manipulare și impact', category: 'manusi' },
+              { text: 'Bocanci de protecție S3 sau S7, pentru lucru afară, pe ud sau pe teren denivelat', category: 'incaltaminte' },
+              { text: 'Căști de protecție EN 397', category: 'casti-protectie' },
+              { text: 'Antifoane, unde zgomotul o cere', category: 'antifoane' },
+              { text: 'Mănuși anti-tăiere și anti-impact', category: 'manusi' },
               { text: 'Hamuri și lonje pentru lucrul la înălțime', category: 'protectie-cadere' },
-              { text: 'Măști de protecție pentru praf', category: 'protectia-respiratorie' },
-              { text: 'Îmbrăcăminte hi-vis pentru vizibilitate', category: 'reflectorizante' },
-              { text: 'Salopete și pantaloni de lucru, personalizabili cu logo', category: 'pantaloni' },
-              { text: 'Geci și jachete de lucru', category: 'geci-jachete' },
+              { text: 'Măști pentru praf (FFP3)', category: 'protectia-respiratorie' },
+              { text: 'Haine reflectorizante, în clasele 2 și 3 din EN ISO 20471', category: 'reflectorizante' },
+              { text: 'Pantaloni și salopete de lucru, cu logoul firmei', category: 'pantaloni' },
+              { text: 'Geci de lucru, inclusiv termice, pentru iarnă', category: 'geci-jachete' },
             ]}
           />
           <p class="text-base text-neutral-400">
@@ -62,12 +95,36 @@ const breadcrumbSchema = {
             <a href="/cere-oferta/" class="text-yp-yellow underline underline-offset-4 hover:text-white">scrie-ne în cererea de ofertă</a>
             ce îți trebuie.
           </p>
+          <RiskFreeTesting variant="inline" />
         </div>
       </div>
       <div class="mt-12">
         <a href="/produse/" class="inline-flex items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
           Vezi catalogul complet
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 bg-[#050505]" aria-labelledby="intrebari">
+    <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="max-w-3xl">
+        <h2 id="intrebari" class="text-3xl md:text-4xl font-light text-white leading-tight">
+          Întrebări frecvente despre echipamentele pentru construcții
+        </h2>
+        <dl class="mt-10 space-y-8">
+          {faq.map((item) => (
+            <div>
+              <dt class="text-lg text-white font-medium">{item.q}</dt>
+              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="mt-10 text-neutral-400 leading-relaxed">
+          Pe larg, în ghidurile <a href="/ghiduri/s1p-sau-s3/" class={inlineLink}>S1P sau S3</a> și
+          <a href="/ghiduri/clase-vizibilitate-en-iso-20471/" class={inlineLink}>clasele de vizibilitate EN ISO 20471</a>.
+        </p>
       </div>
     </div>
   </section>
