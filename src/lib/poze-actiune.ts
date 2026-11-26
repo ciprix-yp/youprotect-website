@@ -14,6 +14,11 @@ export interface PhotoVariant {
   bytes: number;
   /** Decupaj portret 4:5 pentru telefon (doar eroul homepage-ului); nu intră în srcset-ul obișnuit. */
   portret?: boolean;
+  /**
+   * Doar la un erou care apare și ca poză de corp (azi S02): „corp” = fișier doar în setul de corp (640), „erou” = doar în
+   * setul de erou (768, 1920); fără `doar` = comun (960, 1440), nu se duplică.
+   */
+  doar?: 'corp' | 'erou';
 }
 
 export interface ActionPhotoData {
@@ -26,6 +31,8 @@ export interface ActionPhotoData {
   creator: { '@type': 'Organization'; name: string };
   sursa: string;
   latimi: number[];
+  /** Setul de corp al unui erou care apare și în corp (ex. 640/960/1440); fișierele 960/1440 sunt comune cu eroul. */
+  latimiCorp?: number[];
   /** Poza are voie să fie erou (prima imagine mare a unei pagini). */
   erou: boolean;
   /** Decupaj portret 4:5 (fracții [x0, y0, x1, y1] din sursă) pentru telefon; variantele `-p768`/`-p960` le face scriptul. */
@@ -47,12 +54,21 @@ export function getPhoto(id: string): ActionPhotoData {
   return photo;
 }
 
-/** Variantele unei poze (fără decupajul portret), de la cea mai mică la cea mai mare. */
-export function photoVariants(id: string): PhotoVariant[] {
+function variantsWhere(id: string, keep: (v: PhotoVariant) => boolean): PhotoVariant[] {
   getPhoto(id);
-  const list = VARIANTS[id]?.filter((v) => !v.portret);
+  const list = VARIANTS[id]?.filter((v) => !v.portret && keep(v));
   if (!list || list.length === 0) throw new Error(`Poza „${id}” nu are variante în poze-actiune-variante.json.`);
   return [...list].sort((a, b) => a.width - b.width);
+}
+
+/** Variantele de CORP ale unei poze (fără decupajul portret și fără cele doar de erou), de la cea mai mică la cea mai mare. */
+export function photoVariants(id: string): PhotoVariant[] {
+  return variantsWhere(id, (v) => v.doar !== 'erou');
+}
+
+/** Variantele de EROU (fără decupajul portret și fără cele doar de corp), de la cea mai mică la cea mai mare. La pozele fără `latimiCorp` coincid cu `photoVariants`. */
+export function heroVariants(id: string): PhotoVariant[] {
+  return variantsWhere(id, (v) => v.doar !== 'corp');
 }
 
 /** Variantele decupajului portret 4:5, de la cea mai mică la cea mai mare; eroare dacă poza nu are decupaj portret. */
@@ -63,10 +79,21 @@ export function portraitVariants(id: string): PhotoVariant[] {
   return [...list].sort((a, b) => a.width - b.width);
 }
 
-/** Cea mai mare variantă. */
+/** Cea mai mare variantă de corp. */
 export function largestVariant(id: string): PhotoVariant {
   const list = photoVariants(id);
   return list[list.length - 1];
+}
+
+/** Cea mai mare variantă de erou. */
+export function largestHeroVariant(id: string): PhotoVariant {
+  const list = heroVariants(id);
+  return list[list.length - 1];
+}
+
+/** Cel mai mare fișier real al pozei, din orice set (corp sau erou): descrierea din JSON-LD. */
+function largestFile(id: string): PhotoVariant {
+  return variantsWhere(id, () => true).at(-1)!;
 }
 
 const urlOf = (v: PhotoVariant) => `${ACTION_PHOTO_DIR}${v.file}`;
@@ -74,6 +101,13 @@ const urlOf = (v: PhotoVariant) => `${ACTION_PHOTO_DIR}${v.file}`;
 /** Valoarea pentru `srcset`, din variantele reale: „/images/actiune/x-640.webp 640w, …”. */
 export function photoSrcset(id: string): string {
   return photoVariants(id)
+    .map((v) => `${urlOf(v)} ${v.width}w`)
+    .join(', ');
+}
+
+/** `srcset` al eroului (setul de erou), din variantele reale. */
+export function heroSrcset(id: string): string {
+  return heroVariants(id)
     .map((v) => `${urlOf(v)} ${v.width}w`)
     .join(', ');
 }
@@ -92,9 +126,22 @@ export function photoSrc(id: string, width?: number): string {
   return urlOf(list.find((v) => v.width >= width) ?? list[list.length - 1]);
 }
 
-/** Dimensiunile (pentru `width`/`height` din HTML) ale celei mai mari variante. */
+/** Ca `photoSrc`, din setul de erou. */
+export function heroSrc(id: string, width?: number): string {
+  const list = heroVariants(id);
+  if (width === undefined) return urlOf(list[list.length - 1]);
+  return urlOf(list.find((v) => v.width >= width) ?? list[list.length - 1]);
+}
+
+/** Dimensiunile (pentru `width`/`height` din HTML) ale celei mai mari variante de corp. */
 export function photoSize(id: string): { width: number; height: number } {
   const { width, height } = largestVariant(id);
+  return { width, height };
+}
+
+/** Dimensiunile (pentru `width`/`height` din HTML) ale celei mai mari variante de erou. */
+export function heroSize(id: string): { width: number; height: number } {
+  const { width, height } = largestHeroVariant(id);
   return { width, height };
 }
 
@@ -104,10 +151,14 @@ export function imageId(id: string): string {
   return `${SITE.url}/#imagine-actiune-${id.toLowerCase()}`;
 }
 
-/** ImageObject schema.org pentru o poză. Fără `license`/`acquireLicensePage`: nu avem de dat licență mai departe. */
+/**
+ * ImageObject schema.org pentru o poză. Fără `license`/`acquireLicensePage`: nu avem de dat licență mai departe.
+ * `contentUrl` e cel mai mare fișier real al pozei, din orice set (S02: 1920 px, setul de erou), ca nodul cu același `@id`
+ * să fie identic pe orice pagină care o folosește (homepage ca erou, ghid ca poză de corp).
+ */
 export function imageObject(id: string) {
   const photo = getPhoto(id);
-  const big = largestVariant(id);
+  const big = largestFile(id);
   const contentUrl = `${SITE.url}${urlOf(big)}`;
   return {
     '@type': 'ImageObject',

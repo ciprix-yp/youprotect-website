@@ -29,7 +29,7 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ACTION_PHOTOS, BODY_PHONE_HIDPI, PHONE_FULL_WIDTH, bodySizes, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, getPhoto } from '../src/lib/poze-actiune.ts';
+import { ACTION_PHOTOS, BODY_PHONE_HIDPI, PHONE_FULL_WIDTH, bodySizes, imageObject, imageObjects, imageGraph, imageRef, photoSrcset, photoSrc, photoSize, photoVariants, heroSrc, heroSrcset, heroSize, heroVariants, getPhoto } from '../src/lib/poze-actiune.ts';
 import { jsonLd } from '../src/lib/json-ld.ts';
 import { SITE } from '../src/lib/site.ts';
 import { CATEGORY_PAGES } from '../src/lib/catalog-categories.ts';
@@ -155,7 +155,7 @@ const ALLOWED_EXPR = /^(?:page\.photo|photo|heroPhoto)$/;
 /** Fișierele care definesc sau documentează pozele: nu sunt „utilizări”. */
 const NOT_USAGE = new Set(['src/components/media/ActionPhoto.astro', 'src/lib/poze-actiune.ts']);
 const CATALOG_FILES = new Set(['src/lib/catalog-brands.ts', 'src/lib/catalog-categories.ts']);
-const PHOTO_CALLS = ['photoSrc', 'photoSrcset', 'photoSize', 'imageObject', 'imageObjects', 'imageGraph', 'imageRef', 'getPhoto'];
+const PHOTO_CALLS = ['photoSrc', 'photoSrcset', 'photoSize', 'heroSrc', 'heroSrcset', 'heroSize', 'imageObject', 'imageObjects', 'imageGraph', 'imageRef', 'getPhoto'];
 const MAX_PAGES_PER_PHOTO = 2;
 /**
  * Excepțiile regulii fail-closed: valori de forma `[MPS]NN` care apar între ghilimele în sursă, dar NU sunt id-uri de
@@ -1117,13 +1117,65 @@ test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p
 
 test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 56 KB (ținta de 45 KB din script nu e impusă)', () => {
   for (const p of photos.filter((x) => x.erou)) {
-    const list = variants[p.id].filter((v) => !v.portret);
+    // setul de erou: fără decupajul portret și fără fișierele doar de corp (S02-640)
+    const list = variants[p.id].filter((v) => !v.portret && v.doar !== 'corp');
     const widths = list.map((v) => v.width);
     assert.deepEqual(widths.slice(0, 3), [768, 960, 1440], `${p.id}: lățimi erou`);
     assert.ok(widths.length === 3 || (widths.length === 4 && widths[3] === 1920), `${p.id}: lățimi erou ${widths}`);
     // sursele pătrate (S06, S17) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
     assert.ok(list[0].bytes <= HERO_768_MAX, `${p.id}: ${list[0].file} ${list[0].bytes} B (toleranță ${HERO_768_MAX} B)`);
   }
+});
+
+// Un erou care apare și ca poză de corp (azi S02: erou pe homepage, poză de corp în ghid) are două seturi de lățimi în
+// aceleași date: `latimi` (erou, 768/960/1440/1920) și `latimiCorp` (corp, 640/960/1440). Fișierele 960/1440 sunt comune (o
+// singură copie pe disc); 640 e doar de corp (`doar: "corp"`), 768 și 1920 doar de erou (`doar: "erou"`).
+test('poze: S02 are setul de corp 640/960/1440 (ghidurile, ca înainte de #104) separat de setul de erou 768/960/1440/1920', () => {
+  const s02 = photos.find((p) => p.id === 'S02');
+  assert.deepEqual(s02.latimiCorp, [640, 960, 1440]);
+  assert.deepEqual(s02.latimi, [768, 960, 1440, 1920]);
+  const widths = (list) => list.map((v) => v.width);
+  assert.deepEqual(widths(photoVariants('S02')), [640, 960, 1440]);
+  assert.deepEqual(widths(heroVariants('S02')), [768, 960, 1440, 1920]);
+  // același fișier la 960 și 1440 în ambele seturi (nu se duplică)
+  const files = (list) => new Map(list.map((v) => [v.width, v.file]));
+  for (const w of [960, 1440]) assert.equal(files(photoVariants('S02')).get(w), files(heroVariants('S02')).get(w));
+  const srcsetWidths = (srcset) => srcset.split(', ').map((x) => Number(x.split(' ')[1].replace('w', '')));
+  assert.deepEqual(srcsetWidths(photoSrcset('S02')), [640, 960, 1440]);
+  assert.deepEqual(srcsetWidths(heroSrcset('S02')), [768, 960, 1440, 1920]);
+  assert.ok(!/-(768|1920|p768|p960)\.webp/.test(photoSrcset('S02')), 'ghidul nu primește 768/1920/portret');
+  assert.ok(!/-640\.webp/.test(heroSrcset('S02')), 'eroul nu primește 640');
+  assert.deepEqual(photoSize('S02'), { width: 1440, height: 810 });
+  assert.deepEqual(heroSize('S02'), { width: 1920, height: 1080 });
+  assert.ok(photoSrc('S02', 960).endsWith('-960.webp') && heroSrc('S02', 960).endsWith('-960.webp'));
+  // JSON-LD: cel mai mare fișier real, din orice set
+  assert.equal(imageObject('S02').width, 1920);
+  assert.ok(imageObject('S02').contentUrl.endsWith('-1920.webp'));
+  // `doar` și `latimiCorp` există doar unde sunt două seturi; setul de corp respectă `latimiCorp`, cel de erou `latimi`
+  for (const p of photos) {
+    const marked = variants[p.id].filter((v) => v.doar);
+    if (!p.latimiCorp) {
+      assert.deepEqual(marked, [], `${p.id}: \`doar\` fără latimiCorp`);
+      continue;
+    }
+    assert.ok(p.erou, `${p.id}: latimiCorp doar la eroi`);
+    assert.deepEqual(widths(photoVariants(p.id)), p.latimiCorp, `${p.id}: set de corp`);
+    assert.deepEqual(widths(heroVariants(p.id)), p.latimi, `${p.id}: set de erou`);
+    for (const v of marked) assert.ok(['corp', 'erou'].includes(v.doar));
+  }
+});
+
+test('dist: S02 are 640/960/1440 în ghid și 768/960/1440/1920 pe homepage', (t) => {
+  if (!distAvailable(t)) return;
+  const slug = photos.find((p) => p.id === 'S02').slug;
+  const srcsetOf = (rel) => {
+    const html = readFileSync(join(DIST, rel), 'utf8');
+    const tag = (html.match(/<img\b[^>]*\baction-photo\b[^>]*>/g) ?? []).find((x) => x.includes(slug));
+    assert.ok(tag, `${rel}: fără poza S02`);
+    return [...new Set([...tag.matchAll(new RegExp(`${slug}-(\\d+)\\.webp`, 'g'))].map((m) => Number(m[1])))].sort((a, b) => a - b);
+  };
+  assert.deepEqual(srcsetOf('ghiduri/haine-de-lucru-care-rezista/index.html'), [640, 960, 1440]);
+  assert.deepEqual(srcsetOf('index.html'), [768, 960, 1440, 1920]);
 });
 
 // ---------------------------------------------------------------------------------------------------------------

@@ -59,6 +59,9 @@ BASE_WIDTHS = (640, 960, 1440)
 # Lățimi. Poza obișnuită: 640/960/1440. Eroii (erou: true) nu au 640: pe telefon (390 px CSS, DPR 3) 640 px dă 1,79x și
 # muchii moi, așa că au 768/960/1440/1920 (măsurat, task 12). Excepții în planned_widths(): sursa pătrată (raport < 1,2)
 # are eroul doar 768/960/1440, iar nicio lățime nu depășește sursa (fără upscaling; după decupajul `decupaj`, dacă există).
+# Excepție: un erou cu `latimiCorp` în date (azi S02, folosit și ca poză de corp în ghid) primește și setul de corp
+# 640/960/1440; variantele doar de erou (768, 1920) au `doar: "erou"`, cele doar de corp (640) `doar: "corp"`,
+# iar 960/1440 sunt comune.
 HERO_WIDTHS = (768, 960, 1440, 1920)
 MAX_BYTES = 250 * 1024  # limita dură, ca în tests/image-weight.test.mjs: peste ea scriptul se oprește cu EROARE
 # Bugetul de octeți per lățime (țintă, nu limită dură): calitatea scade cu QUALITY_STEP până când fișierul încape.
@@ -155,6 +158,16 @@ def planned_widths(entry, source_width, source_height):
     return widths
 
 
+def planned_body_widths(source_width):
+    """Setul de corp (640/960/1440) al unui erou care apare și ca poză de corp (`latimiCorp` în date); fără upscaling."""
+    widths = []
+    for w in BASE_WIDTHS:
+        w = min(w, source_width)
+        if w not in widths:
+            widths.append(w)
+    return widths
+
+
 # Decupajul portret (4:5) al eroului homepage-ului pe telefon: `portret.decupaj` = [x0, y0, x1, y1] în fracții din
 # imaginea sursă, cu raportul 4:5 (în pixeli). Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în
 # variante; `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
@@ -238,8 +251,15 @@ def main():
         widths = planned_widths(entry, src.size[0], src.size[1])
         if widths != entry["latimi"]:
             fail(f"{entry['id']}: latimi din JSON {entry['latimi']} != calculate {widths}")
+        # Erou care apare și în corp (ex. S02: erou pe homepage, poză de corp în ghid): două seturi de lățimi. Fișierele
+        # comune (960, 1440) se scriu o singură dată; variantele care aparțin unui singur set primesc `doar`.
+        body = None
+        if "latimiCorp" in entry:
+            body = planned_body_widths(src.size[0])
+            if not entry["erou"] or body != entry["latimiCorp"]:
+                fail(f"{entry['id']}: latimiCorp din JSON {entry['latimiCorp']} != calculate {body} (sau poza nu e erou)")
         variants[entry["id"]] = []
-        for w in widths:
+        for w in (sorted(set(widths) | set(body)) if body else widths):
             h = round(src.size[1] * w / src.size[0])
             img = src if w == src.size[0] else src.resize((w, h), Image.LANCZOS)
             data, quality = encode(img)
@@ -253,9 +273,10 @@ def main():
             if target.parent != out_root:
                 fail("cale de ieșire în afara directorului")
             target.write_bytes(data)
-            variants[entry["id"]].append(
-                {"width": img.size[0], "height": img.size[1], "file": name, "bytes": len(data)}
-            )
+            record = {"width": img.size[0], "height": img.size[1], "file": name, "bytes": len(data)}
+            if body and (w in body) != (w in widths):
+                record["doar"] = "corp" if w in body else "erou"
+            variants[entry["id"]].append(record)
             print(f"{entry['id']} {w}x{h} q{quality} {len(data) // 1024} KB")
         if entry.get("portret"):
             crop = portrait_crop(src, entry["portret"].get("decupaj"))

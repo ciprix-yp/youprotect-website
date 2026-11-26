@@ -371,10 +371,18 @@
   ],
   "S02": [
     {
+      "width": 640,
+      "height": 360,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-640.webp",
+      "bytes": 41052,
+      "doar": "corp"
+    },
+    {
       "width": 768,
       "height": 432,
       "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-768.webp",
-      "bytes": 39954
+      "bytes": 39954,
+      "doar": "erou"
     },
     {
       "width": 960,
@@ -392,7 +400,8 @@
       "width": 1920,
       "height": 1080,
       "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-1920.webp",
-      "bytes": 177152
+      "bytes": 177152,
+      "doar": "erou"
     },
     {
       "width": 768,

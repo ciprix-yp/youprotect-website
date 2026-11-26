@@ -14,7 +14,7 @@
 //   - în src/lib/catalog-brands.ts și catalog-categories.ts: `photo: 'S01'` / `heroPhoto: 'M02'` în intrarea paginii
 //     (BrandLanding/CategoryLanding le randează cu <ActionPhoto id={page.photo} />, singurele unde id-ul poate fi dinamic)
 //   - o poză: max. 2 pagini, niciodată de 2 ori pe aceeași pagină, erou pe o singură pagină; P* doar lângă produse Portwest.
-import { bodySizes, getPhoto, photoSize, photoSrc, photoSrcset, portraitSrcset } from '../../lib/poze-actiune';
+import { bodySizes, getPhoto, heroSize, heroSrc, heroSrcset, photoSize, photoSrc, photoSrcset, portraitSrcset } from '../../lib/poze-actiune';
 
 interface Props {
   id: string;
@@ -39,7 +39,11 @@ interface Props {
 const { id, sizes, priority = false, loading, class: className, motion = false, fit = 'cover', portret = false, poz } = Astro.props;
 if (!sizes) throw new Error(`ActionPhoto „${id}”: lipsește „sizes”.`);
 const photo = getPhoto(id);
-const { width, height } = photoSize(id);
+// Eroii (`priority`) și eroul cu decupaj portret citesc setul de erou; pozele din corp, setul de corp (la S02 diferă: 640/960/1440 vs 768/960/1440/1920).
+const hero = priority || portret;
+const { width, height } = hero ? heroSize(id) : photoSize(id);
+const imgSrc = hero ? heroSrc(id, 960) : photoSrc(id, 960);
+const imgSrcset = hero ? heroSrcset(id) : photoSrcset(id);
 const pozTelefon = poz?.telefon ?? photo.obiectPoz.telefon;
 const pozDesktop = poz?.desktop ?? photo.obiectPoz.desktop;
 // Pozele din corp: pe telefon cu densitate mare, varianta de 960 px (vezi bodySizes). Eroii și decupajul portret își au sizes-ul lor.
@@ -51,8 +55,8 @@ const lazy = (priority ? 'eager' : (loading ?? 'lazy')) === 'lazy';
   <picture class="contents">
     <source media="(max-width: 767px)" srcset={portraitSrcset(id)} sizes="50vw" />
     <img
-      src={photoSrc(id, 960)}
-      srcset={photoSrcset(id)}
+      src={imgSrc}
+      srcset={imgSrcset}
       sizes={imgSizes}
       width={width}
       height={height}
@@ -67,8 +71,8 @@ const lazy = (priority ? 'eager' : (loading ?? 'lazy')) === 'lazy';
 )}
 {!portret && (
   <img
-    src={photoSrc(id, 960)}
-    srcset={photoSrcset(id)}
+    src={imgSrc}
+    srcset={imgSrcset}
     sizes={imgSizes}
     width={width}
     height={height}
