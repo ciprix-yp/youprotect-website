@@ -4,10 +4,12 @@
 // (src/lib/site.ts), ca footer-ul, schema și pagina să spună același lucru. Fără formular nou: cererile intră tot prin
 // /cere-oferta/ și /programeaza-discutie/, deci în CRM au același format.
 // Fără hartă încorporată: un iframe Google Maps ar pune cookie-uri fără acord și ar cere excepții în CSP (_headers).
+// Texte rescrise pe 26.11.2026 (SEO-003): intro cu cine e You Protect și unde (09 §5, obiecția 8: pagina se înțelege și
+// trimisă unui coleg), termenul de răspuns doar din RESPONSE_TIME, fraza de lângă „Hai să discutăm” ca în 09 §5.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/global/PageHeader.astro';
 import ContactIcon from '../components/global/ContactIcon.astro';
-import { SITE, LEGAL_EUID, CTA_DISCUSS } from '../lib/site';
+import { SITE, LEGAL_EUID, CTA_DISCUSS, RESPONSE_TIME } from '../lib/site';
 import { whatsappHref } from '../lib/whatsapp';
 import { jsonLd } from '../lib/json-ld';
 import { btnPrimary, btnSecondary, pageContainer, sectionTitle } from '../lib/ui';
@@ -73,13 +75,13 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
 
 <BaseLayout
   title="Contact: telefon, WhatsApp, showroom în Satu Mare"
-  description="Sună-ne la 0742 226 127, scrie-ne pe WhatsApp sau pe email ori vino în showroom-ul cu cabină de probă din Vetiș, Satu Mare. Luni–vineri, 09:00–17:00."
+  description={`Contact You Protect, Satu Mare: telefon și WhatsApp ${SITE.telephoneDisplay}, email sau showroom-ul cu cabină de probă din Vetiș. ${hours}.`}
 >
   <script type="application/ld+json" set:html={jsonLd(schema)} />
 
   <PageHeader
     title="Contact You Protect"
-    intro="Sună-ne, scrie-ne pe WhatsApp sau pe email ori treci prin showroom-ul din Vetiș, Satu Mare. Programul e de luni până vineri, între 09:00 și 17:00."
+    intro="You Protect, din Satu Mare, îți răspunde la telefon, pe WhatsApp și pe email și te primește în showroom-ul din Vetiș, luni–vineri, 09:00–17:00."
     crumbs={[{ label: 'Contact' }]}
   />
 
@@ -115,10 +117,10 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
 
       <!-- Showroom-ul: adresa, programul și indicațiile. -->
       <div>
-        <h2 class={sectionTitle}>Showroom cu cabină de probă, în Vetiș</h2>
+        <h2 class={sectionTitle}>Probezi produsele în showroom-ul din Vetiș</h2>
         <p class="text-base leading-relaxed text-yp-white/75">
-          Poți veni să vezi produsele și să le probezi înainte de comandă. Așa alegi mărimea și modelul pentru echipă, nu
-          doar din poze.
+          Showroom-ul are cabină de probă: vezi produsele și le probezi înainte de comandă. Așa alegi mărimea și modelul
+          pentru echipă, nu doar din poze.
         </p>
         <dl class="mt-6 divide-y divide-yp-white/10 border-y border-yp-white/10 text-base">
           <div class="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-4 py-4">
@@ -153,15 +155,16 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
           <h3 class="font-heading text-lg font-light text-yp-white">Știi ce produse vrei</h3>
           <p class="mt-3 max-w-prose text-base leading-relaxed text-yp-white/75">
             Spune-ne ce produse și câte bucăți îți trebuie. Poți strânge mai multe produse din
-            <a href="/produse/" class={link}>catalog</a> în lista de ofertă și ceri prețul pentru toate odată.
+            <a href="/produse/" class={link}>catalog</a> în lista de ofertă și ceri prețul pentru toate odată. Oferta o
+            primești {RESPONSE_TIME}.
           </p>
           <a href="/cere-oferta/" data-track-location="pagina-contact" class:list={[btnPrimary, 'mt-6']}>Cere ofertă</a>
         </div>
         <div class="border-t border-yp-white/10 pt-6">
           <h3 class="font-heading text-lg font-light text-yp-white">Vrei să alegem împreună</h3>
           <p class="mt-3 max-w-prose text-base leading-relaxed text-yp-white/75">
-            Răspunzi la câteva întrebări despre echipă și activitate, apoi alegi ora discuției din calendar. Venim la
-            discuție cu recomandări pentru oamenii tăi.
+            Răspunzi la câteva întrebări despre echipă și activitate, apoi îți alegi ziua și ora din calendar. Dacă nu
+            alegi, revenim noi {RESPONSE_TIME}. Venim la discuție cu recomandări pentru oamenii tăi.
           </p>
           <a href="/programeaza-discutie/" data-track-location="pagina-contact" class:list={[btnSecondary, 'mt-6']}>{CTA_DISCUSS}</a>
         </div>
@@ -173,7 +176,7 @@ const link = 'underline decoration-yp-yellow/60 underline-offset-4 transition-co
        actualizare (vezi comentariul din SITE.legal). -->
   <section aria-labelledby="date-firma">
     <div class:list={[pageContainer, 'py-10 md:py-14']}>
-      <h2 id="date-firma" class={sectionTitle}>Datele firmei</h2>
+      <h2 id="date-firma" class={sectionTitle}>Datele firmei, pentru înregistrarea ca furnizor</h2>
       <dl class="grid gap-x-8 gap-y-4 border-t border-yp-white/10 pt-6 text-base sm:grid-cols-2 lg:grid-cols-4">
         {company.map((row) => (
           <div>
