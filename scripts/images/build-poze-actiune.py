@@ -50,11 +50,15 @@ SOURCE_RE = re.compile(r"^(original|preview)/([MPS][0-9]{2})\.(jpg|png|webp)$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 FORMATS = {"JPEG", "PNG", "WEBP"}
 BASE_WIDTHS = (640, 960, 1440)
-HERO_WIDTH = 1920
+# Eroii (erou: true) nu au 640: pe telefon (390 px CSS, DPR 3) 640 px dă 1,79x și muchii moi; 768 px la q~70 cântărește
+# la fel de puțin sau mai puțin și nu încetinește LCP (măsurat, task 12). Lățimi eroi: 768/960/1440/1920.
+HERO_WIDTHS = (768, 960, 1440, 1920)
 MAX_BYTES = 250 * 1024
 # byte budget per width (ideal range from the brief); quality goes down until a file fits
-BUDGET = {640: 70 * 1024, 960: 120 * 1024, 1440: 200 * 1024, 1920: 240 * 1024}
+BUDGET = {640: 70 * 1024, 768: 56 * 1024, 960: 120 * 1024, 1440: 200 * 1024, 1920: 240 * 1024}
 QUALITY_START, QUALITY_MIN, QUALITY_STEP = 80, 50, 2
+# 768 (eroii) pornește de la q70: la q80 ar depăși bugetul, iar măsurătoarea LCP s-a făcut pe q~70
+QUALITY_START_BY_WIDTH = {768: 70}
 SRGB = ImageCms.createProfile("sRGB")
 
 
@@ -98,7 +102,7 @@ def load_source(entry, manifest_entry):
 
 def planned_widths(entry, source_width):
     widths = []
-    for w in BASE_WIDTHS + ((HERO_WIDTH,) if entry["erou"] else ()):
+    for w in (HERO_WIDTHS if entry["erou"] else BASE_WIDTHS):
         w = min(w, source_width)  # no upscaling: the last variant is the source width
         if w not in widths:
             widths.append(w)
@@ -108,7 +112,7 @@ def planned_widths(entry, source_width):
 def encode(img):
     width = img.size[0]
     budget = BUDGET.get(width, BUDGET[1440] if width > 960 else BUDGET[960])
-    quality = QUALITY_START
+    quality = QUALITY_START_BY_WIDTH.get(width, QUALITY_START)
     while True:
         buf = io.BytesIO()
         img.save(buf, "WEBP", quality=quality, method=6, exif=b"", icc_profile=None)

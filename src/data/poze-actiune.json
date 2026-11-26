@@ -21,7 +21,7 @@
     "copyrightNotice": "© MASCOT",
     "creator": { "@type": "Organization", "name": "MASCOT" },
     "sursa": "original",
-    "latimi": [640, 960, 1440, 1920],
+    "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "obiectPoz": { "desktop": "58% 40%", "telefon": "60% 45%" }
   },
@@ -60,7 +60,7 @@
     "copyrightNotice": "© MASCOT",
     "creator": { "@type": "Organization", "name": "MASCOT" },
     "sursa": "original",
-    "latimi": [640, 960, 1440, 1920],
+    "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "obiectPoz": { "desktop": "60% 55%", "telefon": "60% 55%" }
   },
@@ -86,7 +86,7 @@
     "copyrightNotice": "© MASCOT",
     "creator": { "@type": "Organization", "name": "MASCOT" },
     "sursa": "original",
-    "latimi": [640, 960, 1440, 1920],
+    "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "obiectPoz": { "desktop": "50% 30%", "telefon": "50% 30%" }
   },
@@ -190,7 +190,7 @@
     "copyrightNotice": "© Sir Safety",
     "creator": { "@type": "Organization", "name": "Sir Safety" },
     "sursa": "original",
-    "latimi": [640, 960, 1440, 1920],
+    "latimi": [768, 960, 1440, 1920],
     "erou": true,
     "obiectPoz": { "desktop": "50% 50%", "telefon": "50% 50%" }
   },
