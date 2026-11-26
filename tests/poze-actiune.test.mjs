@@ -1548,6 +1548,17 @@ test('erou: cele 10 poze au `eroul` în date (cadru telefon/desktop, preset exis
   assert.throws(() => heroStyle('M01'), /M01/);
 });
 
+// Contrastul textului alb de pe erou, măsurat pe 26.11.2026 (Chrome real, captură cu textul ascuns, p95 al luminanței sub liniile de
+// text, WCAG): cu presetul „standard” toate cele 10 poze au cel puțin 4,5:1 la 390×844 (DPR 3) și 1440×900; minimul e 4,72:1 (P16,
+// 1440 px), iar la 768/1024/1280/1920 px minimul e 4,81:1 (P16, 1280 px). De aceea toate folosesc „standard”. Dacă schimbi un preset
+// sau un cadru (`poz`), re-măsoară contrastul pe toate pozele și pe ambele viewport-uri și actualizează lista de mai jos.
+const HERO_GRADIENTS_IN_USE = { S02: 'standard', M24: 'standard', M25: 'standard', M26: 'standard', M27: 'standard', P14: 'standard', P15: 'standard', P16: 'standard', S18: 'standard', S19: 'standard' };
+
+test('erou: presetele de gradient folosite sunt cele măsurate pentru contrast, iar S02 are gradientul și cadrul de pe main', () => {
+  assert.deepEqual(Object.fromEntries(HERO_SET.map((id) => [id, photos.find((p) => p.id === id).eroul.gradient])), HERO_GRADIENTS_IN_USE);
+  assert.deepEqual(photos.find((p) => p.id === 'S02').eroul, { poz: { telefon: '50% 25%', desktop: '70% 30%' }, gradient: 'standard' });
+});
+
 test('erou: heroPreload() dă slug-ul și lățimile din care scriptul din <head> reface exact srcset-urile din <picture>', () => {
   const data = heroPreload(HERO_SET);
   assert.equal(data.dir, '/images/actiune/');
