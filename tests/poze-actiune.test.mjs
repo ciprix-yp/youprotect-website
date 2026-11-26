@@ -149,6 +149,7 @@ const DYNAMIC_OK = new Set([
   'src/components/global/PageHeader.astro',
   'src/components/global/GlobalInnerHero.astro',
   'src/layouts/InnerPageLayout.astro',
+  'src/pages/index.astro', // `const heroPhoto = "S02"` (literal, numărat) citit de ActionPhoto și imageGraph
 ]);
 const ALLOWED_EXPR = /^(?:page\.photo|photo|heroPhoto)$/;
 /** Fișierele care definesc sau documentează pozele: nu sunt „utilizări”. */
@@ -192,7 +193,9 @@ function callArgs(text, open) {
 
 const Q = '["\'`]';
 const LITERAL_ARGS = new RegExp(`^\\[?(?:${Q}[MPS][0-9]{2}${Q},?)*\\]?(?:,[0-9]+)?$`);
-const DYNAMIC_ARGS = /^\[?(?:page\.photo|photo|heroPhoto)\]?(?:,[0-9]+)?$/;
+// În DYNAMIC_OK: elemente = variabila așteptată sau literal (ex. imageGraph(["M12", heroPhoto])), nu orice expresie.
+const DYN_ITEM = `(?:page\\.photo|photo|heroPhoto|${Q}[MPS][0-9]{2}${Q})`;
+const DYNAMIC_ARGS = new RegExp(`^\\[?${DYN_ITEM}(?:,${DYN_ITEM})*\\]?(?:,[0-9]+)?$`);
 
 /** Paginile din date: { slug, photo?, heroPhoto? } -> referințe la /produse/<slug>/. */
 export function catalogRefs(pages) {

@@ -108,6 +108,10 @@ const faqSchema = {
   "@type": "FAQPage",
   mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
+
+// Poza eroului: singurul loc unde e numită (ActionPhoto și imageGraph o citesc de aici). Pentru altă poză se schimbă doar
+// această constantă (și `poz`, dacă cadrul diferă); poza trebuie să aibă `portret` în datele din poze-actiune.json.
+const heroPhoto = "S02";
 ---
 
 <BaseLayout
@@ -116,7 +120,7 @@ const faqSchema = {
   description="Echipamente de protecție și haine de lucru pentru firme, cu logo, alese după costul real. You Protect: showroom în Vetiș, Satu Mare, livrare în toată România."
 >
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
-  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M12", "S02"]))} />
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M12", heroPhoto]))} />
 
   <!-- Butonul fix de pe telefon: dispare la derulare în jos, revine la derulare în sus. -->
   <div
@@ -159,7 +163,7 @@ const faqSchema = {
         textului stă pe fond negru. De la 768 px: fundal pe toată secțiunea, ca înainte (opacitate și gradient neschimbate). */}
     <div class="absolute inset-x-0 top-0 h-[30rem] md:inset-y-0 md:h-auto">
       <ActionPhoto
-        id="S02"
+        id={heroPhoto}
         portret
         priority
         sizes="100vw"
