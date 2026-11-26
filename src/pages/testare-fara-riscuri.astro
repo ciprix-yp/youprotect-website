@@ -3,9 +3,12 @@
 // Ideea: clientul cumpără produsele de test, le măsurăm împreună față de ce folosește acum, iar banii se întorc integral
 // doar dacă AMBELE condiții sunt îndeplinite: costul pe zi de purtare nu e mai bun ȘI clientul nu e mulțumit.
 // Costul pe zi de purtare e aceeași măsură ca în calculator (src/lib/tco.js). Textele scurte sunt în RISK_FREE_TESTING.
+// Texte rescrise pe 26.11.2026 (SEO-003): H1 cu „testare echipamente de protecție”, intro cu răspunsul la obiecția
+// „de ce să risc să schimb?” (09 §5), întrebări frecvente cu FAQPage. Condițiile au rămas aceleași ca sens.
 import { getCollection } from "astro:content";
 import LegalPage from "../components/legal/LegalPage.astro";
 import { joinRo } from "../lib/catalog-categories";
+import { jsonLd } from "../lib/json-ld";
 import { riskFreeExclusions } from "../lib/risk-free-scope";
 import { SITE, CTA_DISCUSS } from "../lib/site";
 
@@ -13,18 +16,50 @@ import { SITE, CTA_DISCUSS } from "../lib/site";
 const notTestable = riskFreeExclusions(
   (await getCollection("products", ({ data }) => data.status === "published")).map((e) => e.data),
 );
+
+// Întrebările de pe pagină, și în FAQPage. Fiecare răspuns spune doar ce scrie mai jos în condiții; motivul excluderilor
+// e cel al owner-ului din D-2026-11-19-06.
+const faq = [
+  {
+    q: "Pot testa echipamentele de protecție înainte să echipez toată firma?",
+    a: "Da, prin programul „Testare fără riscuri” de la You Protect: testezi produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru. La final primești raportul cu costul pe zi de purtare al produselor testate și al celor pe care le folosești acum, pe fiecare rol.",
+  },
+  {
+    q: "Cine plătește produsele de test?",
+    a: "Tu le cumperi, ca la o comandă obișnuită, personalizate cu logoul firmei. Pentru un rol testat, îți returnăm integral suma plătită pe produsele lui de test dacă sunt adevărate amândouă: produsele testate nu au un cost pe zi de purtare mai mic decât cele de acum și nu ești mulțumit de ele.",
+  },
+  ...(notTestable.length > 0
+    ? [
+        {
+          q: "Ce echipamente de protecție nu intră în testare?",
+          a: `Nu intră: ${joinRo(notTestable)}. Pe acestea le comanzi direct. Unele țin ani, ca o cască, așa că 90 de zile nu arată cât rezistă; altele, ca echipamentul electroizolant, nu se testează cu returnare.`,
+        },
+      ]
+    : []),
+  {
+    q: "Cum aflu dacă produsele testate ies mai eficiente?",
+    a: "Din costul pe zi de purtare, nu din prețul pe bucată. Verificăm uzura la început și la 30, 60 și 90 de zile, iar colegii din același rol rămân pe produsele de acum, ca să avem comparația directă. Din uzura măsurată estimăm cât rezistă fiecare produs și cât te costă pe zi; metoda o fixăm în protocolul de testare semnat de amândoi.",
+  },
+];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
 ---
 
 <LegalPage
-  title="Testare fără riscuri"
-  description="Testezi echipamentele cu 3–5 oameni pe rol, 90 de zile, și măsurăm costul real. Pe rolul unde nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi."
-  updated="18 noiembrie 2026"
+  title="Testare echipamente de protecție fără riscuri"
+  breadcrumb="Testare fără riscuri"
+  description="Testezi echipamentele de protecție 90 de zile, cu 3–5 oameni pe rol. Unde nu te costă mai puțin pe zi de purtare și nu ești mulțumit, îți dăm banii înapoi."
+  updated="26 noiembrie 2026"
 >
   <p>
-    Înainte să echipezi toată firma, testăm produsele la tine, în condiții reale de lucru, și măsurăm împreună dacă te
-    costă mai puțin decât ce folosești acum. Nu e o probă de câteva zile: alegem produsele, stabilim ce măsurăm și
-    urmărim uzura până la final. Evaluăm fiecare rol separat: unde produsele nu ies mai eficiente financiar și nu ești
-    mulțumit de ele, îți dăm banii înapoi integral.
+    Cu programul „Testare fără riscuri” de la You Protect, din Satu Mare, testezi echipamentele de protecție cu 3–5
+    oameni pe rol, 90 de zile, în condiții reale de lucru, înainte să echipezi toată firma. Nu schimbi furnizorul
+    dintr-odată și nu decizi după prețul pe bucată: măsurăm împreună cât rezistă produsele și cât te costă pe zi de
+    purtare, față de ce folosești acum. Pe rolurile unde nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi
+    integral.
   </p>
   {notTestable.length > 0 && (
     <p>
@@ -33,35 +68,35 @@ const notTestable = riskFreeExclusions(
     </p>
   )}
 
-  <h2>Cum decurge testarea</h2>
+  <h2>Ce faci tu și ce facem noi, pas cu pas</h2>
   <ol>
     <li>
       <strong>Alegem împreună ce testăm.</strong> Pornim de la rolurile unde ai cea mai mare problemă: uzură rapidă,
-      înlocuiri dese, plângeri de confort. Îți propunem produsele, iar tu le aprobi înainte de comandă.
+      înlocuiri dese, plângeri de confort. Noi îți propunem produsele, tu le aprobi înainte de comandă.
     </li>
     <li>
-      <strong>Stabilim reperul.</strong> Notăm ce folosește echipa acum, cât costă și cât rezistă. Ne dai acces la datele
-      de care avem nevoie, de exemplu facturile sau evidența înlocuirilor. Fără reper nu avem cu ce compara.
+      <strong>Stabilim reperul.</strong> Notăm ce folosește echipa acum, cât costă și cât rezistă. Tu ne dai acces la
+      datele de care avem nevoie, de exemplu facturile sau evidența înlocuirilor. Fără reper nu avem cu ce compara.
     </li>
     <li>
       <strong>Stabilim ce măsurăm.</strong> Alegem împreună indicatorii, în funcție de problema ta: costul pe zi de
       purtare, numărul de înlocuiri, uzura la verificări, părerea celor care poartă produsele. Le trecem într-un protocol
-      de testare, semnat de amândoi.
+      de testare, pe care îl semnăm amândoi.
     </li>
     <li>
-      <strong>Cumperi produsele de test.</strong> Intră în testare 3–5 oameni pentru fiecare rol, în funcție de mărimea
-      firmei. Numărul exact îl stabilim împreună. Produsele se personalizează cu logo-ul firmei, ca la o comandă
+      <strong>Cumperi produsele de test.</strong> Intră în testare 3–5 oameni pe fiecare rol, în funcție de mărimea
+      firmei; numărul exact îl stabilim împreună. Produsele se personalizează cu logoul firmei, ca la o comandă
       obișnuită.
     </li>
     <li>
-      <strong>Urmărim testarea 90 de zile.</strong> Verificăm uzura la început și la 30, 60 și 90 de zile și strângem părerea celor
-      care poartă produsele, plus feedback-ul de la clienții tăi, dacă îl ai. Colegii lor din același rol rămân pe
-      produsele de acum, așa că avem comparația directă.
+      <strong>Urmărim testarea 90 de zile.</strong> Verificăm uzura la început și la 30, 60 și 90 de zile și strângem
+      părerea celor care poartă produsele, plus feedback-ul de la clienții tăi, dacă îl ai. Colegii lor din același rol
+      rămân pe produsele de acum, așa că avem comparația directă.
     </li>
     <li>
-      <strong>Calculăm rezultatul pe fiecare rol.</strong> Din uzura măsurată estimăm durata medie de viață și costul pe zi de purtare,
-      pentru produsele testate și pentru cele de acum. Primești raportul cu cifrele. Poți încerca dinainte același calcul
-      în <a href="/calculator-cost-echipamente/">calculatorul de cost</a>.
+      <strong>Calculăm rezultatul pe fiecare rol.</strong> Din uzura măsurată estimăm durata medie de viață și costul pe
+      zi de purtare, pentru produsele testate și pentru cele de acum. Primești raportul cu cifrele. Poți încerca dinainte
+      același calcul în <a href="/calculator-cost-echipamente/">calculatorul de cost</a>.
     </li>
   </ol>
 
@@ -101,7 +136,18 @@ const notTestable = riskFreeExclusions(
     numele.
   </p>
 
-  <h2>Cum începem</h2>
+  <section aria-labelledby="intrebari">
+    <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+    <h2 id="intrebari">Întrebări frecvente despre testare</h2>
+    {faq.map((item) => (
+      <>
+        <h3>{item.q}</h3>
+        <p>{item.a}</p>
+      </>
+    ))}
+  </section>
+
+  <h2>Cum începi</h2>
   <p>
     <a href="/programeaza-discutie/">{CTA_DISCUSS}</a> sau <a href="/cere-oferta/">cere o ofertă</a>, iar la
     primul contact stabilim rolurile și produsele de testat. Întrebări: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>

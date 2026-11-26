@@ -8,9 +8,10 @@ interface Props {
   title: string;
   description: string;
   updated: string; // ex. „16 noiembrie 2026”
+  breadcrumb?: string; // eticheta scurtă din breadcrumb, când H1-ul e mai lung (implicit titlul)
 }
 
-const { title, description, updated } = Astro.props;
+const { title, description, updated, breadcrumb = title } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -18,7 +19,7 @@ const { title, description, updated } = Astro.props;
     <nav aria-label="Breadcrumb" class={breadcrumbNav}>
       <a href="/" class="inline-flex min-h-11 items-center transition-colors hover:text-yp-yellow">Acasă</a>
       <span class="mx-2" aria-hidden="true">/</span>
-      <span class="text-yp-white" aria-current="page">{title}</span>
+      <span class="text-yp-white" aria-current="page">{breadcrumb}</span>
     </nav>
     <article
       class:list={[readingColumn, `text-yp-white/80 leading-relaxed
