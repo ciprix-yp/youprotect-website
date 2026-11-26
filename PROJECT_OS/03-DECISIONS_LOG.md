@@ -814,11 +814,10 @@
   1440 px). Acestea trei folosesc presetul `mediu` (desktop mai întunecat: via 75%, la capăt 40%); restul rămân pe
   `standard`. Minimul general e 4,74:1 (M26, 1440 px); cu `mediu` M24, P14 și P16 au cel puțin 5,49:1. Presetele
   `puternic` și `foarte-puternic` există dacă se cere marjă mai mare.
-- Excepția Portwest (decisă de owner pe 26.11.2026: „Le punem și pe Portwest”), după ce i s-a semnalat licența Media Hub
-  („solely for the marketing, promotion, sale and distribution of Portwest products”): P14, P15 și P16 pot apărea ca
-  erou rotativ pe „/”, nu lângă produse Portwest. Excepția e strictă și impusă de test: doar pagina „/”, doar aceste
-  trei ID-uri, doar ca parte din set; orice alt P* în afara paginilor Portwest pică testul ca înainte. Riscul de licență
-  rămâne al owner-ului.
+- Excepție la regula „Portwest doar lângă produse Portwest”, decisă de owner pe 26.11.2026: setul rotativ al eroului
+  de pe homepage include P14, P15 și P16. Homepage-ul prezintă Portwest printre mărcile pe care You Protect le vinde.
+  Excepția e strictă: doar pagina „/”, doar aceste trei ID-uri și doar ca parte din set; orice alt P* în afara
+  paginilor Portwest pică testul ca înainte.
 - Fără stocare pe dispozitiv: nicio cookie, localStorage, sessionStorage sau IndexedDB și niciun parametru în URL.
   Motiv: ePrivacy art. 5(3); o preferință de afișare nu e „strict necesară”. Alegerea e doar `Math.random` la fiecare
   încărcare: o reîncărcare poate da altă poză, iar întoarcerea din bfcache păstrează poza.
