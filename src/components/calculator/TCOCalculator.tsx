@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { DOMAINS } from '../../lib/domains.js';
 import { RESPONSE_TIME, RISK_FREE_TESTING, SITE } from '../../lib/site';
 import {
@@ -76,7 +76,7 @@ function NumberField({
         <label htmlFor={id} className="text-sm font-medium text-neutral-300">
           {label}
         </label>
-        <span className="text-yp-yellow font-semibold font-mono whitespace-nowrap" aria-hidden="true">
+        <span className="text-yp-yellow font-semibold tabular-nums whitespace-nowrap" aria-hidden="true">
           {value} {suffix}
         </span>
       </div>
@@ -134,7 +134,7 @@ function PriceInput({
             setText(e.target.value);
             onChange(parsePrice(e.target.value));
           }}
-          className={`w-full min-h-11 bg-[#0a0a0a] border rounded-md px-3 py-2 text-white font-mono text-right focus:outline-none focus:border-yp-yellow ${
+          className={`w-full min-h-11 bg-[#0a0a0a] border rounded-md px-3 py-2 text-white tabular-nums text-right focus:outline-none focus:border-yp-yellow ${
             invalid ? 'border-red-400/70' : 'border-white/15'
           }`}
         />
@@ -148,8 +148,25 @@ function PriceInput({
 const formatPerDay = (n: number) =>
   new Intl.NumberFormat('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 
-const selectClass =
-  'w-full min-h-11 bg-[#0a0a0a] border border-white/15 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-yp-yellow';
+// Lista derulantă cu săgeată proprie: fără `appearance-none`, Safari ignoră înălțimea (ieșea 22 px, nu 44), iar textul
+// de 16 px nu lasă iPhone-ul să mărească pagina la atingere (26.11.2026).
+function Select({ id, value, onChange, children }: { id: string; value: number; onChange: (v: number) => void; children: ReactNode }) {
+  return (
+    <div className="relative">
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full min-h-11 appearance-none bg-[#0a0a0a] border border-white/15 rounded-md pl-3 pr-10 py-2 text-base text-white [color-scheme:dark] focus:outline-none focus:border-yp-yellow"
+      >
+        {children}
+      </select>
+      <svg className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
 
 export default function TCOCalculator() {
   const [step, setStep] = useState(0);
@@ -359,12 +376,16 @@ export default function TCOCalculator() {
               return (
                 <div key={cid} className={`rounded-md border ${selected ? 'border-yp-yellow/60' : 'border-white/10'}`}>
                   <button type="button" aria-pressed={selected} onClick={() => toggleCategory(cid)} className={`w-full ${toggleClass(selected)} border-0`}>
-                    {selected ? '✓ ' : ''}
+                    {selected && (
+                      <svg className="mr-2 inline-block h-4 w-4 -translate-y-px" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                        <path d="M4 10.5l4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                     {cat.label}
                   </button>
                   {selected && (
                     <div className="space-y-3 px-4 pb-4 pt-1">
-                      <div className="flex gap-3">
+                      <div className="grid grid-cols-2 gap-3">
                         <PriceInput
                           id={`p-${cid}`}
                           label="Preț acum, pe bucată"
@@ -380,40 +401,31 @@ export default function TCOCalculator() {
                           onChange={(v) => set('qualityPrices', { ...inputs.qualityPrices, [cid]: v })}
                         />
                       </div>
-                      <div className="flex gap-3">
-                        <div className="w-28 shrink-0">
+                      {/* Pe telefon, câte o listă pe rând: „în fiecare săptămână” nu încape într-o jumătate de rând. */}
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div className="min-w-0">
                           <label htmlFor={`n-${cid}`} className="block text-xs text-neutral-400 mb-1">
                             Bucăți pe om
                           </label>
-                          <select
-                            id={`n-${cid}`}
-                            value={qtyOf(cid)}
-                            onChange={(e) => set('qty', { ...inputs.qty, [cid]: Number(e.target.value) })}
-                            className={selectClass}
-                          >
+                          <Select id={`n-${cid}`} value={qtyOf(cid)} onChange={(v) => set('qty', { ...inputs.qty, [cid]: v })}>
                             {[1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20].map((n) => (
                               <option key={n} value={n}>
                                 {n}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0">
                           <label htmlFor={`m-${cid}`} className="block text-xs text-neutral-400 mb-1">
                             Le înlocuiești
                           </label>
-                          <select
-                            id={`m-${cid}`}
-                            value={monthsOf(cid)}
-                            onChange={(e) => set('months', { ...inputs.months, [cid]: Number(e.target.value) })}
-                            className={selectClass}
-                          >
+                          <Select id={`m-${cid}`} value={monthsOf(cid)} onChange={(v) => set('months', { ...inputs.months, [cid]: v })}>
                             {TCO_INTERVALS.map((i) => (
                               <option key={i.months} value={i.months}>
                                 {i.label}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </div>
                       </div>
                     </div>
@@ -436,7 +448,7 @@ export default function TCOCalculator() {
 
       {id === 'ipoteze' && (
         <div className="space-y-8">
-          {heading('Ipotezele tale', 'Aici decizi tu cât rezistă produsele de calitate. Calculul nu presupune nimic în locul tău.')}
+          {heading('Ipotezele tale', 'Aici decizi tu cât rezistă produsele de calitate. Calculul nu presupune asta în locul tău.')}
           <NumberField
             id="t-durability"
             label="De câte ori durează mai mult un produs de calitate"
@@ -505,18 +517,22 @@ export default function TCOCalculator() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-md border border-white/10 bg-[#0a0a0a] p-4">
+            <div className="flex flex-col rounded-md border border-white/10 bg-[#0a0a0a] p-4">
               <p className="text-xs text-neutral-400 mb-1">Acum, pe an</p>
-              <p className="text-lg sm:text-xl md:text-2xl font-semibold font-mono break-words">{formatLei(result.totalNow)}</p>
-              <p className="text-xs text-neutral-400 mt-1">{formatPerDay(result.perDayNow)} lei/zi de om</p>
+              <div className="mt-auto">
+                <p className="text-lg sm:text-xl md:text-2xl font-semibold tabular-nums break-words">{formatLei(result.totalNow)}</p>
+                <p className="text-xs text-neutral-400 mt-1">{formatPerDay(result.perDayNow)} lei/zi de om</p>
+              </div>
             </div>
-            <div className="rounded-md border border-white/10 bg-[#0a0a0a] p-4">
+            <div className="flex flex-col rounded-md border border-white/10 bg-[#0a0a0a] p-4">
               <p className="text-xs text-neutral-400 mb-1">
                 Cu produse de calitate,{' '}
                 {parsed.durability === 1 ? 'dacă durează la fel' : `dacă durează de ${formatFactor(parsed.durability)} ori mai mult`}
               </p>
-              <p className="text-lg sm:text-xl md:text-2xl font-semibold font-mono break-words text-white">{formatLei(result.totalQuality)}</p>
-              <p className="text-xs text-neutral-400 mt-1">{formatPerDay(result.perDayQuality)} lei/zi de om</p>
+              <div className="mt-auto">
+                <p className="text-lg sm:text-xl md:text-2xl font-semibold tabular-nums break-words text-white">{formatLei(result.totalQuality)}</p>
+                <p className="text-xs text-neutral-400 mt-1">{formatPerDay(result.perDayQuality)} lei/zi de om</p>
+              </div>
             </div>
           </div>
 
@@ -546,7 +562,7 @@ export default function TCOCalculator() {
                     {formatFactor(r.unitsPerYear)} buc. pe an acum
                   </span>
                 </span>
-                <span className="font-mono text-neutral-400 whitespace-nowrap">
+                <span className="tabular-nums text-neutral-400 whitespace-nowrap">
                   {formatLei(r.now)} → <span className="text-white">{formatLei(r.quality)}</span>
                 </span>
               </div>
@@ -557,15 +573,20 @@ export default function TCOCalculator() {
                   Timp de administrare
                   <span className="block text-xs text-neutral-500">presupus că scade odată cu înlocuirile</span>
                 </span>
-                <span className="font-mono text-neutral-400 whitespace-nowrap">
+                <span className="tabular-nums text-neutral-400 whitespace-nowrap">
                   {formatLei(result.adminNow)} → <span className="text-white">{formatLei(result.adminQuality)}</span>
                 </span>
               </div>
             )}
           </div>
 
-          <details className="text-sm text-neutral-400">
-            <summary className="cursor-pointer min-h-11 flex items-center text-neutral-300 hover:text-white">Cum am calculat</summary>
+          <details className="group text-sm text-neutral-400">
+            <summary className="cursor-pointer min-h-11 flex items-center gap-2 text-neutral-300 hover:text-white list-none [&::-webkit-details-marker]:hidden">
+              Cum am calculat
+              <svg className="h-4 w-4 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </summary>
             <ul className="mt-2 space-y-1.5 list-disc pl-5 leading-relaxed">
               <li>
                 Pe fiecare categorie: bucăți pe an = angajați × bucăți pe om × înlocuiri pe an (de exemplu, „la 6 luni” înseamnă 2 pe an,
