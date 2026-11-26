@@ -6,7 +6,11 @@ const currentYear = new Date().getFullYear();
 // Butonul WhatsApp e pe fiecare pagină (owner, 20.11.2026), cu adresa paginii în mesajul precompletat. Excepție: pe
 // telefon, pe paginile cu formular, butonul fix acoperea variantele de răspuns (un tap deschidea WhatsApp în loc să
 // bifeze); acolo, pe telefon, linkul WhatsApp e sub titlul paginii, iar butonul fix apare doar de la tabletă în sus.
-const onFormPage = ["/cere-oferta", "/programeaza-discutie"].some((p) => Astro.url.pathname.startsWith(p));
+// Calculatorul e tot o pagină cu formular (26.11.2026): pe telefon, butonul fix acoperea „Următorul pas” și „Vezi
+// rezultatul”; linkul WhatsApp e în primul pas („Ai o echipă de 1–4 persoane?”).
+const onFormPage = ["/cere-oferta", "/programeaza-discutie", "/calculator-cost-echipamente"].some((p) =>
+  Astro.url.pathname.startsWith(p),
+);
 const waHref = whatsappHref(Astro.url.pathname);
 ---
 

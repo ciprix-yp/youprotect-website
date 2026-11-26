@@ -1,6 +1,38 @@
 ---
+// Calculatorul de cost (D-2026-11-20-08). Aspectul e cel al paginilor cu formular (/cere-oferta/): titlu centrat, apoi
+// cardul. Texte rescrise pe 26.11.2026 (SEO-003): intro de 3 rânduri la 390 px; întrebări frecvente cu FAQPage pentru
+// „cât costă pe an echipamentul de protecție pentru un angajat” (09 §4), cu formula din src/lib/tco.js, fără cifre
+// inventate; legea ca pe homepage și în ghidul de cost (09 §5, obiecția 4); oferta de testare doar din RISK_FREE_TESTING.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TCOCalculator from "../components/calculator/TCOCalculator.tsx";
+import { jsonLd } from "../lib/json-ld";
+import { RISK_FREE_TESTING } from "../lib/site";
+import { WORKING_DAYS_PER_YEAR } from "../lib/tco.js";
+
+const faq: { q: string; a: string; link?: { href: string; label: string } }[] = [
+  {
+    q: "Cât costă pe an echipamentul de protecție pentru un angajat?",
+    a: "Depinde de ce primește fiecare om, de prețul pe bucată și de cât de des îl înlocuiești, așa că nu există o sumă valabilă pentru toate firmele. Pentru fiecare categorie, costul pe an al unui om este: bucăți pe om × înlocuiri pe an × prețul pe bucată. Calculatorul de pe această pagină face socoteala din prețurile tale și adună categoriile și timpul de administrare.",
+  },
+  {
+    q: "Ce înseamnă costul pe zi de purtare?",
+    a: `Costul pe an al echipamentelor, împărțit la numărul de oameni și la ${WORKING_DAYS_PER_YEAR} de zile lucrătoare. În calculator apare ca „lei/zi de om”. Cu el compari produse cu prețuri și durate diferite: un produs mai scump care se înlocuiește mai rar poate costa mai puțin pe zi.`,
+  },
+  {
+    q: "Cine plătește echipamentul de protecție al angajaților?",
+    a: "Angajatorul. El le dă oamenilor gratuit echipamentul cerut de evaluarea riscurilor de la fiecare loc de muncă și răspunde de întreținerea și înlocuirea lui (HG nr. 1.048/2006, art. 10). Costul pe an din calculator îl poți trece în bugetul următor.",
+  },
+  {
+    q: "Cum aflu cât rezistă de fapt produsele de calitate?",
+    a: `Calculatorul nu presupune cât rezistă produsele: durata o alegi tu. La tine în echipă o măsurăm în programul „Testare fără riscuri”. ${RISK_FREE_TESTING.short} Condițiile și echipamentele care nu intră în testare sunt pe pagina programului.`,
+    link: { href: RISK_FREE_TESTING.href, label: RISK_FREE_TESTING.linkLabel },
+  },
+];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
 ---
 
 <BaseLayout
@@ -15,7 +47,7 @@ import TCOCalculator from "../components/calculator/TCOCalculator.tsx";
           Cât te costă de fapt echipamentele de protecție
         </h1>
         <p class="text-lg md:text-xl text-neutral-400">
-          Prețul de pe factură e doar o parte. Pune prețurile tale, cât de des le înlocuiești și cât timp pierzi cu ele, apoi compară cu produse care durează mai mult. Rezultatul îl vezi imediat, fără date de contact.
+          Pui prețurile tale și vezi cât te costă pe an, acum și cu produse care durează mai mult. Fără date de contact.
         </p>
       </div>
 
@@ -25,6 +57,33 @@ import TCOCalculator from "../components/calculator/TCOCalculator.tsx";
         Nu știi ce echipament să pui în calcul?
         <a href="/ghiduri/cost-echipament-protectie-muncitor/" class="inline-flex min-h-11 items-center text-yp-yellow underline underline-offset-4 hover:text-white">Citește ghidul despre costul echipamentului pe muncitor</a>
       </p>
+    </div>
+  </section>
+
+  <section class="border-t border-white/5 py-16 md:py-24" aria-labelledby="intrebari">
+    <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 id="intrebari" class="text-3xl md:text-4xl font-light text-white leading-tight">
+          Întrebări frecvente despre costul echipamentelor
+        </h2>
+        <dl class="mt-10 space-y-8">
+          {faq.map((item) => (
+            <div>
+              <dt class="text-lg text-white font-medium">{item.q}</dt>
+              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">
+                {item.a}
+                {item.link && (
+                  <>
+                    {" "}
+                    <a href={item.link.href} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{item.link.label}</a>
+                  </>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   </section>
 </BaseLayout>
