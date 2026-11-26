@@ -264,6 +264,8 @@ def main(argv=None):
     if not ids or len(set(ids)) != len(ids) or not all(ID_RE.fullmatch(i) for i in ids):
         fail("poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
     only = parse_only(sys.argv[1:] if argv is None else argv, set(ids))
+    if only is not None and not VARIANTS.exists():
+        fail(f"--only cere un {VARIANTS.name} existent (altfel rulează fără --only)")
     if not MANIFEST.exists():
         fail(f"lipsește {MANIFEST.relative_to(ROOT)}; rulează întâi scripts/images/fetch-poze-actiune.py")
     manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
@@ -331,8 +333,6 @@ def main(argv=None):
                 )
                 print(f"{entry['id']} portret {w}x{h} q{quality} {len(data) // 1024} KB")
     if only is not None:
-        if not VARIANTS.exists():
-            fail(f"--only cere un {VARIANTS.name} existent (altfel rulează fără --only)")
         variants = merge_variants(ids, json.loads(VARIANTS.read_text(encoding="utf-8")), variants)
         absent = [i for i in ids if i not in variants]
         if absent:

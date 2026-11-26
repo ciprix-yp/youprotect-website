@@ -19,19 +19,19 @@ interface Props {
 }
 
 const { photos } = Astro.props;
+if (photos.length < 1) throw new Error('HeroPhotoSet: lista de poze e goală (prima, S02, e și poza fără JavaScript).');
 ---
 
 {photos.map((heroPhoto, i) => (
   <template id={`erou-${i}`}><HeroPhotoBlock id={heroPhoto} /></template>
 ))}
-{photos.slice(0, 1).map((heroPhoto) => (
-  <noscript><HeroPhotoBlock id={heroPhoto} /></noscript>
-))}
+<noscript><HeroPhotoBlock id={photos[0]} /></noscript>
 <script is:inline>
   (function () {
-    // Indexul vine doar din scriptul din <head> (atributul data-erou); orice valoare în afara 0-9 cade pe prima poză.
+    // Indexul vine doar din scriptul din <head> (atributul data-erou). Fără limită la 10 poze: orice index de 1-3 cifre care are
+    // template; o valoare invalidă sau fără template (nu poate veni de la scriptul din <head>) cade pe prima poză.
     var a = document.documentElement.getAttribute("data-erou");
-    var t = document.getElementById("erou-" + (/^[0-9]$/.test(a) ? a : 0)) || document.getElementById("erou-0");
+    var t = document.getElementById("erou-" + (/^\d{1,3}$/.test(a) ? a : 0)) || document.getElementById("erou-0");
     var s = document.currentScript;
     if (t && t.content && s) s.parentNode.insertBefore(t.content.cloneNode(true), s);
   })();

@@ -988,18 +988,18 @@ test('dist: scriptul din <head> alege indexul, îl pune în data-erou și preîn
   t.diagnostic(`script <head>: ${code.length} B brut, ${brotliCompressSync(Buffer.from(code)).length} B brotli`);
 });
 
-test('dist: scriptul de clonare din erou validează data-erou (0-9) și clonează template-ul ales fără innerHTML', (t) => {
+test('dist: scriptul de clonare din erou validează data-erou (index de 1-3 cifre cu template) și clonează template-ul ales fără innerHTML', (t) => {
   if (!distAvailable(t)) return;
   const code = cloneScriptOf(homeHtml());
   assert.ok(code, 'scriptul de clonare lipsește');
-  const run = (value) => {
+  const run = (value, templates = 10) => {
     const inserted = [];
     const template = (n) => ({ content: { cloneNode: (deep) => ({ clone: n, deep }) } });
     const parent = { insertBefore: (node, ref) => inserted.push([node, ref]) };
     const script = { parentNode: parent };
     const document = {
       documentElement: { getAttribute: () => value },
-      getElementById: (id) => (/^erou-[0-9]$/.test(id) ? template(Number(id.slice(5))) : null),
+      getElementById: (id) => (/^erou-\d+$/.test(id) && Number(id.slice(5)) < templates && id === `erou-${Number(id.slice(5))}` ? template(Number(id.slice(5))) : null),
       currentScript: script,
     };
     runInNewContext(code, { document });
@@ -1009,7 +1009,11 @@ test('dist: scriptul de clonare din erou validează data-erou (0-9) și cloneaz�
     return inserted[0][0].clone;
   };
   for (let i = 0; i < 10; i += 1) assert.equal(run(String(i)), i);
-  for (const bad of [null, '', 'x', '10', '-1', '1.5', '01', ' 3', '3 ', '__proto__']) assert.equal(run(bad), 0, `valoare „${bad}”`);
+  // fără limită tacită la 10 poze: un set mai mare funcționează (index de până la 3 cifre)
+  for (const i of [10, 11, 99, 100]) assert.equal(run(String(i), 101), i, `index ${i} într-un set mai mare`);
+  // valori invalide sau fără template -> prima poză
+  for (const bad of [null, '', 'x', '-1', '1.5', '01', ' 3', '3 ', '__proto__', '1000']) assert.equal(run(bad, 101), 0, `valoare „${bad}”`);
+  assert.equal(run('10', 10), 0, 'index fără template -> prima poză');
 });
 
 test('dist: scripturile inline ale eroului nu citesc și nu scriu nimic din afara paginii (fără URL, cookie, storage, innerHTML, eval)', (t) => {

@@ -38,6 +38,7 @@ export interface ActionPhotoData {
   erou: boolean;
   /** Decupaj portret 4:5 (fracții [x0, y0, x1, y1] din originalul ÎNTREG, înainte de `decupaj`-ul de desktop) pentru telefon; variantele `-p768`/`-p960` le face scriptul. */
   portret?: { decupaj: [number, number, number, number] };
+  /** Cadrul în pozele din corp și în antetele paginilor. La eroul rotativ al homepage-ului contează doar `eroul.poz`. */
   obiectPoz: { desktop: string; telefon: string };
   /**
    * Doar pozele eroului rotativ al homepage-ului: cadrul (`object-position`) și presetul de gradient (HERO_GRADIENTS din
@@ -252,6 +253,9 @@ export function bodySizes(sizes: string): string {
 export function heroStyle(id: string) {
   const { eroul } = getPhoto(id);
   if (!eroul) throw new Error(`Poza „${id}” nu are „eroul” în src/data/poze-actiune.json.`);
+  if (!Object.hasOwn(HERO_GRADIENTS, eroul.gradient)) {
+    throw new Error(`Poza „${id}”: presetul de gradient „${eroul.gradient}” nu există (presetele: ${Object.keys(HERO_GRADIENTS).join(', ')}).`);
+  }
   return { poz: eroul.poz, gradient: HERO_GRADIENTS[eroul.gradient] };
 }
 
