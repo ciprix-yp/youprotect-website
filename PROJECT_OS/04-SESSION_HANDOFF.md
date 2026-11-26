@@ -46,6 +46,15 @@ verificate înainte de merge.
 - Search Console: `secret run youprotect-website -- node scripts/seo/gsc.mjs …`. Inspecția durează cam 5 s pe adresă;
   datele nu intră în repo.
 
+## Sesiunea 2026-11-26: poze reale în acțiune (PR #93)
+
+- PR #93 (`feat/poze-actiune`, D-2026-11-26-02): 19 poze reale cu oameni în acțiune (MASCOT, Portwest, Sir Safety) pe
+  site, prin `ActionPhoto` și `src/data/poze-actiune.json`; pozele generate cu AI de pe /cum-lucram/ sunt înlocuite.
+  Live în preview-ul PR-ului, nu în `main`. Regulile sunt în `08-GHID_CONTINUT.md` §9.
+- Urmează: aprobarea lui Ciprian pe iPhone, apoi merge după OK. PR-uri separate, după acesta: antetul cu poza deasupra
+  titlului pe telefon, /despre-noi/ după machetă, poza nouă de pe homepage, titlurile galbene de pe /cum-lucram/,
+  recenziile fără autoplay, cardurile de catalog pe model.
+
 ## Sesiunea 2026-11-17: cererile pe D1, baza Railway retrasă
 
 - Cererile de pe site: D1 `youprotect-leads` + email Resend + Prospector CRM (job la 5 minute pe M1). Totul e verificat cap-coadă, vezi OPS-006. Testele de formular: doar pe preview, fără CUI, cu acordul lui Ciprian (`01-RUNBOOK.md`, pasul 6).

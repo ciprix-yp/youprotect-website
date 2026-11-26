@@ -17,6 +17,8 @@ export interface CategoryPage {
   plural: string;
   /** Se pot personaliza cu logo. Încălțămintea nu: nicio fișă nu are zone de logo de la producător. */
   logo: boolean;
+  /** Id-ul unei poze din src/data/poze-actiune.json, afișată lângă antet. */
+  photo?: string;
 }
 
 // O pagină de categorie apare doar de la două produse publicate în sus: o pagină cu un singur produs ar fi subțire.
@@ -26,6 +28,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'incaltaminte',
     slug: 'incaltaminte-de-protectie',
+    photo: 'S16',
     heading: 'Încălțăminte de protecție pentru firme',
     title: 'Încălțăminte de protecție pentru firme',
     intro:
@@ -36,6 +39,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'reflectorizante',
     slug: 'imbracaminte-reflectorizanta',
+    photo: 'M05',
     heading: 'Îmbrăcăminte reflectorizantă pentru firme',
     title: 'Îmbrăcăminte reflectorizantă pentru firme',
     intro:
@@ -46,6 +50,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'geci-jachete',
     slug: 'geci-de-lucru',
+    photo: 'P05',
     heading: 'Geci și jachete de lucru',
     title: 'Geci și jachete de lucru pentru firme',
     intro:
@@ -56,6 +61,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'pantaloni',
     slug: 'pantaloni-de-lucru',
+    photo: 'P06',
     heading: 'Pantaloni de lucru și salopete',
     title: 'Pantaloni de lucru și salopete pentru firme',
     intro:
@@ -86,6 +92,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'camasi',
     slug: 'camasi-corporate',
+    photo: 'M19',
     heading: 'Cămăși corporate pentru firme',
     title: 'Cămăși corporate pentru angajați',
     intro:
@@ -148,6 +155,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'protectia-respiratorie',
     slug: 'masti-de-protectie',
+    photo: 'S04',
     heading: 'Măști de protecție respiratorie',
     title: 'Măști de protecție respiratorie pentru firme',
     intro:
@@ -158,6 +166,7 @@ export const CATEGORY_PAGES: CategoryPage[] = [
   {
     key: 'protectie-cadere',
     slug: 'hamuri-de-siguranta',
+    photo: 'S08',
     heading: 'Hamuri și lonje de siguranță',
     title: 'Hamuri și lonje de siguranță pentru firme',
     intro:

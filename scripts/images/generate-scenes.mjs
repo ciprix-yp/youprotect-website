@@ -1,4 +1,5 @@
-// Scenele ilustrative de pe paginile de industrie și de personalizare (public/images/scena-*.webp), generate cu OpenAI
+// Scena ilustrativă a paginii de personalizare (public/images/scena-personalizare.webp; scenele de industrie au fost înlocuite
+// cu poze reale în acțiune, vezi src/data/poze-actiune.json), generată cu OpenAI
 // gpt-image-2 pe 20.11.2026 (D-2026-11-20-06). Sunt ilustrații, nu fotografii cu echipa sau clienții You Protect:
 // fără logo-uri sau texte de mărci reale, cu echipamentul purtat corect; pe site au alt="" (decorative).
 // Rulare: secret run youprotect-website -- node scripts/images/generate-scenes.mjs <out_dir> [nume...]
@@ -13,12 +14,6 @@ const STYLE_PEOPLE =
   'Adults, realistic faces, not looking at the camera. Wide composition with empty dark space on the left third.';
 
 const SCENES = {
-  constructii:
-    'A construction worker on a building site at dusk, wearing a white safety helmet with chin strap, a high-visibility yellow jacket with reflective bands, work trousers and safety boots, checking rebar on a concrete slab; scaffolding and a crane softly out of focus behind.',
-  logistica:
-    'A warehouse worker in a large logistics warehouse, wearing a high-visibility yellow vest over a dark work jacket, work trousers and safety shoes, scanning a parcel next to tall pallet racking; a forklift softly out of focus in the aisle behind, cool blue light from high windows.',
-  productie:
-    'A production line worker in a clean modern factory hall, wearing clear safety glasses, cut-resistant work gloves, a dark work jacket and safety shoes, inspecting a metal part at a workstation; machines softly out of focus behind, cool blue light with warm task lighting.',
   personalizare:
     'Indoor studio product photograph, no people: close-up of the chest of a dark navy work jacket laid flat on a dark wooden workbench, with a neatly embroidered abstract geometric emblem in bright yellow thread; next to it a spool of yellow embroidery thread and a folded second jacket. Soft directional studio light from the right, fabric weave and stitches clearly visible, no letters or words anywhere.',
 };

@@ -743,3 +743,25 @@
 - Răspunsurile sunt text bine format (`toWellFormed`: un surrogate singur devine U+FFFD), iar tăierea la limită nu
   rupe caractere (o pereche surrogate nu se taie la mijloc), ca importerul CRM să primească UTF-8 valid.
 - Impact: echipa vede în cerere (în email și în CRM) când să revină. Nu există memento automat.
+
+## D-2026-11-26-02
+- Poze reale cu oameni în acțiune (PR #93). Owner-ul a aprobat 22 de poze (MASCOT, Portwest, Sir Safety); furnizorii
+  și-au dat acordul de folosire. 19 sunt pe site; M18, P13 și S14 au fost scoase (nefolosite). Fiecare poză are alt,
+  nume de fișier și date structurate.
+- Fără credit vizibil sub poze. Creditul stă doar în datele structurate (`ImageObject` cu `creditText`,
+  `copyrightNotice`, `creator`), fără `license` și `acquireLicensePage`: nu vrem eticheta „Licensable” în Google Images.
+- Pozele generate cu AI de pe /cum-lucram/ (mărci inventate, text fals) au fost înlocuite cu poze reale. Fișierele
+  vechi și redirecturile lor au fost șterse.
+- Portwest apare doar lângă produse Portwest (licența Media Hub: „solely for the marketing, promotion, sale and
+  distribution of Portwest products”): /produse/portwest/, /industrii/logistica/ (Depozit frigorific) și paginile de
+  categorie care listează modele Portwest. Se verifică automat, cu teste pe surse și pe `dist/`, rulate în CI.
+- Poza nu sugerează că oamenii din ea sunt clienți sau angajați You Protect și nu sugerează o întâlnire sau o testare
+  făcută de You Protect. De aceea alt-ul nu spune „echipa noastră” sau „clienții noștri”, iar pe /cum-lucram/ pasul
+  „Testezi înainte să decizi” are poza cu picioare în pantofi de protecție, nu cu oameni identificabili.
+- Fără practici nesigure în poze: la selecție s-a verificat echipamentul (cască, hi-vis, mănuși, încălțăminte, ham la
+  înălțime).
+- O poză apare de cel mult 2 ori pe site, niciodată de 2 ori pe aceeași pagină și niciodată ca erou pe 2 pagini.
+  Eroii homepage-ului și ai /industrii/ nu s-au schimbat în acest PR.
+- Impact: datele și regulile sunt în `src/data/poze-actiune.json`, în componenta `ActionPhoto` și în teste
+  (`tests/poze-actiune.test.mjs`). Variantele WebP se regenerează cu scripturile din `scripts/images/`. Nota de
+  folosire locală e `.catalog-work/images/actiune/NOTE-folosire.md` (ignorată de git). Regulile pe scurt: `08-GHID_CONTINUT.md` §9.

@@ -1,0 +1,136 @@
+[
+  {
+    "id": "M01",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "0b9bd9b520b3497ea620fa5ee533b33d",
+    "rezolutie_originala": [4000, 6000]
+  },
+  {
+    "id": "M02",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "0019d8547b294581856945bdbb3dfaff",
+    "rezolutie_originala": [5784, 3856]
+  },
+  {
+    "id": "M04",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "1c8cd3000b3d47348976e64d251e6735",
+    "rezolutie_originala": [5784, 3856]
+  },
+  {
+    "id": "M05",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "5d1fcca272c640119ddc2ab1c0823e1b",
+    "rezolutie_originala": [4000, 6000]
+  },
+  {
+    "id": "M09",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "50c270a10add4765969cb512fcbe848b",
+    "rezolutie_originala": [5738, 3825]
+  },
+  {
+    "id": "M10",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "44795d3531844fd79664e95901e10036",
+    "rezolutie_originala": [4241, 2827]
+  },
+  {
+    "id": "M12",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "d1bb14dc23b041aaa9850b2a84ce5444",
+    "rezolutie_originala": [5760, 3840]
+  },
+  {
+    "id": "M19",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "197fe90f02414ebab30da19e4da69358",
+    "rezolutie_originala": [5760, 3840]
+  },
+  {
+    "id": "P04",
+    "furnizor": "portwest",
+    "pixeli_din": "original",
+    "bynder_asset_id": "0D661A2C-6A04-4706-A8DEF92B61BCC63E",
+    "rezolutie_originala": [4866, 3072]
+  },
+  {
+    "id": "P05",
+    "furnizor": "portwest",
+    "pixeli_din": "original",
+    "bynder_asset_id": "22049258-AB16-45BF-B8F4A94AA00B3FEB",
+    "rezolutie_originala": [4596, 3052]
+  },
+  {
+    "id": "P06",
+    "furnizor": "portwest",
+    "pixeli_din": "original",
+    "bynder_asset_id": "9E35A055-BD87-48D1-A224863F66ED8F39",
+    "rezolutie_originala": [4609, 3313]
+  },
+  {
+    "id": "P11",
+    "furnizor": "portwest",
+    "pixeli_din": "preview",
+    "bynder_asset_id": "688DAC4B-3DF9-4876-82F58C56DD9F7B5B",
+    "rezolutie_originala": [2000, 1333],
+    "nota": "Preview-ul Media Hub (2000x1338) e sursa pixelilor; originalul declarat are 2000x1333. Fișier local, obținut manual din Media Hub: nu se descarcă automat."
+  },
+  {
+    "id": "S01",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/Alta-visibilita-landing_2025-05-06-145401_yqgx.jpg",
+    "rezolutie_originala": [3840, 2160]
+  },
+  {
+    "id": "S02",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/Multinorma-landing-sir_2025-05-06-153059_crlb.jpg",
+    "rezolutie_originala": [3840, 2160]
+  },
+  {
+    "id": "S04",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/Protezione-chimica-landing.jpg",
+    "rezolutie_originala": [3840, 2160]
+  },
+  {
+    "id": "S06",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/L1-1.jpg",
+    "rezolutie_originala": [2048, 2048]
+  },
+  {
+    "id": "S08",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/Anticaduta-landing_2025-04-18-154110_nujt.jpg",
+    "rezolutie_originala": [3840, 2160]
+  },
+  {
+    "id": "S12",
+    "furnizor": "sirsafety",
+    "pixeli_din": "preview",
+    "url_sursa": "https://www.sirsafety.com/assets/img/Sir_loc_2021_11_19_3559.jpg",
+    "rezolutie_originala": [1152, 768]
+  },
+  {
+    "id": "S16",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/Calz-Estive-Desk.jpg",
+    "rezolutie_originala": [3840, 2160]
+  }
+]

@@ -1,4 +1,7 @@
 ---
+import { jsonLd } from "../lib/json-ld";
+import ActionPhoto from "../components/media/ActionPhoto.astro";
+import { imageGraph } from "../lib/poze-actiune";
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
 import { CTA_DISCUSS } from "../lib/site";
 ---
@@ -9,13 +12,15 @@ import { CTA_DISCUSS } from "../lib/site";
   heroTitle="Partenerul celor care construiesc viitorul"
   heroSubtitle="La You Protect, nu oferim doar echipamente de protecție și haine de lucru. Construim un proces de achiziție mai clar, mai sigur și mai ușor de gestionat pentru companiile care vor să își echipeze oamenii bine, fără improvizații și fără pierdere inutilă de timp. Direcția noastră este simplă: respect pentru oameni, soluții potrivite și o imagine profesională care se vede în teren."
   breadcrumb="Cum lucrăm"
-  heroImage="/images/hero-cum-lucram.webp"
+  heroPhoto="S01"
   ctaHeading="Pregătit să ridici standardul echipei tale?"
   ctaSubheading="Consultanță gratuită, recomandări clare și decizii mai simple."
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
 >
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["S01", "M05", "M01", "S16"]))} />
+
   <!-- Client Profile Typographic -->
   <section class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
     <div class="max-w-7xl mx-auto px-4">
@@ -157,7 +162,7 @@ import { CTA_DISCUSS } from "../lib/site";
 
   <!-- 3 Steps Typographic -->
   <section
-    class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5 relative overflow-hidden"
+    class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5 relative overflow-clip"
   >
     <div class="max-w-7xl mx-auto px-4">
       <div class="mb-20 text-center">
@@ -199,19 +204,14 @@ import { CTA_DISCUSS } from "../lib/site";
           </div>
           <div class="col-span-1 lg:col-span-7">
             <div
-              class="aspect-[16/9] md:aspect-[21/9] lg:aspect-[16/9] bg-neutral-900 overflow-hidden relative group rounded-sm"
+              class="aspect-[16/9] md:aspect-[21/9] lg:aspect-[16/9] bg-neutral-900 overflow-clip relative rounded-xl"
             >
-              <img
-                src="/images/cum-lucram-consultanta.webp"
-                alt="Consultanță profesională B2B pentru alegerea echipamentelor de protecție a muncii"
-                class="sd-media w-full h-full object-cover opacity-80"
-                loading="lazy"
-                decoding="async"
+              <ActionPhoto
+                id="M05"
+                sizes="(min-width: 1280px) 768px, (min-width: 1024px) 58vw, calc(100vw - 2rem)"
+                motion
+                class="absolute inset-0"
               />
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-yp-black/80 to-transparent"
-              >
-              </div>
             </div>
           </div>
         </div>
@@ -224,20 +224,14 @@ import { CTA_DISCUSS } from "../lib/site";
             class="col-span-1 lg:col-span-7 order-2 lg:order-1"
           >
             <div
-              class="aspect-[16/9] md:aspect-[21/9] lg:aspect-[16/9] bg-neutral-900 overflow-hidden relative group rounded-sm"
+              class="aspect-[16/9] md:aspect-[21/9] lg:aspect-[16/9] bg-neutral-900 overflow-clip relative rounded-xl"
             >
-              <!-- Image representing Product Presentation -->
-              <img
-                src="/images/cum-lucram-prezentare.webp"
-                alt="Agenți de vânzări prezentând echipamente de protecție premium B2B unui client manager"
-                class="sd-media w-full h-full object-cover opacity-80"
-                loading="lazy"
-                decoding="async"
+              <ActionPhoto
+                id="M01"
+                sizes="(min-width: 1280px) 768px, (min-width: 1024px) 58vw, calc(100vw - 2rem)"
+                motion
+                class="absolute inset-0"
               />
-              <div
-                class="absolute inset-0 bg-gradient-to-l from-yp-black/80 to-transparent"
-              >
-              </div>
             </div>
           </div>
           <div
@@ -291,20 +285,14 @@ import { CTA_DISCUSS } from "../lib/site";
           </div>
           <div class="col-span-1 lg:col-span-7">
             <div
-              class="aspect-[16/9] md:aspect-[21/9] lg:aspect-[16/9] bg-neutral-900 overflow-hidden relative group rounded-sm"
+              class="aspect-[16/9] md:aspect-[21/9] lg:aspect-[16/9] bg-neutral-900 overflow-clip relative rounded-xl"
             >
-              <!-- Image representing Testing on Site -->
-              <img
-                src="/images/cum-lucram-testare.webp"
-                alt="Testare echipamente de protecție rezistente și haine de lucru tehnice direct pe șantier"
-                class="sd-media w-full h-full object-cover opacity-80"
-                loading="lazy"
-                decoding="async"
+              <ActionPhoto
+                id="S16"
+                sizes="(min-width: 1280px) 768px, (min-width: 1024px) 58vw, calc(100vw - 2rem)"
+                motion
+                class="absolute inset-0"
               />
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-yp-black/80 to-transparent"
-              >
-              </div>
             </div>
           </div>
         </div>

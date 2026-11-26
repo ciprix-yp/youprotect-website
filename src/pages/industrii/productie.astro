@@ -1,6 +1,8 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
 import { CTA_DISCUSS } from '../../lib/site';
+import ActionPhoto from '../../components/media/ActionPhoto.astro';
+import { imageGraph } from '../../lib/poze-actiune';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 import EquipmentList from '../../components/industries/EquipmentList.astro';
 
@@ -22,7 +24,7 @@ const breadcrumbSchema = {
   heroTitle="Echipare pentru producție"
   heroSubtitle="Pe linia de producție, echipamentul trebuie să reziste la uzură, să protejeze constant și să nu încetinească ritmul. Selectăm soluții potrivite mediului tău industrial, de la cap până la încălțăminte."
   breadcrumb="Producție"
-  heroImage="/images/scena-productie.webp"
+  heroPhoto="M12"
   ctaHeading="Echipezi o echipă de producție?"
   ctaSubheading="Îți recomandăm echipamentul potrivit liniei și riscurilor tale."
   ctaButtonText={CTA_DISCUSS}
@@ -31,6 +33,7 @@ const breadcrumbSchema = {
   ctaMicrocopy="Consultanță gratuită, fără obligații."
 >
   <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(['M12', 'M10']))} />
 
   <section class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
     <div class="max-w-7xl mx-auto px-4">
@@ -61,6 +64,14 @@ const breadcrumbSchema = {
             <a href="/cere-oferta/" class="text-yp-yellow underline underline-offset-4 hover:text-white">scrie-ne în cererea de ofertă</a>
             ce îți trebuie.
           </p>
+          <div class="relative aspect-[3/2] overflow-clip rounded-xl border border-white/10 bg-yp-gray">
+            <ActionPhoto
+              id="M10"
+              sizes="(min-width: 1280px) 768px, (min-width: 768px) 60vw, calc(100vw - 2rem)"
+              motion
+              class="absolute inset-0"
+            />
+          </div>
         </div>
       </div>
       <div class="mt-12">

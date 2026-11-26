@@ -1,0 +1,63 @@
+---
+// Poză reală cu oameni în acțiune, citită din src/data/poze-actiune.json doar prin `id`. Randează doar <img>:
+// fără figcaption și fără credit vizibil (creditul stă în ImageObject, vezi imageObject() din src/lib/poze-actiune.ts).
+//
+// Wrapperul trebuie să aibă `overflow-clip` (și colțuri `rounded-xl`) când `motion` e activ: `sd-media` scalează
+// poza la derulare (global.css) și fără tăiere ar ieși din cadru. NU `overflow-hidden`: `animation-timeline: view()` se
+// leagă de cel mai apropiat strămoș cu overflow ≠ visible/clip, iar cu `hidden` wrapperul devine containerul de derulare,
+// progresul rămâne blocat la 1 și efectul nu rulează deloc (tests/scroll-timeline-overflow.test.mjs). Eroii (PageHeader)
+// folosesc `sd-hero-photo` prin `class`, nu `motion`. Fără zoom la hover: poza nu e clicabilă.
+//
+// TIPARUL pe care îl detectează tests/poze-actiune.test.mjs (taskurile următoare îl respectă, altfel testul pică):
+//   - în src/pages/**/*.astro: <ActionPhoto id="M02" … />  (id literal, între ghilimele)
+//   - erou (prima poză mare a paginii, LCP): `heroPhoto="M02"` ca prop pe antet/hero (sau `<ActionPhoto id="M02" priority />`)
+//   - în src/lib/catalog-brands.ts și catalog-categories.ts: `photo: 'S01'` / `heroPhoto: 'M02'` în intrarea paginii
+//     (BrandLanding/CategoryLanding le randează cu <ActionPhoto id={page.photo} />, singurele unde id-ul poate fi dinamic)
+//   - o poză: max. 2 pagini, niciodată de 2 ori pe aceeași pagină, erou pe o singură pagină; P* doar lângă produse Portwest.
+import { getPhoto, photoSize, photoSrc, photoSrcset } from '../../lib/poze-actiune';
+
+interface Props {
+  id: string;
+  /** Obligatoriu: atributul `sizes`, ca browserul să aleagă varianta potrivită. */
+  sizes: string;
+  /** Erou/LCP: loading="eager" + fetchpriority="high". */
+  priority?: boolean;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+  /** Adaugă `sd-media` (mișcare legată de derulare). Wrapperul trebuie să aibă `overflow-clip`, nu `overflow-hidden`. */
+  motion?: boolean;
+  fit?: 'cover' | 'contain';
+}
+
+const { id, sizes, priority = false, loading, class: className, motion = false, fit = 'cover' } = Astro.props;
+if (!sizes) throw new Error(`ActionPhoto „${id}”: lipsește „sizes”.`);
+const photo = getPhoto(id);
+const { width, height } = photoSize(id);
+const lazy = (priority ? 'eager' : (loading ?? 'lazy')) === 'lazy';
+---
+
+<img
+  src={photoSrc(id, 960)}
+  srcset={photoSrcset(id)}
+  sizes={sizes}
+  width={width}
+  height={height}
+  alt={photo.alt}
+  loading={lazy ? 'lazy' : 'eager'}
+  decoding="async"
+  fetchpriority={priority ? 'high' : undefined}
+  class:list={['action-photo h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover', { 'sd-media': motion }, className]}
+  style={`--op-desktop:${photo.obiectPoz.desktop};--op-telefon:${photo.obiectPoz.telefon}`}
+/>
+
+<style>
+  /* Telefon: cadrul din obiectPoz.telefon; de la 768 px în sus: obiectPoz.desktop. */
+  .action-photo {
+    object-position: var(--op-telefon);
+  }
+  @media (min-width: 768px) {
+    .action-photo {
+      object-position: var(--op-desktop);
+    }
+  }
+</style>

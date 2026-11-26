@@ -226,3 +226,21 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     `sd-step` (linia pasului se trage), `sd-check` (bifele apar pe rând), `sd-expand` (blocul galben se lărgește),
     `sd-rise` și `.card-3d` (cardurile urcă, doar pe ecranele tactile; cu mouse-ul se înclină). Textul rămâne pe loc.
     Proprietățile se scriu separat, nu cu prescurtarea `animation` (`tests/scroll-animations.test.mjs`).
+- Poze reale în acțiune (26.11.2026, D-2026-11-26-02):
+  - Punerea: pozele se pun doar prin `ActionPhoto` (`src/components/media/ActionPhoto.astro`), cu datele din
+    `src/data/poze-actiune.json` (alt, credit, `obiectPoz` pentru telefon și desktop, lățimi). Variantele le generează
+    `scripts/images/build-poze-actiune.py`; nu se editează de mână. Eroul paginii e `heroPhoto` pe
+    `PageHeader`/`InnerPageLayout`. `priority` doar pe erou; restul sunt lazy.
+  - Alt-ul: o frază concretă despre ce se vede, în română. Brandul apare doar când se vede pe haine. Fără coduri de
+    produs, fără „echipa noastră” sau „clienții noștri”, fără înșiruiri de cuvinte-cheie, fără cifre. Un singur alt
+    per poză, în date, nu în pagină.
+  - Creditul: doar în `ImageObject`, niciodată vizibil sub poză.
+  - Folosirea: cel mult 2 folosiri pe poză, o dată pe pagină. Portwest doar lângă produse Portwest. Regulile le impun
+    `tests/poze-actiune.test.mjs` și `tests/scroll-timeline-overflow.test.mjs`, care rulează și în CI, după build, cu
+    `POZE_REQUIRE_DIST=1`.
+  - Mișcare: `sd-media` pe poză, `sd-hero-photo` pe erou (scara 1 la încărcare, fără translație). Wrapperul are
+    `overflow-clip`, NU `overflow-hidden`: un `overflow: hidden` face din wrapper un container de derulare pentru
+    `view()`, iar efectul rămâne blocat la progres 1 (măsurat în Chrome și WebKit). Excepție documentată: dalele din
+    scrollerul orizontal `CategoryTiles` pe telefon (`data-sd-exceptie`).
+  - Telefon: pe paginile de categorie poza vine DUPĂ grila de produse sub 1024 px; altfel devine LCP și împinge grila
+    pe al doilea ecran (măsurat 0,9 → 2,9 s). Eroii folosesc varianta de 768 px pe telefon (≈2x).

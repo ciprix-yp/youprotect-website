@@ -37,6 +37,11 @@ test('catalogul nu își afișează numărul de modele', () => {
   assert.deepEqual(hits, []);
 });
 
+test('catalogul nu sugerează cantitatea („zeci de variante”)', () => {
+  const VAGUE = /\b(zeci|sute|mii) de (variante|modele|produse|articole|opțiuni)\b/i;
+  assert.deepEqual(sources.filter(({ text }) => VAGUE.test(text)).map(({ rel }) => rel), []);
+});
+
 test('termenul pentru ofertă vine din RESPONSE_TIME', () => {
   const hard = sources.filter(({ rel, text }) => rel !== 'src/lib/site.ts' && /în cel mult \d+ de ore/.test(text)).map((s) => s.rel);
   assert.deepEqual(hard, []);

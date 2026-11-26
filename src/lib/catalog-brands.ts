@@ -17,6 +17,8 @@ export interface BrandPage {
   /** Cine e producătorul, din sursa oficială. */
   about: string;
   source: { label: string; url: string };
+  /** Id-ul unei poze din src/data/poze-actiune.json, afișată lângă antet. */
+  photo?: string;
 }
 
 export const MIN_PRODUCTS_FOR_BRAND_PAGE = 2;
@@ -25,6 +27,7 @@ export const BRAND_PAGES: BrandPage[] = [
   {
     brand: 'MASCOT®',
     slug: 'mascot',
+    photo: 'M04',
     name: 'MASCOT',
     heading: 'MASCOT: haine de lucru și încălțăminte de protecție pentru firme',
     title: 'MASCOT în România: haine de lucru pentru firme',
@@ -35,6 +38,7 @@ export const BRAND_PAGES: BrandPage[] = [
   {
     brand: 'Sir Safety System',
     slug: 'sir-safety',
+    photo: 'S01',
     name: 'Sir Safety',
     heading: 'Sir Safety: haine de lucru și echipamente de protecție pentru firme',
     title: 'Sir Safety în România: echipamente de protecție',
@@ -45,6 +49,7 @@ export const BRAND_PAGES: BrandPage[] = [
   {
     brand: 'Portwest',
     slug: 'portwest',
+    photo: 'P04',
     name: 'Portwest',
     heading: 'Portwest: haine de lucru și echipamente de protecție pentru firme',
     title: 'Portwest în România: echipamente de protecție',

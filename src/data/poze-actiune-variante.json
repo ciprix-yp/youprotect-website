@@ -1,0 +1,406 @@
+{
+  "M01": [
+    {
+      "width": 640,
+      "height": 960,
+      "file": "muncitor-sapa-cu-lopata-haine-reflectorizante-portocalii-mascot-640.webp",
+      "bytes": 58570
+    },
+    {
+      "width": 960,
+      "height": 1440,
+      "file": "muncitor-sapa-cu-lopata-haine-reflectorizante-portocalii-mascot-960.webp",
+      "bytes": 102558
+    },
+    {
+      "width": 1440,
+      "height": 2160,
+      "file": "muncitor-sapa-cu-lopata-haine-reflectorizante-portocalii-mascot-1440.webp",
+      "bytes": 175974
+    }
+  ],
+  "M02": [
+    {
+      "width": 768,
+      "height": 512,
+      "file": "muncitor-urca-excavator-haine-reflectorizante-galbene-mascot-768.webp",
+      "bytes": 40226
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "muncitor-urca-excavator-haine-reflectorizante-galbene-mascot-960.webp",
+      "bytes": 76266
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "muncitor-urca-excavator-haine-reflectorizante-galbene-mascot-1440.webp",
+      "bytes": 147714
+    },
+    {
+      "width": 1920,
+      "height": 1280,
+      "file": "muncitor-urca-excavator-haine-reflectorizante-galbene-mascot-1920.webp",
+      "bytes": 238280
+    }
+  ],
+  "M04": [
+    {
+      "width": 640,
+      "height": 427,
+      "file": "trei-colegi-casti-albe-dosar-treptele-santierului-mascot-640.webp",
+      "bytes": 26528
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "trei-colegi-casti-albe-dosar-treptele-santierului-mascot-960.webp",
+      "bytes": 44818
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "trei-colegi-casti-albe-dosar-treptele-santierului-mascot-1440.webp",
+      "bytes": 76418
+    }
+  ],
+  "M05": [
+    {
+      "width": 640,
+      "height": 960,
+      "file": "muncitor-drum-nou-asfaltat-stalp-semnalizare-mascot-640.webp",
+      "bytes": 59112
+    },
+    {
+      "width": 960,
+      "height": 1440,
+      "file": "muncitor-drum-nou-asfaltat-stalp-semnalizare-mascot-960.webp",
+      "bytes": 104992
+    },
+    {
+      "width": 1440,
+      "height": 2160,
+      "file": "muncitor-drum-nou-asfaltat-stalp-semnalizare-mascot-1440.webp",
+      "bytes": 182956
+    }
+  ],
+  "M09": [
+    {
+      "width": 768,
+      "height": 512,
+      "file": "femeie-verifica-foaie-culoar-depozit-mascot-768.webp",
+      "bytes": 40004
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "femeie-verifica-foaie-culoar-depozit-mascot-960.webp",
+      "bytes": 67742
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "femeie-verifica-foaie-culoar-depozit-mascot-1440.webp",
+      "bytes": 115292
+    },
+    {
+      "width": 1920,
+      "height": 1280,
+      "file": "femeie-verifica-foaie-culoar-depozit-mascot-1920.webp",
+      "bytes": 161618
+    }
+  ],
+  "M10": [
+    {
+      "width": 640,
+      "height": 427,
+      "file": "operator-halat-alb-aparat-curatat-podea-hala-mascot-640.webp",
+      "bytes": 23732
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "operator-halat-alb-aparat-curatat-podea-hala-mascot-960.webp",
+      "bytes": 37710
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "operator-halat-alb-aparat-curatat-podea-hala-mascot-1440.webp",
+      "bytes": 61210
+    }
+  ],
+  "M12": [
+    {
+      "width": 768,
+      "height": 512,
+      "file": "trei-colegi-casti-albe-platforma-industriala-mascot-768.webp",
+      "bytes": 45132
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "trei-colegi-casti-albe-platforma-industriala-mascot-960.webp",
+      "bytes": 99680
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "trei-colegi-casti-albe-platforma-industriala-mascot-1440.webp",
+      "bytes": 180318
+    },
+    {
+      "width": 1920,
+      "height": 1280,
+      "file": "trei-colegi-casti-albe-platforma-industriala-mascot-1920.webp",
+      "bytes": 227956
+    }
+  ],
+  "M19": [
+    {
+      "width": 640,
+      "height": 427,
+      "file": "barbat-camasa-alba-scara-exterioara-mascot-640.webp",
+      "bytes": 25630
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "barbat-camasa-alba-scara-exterioara-mascot-960.webp",
+      "bytes": 43012
+    },
+    {
+      "width": 1440,
+      "height": 960,
+      "file": "barbat-camasa-alba-scara-exterioara-mascot-1440.webp",
+      "bytes": 71892
+    }
+  ],
+  "P04": [
+    {
+      "width": 640,
+      "height": 404,
+      "file": "doi-colegi-citesc-plan-langa-excavator-portwest-640.webp",
+      "bytes": 28030
+    },
+    {
+      "width": 960,
+      "height": 606,
+      "file": "doi-colegi-citesc-plan-langa-excavator-portwest-960.webp",
+      "bytes": 48904
+    },
+    {
+      "width": 1440,
+      "height": 909,
+      "file": "doi-colegi-citesc-plan-langa-excavator-portwest-1440.webp",
+      "bytes": 86400
+    }
+  ],
+  "P05": [
+    {
+      "width": 640,
+      "height": 425,
+      "file": "muncitor-ridica-plasa-armatura-parka-reflectorizanta-portwest-640.webp",
+      "bytes": 36854
+    },
+    {
+      "width": 960,
+      "height": 637,
+      "file": "muncitor-ridica-plasa-armatura-parka-reflectorizanta-portwest-960.webp",
+      "bytes": 66052
+    },
+    {
+      "width": 1440,
+      "height": 956,
+      "file": "muncitor-ridica-plasa-armatura-parka-reflectorizanta-portwest-1440.webp",
+      "bytes": 120558
+    }
+  ],
+  "P06": [
+    {
+      "width": 640,
+      "height": 460,
+      "file": "muncitor-citeste-plan-armatura-santier-portwest-640.webp",
+      "bytes": 41830
+    },
+    {
+      "width": 960,
+      "height": 690,
+      "file": "muncitor-citeste-plan-armatura-santier-portwest-960.webp",
+      "bytes": 76336
+    },
+    {
+      "width": 1440,
+      "height": 1035,
+      "file": "muncitor-citeste-plan-armatura-santier-portwest-1440.webp",
+      "bytes": 134272
+    }
+  ],
+  "P11": [
+    {
+      "width": 640,
+      "height": 428,
+      "file": "muncitor-trage-transpalet-vesta-reflectorizanta-portwest-640.webp",
+      "bytes": 30314
+    },
+    {
+      "width": 960,
+      "height": 642,
+      "file": "muncitor-trage-transpalet-vesta-reflectorizanta-portwest-960.webp",
+      "bytes": 62158
+    },
+    {
+      "width": 1440,
+      "height": 963,
+      "file": "muncitor-trage-transpalet-vesta-reflectorizanta-portwest-1440.webp",
+      "bytes": 133368
+    }
+  ],
+  "S01": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "trei-muncitori-port-containere-haine-reflectorizante-sir-safety-768.webp",
+      "bytes": 47258
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "trei-muncitori-port-containere-haine-reflectorizante-sir-safety-960.webp",
+      "bytes": 107554
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "trei-muncitori-port-containere-haine-reflectorizante-sir-safety-1440.webp",
+      "bytes": 203596
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "trei-muncitori-port-containere-haine-reflectorizante-sir-safety-1920.webp",
+      "bytes": 241916
+    }
+  ],
+  "S02": [
+    {
+      "width": 640,
+      "height": 360,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-640.webp",
+      "bytes": 41052
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-960.webp",
+      "bytes": 70818
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-1440.webp",
+      "bytes": 120882
+    }
+  ],
+  "S04": [
+    {
+      "width": 640,
+      "height": 360,
+      "file": "doi-muncitori-combinezoane-albe-semimasti-sir-safety-640.webp",
+      "bytes": 24140
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "doi-muncitori-combinezoane-albe-semimasti-sir-safety-960.webp",
+      "bytes": 39212
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "doi-muncitori-combinezoane-albe-semimasti-sir-safety-1440.webp",
+      "bytes": 66762
+    }
+  ],
+  "S06": [
+    {
+      "width": 640,
+      "height": 640,
+      "file": "doi-muncitori-cara-grinda-lemn-depozit-sir-safety-640.webp",
+      "bytes": 62270
+    },
+    {
+      "width": 960,
+      "height": 960,
+      "file": "doi-muncitori-cara-grinda-lemn-depozit-sir-safety-960.webp",
+      "bytes": 116876
+    },
+    {
+      "width": 1440,
+      "height": 1440,
+      "file": "doi-muncitori-cara-grinda-lemn-depozit-sir-safety-1440.webp",
+      "bytes": 198938
+    }
+  ],
+  "S08": [
+    {
+      "width": 640,
+      "height": 360,
+      "file": "muncitor-combinezon-alb-ham-inaltime-sir-safety-640.webp",
+      "bytes": 54176
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "muncitor-combinezon-alb-ham-inaltime-sir-safety-960.webp",
+      "bytes": 98668
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "muncitor-combinezon-alb-ham-inaltime-sir-safety-1440.webp",
+      "bytes": 175644
+    }
+  ],
+  "S12": [
+    {
+      "width": 640,
+      "height": 427,
+      "file": "muncitor-fier-beton-arata-talpa-incaltaminte-sir-safety-640.webp",
+      "bytes": 35824
+    },
+    {
+      "width": 960,
+      "height": 640,
+      "file": "muncitor-fier-beton-arata-talpa-incaltaminte-sir-safety-960.webp",
+      "bytes": 58926
+    },
+    {
+      "width": 1152,
+      "height": 768,
+      "file": "muncitor-fier-beton-arata-talpa-incaltaminte-sir-safety-1152.webp",
+      "bytes": 73150
+    }
+  ],
+  "S16": [
+    {
+      "width": 640,
+      "height": 360,
+      "file": "pasi-incaltaminte-protectie-santier-sir-safety-640.webp",
+      "bytes": 34308
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "pasi-incaltaminte-protectie-santier-sir-safety-960.webp",
+      "bytes": 62590
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "pasi-incaltaminte-protectie-santier-sir-safety-1440.webp",
+      "bytes": 112150
+    }
+  ]
+}

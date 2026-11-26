@@ -12,6 +12,8 @@ import { riskFreeExclusions } from '../../lib/risk-free-scope';
 import type { BrandPage } from '../../lib/catalog-brands';
 import { PERSONALIZATION_PAGE, productsWithLogoZones } from '../../lib/personalization';
 import { jsonLd } from '../../lib/json-ld';
+import ActionPhoto from '../media/ActionPhoto.astro';
+import { imageGraph } from '../../lib/poze-actiune';
 import { CTA_DISCUSS, RISK_FREE_TESTING, SITE } from '../../lib/site';
 import { btnPrimary, btnSecondary, breadcrumbNav, sectionTitle } from '../../lib/ui';
 
@@ -106,6 +108,7 @@ const faqSchema = {
 <script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} />
 <script type="application/ld+json" set:html={jsonLd(itemListSchema)} />
 <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+{page.photo && <script type="application/ld+json" set:html={jsonLd(imageGraph([page.photo]))} />}
 
 <section class="mx-auto max-w-7xl px-4 py-8 md:py-12">
   <nav aria-label="Breadcrumb" class={breadcrumbNav}>
@@ -116,7 +119,7 @@ const faqSchema = {
     <span class="text-yp-white">{page.name}</span>
   </nav>
 
-  <header class="max-w-3xl">
+  <header class:list={page.photo ? 'max-w-3xl lg:grid lg:max-w-none lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:grid-rows-[repeat(5,auto)_1fr] lg:gap-x-10' : 'max-w-3xl'}>
     <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{page.heading}</h1>
     <p class="mt-4 text-base text-yp-white/80 leading-relaxed">
       You Protect vinde produse {page.name} firmelor și livrează în toată România. Primești ofertă pentru cantitățile echipei tale,
@@ -141,6 +144,11 @@ const faqSchema = {
       </a>
     </div>
     <RiskFreeTesting variant="inline" class="mt-6" />
+    {page.photo && (
+      <div class="relative mt-8 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:col-start-2 lg:row-start-1 lg:row-span-6 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
+        <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
+      </div>
+    )}
   </header>
 
   <!-- O singură grilă, în ordinea categoriilor: categoria e pe fiecare card, fără rânduri pe jumătate goale. -->
