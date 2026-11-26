@@ -21,7 +21,7 @@
 //     style, source, JSON-LD), cu aceleași reguli. Asta prinde orice ocolire din sursă.
 //   - secțiunea 8 (ocolirile din afara codului): în src/ css/md/mdx/json cu /images/actiune/ sau slug de poză, în dist/ css/js
 //     cu /images/actiune/ și, în public/, orice fișier din afara images/actiune/ cu aceiași octeți (SHA-256) ca o variantă.
-//   - literalii `[MPS]NN` care nu sunt poze se scriu altfel (`S-10`) sau intră în NOT_PHOTO_IDS (goală acum).
+//   - literalii `[MPS]NN` care nu sunt poze se scriu altfel (`S-10`) sau intră în NOT_PHOTO_IDS (valori care nu sunt id-uri de poză).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -1054,9 +1054,8 @@ test('ocolire (negativ): copia unei variante, redenumită în public/, pică (SH
   }
 });
 
-test('NOT_PHOTO_IDS: lista de excepții e goală, nu conține id-uri reale, iar o excepție funcționează', () => {
-  assert.equal(NOT_PHOTO_IDS.size, 0, 'NOT_PHOTO_IDS: adaugă aici doar valori care nu sunt id-uri de poză');
-  for (const id of NOT_PHOTO_IDS) assert.ok(!photos.some((p) => p.id === id), `NOT_PHOTO_IDS conține id-ul real ${id}`);
+test('NOT_PHOTO_IDS: lista de excepții nu conține id-uri reale de poză, iar o excepție funcționează', () => {
+  for (const id of NOT_PHOTO_IDS) assert.ok(!photos.some((p) => p.id === id), `NOT_PHOTO_IDS conține id-ul real ${id}: o poză nu poate fi exceptată`);
   const code = "const cod = 'S10';"; // aici S10 e un cod de produs, nu o poză
   const file = [page('src/lib/x.ts', code)];
   // fără excepție: fail-closed, cu mesajul care spune ce să faci

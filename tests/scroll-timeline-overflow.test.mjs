@@ -110,8 +110,10 @@ export function parseElements(html) {
 const classesOf = (attrs) => (attrs.class ?? '').split(/\s+/).filter(Boolean);
 
 /** Clase de tip `[variante:]overflow[-x|-y]-(hidden|auto|scroll)` sau `[overflow:hidden]`. Orice variantă, conservator. */
-const OVERFLOW_CLASS = /^(?:[^:\s]+:)*(?:overflow(?:-[xy])?-(?:hidden|auto|scroll)|\[overflow(?:-[xy])?:(?:hidden|auto|scroll)\])$/;
-const OVERFLOW_STYLE = /(?:^|;)\s*overflow(?:-[xy])?\s*:\s*(?:hidden|auto|scroll)/i;
+// `!` (important Tailwind) în față sau la sfârșit (`!overflow-hidden`, `overflow-hidden!`), cu sau fără variante.
+const OVERFLOW_CLASS = /^(?:[^:\s]+:)*!?(?:overflow(?:-[xy])?-(?:hidden|auto|scroll)|\[overflow(?:-[xy])?:(?:hidden|auto|scroll)\])!?$/;
+// Și forma cu două valori (`overflow: clip hidden`): oricare dintre valori blochează.
+const OVERFLOW_STYLE = /(?:^|;)\s*overflow(?:-[xy])?\s*:\s*(?:\S+\s+)?(?:hidden|auto|scroll)/i;
 /** Elemente cu animație legată de derulare; copiii pseudo (`::before`, `> svg`, `> *`) pornesc de la elementul însuși. */
 const SD_CLASS = /^(?:[^:\s]+:)*(?:sd-[a-z-]+|card-3d)$/;
 const SD_SELF_SCOPE = new Set(['sd-hero-content', 'sd-step', 'sd-check']);
@@ -119,12 +121,21 @@ const SD_SELF_SCOPE = new Set(['sd-hero-content', 'sd-step', 'sd-check']);
 
 /** Explică de ce un element ar bloca; null dacă nu blochează sau are exceptie documentată. */
 export function blocker(attrs) {
-  if ('data-sd-exceptie' in attrs) return null;
+  if ((attrs['data-sd-exceptie'] ?? '').trim() !== '') return null; // excepția cere un motiv nevid
   const cls = classesOf(attrs).find((c) => OVERFLOW_CLASS.test(c));
   if (cls) return cls;
   if (attrs.style && OVERFLOW_STYLE.test(attrs.style)) return `style="${attrs.style}"`;
   return null;
 }
+
+/** Motivele `data-sd-exceptie` dintr-un document (inclusiv cele goale, ca ''), pentru lista permisă explicit. */
+export function exceptionReasons(html) {
+  return parseElements(html)
+    .filter((e) => 'data-sd-exceptie' in e.attrs)
+    .map((e) => e.attrs['data-sd-exceptie'].trim());
+}
+/** Singurele excepții permise. O excepție nouă cere schimbarea acestei liste, deliberat. */
+const ALLOWED_EXCEPTIONS = ['scroller orizontal pe telefon'];
 
 const describe = (e) => `${e.tag}${e.attrs.class ? `.${classesOf(e.attrs).slice(0, 4).join('.')}` : ''}`;
 
@@ -174,6 +185,26 @@ test('sintetic: excepția documentată (data-sd-exceptie) trece', () => {
   assert.deepEqual(findBlockedScrollEffects(html), []);
   assert.equal(findBlockedScrollEffects(wrap('class="overflow-x-auto"', '<a class="card-3d"></a>')).length, 1);
 });
+test('sintetic: excepția goală sau doar spații nu trece', () => {
+  assert.equal(findBlockedScrollEffects(wrap('class="overflow-hidden" data-sd-exceptie=""')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('class="overflow-hidden" data-sd-exceptie="  "')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('class="overflow-hidden" data-sd-exceptie')).length, 1);
+  assert.deepEqual(exceptionReasons(wrap('data-sd-exceptie="" ', '<p data-sd-exceptie="a"></p>')), ['', 'a']);
+});
+test('sintetic: !overflow-hidden (important Tailwind) pică, cu variante și la sfârșit', () => {
+  assert.equal(findBlockedScrollEffects(wrap('class="!overflow-hidden"')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('class="sm:!overflow-auto"')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('class="overflow-y-scroll!"')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('class="!overflow-clip"')).length, 0);
+});
+test('sintetic: overflow cu două valori în style (clip hidden) pică', () => {
+  assert.equal(findBlockedScrollEffects(wrap('style="overflow: clip hidden"')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('style="overflow:hidden clip"')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('style="overflow-x: clip auto"')).length, 1);
+  assert.equal(findBlockedScrollEffects(wrap('style="overflow:hidden !important"')).length, 1);
+  assert.deepEqual(findBlockedScrollEffects(wrap('style="overflow: clip clip"')), []);
+  assert.deepEqual(findBlockedScrollEffects(wrap('style="overflow: visible"')), []);
+});
 test('sintetic: overflow pe elementul însuși nu-l blochează, dar pe copiii sd-hero-content da', () => {
   assert.deepEqual(findBlockedScrollEffects('<div class="sd-media overflow-hidden"></div>'), []);
   assert.equal(findBlockedScrollEffects('<div class="sd-hero-content overflow-hidden"><p>x</p></div>').length, 1);
@@ -208,12 +239,15 @@ test('dist: niciun efect sd-*/card-3d nu e blocat de un strămoș cu overflow hi
   const files = walk(DIST);
   assert.ok(files.length > 50, `prea puține pagini în dist/ (${files.length})`);
   const report = [];
+  const reasons = new Set();
   let withEffects = 0;
   for (const f of files) {
     const html = readFileSync(f, 'utf8');
     if (/\b(?:sd-[a-z-]+|card-3d)\b/.test(html)) withEffects++;
+    for (const r of exceptionReasons(html)) reasons.add(r);
     for (const p of findBlockedScrollEffects(html)) report.push(`${f.slice(DIST.length)}: ${p.element} blocat de ${p.blockedBy}`);
   }
   assert.ok(withEffects >= 5, `prea puține pagini cu efecte sd-* (${withEffects}): parserul sau clasele s-au stricat`);
+  assert.deepEqual([...reasons].sort(), ALLOWED_EXCEPTIONS, 'data-sd-exceptie: mulțimea motivelor folosite diferă de lista permisă (ALLOWED_EXCEPTIONS)');
   assert.deepEqual(report, [], `Efecte legate de derulare blocate (folosește overflow-clip în loc de overflow-hidden):\n${report.join('\n')}`);
 });
