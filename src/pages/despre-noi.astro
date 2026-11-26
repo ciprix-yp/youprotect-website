@@ -1,17 +1,29 @@
 ---
+// Despre noi: povestea și valorile owner-ului, cu finisaj ușor (SEO-003, 26.11.2026). Faptele noi sunt de la owner
+// (26.11.2026): firma din 2020 era din logistică și transport (fără nume), Sir Safety cunoscut din 2008, MASCOT din
+// anii în transport pe Danemarca. Valorile AAA+ rămân (decizia owner-ului). Intro-ul din antet rămâne de cel mult
+// 3 rânduri la 390 px (~25 de cuvinte): pe telefon, butonul principal trebuie să încapă în primul ecran.
+import { getCollection } from "astro:content";
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
-import { CTA_DISCUSS } from "../lib/site";
+import { activeBrandPages } from "../lib/catalog-brands";
+import { CTA_DISCUSS, RESPONSE_TIME } from "../lib/site";
+
+// Mărcile cu pagină în catalog, din aceleași date ca /produse/ („MASCOT, Sir Safety și Portwest”).
+const brandPages = activeBrandPages(
+  (await getCollection("products", ({ data }) => data.status === "published")).map((e) => e.data),
+);
+const brandNames = brandPages.map((b) => b.name);
+const brandsText =
+  brandNames.length > 1 ? `${brandNames.slice(0, -1).join(", ")} și ${brandNames.at(-1)}` : brandNames.join("");
 ---
 
 <InnerPageLayout
   title="Despre noi: furnizor de echipamente de protecție"
-  description="You Protect, din Satu Mare, alege consultativ echipamente de protecție și haine de lucru pentru firme. Felul în care îți echipezi oamenii arată cât îi respecți."
+  description={`You Protect, din Satu Mare, livrează din 2022 echipamente de protecție și haine de lucru ${brandsText} pentru firme, alese prin consultanță.`}
   heroTitle="Nu vindem doar norme."
-  heroSubtitle="Pentru noi, echipamentele de protecție și hainele de lucru nu sunt doar o obligație sau o comandă de făcut. Sunt felul în care o companie își exprimă respectul față de oamenii care o reprezintă în fiecare zi. Când oamenii se simt bine în ceea ce poartă, se vede în atitudinea lor, în încrederea lor și în felul în care este percepută compania."
+  heroSubtitle="You Protect, din Satu Mare, livrează din 2022 echipamente de protecție și haine de lucru. Felul în care îți echipezi oamenii arată cât îi respecți."
   breadcrumb="Despre noi"
   heroImage="/images/mascot-premium-1-v2.webp"
-  ctaHeading="Gata să crești standardul?"
-  ctaSubheading="Mai puțin haos, mai multă claritate și o echipă care arată profesionist."
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi cum lucrăm"
   ctaSecondaryButtonLink="/cum-lucram/"
@@ -41,7 +53,7 @@ import { CTA_DISCUSS } from "../lib/site";
 
           <div>
             <p class="mb-6">
-              În 2020, una dintre companiile noastre a avut nevoie urgentă de echipamente de protecție și haine de lucru pentru o echipă extinsă. Atunci am intrat direct în realitatea acestui proces și am văzut cât de repede poate deveni frustrant: produse greu de comparat, furnizori fără implicare reală, recomandări superficiale și mult prea mult timp pierdut în achiziții dezorganizate.
+              În 2020, una dintre companiile noastre, din logistică și transport, a avut nevoie urgentă de echipamente de protecție și haine de lucru pentru o echipă extinsă. Atunci am intrat direct în realitatea acestui proces și am văzut cât de repede poate deveni frustrant: produse greu de comparat, furnizori fără implicare reală, recomandări superficiale și mult prea mult timp pierdut în achiziții dezorganizate.
             </p>
           </div>
 
@@ -57,6 +69,10 @@ import { CTA_DISCUSS } from "../lib/site";
            <div>
             <p class="mb-6">
                În 2022, după pandemie, am transformat această convingere într-un business construit pe consultanță reală, produse alese atent și colaborări serioase. You Protect a fost creat pentru companiile care nu vor doar să bifeze norme, ci să ridice standardul pentru echipă, pentru cultură și pentru felul în care sunt percepute în piață.
+            </p>
+            <p class="mb-6">
+              Am început cu Sir Safety, pe care îi cunoșteam din 2008. Apoi a venit MASCOT, un brand pe care îl știam din anii în care am lucrat în transport, pe Danemarca. Azi, în catalog sunt modele{" "}
+              {brandPages.map((b, i) => (<>{i > 0 && (i === brandPages.length - 1 ? " și " : ", ")}<a href={`/produse/${b.slug}/`} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{b.name}</a></>))}.
             </p>
           </div>
 
@@ -82,42 +98,42 @@ import { CTA_DISCUSS } from "../lib/site";
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative z-10 mb-16">
-        <!-- Why -->
+        <!-- De ce -->
         <div
           class="sd-rise bg-[#0a0a0a] border border-white/10 p-10 hover:border-yp-yellow/30 transition-colors duration-200 rounded-lg"
         >
           <div class="w-14 h-14 rounded-full bg-yp-yellow/10 flex items-center justify-center mb-8 border border-yp-yellow/20">
-            <span class="text-yp-yellow font-medium text-xl">W</span>
+            <span aria-hidden="true" class="text-yp-yellow font-medium text-xl">1</span>
           </div>
-          <h4 class="text-2xl font-medium text-white mb-6">Why</h4>
+          <h3 class="text-2xl font-medium text-white mb-6">De ce</h3>
           <p class="text-neutral-400 leading-relaxed">
             Credem că felul în care o companie își echipează oamenii arată cât respect are pentru ei. Pentru noi, hainele de lucru și echipamentele de protecție nu sunt simple articole necesare în teren. Sunt o expresie a standardului companiei și a modului în care oamenii se simt în interiorul ei.
           </p>
         </div>
 
-        <!-- How -->
+        <!-- Cum -->
         <div
           class="sd-rise bg-[#0f0f0f] border border-white/10 p-10 hover:border-yp-yellow/30 transition-colors duration-200 transform md:-translate-y-4 rounded-lg"
         >
           <div class="w-14 h-14 rounded-full bg-yp-yellow/10 flex items-center justify-center mb-8 border border-yp-yellow/20">
-            <span class="text-yp-yellow font-medium text-xl">H</span>
+            <span aria-hidden="true" class="text-yp-yellow font-medium text-xl">2</span>
           </div>
-          <h4 class="text-2xl font-medium text-white mb-6">How</h4>
+          <h3 class="text-2xl font-medium text-white mb-6">Cum</h3>
           <p class="text-neutral-400 leading-relaxed">
-            De aceea, lucrăm consultativ. Alegem și recomandăm echipamente individuale de protecție și haine de lucru care combină funcționalitatea, confortul și imaginea profesională. Simplificăm achiziția, oferim claritate în decizie și construim soluții potrivite activității reale din companie, fără compromisuri inutile.
+            De aceea, lucrăm consultativ. Alegem și recomandăm echipamente individuale de protecție și haine de lucru care combină funcționalitatea, confortul și imaginea profesională. Simplificăm achiziția, oferim claritate în decizie și construim soluții potrivite activității reale din companie, fără compromisuri inutile. Și nu ne oprim la a spune că produsele sunt de calitate: le <a href="/testare-fara-riscuri/" class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">testezi 90 de zile</a> cu oamenii tăi, acolo unde testarea se aplică, și măsurăm împreună cât te costă pe zi de purtare.
           </p>
         </div>
 
-        <!-- What -->
+        <!-- Ce -->
         <div
           class="sd-rise bg-[#0a0a0a] border border-white/10 p-10 hover:border-yp-yellow/30 transition-colors duration-200 rounded-lg"
         >
           <div class="w-14 h-14 rounded-full bg-yp-yellow/10 flex items-center justify-center mb-8 border border-yp-yellow/20">
-            <span class="text-yp-yellow font-medium text-xl">W</span>
+            <span aria-hidden="true" class="text-yp-yellow font-medium text-xl">3</span>
           </div>
-          <h4 class="text-2xl font-medium text-white mb-6">What</h4>
+          <h3 class="text-2xl font-medium text-white mb-6">Ce</h3>
           <p class="text-neutral-400 leading-relaxed">
-            Oferim echipamente de protecție, haine de lucru și soluții personalizate pentru companii care vor echipe bine prezentate, oameni mai încrezători și o imagine profesională construită din interior spre exterior.
+            Oferim echipamente de protecție, haine de lucru și <a href="/haine-de-lucru-personalizate/" class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">haine personalizate cu logoul firmei</a> pentru companii care vor echipe bine prezentate, oameni mai încrezători și o imagine profesională construită din interior spre exterior.
           </p>
         </div>
       </div>
@@ -153,10 +169,10 @@ import { CTA_DISCUSS } from "../lib/site";
             >A</span
           >
           <div class="relative z-10">
-            <h4
+            <h3
               class="text-2xl md:text-3xl font-medium text-white mb-4"
             > Asumarea
-            </h4>
+            </h3>
             <p class="text-neutral-400 leading-relaxed">
               Pentru noi, asumarea înseamnă că ceea ce promitem, livrăm. Respectăm înțelegerile, termenele și responsabilitatea pe care o avem față de client. Într-o piață în care multe promisiuni rămân doar vorbe, noi vrem ca seriozitatea să se vadă în fapte.
             </p>
@@ -173,10 +189,10 @@ import { CTA_DISCUSS } from "../lib/site";
             >A</span
           >
           <div class="relative z-10">
-            <h4
+            <h3
               class="text-2xl md:text-3xl font-medium text-white mb-4"
             > Adevărul
-            </h4>
+            </h3>
             <p class="text-neutral-400 leading-relaxed">
               Spunem lucrurilor pe nume. Dacă un produs nu este potrivit pentru activitatea ta, spunem asta. Dacă există o variantă mai bună, o recomandăm. Credem că relațiile sănătoase se construiesc pe sinceritate, claritate și decizii luate corect, nu pe vânzare cu orice preț.
             </p>
@@ -193,10 +209,10 @@ import { CTA_DISCUSS } from "../lib/site";
             >A</span
           >
           <div class="relative z-10">
-            <h4
+            <h3
               class="text-2xl md:text-3xl font-medium text-white mb-4"
             > Autenticitatea
-            </h4>
+            </h3>
             <p class="text-neutral-400 leading-relaxed">
               Nu credem în recomandări copy-paste și nici în soluții trase la indigo. Fiecare companie are ritmul ei, echipa ei și provocările ei. De aceea, căutăm soluții viabile, adaptate și coerente, fără să promitem lucruri doar pentru a închide repede o comandă.
             </p>
@@ -213,10 +229,10 @@ import { CTA_DISCUSS } from "../lib/site";
             >+</span
           >
           <div class="relative z-10">
-            <h4
+            <h3
               class="text-2xl md:text-3xl font-medium text-white mb-4"
             > Siguranța
-            </h4>
+            </h3>
             <p class="text-neutral-400 leading-relaxed">
               Plusul din AAA+ este siguranța. Siguranța oamenilor, siguranța produselor și siguranța relației de lucru. Alegem parteneri serioși, produse conforme și colaborări care reduc riscul, nu îl mută dintr-o parte în alta. Pentru noi, siguranța nu este un detaliu tehnic. Este baza întregii colaborări.
             </p>
@@ -327,7 +343,7 @@ import { CTA_DISCUSS } from "../lib/site";
       </div>
 
       <p class="mt-8 text-yp-black/70 font-medium max-w-lg text-center text-sm md:text-base">
-        Discutăm despre activitatea ta, despre echipă și despre ce ar însemna o soluție potrivită pentru compania ta.
+        Răspunzi la câteva întrebări despre echipa ta, apoi îți alegi ziua și ora din calendar. Dacă nu alegi, revenim noi {RESPONSE_TIME}.
       </p>
     </div>
   </section>

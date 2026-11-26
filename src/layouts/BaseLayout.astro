@@ -87,6 +87,10 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
         "@type": "LocalBusiness",
         "@id": `${SITE.url}/#localbusiness`,
         name: SITE.name,
+        legalName: SITE.legal.name,
+        // Anul din Nr. Reg. Com. (J30/646/2022); fondatoarea e cea de pe /despre-noi/.
+        foundingDate: SITE.legal.foundingYear,
+        founder: { "@type": "Person", name: SITE.legal.founder },
         image: new URL(SITE.defaultOgImage, SITE.url).href,
         description:
           "Echipamente de protecție și haine de lucru MASCOT, Portwest și Sir Safety pentru firme, personalizate cu logo. Showroom cu cabină de probă în Vetiș, Satu Mare; livrare în toată România.",
