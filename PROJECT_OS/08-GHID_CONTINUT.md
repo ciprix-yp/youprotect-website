@@ -248,7 +248,9 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     riscuri” vin în Tab înaintea grilei); alternativa nu s-a ales ca să rămână o singură structură, poate fi reluată.
     Eroii folosesc varianta de 768 px pe telefon (≈2x).
   - `sizes` ~2x: pozele din corp trec prin `bodySizes` (în `ActionPhoto`), așa că la 390 px și DPR 3 `currentSrc` are
-    cel mult 960 px; regula se aplică și când pagina dă propriul `sizes`.
+    cel mult 960 px; regula se aplică și când pagina dă propriul `sizes`, dar numai dacă ultima intrare din `sizes` e
+    exact `calc(100vw - 2rem)`; la alte valori (de ex. `70vw` sau `100vw`) `sizes` trece nemodificat
+    (vezi `bodySizes()` și `sizesEntries()` în `src/lib/poze-actiune.ts`).
   - Antet cu poza întâi pe telefon (sub `lg`): poza 3:2, pe toată lățimea, deasupra breadcrumb-ului și a H1, fără ramă
     și fără colțuri. Desktopul rămâne ca înainte.
   - Eroul homepage-ului vine dintr-o singură sursă, constanta `heroPhoto` din `src/pages/index.astro`; nu se pune un
