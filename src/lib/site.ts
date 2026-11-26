@@ -18,6 +18,9 @@ export const SITE = {
     name: "You Protect SRL",
     cui: "RO46294850",
     regCom: "J30/646/2022",
+    // Pentru schema (foundingDate, founder): anul din Nr. Reg. Com. și fondatoarea de pe /despre-noi/.
+    foundingYear: "2022",
+    founder: "Alexandra Pop",
   },
   address: {
     streetAddress: "Strada Careiului nr. 45, Parc Industrial Areli",
