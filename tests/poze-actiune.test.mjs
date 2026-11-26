@@ -1088,6 +1088,12 @@ test('NOT_PHOTO_IDS: lista de excepții nu conține id-uri reale de poză, iar o
   assert.match(analyzeUsage([page('src/lib/catalog-brands.ts', "const x = 'S10';")]).problems.join('\n'), /NOT_PHOTO_IDS/);
 });
 
+// Ținta din scriptul de imagini (build-poze-actiune.py) pentru varianta de 768 px a eroilor e 45 KB, dar nu e impusă:
+// scriptul doar avertizează când un fișier rămâne peste ea la calitatea minimă. Aici verificăm toleranța reală
+// (limita sub care trebuie să rămână fișierele livrate acum); valorile sunt cele de dinainte, nu s-au schimbat.
+const HERO_768_MAX = 56 * 1024;
+const PORTRAIT_768_MAX = 55 * 1024;
+
 test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p960 4:5, în afara srcset-ului obișnuit', () => {
   const withPortrait = photos.filter((p) => p.portret);
   assert.ok(withPortrait.length >= 1, 'nicio poză cu decupaj portret');
@@ -1101,7 +1107,7 @@ test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p
       assert.equal(v.height / v.width, 1.25, `${p.id} ${v.file}: nu e 4:5`);
       assert.match(v.file, /-p(768|960)\.webp$/);
     }
-    assert.ok(portrait[0].bytes <= 55 * 1024, `${p.id}: ${portrait[0].file} ${portrait[0].bytes} B (buget 55 KB)`);
+    assert.ok(portrait[0].bytes <= PORTRAIT_768_MAX, `${p.id}: ${portrait[0].file} ${portrait[0].bytes} B (toleranță ${PORTRAIT_768_MAX} B)`);
     assert.ok(!photoSrcset(p.id).includes('-p768') && !photoSrcset(p.id).includes('-p960'), `${p.id}: portretul în srcset-ul obișnuit`);
   }
   for (const p of photos.filter((x) => !x.portret)) {
@@ -1109,33 +1115,41 @@ test('poze: decupajul portret (doar eroul homepage-ului) are variantele -p768/-p
   }
 });
 
-test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 45 KB (portret sub 55 KB)', () => {
+test('poze: variantele eroilor sunt 768/960/1440, plus 1920 când sursa nu e pătrată; 768 sub 56 KB (ținta de 45 KB din script nu e impusă)', () => {
   for (const p of photos.filter((x) => x.erou)) {
     const list = variants[p.id].filter((v) => !v.portret);
     const widths = list.map((v) => v.width);
     assert.deepEqual(widths.slice(0, 3), [768, 960, 1440], `${p.id}: lățimi erou`);
     assert.ok(widths.length === 3 || (widths.length === 4 && widths[3] === 1920), `${p.id}: lățimi erou ${widths}`);
     // sursele pătrate (S06, S17) nu au 1920: nu încap în 250 KB la o calitate acceptabilă
-    assert.ok(list[0].bytes <= 56 * 1024, `${p.id}: ${list[0].file} ${list[0].bytes} B`);
+    assert.ok(list[0].bytes <= HERO_768_MAX, `${p.id}: ${list[0].file} ${list[0].bytes} B (toleranță ${HERO_768_MAX} B)`);
   }
 });
 
 // ---------------------------------------------------------------------------------------------------------------
 // Pozele din corp pe telefon 3x: `sizes` normalizat de ActionPhoto (bodySizes), ca browserul să aleagă 960 px, nu 1440 px.
 
-test('bodySizes: ultima intrare calc(100vw - 2rem) primește regula de telefon 3x în față; restul trece neschimbat', () => {
+test('bodySizes: regula de telefon 3x se pune imediat înaintea ultimei intrări calc(100vw - 2rem); restul trece neschimbat', () => {
   const rule = BODY_PHONE_HIDPI;
   assert.equal(PHONE_FULL_WIDTH, 'calc(100vw - 2rem)');
   assert.match(rule, /^\(max-width: 767px\) and \(min-resolution: 2\.5dppx\) calc\(\(100vw - 2rem\) \* 0\.75\)$/);
   assert.equal(bodySizes('calc(100vw - 2rem)'), `${rule}, calc(100vw - 2rem)`);
   assert.equal(
     bodySizes('(min-width: 1280px) 1248px, calc(100vw - 2rem)'),
-    `${rule}, (min-width: 1280px) 1248px, calc(100vw - 2rem)`,
+    `(min-width: 1280px) 1248px, ${rule}, calc(100vw - 2rem)`,
   );
   assert.equal(
     bodySizes('(min-width: 768px) 768px,calc(100vw - 2rem)'),
-    `${rule}, (min-width: 768px) 768px, calc(100vw - 2rem)`,
+    `(min-width: 768px) 768px, ${rule}, calc(100vw - 2rem)`,
   );
+  // intrările condiționate ale paginii (ex. 640-767 px) rămân ÎNAINTEA regulii, deci câștigă în intervalul lor
+  assert.equal(
+    bodySizes('(min-width: 1024px) 38vw, (min-width: 640px) 48vw, calc(100vw - 2rem)'),
+    `(min-width: 1024px) 38vw, (min-width: 640px) 48vw, ${rule}, calc(100vw - 2rem)`,
+  );
+  const parts = bodySizes('(min-width: 640px) 48vw, calc(100vw - 2rem)').split(', ');
+  assert.ok(parts.indexOf('(min-width: 640px) 48vw') < parts.indexOf(rule), 'regula nu trebuie să preceadă intrările paginii');
+  assert.equal(parts[parts.length - 1], PHONE_FULL_WIDTH);
   // alte valori implicite pe telefon: neschimbate (eroi, 70vw, 100vw, intrări cu calc înăuntru care nu sunt ultima)
   for (const same of ['100vw', '40vw', '(min-width: 1024px) 38vw, 70vw', '(min-width: 640px) calc(100vw - 2rem), 70vw', 'calc(100vw - 2rem) 1px']) {
     assert.equal(bodySizes(same), same, same);
@@ -1165,7 +1179,8 @@ test('dist: pozele din corp cu calc(100vw - 2rem) pe telefon au regula 3x; eroii
       const hero = /fetchpriority="high"/.test(tag);
       const entries = sizes.replaceAll('&#38;', '&').split(/,\s*(?![^(]*\))/);
       if (hero) continue;
-      if (sizes.startsWith(BODY_PHONE_HIDPI)) withRule += 1;
+      // regula stă imediat înaintea ultimei intrări (calc(100vw - 2rem)), după intrările condiționate ale paginii
+      if (entries.at(-2) === BODY_PHONE_HIDPI && entries.at(-1) === PHONE_FULL_WIDTH) withRule += 1;
       else if (entries.at(-1) === PHONE_FULL_WIDTH) assert.fail(`${relative(DIST, file)}: sizes fără regula 3x: ${sizes}`);
     }
   }

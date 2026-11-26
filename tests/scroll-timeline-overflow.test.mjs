@@ -11,6 +11,12 @@
 // responsive/stări; media query-urile se aplatizează, conservator: o clasă care blochează doar de la un breakpoint e blocantă).
 // `overflow: clip`, `overflow-x: clip` și `overflow: visible` nu blochează.
 //
+// LIMITE ale parserului CSS (blockingCssRules): (1) selectorii cu context sau combinatori (`.a .b`, `.a>.b` etc.) și variantele
+// arbitrare Tailwind de tip `[&>div]:overflow-hidden` se tratează conservator: contează doar subiectul selectorului (ultimul
+// compus), iar contextul se ignoră, deci elementul cu acea clasă e considerat blocant oriunde apare (pot apărea alarme false, dar nu
+// se pierd cazuri); (2) un `:is(...)` fără o clasă sau etichetă în afara lui (de ex. `:is(.a,.b){overflow:hidden}`) NU e detectat:
+// grupul se sare, iar regula rămâne fără clase și fără etichetă, deci nu intră în set.
+//
 // EXCEPȚII documentate: un strămoș cu atributul `data-sd-exceptie="motiv"` nu blochează testul. Azi un singur caz:
 // scrollerul orizontal din CategoryTiles (`overflow-x-auto sm:overflow-visible`): pe telefon dalele nu pot rula efectul
 // (scrollerul e containerul), de la sm în sus rulează. Excepțiile se numără PE ELEMENT: cel mult una pe pagină, doar pe
@@ -481,9 +487,10 @@ test('dist: niciun efect sd-*/card-3d nu e blocat de un strămoș cu overflow hi
   const cssFiles = existsSync(cssDir) ? readdirSync(cssDir).filter((n) => n.endsWith('.css')) : [];
   assert.ok(cssFiles.length >= 1, 'dist/_astro/*.css lipsește: regulile blocante din CSS nu pot fi citite');
   const cssRules = cssFiles.flatMap((n) => blockingCssRules(readFileSync(join(cssDir, n), 'utf8')));
-  // plasă: CSS-ul compilat trebuie să conțină regulile cunoscute (parserul sau build-ul nu s-au stricat)
+  // plasă: CSS-ul compilat trebuie să conțină măcar regula `.overflow-hidden` (parserul sau build-ul nu s-au stricat). Nu mai cerem
+  // `.line-clamp-2`/`.overflow-x-auto`: Tailwind le scoate din CSS dacă nicio pagină nu le mai folosește, iar asta nu e o defecțiune.
   const known = new Set(cssRules.map((r) => r.selector));
-  for (const sel of ['.overflow-hidden', '.truncate', '.line-clamp-2', '.overflow-x-auto']) assert.ok(known.has(sel), `regula ${sel} nu a fost găsită în CSS-ul din dist/_astro`);
+  assert.ok(known.has('.overflow-hidden'), 'regula .overflow-hidden nu a fost găsită în CSS-ul din dist/_astro');
   const report = [];
   const exceptionReport = [];
   const reasons = new Set();

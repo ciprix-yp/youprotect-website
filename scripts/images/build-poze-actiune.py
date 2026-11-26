@@ -173,6 +173,8 @@ def portrait_crop(src, box):
     crop = src.crop((round(x0 * w), round(y0 * h), round(x1 * w), round(y1 * h)))
     if abs(crop.size[0] / crop.size[1] - 0.8) > 0.01:
         fail(f"portret.decupaj nu e 4:5 (e {crop.size[0]}x{crop.size[1]})")
+    if crop.size[0] < max(PORTRAIT_WIDTHS):
+        fail(f"portret.decupaj prea mic ({crop.size[0]} px < {max(PORTRAIT_WIDTHS)} px): varianta ar fi mărită (upscaling)")
     return crop
 
 
@@ -258,7 +260,7 @@ def main():
         if entry.get("portret"):
             crop = portrait_crop(src, entry["portret"].get("decupaj"))
             for w in PORTRAIT_WIDTHS:
-                h = round(crop.size[1] * w / crop.size[0])
+                h = w * 5 // 4  # exact 4:5 (testul cere raportul 1,25), nu round() pe decupajul aproximativ
                 img = crop.resize((w, h), Image.LANCZOS)
                 data, quality = encode(img, PORTRAIT_BUDGET[w], PORTRAIT_QUALITY_START[w])
                 warn_over_budget(f"{entry['id']} portret", w, len(data), PORTRAIT_BUDGET[w])

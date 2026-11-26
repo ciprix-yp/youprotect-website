@@ -180,12 +180,13 @@ function sizesEntries(sizes: string): string[] {
 
 /**
  * `sizes` pentru pozele din corp (nu eroii). Regula: dacă ULTIMA intrare a listei (cea fără condiție de media, valabilă pe
- * telefon) e exact `PHONE_FULL_WIDTH`, se pune în față `BODY_PHONE_HIDPI`: telefoanele cu 2,5 dppx sau mai mult primesc varianta
+ * telefon) e exact `PHONE_FULL_WIDTH`, se pune `BODY_PHONE_HIDPI` imediat înaintea ei: telefoanele cu 2,5 dppx sau mai mult primesc varianta
  * de 960 px în loc de 1440 px; DPR 1-2 și toate lățimile de la 768 px în sus rămân neschimbate. Alte valori (de ex. `70vw`,
  * `100vw`) trec nemodificate. ActionPhoto o aplică singur, deci paginile păstrează `sizes` cum e și beneficiază fără modificări.
  */
 export function bodySizes(sizes: string): string {
   const entries = sizesEntries(sizes);
   if (entries.length === 0 || entries[entries.length - 1] !== PHONE_FULL_WIDTH) return sizes;
-  return [BODY_PHONE_HIDPI, ...entries].join(', ');
+  // Imediat înaintea ultimei intrări: intrările condiționate ale paginii (ex. `(min-width: 640px) 48vw`) câștigă la 640-767 px.
+  return [...entries.slice(0, -1), BODY_PHONE_HIDPI, PHONE_FULL_WIDTH].join(', ');
 }
