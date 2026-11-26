@@ -26,6 +26,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { runInNewContext } from 'node:vm';
+import { brotliCompressSync, gzipSync } from 'node:zlib';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -49,6 +51,8 @@ const EXPECTED_IDS = [
   'P04', 'P05', 'P06', 'P11', 'P14', 'P15', 'P16',
   'S01', 'S02', 'S04', 'S06', 'S08', 'S12', 'S16', 'S17', 'S18', 'S19',
 ];
+/** Eroul rotativ al homepage-ului: ordinea din `heroPhotos` (src/pages/index.astro); S02 (indexul 0) e și poza fără JavaScript. */
+const HERO_SET = ['S02', 'M24', 'M25', 'M26', 'M27', 'P14', 'P15', 'P16', 'S18', 'S19'];
 const BRAND = {
   mascot: { suffix: '-mascot', credit: 'MASCOT', prefix: 'M' },
   portwest: { suffix: '-portwest', credit: 'Portwest', prefix: 'P' },
@@ -825,6 +829,197 @@ test('dist: în dist/ toate ImageObject-urile de acțiune au creditul și fără
   t.diagnostic(`${checked} ImageObject-uri de acțiune verificate în ${htmlFiles.length} pagini`);
 });
 
+// ---------------------------------------------------------------------------------------------------------------
+// Eroul rotativ al homepage-ului pe dist/index.html: template-uri, noscript, scripturile inline, JSON-LD, CSS-ul gradientelor
+
+/** Scripturile inline (fără src, fără JSON-LD) din HTML: [{ code }] */
+const inlineScripts = (html) => [...html.matchAll(/<script(?![^>]*\b(?:src|type)=)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+const ATTR = { srcset: /\ssrcset="([^"]*)"/, sizes: /\ssizes="([^"]*)"/, media: /\smedia="([^"]*)"/, alt: /\salt="([^"]*)"/ };
+const attr = (tag, name) => ATTR[name].exec(tag)?.[1];
+const homeHtml = () => readFileSync(join(DIST, 'index.html'), 'utf8');
+/** Cele 10 template-uri ale eroului: [{ index, html, source: { srcset, sizes, media }, img: { srcset, sizes, alt } }] */
+function heroTemplates10(html) {
+  return [...html.matchAll(/<template id="erou-(\d+)">([\s\S]*?)<\/template>/g)].map((m) => {
+    const source = /<source\b[^>]*>/.exec(m[2])?.[0] ?? '';
+    const img = /<img\b[^>]*>/.exec(m[2])?.[0] ?? '';
+    return {
+      index: Number(m[1]),
+      html: m[2],
+      source: { srcset: attr(source, 'srcset'), sizes: attr(source, 'sizes'), media: attr(source, 'media') },
+      img: { srcset: attr(img, 'srcset'), sizes: attr(img, 'sizes'), alt: attr(img, 'alt'), tag: img },
+    };
+  });
+}
+const headScriptOf = (html) => inlineScripts(html).find((c) => c.includes('"data-erou"'));
+const cloneScriptOf = (html) => inlineScripts(html).find((c) => c.includes('getElementById("erou-"'));
+
+/** Rulează scriptul din <head> cu un document fals; întoarce { attr, links } pentru `Math.random` dat. */
+function runHeadScript(code, random) {
+  const links = [];
+  const attrs = {};
+  const el = () => ({ attrs: {}, setAttribute(k, v) { this.attrs[k] = String(v); } });
+  const document = {
+    documentElement: { setAttribute: (k, v) => { attrs[k] = String(v); } },
+    createElement: () => el(),
+    head: { appendChild: (l) => links.push(l) },
+  };
+  runInNewContext(code, { document, Math: { floor: Math.floor, random } });
+  return { attrs, links };
+}
+
+test('dist: homepage-ul are 10 template-uri ale eroului, în ordinea heroPhotos, fiecare cu <picture> 4:5 pe telefon și 16:9 de la 768 px', (t) => {
+  if (!distAvailable(t)) return;
+  const html = homeHtml();
+  const templates = heroTemplates10(html);
+  assert.deepEqual(templates.map((x) => x.index), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  for (const [i, tpl] of templates.entries()) {
+    const id = HERO_SET[i];
+    assert.equal(tpl.source.media, '(max-width: 767px)', `${id}: media pe <source>`);
+    assert.equal(tpl.source.sizes, '50vw', `${id}: sizes pe <source>`);
+    assert.equal(tpl.source.srcset, photoPortraitSrcset(id), `${id}: srcset portret`);
+    assert.equal(tpl.img.sizes, '100vw', `${id}: sizes pe <img>`);
+    assert.equal(tpl.img.srcset, heroSrcset(id), `${id}: srcset erou`);
+    assert.equal(tpl.img.alt?.replaceAll('&#38;', '&'), getPhoto(id).alt.replaceAll('&', '&'), `${id}: alt`);
+    assert.match(tpl.img.tag, /\bloading="eager"/);
+    assert.match(tpl.img.tag, /\bfetchpriority="high"/);
+    assert.match(tpl.html, /<div class="absolute inset-0 bg-gradient-to-t md:hidden /, `${id}: gradient de telefon`);
+    assert.match(tpl.html, /<div class="absolute inset-0 hidden bg-gradient-to-t md:block /, `${id}: gradient de desktop`);
+    const { gradient } = heroStyle(id);
+    assert.ok(tpl.html.includes(gradient.telefon) && tpl.html.includes(gradient.desktop), `${id}: clasele presetului`);
+  }
+  // sursa HTML nu are alte <picture>/<img> ale eroului în afara template-urilor și a <noscript>-ului
+  const rest = html.replace(/<template id="erou-\d+">[\s\S]*?<\/template>/g, '').replace(/<noscript>[\s\S]*?<\/noscript>/g, '');
+  for (const id of HERO_SET) {
+    for (const v of variants[id]) assert.ok(!new RegExp(`<(?:img|source|link)\\b[^>]*${v.file}`).test(rest), `${id}: ${v.file} în afara template-urilor/noscript`);
+  }
+});
+
+test('dist: <noscript> din erou are S02 (poza și gradientele), o singură dată; cu JS nu e DOM (S02 nu apare de două ori)', (t) => {
+  if (!distAvailable(t)) return;
+  const html = homeHtml();
+  const hero = /<section id="hero"[\s\S]*?<\/section>/.exec(html)[0];
+  const noscripts = [...hero.matchAll(/<noscript>([\s\S]*?)<\/noscript>/g)].map((m) => m[1]);
+  assert.equal(noscripts.length, 1, 'un singur <noscript> în erou');
+  const s02 = getPhoto('S02');
+  assert.ok(noscripts[0].includes(heroSrcset('S02')) && noscripts[0].includes(photoPortraitSrcset('S02')), 'S02 (desktop și portret) în noscript');
+  assert.ok(noscripts[0].includes(s02.alt));
+  assert.ok(noscripts[0].includes(heroStyle('S02').gradient.telefon) && noscripts[0].includes(heroStyle('S02').gradient.desktop));
+  for (const id of HERO_SET.slice(1)) assert.ok(!noscripts[0].includes(getPhoto(id).slug), `${id} în noscript`);
+  // noscript-ul și template-ul 0 au același markup pentru S02
+  assert.equal(noscripts[0], heroTemplates10(html)[0].html);
+});
+
+test('dist: scriptul din <head> alege indexul, îl pune în data-erou și preîncarcă exact fișierele din <picture> (imagesrcset/imagesizes = srcset/sizes)', (t) => {
+  if (!distAvailable(t)) return;
+  const html = homeHtml();
+  const code = headScriptOf(html);
+  assert.ok(code, 'scriptul eroului din <head> lipsește');
+  assert.ok(html.indexOf(code) < html.indexOf('<body'), 'scriptul trebuie să fie în <head>');
+  const templates = heroTemplates10(html);
+  for (let i = 0; i < HERO_SET.length; i += 1) {
+    const { attrs, links } = runHeadScript(code, () => (i + 0.5) / HERO_SET.length);
+    assert.equal(attrs['data-erou'], String(i));
+    assert.equal(links.length, 2, `${HERO_SET[i]}: două link-uri de preload`);
+    const [phone, desktop] = links.map((l) => l.attrs);
+    for (const l of [phone, desktop]) {
+      assert.equal(l.rel, undefined, 'rel se setează ca proprietate, nu ca atribut');
+      assert.equal(l.fetchpriority, 'high');
+    }
+    assert.deepEqual([phone.imagesrcset, phone.imagesizes], [templates[i].source.srcset, templates[i].source.sizes], `${HERO_SET[i]}: telefon`);
+    assert.deepEqual([desktop.imagesrcset, desktop.imagesizes], [templates[i].img.srcset, templates[i].img.sizes], `${HERO_SET[i]}: desktop`);
+  }
+  // proprietățile link-ului (rel, as, media): setate ca proprietăți pe elementul creat
+  const seen = [];
+  const doc = { documentElement: { setAttribute() {} }, createElement: () => ({ attrs: {}, setAttribute(k, v) { this.attrs[k] = v; } }), head: { appendChild: (l) => seen.push(l) } };
+  runInNewContext(code, { document: doc, Math: { floor: Math.floor, random: () => 0.05 } });
+  assert.deepEqual(seen.map((l) => [l.rel, l.as, l.media]), [['preload', 'image', '(max-width: 767px)'], ['preload', 'image', '(min-width: 768px)']]);
+  // Math.random indisponibil sau NaN/în afara intervalului -> prima poză (S02)
+  for (const bad of [() => NaN, () => { throw new Error('x'); }, () => 1, () => -1, () => undefined]) {
+    assert.equal(runHeadScript(code, bad).attrs['data-erou'], '0');
+  }
+  assert.equal(runHeadScript(code, () => 0.9999).attrs['data-erou'], '9');
+  t.diagnostic(`script <head>: ${code.length} B brut, ${brotliCompressSync(Buffer.from(code)).length} B brotli`);
+});
+
+test('dist: scriptul de clonare din erou validează data-erou (0-9) și clonează template-ul ales fără innerHTML', (t) => {
+  if (!distAvailable(t)) return;
+  const code = cloneScriptOf(homeHtml());
+  assert.ok(code, 'scriptul de clonare lipsește');
+  const run = (value) => {
+    const inserted = [];
+    const template = (n) => ({ content: { cloneNode: (deep) => ({ clone: n, deep }) } });
+    const parent = { insertBefore: (node, ref) => inserted.push([node, ref]) };
+    const script = { parentNode: parent };
+    const document = {
+      documentElement: { getAttribute: () => value },
+      getElementById: (id) => (/^erou-[0-9]$/.test(id) ? template(Number(id.slice(5))) : null),
+      currentScript: script,
+    };
+    runInNewContext(code, { document });
+    assert.equal(inserted.length, 1);
+    assert.equal(inserted[0][1], script, 'se inserează înaintea scriptului');
+    assert.equal(inserted[0][0].deep, true);
+    return inserted[0][0].clone;
+  };
+  for (let i = 0; i < 10; i += 1) assert.equal(run(String(i)), i);
+  for (const bad of [null, '', 'x', '10', '-1', '1.5', '01', ' 3', '3 ', '__proto__']) assert.equal(run(bad), 0, `valoare „${bad}”`);
+});
+
+test('dist: scripturile inline ale eroului nu citesc și nu scriu nimic din afara paginii (fără URL, cookie, storage, innerHTML, eval)', (t) => {
+  if (!distAvailable(t)) return;
+  const html = homeHtml();
+  const FORBIDDEN = /location|URLSearchParams|document\s*\.\s*cookie|localStorage|sessionStorage|indexedDB|innerHTML|outerHTML|insertAdjacentHTML|eval|document\s*\.\s*write|Function\s*\(|referrer|navigator|fetch\s*\(|XMLHttpRequest|postMessage/;
+  for (const [name, code] of [['head', headScriptOf(html)], ['clonare', cloneScriptOf(html)]]) {
+    assert.ok(code, `scriptul „${name}” lipsește`);
+    assert.doesNotMatch(code, FORBIDDEN, `scriptul „${name}” folosește o interfață interzisă`);
+  }
+  // singurul loc unde se tușește un atribut al <html> e data-erou
+  assert.deepEqual([...headScriptOf(html).matchAll(/setAttribute\(\s*"([^"]+)"/g)].map((m) => m[1]).sort(), ['data-erou', 'fetchpriority', 'imagesizes', 'imagesrcset']);
+  // scriptul din sursă, nu doar din dist: aceleași reguli pe src/pages/index.astro și HeroPhotoSet.astro (în afara comentariilor de documentare)
+  for (const file of ['src/pages/index.astro', 'src/components/home/HeroPhotoSet.astro']) {
+    const m = /<script is:inline[\s\S]*?<\/script>/g;
+    for (const block of read(file).match(m) ?? []) assert.doesNotMatch(block, FORBIDDEN, `${file}: interfață interzisă într-un script inline`);
+  }
+  const bytes = Buffer.from(html);
+  const tpl = html.match(/<template id="erou-\d+">[\s\S]*?<\/template>/g).join('') + html.match(/<noscript>[\s\S]*?<\/noscript>/g)[0] + headScriptOf(html) + cloneScriptOf(html);
+  t.diagnostic(`HTML homepage ${bytes.length} B brut, ${brotliCompressSync(bytes).length} B brotli, ${gzipSync(bytes).length} B gzip; partea eroului (template-uri, noscript, scripturi) ${Buffer.byteLength(tpl)} B brut, ${brotliCompressSync(Buffer.from(tpl)).length} B brotli`);
+});
+
+test('dist: JSON-LD al homepage-ului are ImageObject pentru cele 10 poze ale eroului și M12, cu creditul furnizorului; fără credit vizibil în erou; P* doar în set', (t) => {
+  if (!distAvailable(t)) return;
+  const html = homeHtml();
+  const nodes = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap((m) => {
+    const parsed = JSON.parse(m[1]);
+    return parsed['@graph'] ?? [parsed];
+  });
+  const images = nodes.filter((n) => n['@type'] === 'ImageObject' && String(n['@id']).includes('#imagine-actiune-'));
+  assert.deepEqual(images.map((n) => n['@id']).sort(), [...HERO_SET, 'M12'].map((id) => imageObject(id)['@id']).sort());
+  for (const node of images) {
+    const id = [...HERO_SET, 'M12'].find((x) => imageObject(x)['@id'] === node['@id']);
+    checkImageObject(node, id);
+    assert.equal(node.creditText, BRAND[getPhoto(id).furnizor].credit, `${id}: credit`);
+    assert.equal(node.copyrightNotice, `© ${BRAND[getPhoto(id).furnizor].credit}`);
+  }
+  const hero = /<section id="hero"[\s\S]*?<\/section>/.exec(html)[0];
+  assert.doesNotMatch(hero.replace(/<script[\s\S]*?<\/script>/g, ''), /<figcaption|Foto:|Credit:|©/, 'credit vizibil în erou');
+  // nicio poză Portwest pe „/” în afara template-urilor eroului și a JSON-LD
+  const stray = html.replace(/<template id="erou-\d+">[\s\S]*?<\/template>/g, '').replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>/g, '');
+  for (const p of photos.filter((x) => x.furnizor === 'portwest')) {
+    for (const v of variants[p.id]) assert.ok(!stray.includes(v.file), `${p.id}: ${v.file} pe „/” în afara template-urilor`);
+  }
+});
+
+test('dist: clasele presetelor de gradient ale eroului există în CSS-ul generat', (t) => {
+  if (!distAvailable(t)) return;
+  const css = walk(DIST, (n) => n.endsWith('.css')).map((f) => readFileSync(f, 'utf8')).join('\n');
+  const selector = (c) => `.${c.replace(/[/%]/g, '\\$&')}`;
+  for (const [name, preset] of Object.entries(HERO_GRADIENTS)) {
+    for (const classes of Object.values(preset)) {
+      for (const c of classes.split(' ')) assert.ok(css.includes(selector(c)), `preset „${name}”: clasa ${c} lipsește din CSS`);
+    }
+  }
+});
+
 // dist sintetic, într-un director temporar
 const fileOf = (id, i = 0) => variants[id][i].file;
 
@@ -1317,7 +1512,6 @@ test('dist: S02 are 640/960/1440 în ghid și 768/960/1440/1920 pe homepage', (t
 });
 
 // Eroul rotativ al homepage-ului: cele 10 poze (ordinea din `heroPhotos`, index.astro), cadrul și gradientul vin din date.
-const HERO_SET = ['S02', 'M24', 'M25', 'M26', 'M27', 'P14', 'P15', 'P16', 'S18', 'S19'];
 // Tiparul claselor Tailwind dintr-un preset: culoare `yp-black` (sau transparent) cu opacitate opțională, poziții în %.
 const GRADIENT_CLASS = /^(?:(?:from|via|to)-(?:yp-black(?:\/\d{1,3})?|transparent)|(?:from|via)-\d{1,3}%)$/;
 
