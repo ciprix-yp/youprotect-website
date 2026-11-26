@@ -4,7 +4,10 @@
 // anii în transport pe Danemarca. Valorile AAA+ rămân (decizia owner-ului). Intro-ul din antet rămâne de cel mult
 // 3 rânduri la 390 px (~25 de cuvinte): pe telefon, butonul principal trebuie să încapă în primul ecran.
 import { getCollection } from "astro:content";
-import InnerPageLayout from "../layouts/InnerPageLayout.astro";import { activeBrandPages } from "../lib/catalog-brands";
+import InnerPageLayout from "../layouts/InnerPageLayout.astro";
+import ActionPhoto from "../components/media/ActionPhoto.astro";
+import { jsonLd } from "../lib/json-ld";
+import { imageGraph } from "../lib/poze-actiune";import { activeBrandPages } from "../lib/catalog-brands";
 import { CTA_DISCUSS, RESPONSE_TIME } from "../lib/site";
 
 // Mărcile cu pagină în catalog, din aceleași date ca /produse/ („MASCOT, Sir Safety și Portwest”).
@@ -285,6 +288,14 @@ const brandsText =
       </div>
     </div>
   </section>
+
+  <!-- Poza cu oameni în acțiune, chiar înaintea CTA-ului final (review design 26.11.2026, 4a; M02 e erou pe /industrii/constructii/,
+       aici a doua folosire, non-erou). Fără legendă; creditul stă doar în ImageObject. `sd-expand` pe <figure> FĂRĂ overflow-hidden:
+       cardul cu colțuri rotunjite se lărgește la toată lățimea la derulare (clip-path, global.css). -->
+  <figure class="sd-expand relative m-0 aspect-[4/5] md:aspect-[21/9]">
+    <ActionPhoto id="M02" sizes="(min-width: 768px) 100vw, calc(100vw - 2rem)" />
+  </figure>
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M02"]))} />
 
   <!-- BLOC 6: CTA FINAL -->
   <section class="py-16 md:py-24 bg-yp-yellow relative overflow-hidden">
