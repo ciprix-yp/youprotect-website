@@ -740,4 +740,6 @@
   notițele sunt în corpul PR-ului.
 - Plafon de 2000 de caractere pe orice răspuns (limita importerului CRM, D-2026-11-20-14), prin trunchiere
   (`CRM_ANSWER_MAX_LENGTH`, `src/lib/lead-limits.js`).
+- Răspunsurile sunt text bine format (`toWellFormed`: un surrogate singur devine U+FFFD), iar tăierea la limită nu
+  rupe caractere (o pereche surrogate nu se taie la mijloc), ca importerul CRM să primească UTF-8 valid.
 - Impact: echipa vede în cerere (în email și în CRM) când să revină. Nu există memento automat.

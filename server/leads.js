@@ -46,12 +46,22 @@ export const INTENT_LABELS = { quote: 'Cerere de ofertă', consultation: 'Progra
 const DETAILS_LABELS = { quote: 'Cantități, mărimi, coduri', consultation: 'Despre ce vrea să vorbim' };
 const ORDER_MONTH_LABEL = 'În ce lună comandă de obicei';
 
+/** Taie textul la `max` unități, fără să rupă o pereche surrogate, apoi scoate spațiile de la capăt. */
+function cutText(text, max) {
+  if (text.length <= max) return text;
+  let cut = text.slice(0, max);
+  const last = cut.charCodeAt(cut.length - 1);
+  if (last >= 0xd800 && last <= 0xdbff) cut = cut.slice(0, -1);
+  return cut.trimEnd();
+}
+
+/** Text curat: bine format (un surrogate singur devine U+FFFD, ca importerul CRM să primească UTF-8 valid), fără
+ *  spații la capete, tăiat la `maxLength` fără să rupă un caracter. `toWellFormed` există în Node 20+ și în Workers. */
 export function normalizeString(value, maxLength = null) {
   if (typeof value !== 'string') return null;
-  const trimmed = value.trim();
+  const trimmed = value.toWellFormed().trim();
   if (!trimmed) return null;
-  if (maxLength && trimmed.length > maxLength) return trimmed.slice(0, maxLength);
-  return trimmed;
+  return maxLength ? cutText(trimmed, maxLength) : trimmed;
 }
 
 function normalizeAnswer(value) {
@@ -65,14 +75,8 @@ function normalizeAnswer(value) {
   return normalizeString(value, MAX_ANSWER_LENGTH);
 }
 
-/** Taie textul la `max` caractere, fără să rupă o pereche surrogate și fără spații la capăt. */
-function capText(text, max) {
-  if (text.length <= max) return text;
-  let cut = text.slice(0, max);
-  const last = cut.charCodeAt(cut.length - 1);
-  if (last >= 0xd800 && last <= 0xdbff) cut = cut.slice(0, -1);
-  return cut.trimEnd();
-}
+/** Plafonul final pe un răspuns din `answers` (limita importerului CRM): aceeași tăiere sigură. */
+const capText = cutText;
 
 /** Adresa paginii unui produs. @param {string} slug */
 export const productUrl = (slug) => `${SITE_URL}/produse/${slug}/`;

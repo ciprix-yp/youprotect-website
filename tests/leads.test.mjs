@@ -3,10 +3,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { isValidCUI, normalizeCUI } from '../src/lib/cui.js';
-import { parseLead, leadEmail, environmentOf, safeEqual, HONEYPOT_FIELD, MAX_LEADS_PER_IP_PER_HOUR } from '../server/leads.js';
+import { QUOTE_LIST_MAX, PRODUCT_SLUG_MAX_LENGTH } from '../src/lib/quote-list.js';
+import { parseLead, leadEmail, productUrl, environmentOf, safeEqual, HONEYPOT_FIELD, MAX_LEADS_PER_IP_PER_HOUR } from '../server/leads.js';
 import { computeTco, parseTcoInputs, TCO_CATEGORIES } from '../src/lib/tco.js';
 import { DOMAINS } from '../src/lib/domains.js';
-import { DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
+import { CRM_ANSWER_MAX_LENGTH, DETAILS_MAX_LENGTH } from '../src/lib/lead-limits.js';
 import { PERSONALIZATION_ANSWERS, QUOTE_CATEGORIES } from '../src/lib/quote-categories.js';
 import { onRequestPost as submitLead } from '../functions/api/submit-lead.js';
 import { onRequestGet as crmGet, onRequestPost as crmPost } from '../functions/api/crm/leads.js';
@@ -415,9 +416,60 @@ test('plafonul de 2000: o jumătate de pereche surrogate trimisă de client la l
   const q3 = parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q3: items } }).lead.answers.find((a) => a.question === 'q3').answer;
   assert.ok(q3.length <= 2000);
   assert.equal(q3.isWellFormed(), true);
-  // Sub limită, un surrogate orfan nu e atins de plafon (nu-l validează; serverul nu-l inventează).
+  // Și sub limită, un surrogate orfan devine U+FFFD (normalizeString folosește toWellFormed).
   const small = parseLead({ intent: 'quote', data: { ...valid.data, q1: '16–40', q4: 'ok\ud83d' } }).lead.answers.find((a) => a.question === 'q4');
-  assert.equal(small.answer, 'ok\ud83d');
+  assert.equal(small.answer, 'ok�');
+});
+
+test('parseLead: răspunsurile sunt text bine format; tăierea la limită nu rupe emoji-uri și surrogatele singure devin U+FFFD', () => {
+  const emoji = '😀';
+  const lead = (data) => ({ intent: 'quote', data: { ...valid.data, q1: '16–40', ...data } });
+  const wellFormedEverywhere = (r) => {
+    assert.equal(r.ok, true);
+    for (const a of r.lead.answers) assert.equal(a.answer.isWellFormed(), true, `${a.question}: ${JSON.stringify(a.answer.slice(-4))}`);
+    const { text, subject } = leadEmail({ ...r.lead, id: 'id', createdAt: '2026-11-26T00:00:00Z', environment: 'production', sourceUrl: null });
+    assert.equal(text.isWellFormed(), true);
+    assert.equal(subject.isWellFormed(), true);
+    assert.equal(JSON.stringify(r.lead.answers).includes('\\ud'), false); // fără escape-uri de surrogate în JSON-ul din D1
+  };
+
+  // „detalii”: emoji pe pozițiile 999–1000 (limita e 1000): se scoate jumătatea de pereche.
+  const detalii = `${'a'.repeat(999)}${emoji}${'b'.repeat(20)}`;
+  const d = parseLead(lead({ detalii }));
+  wellFormedEverywhere(d);
+  assert.equal(d.lead.answers.find((a) => a.question === 'detalii').answer, 'a'.repeat(999));
+  // Emoji care încape întreg (998–999): rămâne.
+  const d2 = parseLead(lead({ detalii: `${'a'.repeat(998)}${emoji}${'b'.repeat(20)}` }));
+  wellFormedEverywhere(d2);
+  assert.equal(d2.lead.answers.find((a) => a.question === 'detalii').answer, `${'a'.repeat(998)}${emoji}`);
+
+  // Element de q3: emoji pe 299–300 (limita pe element e 300).
+  const q3 = parseLead(lead({ q3: [`${'c'.repeat(299)}${emoji}${'d'.repeat(10)}`, 'Mănuși'] }));
+  wellFormedEverywhere(q3);
+  assert.equal(q3.lead.answers.find((a) => a.question === 'q3').answer, `${'c'.repeat(299)}; Mănuși`);
+
+  // „\ud800” singur, trimis direct în JSON, la fel în mijloc și la capăt, în text liber și în element de listă.
+  const raw = JSON.parse('{"a":"x\\ud800y","b":"\\udc00","c":"fin\\ud83d"}');
+  const lone = parseLead(lead({ detalii: raw.a, q4: raw.b, q5: [raw.c], q_other: { q4: raw.a } }));
+  wellFormedEverywhere(lone);
+  const byKey = Object.fromEntries(lone.lead.answers.map((a) => [a.question, a.answer]));
+  assert.equal(byKey.detalii, 'x�y');
+  assert.equal(byKey.q4, '� (Specificat: x�y)');
+  assert.equal(byKey.q5, 'fin�');
+
+  // Plafonul final de 2000: emoji pe 1999–2000, ca la testul de plafon, rămâne bine format.
+  const long = [...Array.from({ length: 6 }, () => 'x'.repeat(300)), `${'a'.repeat(187)}${emoji}${'b'.repeat(50)}`];
+  wellFormedEverywhere(parseLead(lead({ q3: long })));
+});
+
+test('produse: lista maximă încape în plafonul de 2000, deci tăietura nu rupe o adresă', () => {
+  const longestUrl = productUrl('x'.repeat(PRODUCT_SLUG_MAX_LENGTH));
+  // Adresele sunt câte una pe rând: n × (adresă + „\n”) − „\n”-ul de la urmă.
+  assert.ok(QUOTE_LIST_MAX * (longestUrl.length + 1) <= CRM_ANSWER_MAX_LENGTH, `${QUOTE_LIST_MAX * (longestUrl.length + 1)}`);
+  const slugs = Array.from({ length: QUOTE_LIST_MAX }, (_, i) => `${String(i).padStart(2, '0')}-${'x'.repeat(PRODUCT_SLUG_MAX_LENGTH - 3)}`);
+  const r = parseLead({ ...valid, data: { ...valid.data, produs: undefined, produse: slugs } });
+  const list = r.lead.answers.find((a) => a.question === 'produse').answer;
+  assert.deepEqual(list.split('\n'), slugs.map(productUrl));
 });
 
 test('calculator: model simplu, ipoteze la vedere (formula detaliată în tests/tco.test.mjs)', () => {
