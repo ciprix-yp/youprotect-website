@@ -136,19 +136,47 @@ def apply_crop(entry, src, box):
     return src.crop((x, y, x + w, y + h))
 
 
-def planned_widths(entry, source_width):
+def planned_widths(entry, source_width, source_height):
     widths = []
-    for w in (HERO_WIDTHS if entry["erou"] else BASE_WIDTHS):
+    hero_widths = HERO_WIDTHS
+    if source_width / source_height < 1.2:
+        # Sursă pătrată (2048x2048): 1920x1920 nu încape în 250 KB la o calitate acceptabilă și, în cadrele late ale
+        # eroilor, jumătate din pixeli sunt tăiați de object-fit. Eroii pătrați au 768/960/1440.
+        hero_widths = HERO_WIDTHS[:3]
+    for w in (hero_widths if entry["erou"] else BASE_WIDTHS):
         w = min(w, source_width)  # no upscaling: the last variant is the source width
         if w not in widths:
             widths.append(w)
     return widths
 
 
-def encode(img):
+# Decupajul portret (4:5) al eroului homepage-ului pe telefon: `portret.decupaj` = [x0, y0, x1, y1] în fracții din
+# imaginea sursă, cu raportul 4:5 (în pixeli). Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în
+# variante; `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
+PORTRAIT_WIDTHS = (768, 960)
+PORTRAIT_BUDGET = {768: 55 * 1024, 960: 100 * 1024}
+PORTRAIT_QUALITY_START = {768: 70, 960: 70}
+
+
+def portrait_crop(src, box):
+    if not (isinstance(box, list) and len(box) == 4 and all(isinstance(v, (int, float)) for v in box)):
+        fail("portret.decupaj trebuie să fie [x0, y0, x1, y1]")
+    x0, y0, x1, y1 = box
+    if not (0 <= x0 < x1 <= 1 and 0 <= y0 < y1 <= 1):
+        fail("portret.decupaj în afara imaginii")
+    w, h = src.size
+    crop = src.crop((round(x0 * w), round(y0 * h), round(x1 * w), round(y1 * h)))
+    if abs(crop.size[0] / crop.size[1] - 0.8) > 0.01:
+        fail(f"portret.decupaj nu e 4:5 (e {crop.size[0]}x{crop.size[1]})")
+    return crop
+
+
+def encode(img, budget=None, quality=None):
     width = img.size[0]
-    budget = BUDGET.get(width, BUDGET[1440] if width > 960 else BUDGET[960])
-    quality = QUALITY_START_BY_WIDTH.get(width, QUALITY_START)
+    if budget is None:
+        budget = BUDGET.get(width, BUDGET[1440] if width > 960 else BUDGET[960])
+    if quality is None:
+        quality = QUALITY_START_BY_WIDTH.get(width, QUALITY_START)
     while True:
         buf = io.BytesIO()
         img.save(buf, "WEBP", quality=quality, method=6, exif=b"", icc_profile=None)
@@ -187,7 +215,7 @@ def main():
         src = load_source(entry, manifest[entry["id"]])
         if entry["id"] in crops:
             src = apply_crop(entry, src, crops[entry["id"]])
-        widths = planned_widths(entry, src.size[0])
+        widths = planned_widths(entry, src.size[0], src.size[1])
         if widths != entry["latimi"]:
             fail(f"{entry['id']}: latimi din JSON {entry['latimi']} != calculate {widths}")
         variants[entry["id"]] = []
@@ -208,6 +236,23 @@ def main():
                 {"width": img.size[0], "height": img.size[1], "file": name, "bytes": len(data)}
             )
             print(f"{entry['id']} {w}x{h} q{quality} {len(data) // 1024} KB")
+        if entry.get("portret"):
+            crop = portrait_crop(src, entry["portret"].get("decupaj"))
+            for w in PORTRAIT_WIDTHS:
+                h = round(crop.size[1] * w / crop.size[0])
+                img = crop.resize((w, h), Image.LANCZOS)
+                data, quality = encode(img, PORTRAIT_BUDGET[w], PORTRAIT_QUALITY_START[w])
+                if len(data) > MAX_BYTES or {"EXIF", "XMP ", "ICCP"} & set(chunk_names(data)):
+                    fail(f"{entry['id']} portret {w}: prea mare sau cu metadate")
+                name = f"{entry['slug']}-p{w}.webp"
+                target = (OUT / name).resolve()
+                if target.parent != out_root:
+                    fail("cale de ieșire în afara directorului")
+                target.write_bytes(data)
+                variants[entry["id"]].append(
+                    {"width": w, "height": h, "file": name, "bytes": len(data), "portret": True}
+                )
+                print(f"{entry['id']} portret {w}x{h} q{quality} {len(data) // 1024} KB")
     VARIANTS.write_text(json.dumps(variants, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
