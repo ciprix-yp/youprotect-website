@@ -1,10 +1,11 @@
 ---
 import { jsonLd } from '../../lib/json-ld';
-import { CTA_DISCUSS } from '../../lib/site';
+import { CTA_DISCUSS, RESPONSE_TIME, SITE } from '../../lib/site';
 import ActionPhoto from '../../components/media/ActionPhoto.astro';
 import { imageGraph } from '../../lib/poze-actiune';
 import InnerPageLayout from "../../layouts/InnerPageLayout.astro";
 import EquipmentList from '../../components/industries/EquipmentList.astro';
+import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const breadcrumbSchema = {
@@ -12,21 +13,55 @@ const breadcrumbSchema = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Acasă", item: siteOrigin.href },
-    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii", siteOrigin).href },
+    { "@type": "ListItem", position: 2, name: "Industrii", item: new URL("/industrii/", siteOrigin).href },
     { "@type": "ListItem", position: 3, name: "Logistică", item: Astro.url.href },
   ],
 };
+
+// Întrebările de pe pagină, și în FAQPage (SEO-003, 26.11.2026). S1P/S3 ca în ghidul S1P sau S3, legea ca în ghidul
+// de cost; EN 342 fără temperatură minimă, ca pe fișele ColdStore; termenul ofertei doar din RESPONSE_TIME.
+const faq = [
+  {
+    q: 'Ce echipament de protecție se folosește în depozit?',
+    a: 'Cel cerut de evaluarea riscurilor de la fiecare loc de muncă: legea nu dă o listă unică. În depozit, riscurile obișnuite sunt traficul de stivuitoare și transpalete, sarcinile care pot cădea pe picior, tăieturile de la ambalaje și frigul din camerele frigorifice, iar pentru ele există pantofi de protecție, veste reflectorizante, mănuși de manipulare și haine pentru frig. Angajatorul le dă oamenilor gratuit și răspunde de întreținerea și înlocuirea lor (HG nr. 1.048/2006, art. 10).',
+  },
+  {
+    q: 'Ce pantofi de protecție sunt potriviți în depozit: S1P sau S3?',
+    a: 'Decide evaluarea riscurilor, pe care o face angajatorul (HG nr. 1.048/2006, art. 14). S1P se potrivește spațiilor uscate, cu podea plană, unde există risc de a călca pe obiecte ascuțite, cum sunt multe depozite. Pe rampa de încărcare, afară sau pe pardoseală udă, S3 adaugă fața care rezistă la apă și talpa cu crampoane.',
+  },
+  {
+    q: 'Ce înseamnă ESD la pantofii de protecție?',
+    a: 'ESD vine de la descărcare electrostatică (în engleză, electrostatic discharge). Pantofii ESD disipă sarcinile electrostatice care pot strica componentele electronice sensibile, așa că îi alegi pentru zonele în care oamenii lucrează cu astfel de componente. Pe fiecare fișă din catalog vezi dacă modelul e ESD și după ce standard.',
+  },
+  {
+    q: 'Ce haine se folosesc în depozitul frigorific?',
+    a: 'Haine certificate EN 342 pentru protecția la frig, cum sunt geaca și salopeta Portwest ColdStore, și mănuși certificate EN 511, cum sunt Portwest Apacha. EN 342 nu certifică o temperatură minimă: standardul dă doar temperaturi orientative, după efort, timpul petrecut în frig și curentul de aer. De aceea contează cât stau oamenii în camera frigorifică și ce fac acolo.',
+  },
+  {
+    q: 'Pot pune logoul firmei pe vestele reflectorizante?',
+    a: 'Da, în limita dată de producător pentru fiecare model, ca vesta să rămână certificată EN ISO 20471. Pe tricouri, tricouri polo, hanorace și pantaloni de lucru, logoul merge în zonele date de producător.',
+  },
+  {
+    q: 'De unde comand echipamente de protecție pentru depozit în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar oferta vine ${RESPONSE_TIME}. Hainele și încălțămintea le probezi în showroom înainte de comandă, iar livrarea se face în toată România.`,
+  },
+];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
+const inlineLink = "text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow";
 ---
 
 <InnerPageLayout
   title="Echipamente de protecție: depozite și logistică"
-  description="Echipamente de protecție pentru depozite și logistică: încălțăminte de protecție, haine reflectorizante, haine și mănuși pentru depozit frigorific, cu logo."
+  description="Echipamente de protecție pentru depozite și logistică: pantofi de protecție ESD, veste reflectorizante, haine pentru depozit frigorific. You Protect, Satu Mare."
   heroTitle="Echipamente de protecție pentru depozite și logistică"
-  heroSubtitle="În depozite și logistică, oamenii sunt pe picioare ore întregi, în trafic intern de stivuitoare și manipulare continuă. Echipamentul potrivit înseamnă confort, vizibilitate și siguranță pe tot parcursul turei."
+  heroSubtitle="You Protect, din Satu Mare, echipează echipele de depozit cu pantofi de protecție, veste reflectorizante și haine pentru depozitul frigorific."
   breadcrumb="Logistică"
   heroPhoto="M09"
   ctaHeading="Echipezi o echipă de depozit?"
-  ctaSubheading="Recomandăm seturi gândite pentru ture lungi și trafic intern."
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
@@ -40,19 +75,24 @@ const breadcrumbSchema = {
       <div class="flex flex-col md:flex-row gap-16 md:gap-24">
         <div class="md:w-1/3 shrink-0">
           <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32">
-            Confort și <br />vizibilitate.
+            Ce îi trebuie unei echipe de depozit
           </h2>
         </div>
         <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 leading-relaxed">
           <p>
-            Productivitatea în depozit depinde de oameni care se mișcă ușor și sigur. Un echipament prost ales obosește echipa și crește riscul de accidente în zonele cu trafic de stivuitoare.
+            Lista o face evaluarea riscurilor de la fiecare loc de muncă. În depozit, riscurile obișnuite sunt traficul de
+            stivuitoare și transpalete, sarcinile care pot cădea pe picior, tăieturile de la ambalaje și orele lungi pe
+            picioare. Mai jos le găsești pe categorii, cu link spre modelele din catalog.
           </p>
           <EquipmentList
             items={[
-              { text: 'Încălțăminte de protecție ușoară, confortabilă pentru ture lungi', category: 'incaltaminte' },
-              { text: 'Vestă și îmbrăcăminte hi-vis pentru trafic intern', category: 'reflectorizante' },
-              { text: 'Mănuși de manipulare cu grip și protecție, inclusiv anti-tăiere', category: 'manusi' },
-              { text: 'Haine de lucru lejere, personalizabile cu logo' },
+              { text: 'Pantofi de protecție S1P pe podea uscată, S3 pe rampă sau pe ud', category: 'incaltaminte' },
+              { text: 'Pantofi de protecție ESD, unde se lucrează cu componente electronice', category: 'incaltaminte' },
+              { text: 'Veste reflectorizante, unde circulă stivuitoare și transpalete', category: 'reflectorizante' },
+              { text: 'Mănuși de manipulare cu priză sigură, inclusiv anti-tăiere', category: 'manusi' },
+              { text: 'Tricouri și tricouri polo de lucru, cu logoul firmei', category: 'tricouri-polo' },
+              { text: 'Pantaloni de lucru elastici', category: 'pantaloni' },
+              { text: 'Geci de lucru termice și softshell, pentru rampă și iarnă', category: 'geci-jachete' },
             ]}
           />
           <p class="text-base text-neutral-400">
@@ -60,6 +100,7 @@ const breadcrumbSchema = {
             <a href="/cere-oferta/" class="text-yp-yellow underline underline-offset-4 hover:text-white">scrie-ne în cererea de ofertă</a>
             ce îți trebuie.
           </p>
+          <RiskFreeTesting variant="inline" />
         </div>
       </div>
     </div>
@@ -70,14 +111,14 @@ const breadcrumbSchema = {
       <div class="flex flex-col md:flex-row gap-16 md:gap-24">
         <div class="md:w-1/3 shrink-0">
           <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-white leading-tight sticky top-32">
-            Depozit <br />frigorific.
+            Haine pentru depozitul frigorific
           </h2>
         </div>
         <div class="md:w-2/3 space-y-8 text-lg md:text-xl text-neutral-300 leading-relaxed">
           <p>
-            În camerele frigorifice, oamenii intră și ies din frig toată tura. Pentru ei avem haine și mănuși certificate
-            pentru protecția la frig: geaca și salopeta Portwest ColdStore, conform EN 342, și mănușile Portwest Apacha,
-            conform EN 511.
+            În camerele frigorifice, oamenii intră și ies din frig toată tura. Pentru ei avem geaca și salopeta Portwest
+            ColdStore, certificate EN 342 pentru protecția la frig, și mănușile Portwest Apacha, certificate EN 511. EN 342
+            nu promite o temperatură minimă, așa că alegem după cât stau oamenii în frig și ce fac acolo.
           </p>
           <EquipmentList
             items={[
@@ -104,6 +145,30 @@ const breadcrumbSchema = {
         <a href="/produse/" class="inline-flex items-center gap-2 text-yp-yellow hover:text-white transition-colors font-medium">
           Vezi catalogul complet
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 bg-[#050505]" aria-labelledby="intrebari">
+    <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="max-w-3xl">
+        <h2 id="intrebari" class="text-3xl md:text-4xl font-light text-white leading-tight">
+          Întrebări frecvente despre echipamentele pentru depozit
+        </h2>
+        <dl class="mt-10 space-y-8">
+          {faq.map((item) => (
+            <div>
+              <dt class="text-lg text-white font-medium">{item.q}</dt>
+              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="mt-10 text-neutral-400 leading-relaxed">
+          Pe larg, în ghidurile <a href="/ghiduri/s1p-sau-s3/" class={inlineLink}>S1P sau S3</a> și
+          <a href="/ghiduri/clase-vizibilitate-en-iso-20471/" class={inlineLink}>clasele de vizibilitate EN ISO 20471</a>.
+          Cum pui logoul pe haine afli la <a href="/haine-de-lucru-personalizate/" class={inlineLink}>haine de lucru personalizate</a>.
+        </p>
       </div>
     </div>
   </section>
