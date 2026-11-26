@@ -244,6 +244,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     scrollerul orizontal `CategoryTiles` pe telefon (`data-sd-exceptie`).
   - Telefon: pe paginile de categorie ȘI pe cele de brand poza (și textul „despre marcă”, „Testezi fără riscuri”) vine
     DUPĂ grila de produse sub 1024 px; altfel devine LCP și împinge grila pe al doilea ecran (măsurat 0,9 → 2,9 s).
+    Abatere cunoscută: pe telefon ordinea Tab urmează DOM-ul de desktop, nu cea vizuală („Sursa” și „Testezi fără
+    riscuri” vin în Tab înaintea grilei); alternativa nu s-a ales ca să rămână o singură structură, poate fi reluată.
     Eroii folosesc varianta de 768 px pe telefon (≈2x).
   - `sizes` ~2x: pozele din corp trec prin `bodySizes` (în `ActionPhoto`), așa că la 390 px și DPR 3 `currentSrc` are
     cel mult 960 px; regula se aplică și când pagina dă propriul `sizes`.
@@ -251,8 +253,8 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     și fără colțuri. Desktopul rămâne ca înainte.
   - Eroul homepage-ului vine dintr-o singură sursă, constanta `heroPhoto` din `src/pages/index.astro`; nu se pune un
     ID de poză în alt loc din pagină.
-  - Fonturi (LCP): pe paginile cu poză-erou se preîncarcă doar fontul H1 (Montserrat 300), nu cele de text
-    (`preloadFonts={["heading-300"]}`). Montserrat și YP Text au fonturi de rezervă cu metrici (`size-adjust`,
+  - Fonturi (LCP): pe paginile cu poză-erou se preîncarcă doar subseturile latin și latin-ext ale fontului H1
+    (Montserrat 300; ă, ș, ț sunt în latin-ext), nu cele de text (`preloadFonts={["heading-300", "heading-300-ext"]}`). Montserrat și YP Text au fonturi de rezervă cu metrici (`size-adjust`,
     ascent/descent); un titlu lung poate avea totuși un rând în plus la swap.
   - Recenziile de pe homepage: fără autoplay. Caruselul e un rând cu scroll-snap, cu săgeți cu `aria-label` și
     tastatură.

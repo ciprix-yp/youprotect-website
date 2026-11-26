@@ -780,9 +780,15 @@
   S17 e aprobată prin alegerea lui. `/hero-youprotect-highvis.webp` a fost scos. Sursa eroului homepage-ului e o singură
   constantă (`heroPhoto`, `src/pages/index.astro`), pregătită pentru o selecție rotativă într-un PR următor; rotația nu
   e implementată.
-- LCP: pe paginile cu poză-erou nu se mai preîncarcă fonturile de text, doar fontul H1 (Montserrat 300). Montserrat și
-  YP Text au fonturi de rezervă cu metrici potrivite (`size-adjust`, ascent/descent). Limite: titlurile lungi pot avea
-  încă o diferență de un rând la swap pe câteva pagini; neverificat pe iPhone real.
+- LCP: pe paginile cu poză-erou nu se mai preîncarcă fonturile de text, doar subseturile latin și latin-ext ale fontului
+  H1 (Montserrat 300; ă, ș, ț sunt în latin-ext, 31,9 KB). Măsurat pe telefon emulat (Chrome real, 4G 1,6 Mbps, CPU 4x,
+  mediana din 5, alternat cu producția): LCP prod → head la „/” 1916 → 1952 ms, /industrii/ 1744 → 1624,
+  /echipamente-protectie-satu-mare/ 1740 → 1736, /industrii/constructii/ 1628 → 1420, /despre-noi/ 2604 → 2644; CLS
+  ≈ 0,0007 pe toate. Montserrat și YP Text au fonturi de rezervă cu metrici potrivite (`size-adjust`, ascent/descent).
+  Limite: titlurile lungi pot avea încă o diferență de un rând la swap pe câteva pagini; neverificat pe iPhone real.
+- Abatere cunoscută (brand, telefon): ordinea tastaturii (Tab) urmează DOM-ul (cel de desktop), nu ordinea vizuală;
+  linkul „Sursa” și „Testezi fără riscuri” vin în Tab înaintea grilei. Alternativa (ordinea din DOM pe telefon) nu s-a
+  ales, ca să rămână o singură imagine și o singură structură; poate fi reluată.
 - /cum-lucram/: titlurile pașilor au o singură culoare, fără cifre-fantomă de 180 px (sunt 3 pași). Recenziile de pe
   homepage nu mai derulează singure: rând cu scroll-snap, săgeți cu `aria-label` și tastatură. /industrii/constructii/
   are a doua poză (S12).
