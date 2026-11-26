@@ -333,7 +333,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
             ))}
           </select>
           <p id={`f-${ORDER_MONTH_KEY}-hint`} className="text-sm text-neutral-400 mt-1">
-            Dacă firma comandă o dată sau de două ori pe an, așa știm când să revenim.
+            Dacă firma ta comandă o dată sau de două ori pe an, revenim în luna potrivită.
           </p>
         </div>
       </div>

@@ -734,4 +734,8 @@
   40 de caractere) și fără pas nou obligatoriu.
 - Motiv: obiecția 3 din `09-HARTA-CUVINTE-CHEIE.md` §5 („cumpărăm o dată sau de două ori pe an, reveniți în luna X”).
   Lista de ofertă ține 30 de zile și nu acoperă „luna X”.
+- Înlocuiește, doar pentru acest câmp, limita din D-2026-11-18-05 la „Cere ofertă”: „Fără termen nou, mărimi, buget
+  sau alte câmpuri.”
+- De anunțat CRM-ului (Prospector): cheia `luna_comenzii` și lista valorilor, ca pentru `detalii` și `produse`;
+  notițele sunt în corpul PR-ului.
 - Impact: echipa vede în cerere (în email și în CRM) când să revină. Nu există memento automat.

@@ -222,19 +222,19 @@ test('submit-lead: luna comenzii ajunge în coloana answers din D1', async () =>
 
 test('parseLead: luna comenzii, variante care arată ca o lună dar nu sunt în listă (Unicode, caractere de control)', () => {
   const lookalikes = [
-    'mar​tie', // zero-width space în interior
-    'martie​', // zero-width space la capăt (trim() nu-l taie)
+    'mar\u200Btie', // zero-width space în interior
+    'martie\u200B', // zero-width space la capăt (trim() nu-l taie)
     'mar\u0000tie', // NUL
     'martie\u0007', // caracter de control la capăt
-    'mаrtie', // „а” chirilic în loc de „a”
-    'іunie', // „і” chirilic în loc de „i”
-    'ｍａｒｔｉｅ', // litere full-width
-    '„martie”',
-    '«martie»',
-    'martié', // accent combinat
-    'Nu ştiu încă', // „ș” ca s + virgulă combinată (NFD), nu U+0219
-    'Nu ştiu încă', // „ş” cu sedilă (U+015F), nu cu virgulă (U+0219)
-    'Nu știu încă'.normalize('NFD'),
+    'm\u0430rtie', // „а” chirilic (U+0430) în loc de „a”
+    '\u0456unie', // „і” chirilic (U+0456) în loc de „i”
+    '\uFF4D\uFF41\uFF52\uFF54\uFF49\uFF45', // litere full-width
+    '\u201Emartie\u201D',
+    '\u00ABmartie\u00BB',
+    'martie\u0301', // accent combinat
+    'Nu s\u0327tiu încă', // s + U+0327 (sedilă combinată), nu „ș” (U+0219)
+    'Nu \u015Ftiu încă', // „ş” cu sedilă (U+015F), nu cu virgulă (U+0219)
+    'Nu știu încă'.normalize('NFD'), // „ș” ca s + U+0326 (virgulă combinată)
     'De mai multe ori pe an.', // punct în plus
     'De  mai multe ori pe an', // spațiu dublu
     'Nu stiu inca', // fără diacritice
@@ -248,7 +248,7 @@ test('parseLead: luna comenzii, variante care arată ca o lună dar nu sunt în 
   }
   // Spațiile Unicode de la capete (NBSP, BOM, tab, CR/LF) se taie ca la celelalte câmpuri; se salvează oricum valoarea
   // exactă din listă, nu cea trimisă de client.
-  for (const padded of [' martie ', '﻿martie', '\t\nmartie\r\n', `${' '.repeat(50_000)}martie`]) {
+  for (const padded of ['\u00A0martie\u00A0', '\uFEFFmartie', '\t\nmartie\r\n', `${' '.repeat(50_000)}martie`]) {
     const r = withMonth('quote', padded);
     assert.equal(monthAnswer(r).answer, 'martie');
     assert.ok(MONTH_ANSWERS.includes(monthAnswer(r).answer));
@@ -324,7 +324,6 @@ test('luna comenzii: ajunge neschimbată din formular prin D1 în GET /api/crm/l
       label: 'În ce lună comandă de obicei',
       answer: 'Nu știu încă',
     });
-    // Același text ca în emailul trimis echipei.
     assert.ok(lead.answers.some((a) => a.question === 'detalii'));
   }
 });

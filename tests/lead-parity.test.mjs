@@ -44,13 +44,18 @@ test('luna comenzii: lista și cheia sunt definite o singură dată, în lead-li
   for (const intent of Object.keys(QUESTIONS)) assert.equal(QUESTIONS[intent].includes(ORDER_MONTH_KEY), false, intent);
 
   const form = read('src/components/forms/MultiStepForm.tsx');
-  assert.match(form, /import \{[^}]*\bORDER_MONTH_ANSWERS\b[^}]*\bORDER_MONTH_KEY\b[^}]*\} from '..\/..\/lib\/lead-limits\.js'/);
+  const limitsImport = (text) => text.match(/import\s*\{[^}]*\}\s*from\s*'[^']*lead-limits\.js'/)?.[0] ?? '';
+  for (const name of ['ORDER_MONTH_KEY', 'ORDER_MONTH_ANSWERS']) {
+    assert.match(limitsImport(form), new RegExp(`\\b${name}\\b`), `formularul nu importă ${name} din lead-limits.js`);
+  }
   assert.match(form, /ORDER_MONTH_ANSWERS\.map\(/);
   assert.doesNotMatch(form, /'ianuarie'|'decembrie'|luna_comenzii/);
 
   const server = read('server/leads.js');
-  assert.match(server, /import \{[^}]*\bORDER_MONTH_ANSWERS\b[^}]*\bORDER_MONTH_KEY\b[^}]*\} from '..\/src\/lib\/lead-limits\.js'/);
-  assert.doesNotMatch(server, /ianuarie|decembrie|luna_comenzii|De mai multe ori pe an/);
+  for (const name of ['ORDER_MONTH_KEY', 'ORDER_MONTH_ANSWERS']) {
+    assert.match(limitsImport(server), new RegExp(`\\b${name}\\b`), `serverul nu importă ${name} din lead-limits.js`);
+  }
+  assert.doesNotMatch(server, /'ianuarie'|'decembrie'|'luna_comenzii'|'De mai multe ori pe an'/);
 
   for (const file of SRC) {
     if (file.endsWith('lead-limits.js')) continue;
