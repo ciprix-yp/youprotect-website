@@ -33,6 +33,25 @@
   --font-accent: Playfair Display, serif;
 }
 
+/* Efectele de hover doar pe dispozitivele cu mouse (fluiditate, 20.11.2026): pe telefon, o atingere lăsa cardul „agățat”
+   în starea de hover. Tailwind 3 făcea asta cu future.hoverOnlyWhenSupported, adică (hover: hover) și (pointer: fine);
+   varianta implicită din v4 are doar (hover: hover), deci ar apărea hover și pe tablete cu stylus. O păstrăm exact ca înainte. */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+/* Tailwind 4 pune cursor: default pe butoane (v3 avea pointer); restaurăm comportamentul de până acum. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 /* Fontul de text: subset din Lato 2.015 (OFL), redenumit „YP Text” (vezi public/fonts/YP-Text-OFL.txt).
    Lato de la Google Fonts nu are ă, ș, ț: literele apăreau într-un font de rezervă, mai gros. */
 @font-face {
