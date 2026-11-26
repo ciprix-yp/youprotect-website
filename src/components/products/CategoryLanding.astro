@@ -103,7 +103,11 @@ const faqSchema = {
     <span class="text-yp-white">{CATEGORIES[page.key]}</span>
   </nav>
 
-  <header class:list={page.photo ? 'max-w-3xl lg:grid lg:max-w-none lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:grid-rows-[repeat(5,auto)_1fr] lg:gap-x-10' : 'max-w-3xl'}>
+  {/* Un singur <img> în DOM, în ordinea: antet, grila de produse, poza. Sub 1024 px poza vine după grilă (altfel e LCP, încarcă
+      varianta mare și împinge produsele pe al doilea ecran: LCP 0,9-1,2 s -> 2,5-3,3 s pe Slow 4G); de la `lg`, grid pe wrapper: antetul în
+      coloana 1, poza în coloana 2 pe același rând, grila pe rândul de dedesubt, pe ambele coloane (desktop ca înainte). */}
+  <div class:list={page.photo && 'lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-x-10'}>
+  <header class:list={page.photo ? 'max-w-3xl lg:col-start-1 lg:row-start-1 lg:max-w-none' : 'max-w-3xl'}>
     <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">{page.heading}</h1>
     <p class="mt-4 text-base text-yp-white/80 leading-relaxed">{page.intro}</p>
     <p class="mt-3 text-sm text-yp-white/60">Modele {joinRo(brands)}. Prețul îl primești în ofertă, pentru cantitățile echipei tale.</p>
@@ -122,14 +126,9 @@ const faqSchema = {
       </a>
     </div>
     {products.every((e) => e.data.riskFreeTesting) && <RiskFreeTesting variant="inline" class="mt-6" />}
-    {page.photo && (
-      <div class="relative mt-8 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:col-start-2 lg:row-start-1 lg:row-span-6 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
-        <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
-      </div>
-    )}
   </header>
 
-  <ul class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4" aria-label={`Modele: ${CATEGORIES[page.key]}`}>
+  <ul class:list={['mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4', page.photo && 'lg:col-span-2 lg:row-start-2']} aria-label={`Modele: ${CATEGORIES[page.key]}`}>
     {products.map((e) => (
       <li>
         <ProductCard {...toCardProps(e)} />
@@ -152,6 +151,13 @@ const faqSchema = {
       </div>
     </li>
   </ul>
+
+  {page.photo && (
+    <div class="relative mt-10 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:col-start-2 lg:row-start-1 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
+      <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, (min-width: 640px) calc(100vw - 2rem), 70vw" motion class="absolute inset-0" />
+    </div>
+  )}
+  </div>
 
   {guides.length > 0 && (
     <aside class="mt-10 max-w-3xl border-l-2 border-yp-yellow pl-4" aria-label="Ghiduri">
