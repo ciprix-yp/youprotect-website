@@ -46,6 +46,13 @@
 
 /* Tailwind 4 pune cursor: default pe butoane (v3 avea pointer); restaurăm comportamentul de până acum. */
 @layer base {
+  /* Preflight-ul v4 pune padding: 0 pe toate elementele; cel din v3 lăsa celulele de tabel cu paddingul implicit al
+     browserului (1px), pe laturile fără utilitar de padding (ex. `py-3 pr-4`). Îl păstrăm, ca lățimile coloanelor să rămână. */
+  td,
+  th {
+    padding: 1px;
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
