@@ -32,7 +32,7 @@ const hasPhoto = Boolean(image || heroPhoto);
 // (full-bleed; sub 1024 px containerul are lățimea ecranului), 3:2, fără ramă. De la `lg`: ca înainte (16:10, ramă, în
 // coloana din dreapta). `overflow-clip`, NU `overflow-hidden`: vezi comentariul din ActionPhoto și
 // tests/scroll-timeline-overflow.test.mjs.
-const photoFrame = 'relative order-first -mx-4 mb-2 aspect-[3/2] overflow-clip bg-yp-gray lg:order-none lg:col-start-2 lg:row-start-2 lg:mx-0 lg:mb-0 lg:aspect-[16/10] lg:self-center lg:border lg:border-yp-white/10';
+const photoFrame = 'relative order-first -mx-4 mb-2 aspect-[3/2] overflow-clip bg-yp-gray lg:order-0 lg:col-start-2 lg:row-start-2 lg:mx-0 lg:mb-0 lg:aspect-[16/10] lg:self-center lg:border lg:border-yp-white/10';
 ---
 
 <section class="border-b border-yp-white/10">

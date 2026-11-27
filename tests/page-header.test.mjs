@@ -10,7 +10,7 @@ const code = src.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').replace(/^\/\/.*$/gm, '');
 
 test('PageHeader: cadrul pozei merge sub lg prin order-first, full-bleed, și are overflow-clip', () => {
   const frame = /const photoFrame = '([^']+)'/.exec(src)?.[1] ?? '';
-  for (const c of ['order-first', '-mx-4', 'aspect-[3/2]', 'overflow-clip', 'lg:order-none', 'lg:mx-0', 'lg:aspect-[16/10]']) {
+  for (const c of ['order-first', '-mx-4', 'aspect-[3/2]', 'overflow-clip', 'lg:order-0', 'lg:mx-0', 'lg:aspect-[16/10]']) {
     assert.ok(frame.split(/\s+/).includes(c), `photoFrame fără ${c}`);
   }
   assert.ok(!/overflow-hidden/.test(code), 'PageHeader nu are voie să folosească overflow-hidden');

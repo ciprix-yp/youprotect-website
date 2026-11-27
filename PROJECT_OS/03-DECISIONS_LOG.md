@@ -844,3 +844,67 @@
   `eroul` în `poze-actiune.json`. O poză nouă în set: `erou: true`, `portret` și `eroul` în date, id-ul în `heroPhotos`
   din `src/pages/index.astro`, apoi scriptul de imagini cu `--only` și măsurarea contrastului; scoaterea ei înseamnă
   ștergerea din `heroPhotos`. Pe scurt, în `08-GHID_CONTINUT.md` §9.
+
+## D-2026-11-27-01
+- Migrarea de la Tailwind CSS 3.4 la 4.3.5 (decis de owner pe 27.11.2026, după ce a acceptat cerințele de browser de mai
+  jos). Obiectiv: paritate vizuală cu producția (v3), cu prioritate pe telefon.
+- Integrare: `@tailwindcss/vite` în `astro.config.mjs` (`vite.plugins`). Motiv: e recomandarea oficială pentru Astro, nu
+  cere PostCSS, merge cu Vite 8 și cu `vite.build.assetsInlineLimit` existent. `autoprefixer` și `postcss.config.mjs` au
+  fost scoase (Tailwind 4 prefixează prin Lightning CSS; nimic altceva din repo nu le folosea).
+- Configurația stă acum în CSS: `@theme` în `src/styles/global.css` (culorile `yp-*`, umbrele `card` și `card-hover`,
+  fonturile, curbele); `tailwind.config.mjs` a fost șters, fără `@config`. `@import 'tailwindcss' source(none)` plus
+  `@source` limitat la `src/` (aceleași extensii ca `content` din v3): fără el, v4 scanează tot repo-ul, iar clase din
+  teste și documente ajungeau în CSS.
+- Curbele de mișcare se numesc `--ease-out-strong` și `--ease-drawer`. Variabila proprie `--ease-out` din `:root` ar fi
+  suprascris curba standard a utilitarului `ease-out`.
+- Culorile `red-400` și `neutral-100/200/300/400/500/900` sunt fixate la hex-urile din v3 (`#f87171`, `#f5f5f5`,
+  `#e5e5e5`, `#d4d4d4`, `#a3a3a3`, `#737373`, `#171717`): paleta v4 e în oklch, fără rezervă hex, iar Chrome sub 111
+  (Windows 7/8) și Safari sub 15.4 ignoră declarația; în plus `red-400` devine mai saturat. CSS-ul compilat nu mai
+  conține `oklch(`.
+- Hover: `@custom-variant hover` cu `(hover: hover) and (pointer: fine)`, paritate exactă cu
+  `future.hoverOnlyWhenSupported` din v3. Varianta implicită din v4 are doar `(hover: hover)` și ar activa hover pe
+  tablete cu stylus.
+- Compatibilitate cu preflight-ul v3, în `@layer base`: `cursor: pointer` pe butoane (v4 pune `default`) și `padding: 1px`
+  pe `td, th` (v4 pune `padding: 0` pe toate elementele; v3 lăsa celulelor de tabel paddingul implicit pe laturile
+  fără utilitar).
+- Gradientul eroului: `bg-linear-to-t/srgb`. Fără modificator, v4 interpolează în oklab; în v3 era sRGB.
+- Line-height: în v3, un `text-*` responsiv suprascria `leading-*` (de ex. `leading-tight md:text-4xl` dădea 2.5rem de la
+  `md`); în v4 `leading-*` rămâne în vigoare. S-au adăugat clase `leading-*` la breakpoint-ul fiecărui `text-*`
+  responsiv, cu valorile din v3 (scanare cu script, 51 de adăugări). Titlul eroului are exact liniile din v3.
+- `mt-4` din meniul mobil și `-mt-4` din 3 note ale calculatorului au fost scoase: în v3, `space-y-*` le suprascria
+  (nu aveau efect), în v4 ar fi câștigat clasele.
+- Clase redenumite sau eliminate în v4 (apariții în `src/`): `rounded-sm` → `rounded-xs` (4), `rounded` → `rounded-sm`
+  (9), `outline-none` → `outline-hidden` (10), `outline` → `outline-solid` (7), `flex-shrink-0` → `shrink-0` (4),
+  `order-none` → `order-0` (5). Nu se folosesc: `shadow`/`blur` fără sufix, `ring`, `*-opacity-*`, prefixul `!`,
+  `theme()`, `@apply`, valori arbitrare cu `--var`. Bordurile au toate culoare explicită, deci regula de compatibilitate
+  pentru bordura implicită nu a fost necesară.
+- Mărimea CSS: main 60652 B brut / 11957 B gzip; branch 88771 B brut / 15071 B gzip (creștere din `@property`,
+  fallback-uri `color-mix`, variabile de temă și selectoare noi).
+- Verificare vizuală: harness Chrome 158 la 390 px (iPhone emulat, `hover: none`, `pointer: coarse`) și 1440 px, peste
+  90 de capturi: identice sau în zgomot; `scrollHeight` pe 192 de pagini la 390, 768, 1024 și 1440 px: 0 diferențe.
+  Diferențele rămase sunt doar de serializare (rgba → oklab, `scale` și `translate` individuale, `space-y` și `divide-y`
+  cu margin-bottom și border-bottom în loc de margin-top și border-top).
+- Compatibilitate acceptată: iOS 16.4+, Chrome 111+, Firefox 128+, Safari 16.4+ (sursa: documentația Tailwind,
+  tailwindcss.com/docs/compatibility). Date StatCounter pentru România, octombrie 2026 (nu sunt datele site-ului): iOS sub
+  16.4 = 1,72% din iOS, iar iOS = 14,83% din trafic, deci ~0,26% din tot traficul; din acestea iOS sub 15.4 = 0,79% din
+  iOS (iOS 15.0–15.3 pierd stilurile, fiindcă nu au `@layer`; interpretare din caniuse și MDN, netestată pe dispozitiv).
+  Versiuni vechi de browser pe desktop și Android cu versiune cunoscută ≈ 1,34% (Chrome 109 0,51%, Firefox 115 0,24%).
+- Riscuri deschise: neverificat pe iPhone real; gradientele și culorile cu alpha folosesc `color-mix` sau oklab, cu
+  fallback pentru browserele fără suport.
+- `space-y-*` are altă semantică în v4: `margin-bottom` pe `:not(:last-child)` (în v3, `margin-top` pe copiii de după primul),
+  într-un selector `:where()` fără specificitate. Consecințe pentru modificările viitoare: un ultim copil ascuns sau
+  randat condiționat lasă spațiu în plus sub penultimul (de aceea `ul`-ul din subsol cu elementul `hidden` pentru
+  setările de cookie-uri folosește `flex flex-col gap-1`). `mt-*` pe copiii de după primul se aplică acum (în v3 era
+  suprascris); `mb-*` înlocuiește marginea dintre copii (în v3 se comasa cu ea); după un copil `absolute` nu mai e spațiu
+  (în v3 fratele următor avea `margin-top`). Pentru liste cu elemente condiționale se preferă `gap`.
+- Preflight v3 → v4 pe formulare: câmpul `type="search"` din `/produse/` își recapătă `appearance: textfield` și
+  `outline-offset: -2px` (regula din preflight-ul v3, în `@layer base`). Restul elementelor de formular, comparate pe
+  `/produse/`, `/cere-oferta/`, `/programeaza-discutie/`, calculator și `/contact/`, au aceleași valori calculate
+  (diferențe doar de serializare a culorilor și `background-color` transparent pe `input[type=range]`, invizibil).
+- Fără `autoprefixer`, stilurile din `<style>` ale componentelor Astro nu mai primesc prefixe. Azi se pierd doar
+  prefixe vechi (`-o-object-position`, `-moz-`), fără impact; un `backdrop-filter` sau `mask` nou într-un `<style>` de
+  componentă ar avea nevoie de `-webkit-` scris de mână (risc pentru Safari sub 18). Clasele Tailwind sunt prefixate de
+  Lightning CSS.
+- `--font-accent` e definit în `@theme`, dar neutilizat azi (păstrat ca în configurația veche).
+- Impact: clasele noi se scriu pe sintaxa v4. Pentru un `text-*` responsiv peste un `leading-*`, se adaugă explicit
+  `leading-*` la același breakpoint. Temele și culorile se schimbă în `@theme` din `src/styles/global.css`.

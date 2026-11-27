@@ -6,7 +6,6 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const css = readFileSync(new URL('../src/styles/global.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-const tw = readFileSync(new URL('../tailwind.config.mjs', import.meta.url), 'utf8');
 const faces = css.match(/@font-face\s*\{[^}]*\}/g) ?? [];
 
 for (const family of ['Montserrat Fallback', 'YP Text Fallback']) {
@@ -24,6 +23,7 @@ for (const family of ['Montserrat Fallback', 'YP Text Fallback']) {
 test('stivele de fonturi pun fallback-ul potrivit după fontul real', () => {
   assert.match(css, /font-family:\s*'YP Text',\s*'YP Text Fallback',\s*sans-serif/);
   assert.match(css, /font-family:\s*'Montserrat',\s*'Montserrat Fallback',\s*sans-serif/);
-  assert.match(tw, /'heading':\s*\['Montserrat',\s*'"Montserrat Fallback"'/);
-  assert.match(tw, /'body':\s*\['"YP Text"',\s*'"YP Text Fallback"'/);
+  // Utilitarele font-heading / font-body (@theme din global.css, Tailwind 4).
+  assert.match(css, /--font-heading:\s*Montserrat,\s*"Montserrat Fallback",\s*sans-serif/);
+  assert.match(css, /--font-body:\s*"YP Text",\s*"YP Text Fallback",\s*sans-serif/);
 });

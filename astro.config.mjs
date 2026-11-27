@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 import { fetchGoogleReviews } from './scripts/fetch-google-reviews.mjs';
 
 // Recenziile de 4–5 stele de pe Google se preiau la fiecare build, înainte ca paginile să fie generate.
@@ -21,7 +22,7 @@ const googleReviews = {
 const LAYOUT_SCRIPT = /\/(BaseLayout|Header|Footer|Analytics)\.astro_astro_type_script_/;
 export const inlineLayoutScripts = (filePath) => (LAYOUT_SCRIPT.test(`/${filePath}`) ? true : undefined);
 
-// Tailwind rulează prin postcss.config.mjs.
+// Tailwind 4 rulează ca plugin Vite (@tailwindcss/vite), fără PostCSS; configurația e în src/styles/global.css.
 export default defineConfig({
   // Astro 7 a schimbat implicitul în 'jsx', care șterge spațiile dintre elementele inline
   // scrise pe rânduri diferite. Păstrăm comportamentul de până acum ca să nu se lipească cuvinte.
@@ -39,6 +40,6 @@ export default defineConfig({
     })
   ],
   output: 'static',
-  vite: { build: { assetsInlineLimit: inlineLayoutScripts } },
+  vite: { plugins: [tailwindcss()], build: { assetsInlineLimit: inlineLayoutScripts } },
   site: 'https://youprotect.ro'
 });

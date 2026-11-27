@@ -125,13 +125,13 @@ const faqSchema = {
       (ordinea din DOM: titlu, introducere, despre, butoane, testare), poza pe coloana 2 pe toate rândurile textului, grila dedesubt
       pe ambele coloane (desktop ca înainte). Ordinea tastaturii urmează DOM-ul, adică desktopul. */}
   <div class:list={['flex flex-col', page.photo && 'lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:grid-rows-[repeat(5,auto)_1fr_auto] lg:gap-x-10']}>
-    <h1 class:list={['max-w-3xl text-3xl md:text-4xl font-light text-yp-white leading-tight', page.photo && 'lg:max-w-none']}>{page.heading}</h1>
+    <h1 class:list={['max-w-3xl text-3xl md:text-4xl md:leading-10 font-light text-yp-white leading-tight', page.photo && 'lg:max-w-none']}>{page.heading}</h1>
     <p class:list={['mt-4 max-w-3xl text-base text-yp-white/80 leading-relaxed', page.photo && 'lg:max-w-none']}>
       You Protect vinde produse {page.name} firmelor și livrează în toată România. Primești ofertă pentru cantitățile echipei tale,
       poți testa produsele înainte de comanda mare{notTestable.length > 0 && ', în condițiile programului'}, iar hainele le poți
       personaliza cu logo-ul firmei.
     </p>
-    <p class:list={['order-2 mt-10 max-w-3xl text-sm text-yp-white/60 leading-relaxed lg:order-none lg:mt-3', page.photo && 'lg:max-w-none']}>
+    <p class:list={['order-2 mt-10 max-w-3xl text-sm text-yp-white/60 leading-relaxed lg:order-0 lg:mt-3', page.photo && 'lg:max-w-none']}>
       {page.about} Sursa: <a href={page.source.url} rel="noopener" class="underline underline-offset-4 hover:text-yp-yellow">{page.source.label}</a>.
     </p>
     <div class:list={['mt-6 flex max-w-3xl flex-col gap-3 sm:flex-row', page.photo && 'lg:max-w-none']}>
@@ -148,10 +148,10 @@ const faqSchema = {
         {CTA_DISCUSS}
       </a>
     </div>
-    <RiskFreeTesting variant="inline" class:list={['order-2 mt-6 max-w-3xl lg:order-none', page.photo && 'lg:max-w-none']} />
+    <RiskFreeTesting variant="inline" class:list={['order-2 mt-6 max-w-3xl lg:order-0', page.photo && 'lg:max-w-none']} />
 
     <!-- O singură grilă, în ordinea categoriilor: categoria e pe fiecare card, fără rânduri pe jumătate goale. -->
-    <ul class:list={['order-1 mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:order-none lg:mt-12 lg:grid-cols-4', page.photo && 'lg:col-span-full lg:row-start-7']} aria-label={`Modele ${page.name}`}>
+    <ul class:list={['order-1 mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:order-0 lg:mt-12 lg:grid-cols-4', page.photo && 'lg:col-span-full lg:row-start-7']} aria-label={`Modele ${page.name}`}>
       {groups.flatMap((g) => g.items).map((e) => (
         <li>
           <ProductCard {...toCardProps(e)} />
@@ -160,7 +160,7 @@ const faqSchema = {
     </ul>
 
     {page.photo && (
-      <div class="relative order-3 mt-10 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:order-none lg:col-start-2 lg:row-span-6 lg:row-start-1 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
+      <div class="relative order-3 mt-10 aspect-[3/2] overflow-clip rounded-xl md:aspect-[2/1] lg:order-0 lg:col-start-2 lg:row-span-6 lg:row-start-1 lg:mt-0 lg:aspect-auto lg:h-full lg:min-h-80">
         <ActionPhoto id={page.photo} sizes="(min-width: 1280px) 483px, (min-width: 1024px) 38vw, calc(100vw - 2rem)" motion class="absolute inset-0" />
       </div>
     )}

@@ -1,7 +1,7 @@
 // Preseturile de gradient ale eroului homepage-ului (poza rotativă, vezi src/components/home/HeroPhotoSet.astro).
 // Fiecare poză din `eroul.gradient` (src/data/poze-actiune.json) alege un preset după cât contrast cere titlul de pe ea.
 //
-// Clasele Tailwind sunt LITERALE, scrise întregi aici, ca scanarea JIT (tailwind.config.mjs: ./src/**/*.ts) să le vadă;
+// Clasele Tailwind sunt LITERALE, scrise întregi aici, ca scanarea JIT (@source din src/styles/global.css: src/**/*.ts) să le vadă;
 // nu se compun din bucăți (cu interpolare), că nu ar mai ajunge în CSS. Gradientul de telefon se aplică pe blocul poză 4:5
 // (titlul începe peste ultimul sfert al pozei), cel de desktop pe poza de fundal a întregii secțiuni.
 //   - standard: exact gradientele eroului de până acum (S02 arată identic).

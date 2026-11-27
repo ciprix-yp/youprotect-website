@@ -56,7 +56,7 @@ const TEAM_SIZES: Option[] = [
 ];
 
 const inputClass =
-  'w-full bg-[#0a0a0a] border border-white/15 rounded-md px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-none focus:border-yp-yellow transition-colors';
+  'w-full bg-[#0a0a0a] border border-white/15 rounded-md px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-hidden focus:border-yp-yellow transition-colors';
 
 export default function MultiStepForm({ intent, products = {} }: MultiStepFormProps) {
   const isForm1 = intent === 'consultation';
@@ -248,7 +248,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
 
   const stepHeading = (title: string, description?: string) => (
     <div className="text-left mb-8">
-      <h2 ref={headingRef} tabIndex={-1} className="text-2xl md:text-3xl font-medium text-white mb-2 focus:outline-none">
+      <h2 ref={headingRef} tabIndex={-1} className="text-2xl md:text-3xl font-medium text-white mb-2 focus:outline-hidden">
         {title}
       </h2>
       {description && <p className="text-neutral-400">{description}</p>}
@@ -403,7 +403,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
                 <span className={isSelected ? 'text-yp-yellow font-medium' : 'text-neutral-300'}>{opt.label}</span>
                 <span
                   aria-hidden="true"
-                  className={`w-5 h-5 rounded-full flex-shrink-0 border flex items-center justify-center ${
+                  className={`w-5 h-5 rounded-full shrink-0 border flex items-center justify-center ${
                     isSelected ? 'border-yp-yellow' : 'border-neutral-500'
                   }`}
                 >
@@ -475,7 +475,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
                 >
                   <span
                     aria-hidden="true"
-                    className={`mt-0.5 w-5 h-5 rounded-lg border flex-shrink-0 flex items-center justify-center transition-colors ${
+                    className={`mt-0.5 w-5 h-5 rounded-lg border shrink-0 flex items-center justify-center transition-colors ${
                       isSelected ? 'border-yp-yellow bg-yp-yellow/20 text-yp-yellow' : 'border-neutral-500'
                     }`}
                   >
@@ -685,7 +685,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
             type="button"
             onClick={prevStep}
             disabled={isSubmitting}
-            className="px-6 py-3 min-h-[44px] rounded text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition active:scale-[0.98]"
+            className="px-6 py-3 min-h-[44px] rounded-sm text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition active:scale-[0.98]"
           >
             Înapoi
           </button>
@@ -697,7 +697,7 @@ export default function MultiStepForm({ intent, products = {} }: MultiStepFormPr
           type="button"
           onClick={isLastStep ? submitForm : nextStep}
           disabled={isSubmitting}
-          className="bg-yp-yellow text-yp-black px-8 py-3 min-h-[44px] rounded font-medium text-sm flex items-center gap-2 hover:bg-white transition active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+          className="bg-yp-yellow text-yp-black px-8 py-3 min-h-[44px] rounded-sm font-medium text-sm flex items-center gap-2 hover:bg-white transition active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
