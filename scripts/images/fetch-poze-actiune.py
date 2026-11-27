@@ -1,11 +1,12 @@
 """Download the high-resolution originals of the "action" photos (MASCOT, Portwest, Sir Safety).
 
 Usage (needs Pillow, which is not in the system Python; same convention as scripts/catalog/fetch_images_mascot.py):
-  uv run --no-project --with pillow python -I scripts/images/fetch-poze-actiune.py
+  uv run --no-project --with pillow==13.0.0 python -I scripts/images/fetch-poze-actiune.py
 
 Portwest downloads (P*) need the Media Hub collection, which is NOT stored in this (public) repo. It is passed with
 the environment variables PW_COLLECTION_URL (the link of the EU_ROW mood images collection in Media Hub) and
-PW_COLLECTION_ID (8-4-4-16 hex id), or with --collection-url / --collection-id. The values are kept locally in
+PW_COLLECTION_ID (8-4-4-16 hex id), e.g. `secret run <project> -- …`; --collection-url / --collection-id exist but are NOT
+recommended (the value ends up in shell history and the process list). The values are kept locally in
 .catalog-work/images/actiune/NOTE-folosire.md. They are needed ONLY when a Portwest original has to be downloaded:
 with valid files already on disk the script makes no request and runs without them. Not secrets (used anonymously),
 but they do not belong in a public repo. The host is still checked (https, mediahub.portwest.com only).
@@ -71,7 +72,7 @@ from pathlib import Path
 try:
     from PIL import Image
 except ImportError:
-    sys.exit("Pillow lipsește. Rulează: uv run --no-project --with pillow python -I scripts/images/fetch-poze-actiune.py")
+    sys.exit("Pillow lipsește. Rulează: uv run --no-project --with pillow==13.0.0 python -I scripts/images/fetch-poze-actiune.py")
 
 warnings.simplefilter("error", Image.DecompressionBombWarning)  # default limit stays on; a bomb becomes an error
 
@@ -404,8 +405,10 @@ def collection_settings(argv=None, environ=None):
     now: https, host mediahub.portwest.com only, clean URL; the id in the 8-4-4-16 hex format."""
     environ = os.environ if environ is None else environ
     parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
-    parser.add_argument("--collection-url", default=environ.get("PW_COLLECTION_URL"))
-    parser.add_argument("--collection-id", default=environ.get("PW_COLLECTION_ID"))
+    parser.add_argument("--collection-url", default=environ.get("PW_COLLECTION_URL"),
+                        help="NOT recommended (shell history, process list): use PW_COLLECTION_URL via `secret run`")
+    parser.add_argument("--collection-id", default=environ.get("PW_COLLECTION_ID"),
+                        help="NOT recommended (shell history, process list): use PW_COLLECTION_ID via `secret run`")
     parser.add_argument("--only", default=None)  # read by only_ids(); accepted here so both parse the same arguments
     args = parser.parse_args(argv)
     url, collection_id = args.collection_url or None, args.collection_id or None

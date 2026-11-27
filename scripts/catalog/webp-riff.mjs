@@ -13,6 +13,6 @@ export function riffChunks(buffer) {
     names.push(buffer.toString('latin1', offset, offset + 4));
     offset += 8 + size + (size % 2); // chunk-urile sunt aliniate la 2 octeți
   }
-  if (offset > buffer.length + 1) throw new Error('chunk în afara fișierului');
+  if (offset !== buffer.length) throw new Error('chunk în afara fișierului');
   return names;
 }

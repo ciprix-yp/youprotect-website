@@ -1,6 +1,6 @@
 // Scriptul de imagini scripts/images/build-poze-actiune.py: decupajul portret 4:5 se ia din ORIGINALUL ÎNTREG, independent
 // de `decupaj` (desktop 16:9). Verificarea rulează în Python (Pillow) pe o imagine sintetică mică: tests/py/portret_crop_check.py.
-// Se rulează cu `uv run --with pillow` sau cu python3 dacă are deja Pillow; fără niciuna (ex. CI doar cu Node) testul sare.
+// Se rulează cu `uv run --with pillow==13.0.0` sau cu python3 dacă are deja Pillow; fără niciuna (ex. CI doar cu Node) testul sare.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -17,9 +17,9 @@ function pythonWithPillow() {
   const py = run('python3', ['-I', '-c', 'import PIL']);
   if (py.status === 0) return ['python3', ['-I']];
   const uv = run('uv', ['--version']);
-  if (uv.status === 0) return ['uv', ['run', '--no-project', '--with', 'pillow', 'python', '-I']];
+  if (uv.status === 0) return ['uv', ['run', '--no-project', '--with', 'pillow==13.0.0', 'python', '-I']];
   const viaMise = run('mise', ['exec', 'uv@0.13.6', '--', 'uv', '--version']);
-  if (viaMise.status === 0) return ['mise', ['exec', 'uv@0.13.6', '--', 'uv', 'run', '--no-project', '--with', 'pillow', 'python', '-I']];
+  if (viaMise.status === 0) return ['mise', ['exec', 'uv@0.13.6', '--', 'uv', 'run', '--no-project', '--with', 'pillow==13.0.0', 'python', '-I']];
   return null;
 }
 

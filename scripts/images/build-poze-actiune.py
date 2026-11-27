@@ -1,7 +1,7 @@
 """Build the WebP variants of the "action" photos (the list in src/data/poze-actiune.json) served from public/images/actiune/.
 
 Usage (needs Pillow, which is not in the system Python):
-  mise exec uv@0.13.6 -- uv run --no-project --with pillow python -I scripts/images/build-poze-actiune.py
+  mise exec uv@0.13.6 -- uv run --no-project --with pillow==13.0.0 python -I scripts/images/build-poze-actiune.py
 
 Input : src/data/poze-actiune.json (single source of truth: id, slug, source, planned widths)
         .catalog-work/images/actiune/efectiv.json (field fisier_efectiv) + original/ or preview/ files.
@@ -47,7 +47,7 @@ from pathlib import Path
 try:
     from PIL import Image, ImageCms, ImageOps
 except ImportError:
-    sys.exit("Pillow lipsește. Rulează: uv run --no-project --with pillow python -I scripts/images/build-poze-actiune.py")
+    sys.exit("Pillow lipsește. Rulează: uv run --no-project --with pillow==13.0.0 python -I scripts/images/build-poze-actiune.py")
 
 warnings.simplefilter("error", Image.DecompressionBombWarning)  # default pixel limit stays on
 

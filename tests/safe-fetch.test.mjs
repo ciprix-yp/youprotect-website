@@ -14,9 +14,9 @@ const run = (cmd, args) => spawnSync(cmd, args, { cwd: ROOT, encoding: 'utf8', t
 
 function pythonWithPillow() {
   if (run('python3', ['-I', '-c', 'import PIL']).status === 0) return ['python3', ['-I']];
-  if (run('uv', ['--version']).status === 0) return ['uv', ['run', '--no-project', '--with', 'pillow', 'python', '-I']];
+  if (run('uv', ['--version']).status === 0) return ['uv', ['run', '--no-project', '--with', 'pillow==13.0.0', 'python', '-I']];
   if (run('mise', ['exec', 'uv@0.13.6', '--', 'uv', '--version']).status === 0) {
-    return ['mise', ['exec', 'uv@0.13.6', '--', 'uv', 'run', '--no-project', '--with', 'pillow', 'python', '-I']];
+    return ['mise', ['exec', 'uv@0.13.6', '--', 'uv', 'run', '--no-project', '--with', 'pillow==13.0.0', 'python', '-I']];
   }
   return null;
 }

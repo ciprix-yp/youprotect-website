@@ -26,6 +26,9 @@ test('riffChunks: recunoaște chunk-urile și respinge ce nu e WebP', () => {
   const file = Buffer.concat([Buffer.from('RIFF', 'latin1'), Buffer.from(new Uint32Array([body.length]).buffer), body]);
   assert.deepEqual(riffChunks(file), ['VP8X', 'EXIF', 'VP8 ']);
   assert.throws(() => riffChunks(Buffer.from('nu e imagine, doar text lung')), /RIFF/);
+  // fișier trunchiat: chunk care iese din fișier, sau octeți în plus după ultimul chunk
+  assert.throws(() => riffChunks(file.subarray(0, file.length - 2)), /în afara fișierului/);
+  assert.throws(() => riffChunks(Buffer.concat([file, Buffer.from([0])])), /în afara fișierului/);
 });
 
 test('imagini de produs: niciun .webp cu EXIF, XMP sau ICC', () => {
