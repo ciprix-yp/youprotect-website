@@ -35,7 +35,7 @@ export const GUIDES_HREF = '/ghiduri/';
 
 const HG_1048: GuideSource = {
   label: 'Portal Legislativ: HG nr. 1.048/2006 privind utilizarea echipamentelor individuale de protecție, republicată',
-  url: 'https://legislatie.just.ro/Public/DetaliiDocument/249634',
+  url: 'https://legislatie.just.ro/Public/DetaliiDocument/253674',
 };
 
 export const GUIDES: Guide[] = [
@@ -87,13 +87,14 @@ export const GUIDES: Guide[] = [
     slug: 'cost-echipament-protectie-muncitor',
     title: 'Cât costă echipamentul de protecție pe muncitor',
     description:
-      'Ce echipament de protecție poate cere un șantier, cine îl plătește și cum calculezi costul pe an și pe zi de purtare pentru fiecare muncitor din echipă.',
+      'Costul pe an al unui muncitor: prețul fiecărei piese înmulțit cu bucățile primite într-un an, plus administrarea. Ce cere legea pe șantier și cine plătește.',
     heading: 'Cât costă echipamentul de protecție pentru un muncitor din construcții',
+    breadcrumb: 'Costul pe muncitor',
     summary:
-      'Ce echipament poate fi necesar pe un șantier, cine îl plătește și cum calculezi costul pe an și pe zi de purtare, cu prețurile tale.',
+      'Costul pe an e prețul fiecărei piese înmulțit cu bucățile primite într-un an, plus administrarea. Ce poate cere un șantier și cine plătește.',
     categories: [],
     published: '2026-11-19',
-    updated: '2026-11-19',
+    updated: '2026-11-27',
     sources: [HG_1048],
   },
   {
