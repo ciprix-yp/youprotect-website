@@ -15,108 +15,105 @@ Web output per colour: gallery views as <colour>-<view>.webp (1200 px) + <colour
 (800 px), for the 360° viewer idea (PROJECT_OS/07-IDEA_INBOX.md, I-2026-11-11-01). Off by default since 20.11.2026:
 no page used them, and the 501 frames weighed 5.9 MB in every deploy.
 
-Security: only allowlisted https hosts are requested; codes are validated and every local path is built here,
-never taken from API responses; responses must be images within a size cap.
+Card photo (poza pe model): when catalog/texts/mascot/<model>.json has `cardPhoto` ({colour, sourceId, kind, focus, alt},
+see card_photo.py), that DAM item is downloaded too, at up to 1800 px, as <colour>-C<id8>.webp (+ -thumb). It is looked up
+by its content id (never by a name pattern) and its DAM name must contain the model-quality-colour code.
+
+Security (scripts/lib/safe_fetch.py): allowlisted https hosts checked on every redirect hop, real image type (JPEG/PNG/WebP)
+and pixel/size limits, validated names and paths that stay under the output folders, sRGB output without EXIF/XMP/ICC.
+Signed URLs are never stored: only content ids.
 """
-import http.cookiejar
-import io
 import json
 import re
 import sys
 import time
 import urllib.error
-import urllib.parse
-import urllib.request
 from pathlib import Path
 
-from PIL import Image
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))  # python -I does not add the script folder
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import safe_fetch  # noqa: E402
+from card_photo import card_photo_errors, card_view  # noqa: E402
+from safe_fetch import FetchError, NotRaster  # noqa: E402
 
 PICTUREPARK = "https://mascot.picturepark.com"
 ALLOWED_HOSTS = {"mascot.picturepark.com", "mascotsitecore-1ccb8.kxcdn.com"}
 CODE = re.compile(r"^[A-Z0-9]{1,10}$")
 SLUG = re.compile(r"^[a-z0-9-]{3,120}$")
-VIEW = re.compile(r"^(P\d{2}|PS)$")
+CONTENT_ID = re.compile(r"^[0-9a-f]{32}$")
+# P01–P24 = 360° frames, PS = pack shot; F/M/A/D + two digits = photos with a person (front, model, action, detail).
+VIEW = re.compile(r"^(P\d{2}|PS|[FMAD]\d{2})$")
 SPIN_VIEWS = [f"P{i:02d}" for i in range(1, 25)]
 OTHER_VIEWS = ["P01", "P07", "P13"]
 GALLERY_VIEWS = ["PS", "P01", "P04", "P07", "P13", "P19"]
-MAX_BYTES = 25 * 1024 * 1024
+CARD_MAX_SIDE = 1800
+CARD_BUDGET = 240 * 1024  # tests/image-weight.test.mjs: nothing in public/ over 250 KB
+JSON_HEADERS = {"x-csrf": "1", "Content-Type": "application/json", "Accept": "application/json, */*"}
 
 
-def check_host(url):
-    parsed = urllib.parse.urlparse(url)
-    if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS:
-        raise ValueError(f"host nepermis: {url}")
+def name_pattern(mqc):
+    """Names vary in the DAM: "19035-449-14010_P01.jpg" and also "51587-969-02 P13" (space, no extension)."""
+    return re.compile(rf"^{re.escape(mqc)}[_ ](P\d{{2}}|PS|[FMAD]\d{{2}})(\.(jpe?g|png))?$")
+
+
+def parse_frames(results, mqc):
+    """Map view -> content id for one model-quality-colour, from search results."""
+    pattern = name_pattern(mqc)
+    found = {}
+    for item in results:
+        match = pattern.match(str(item.get("displayValues", {}).get("name", "")))
+        content_id = str(item.get("id", ""))
+        if match and CONTENT_ID.fullmatch(content_id):
+            found.setdefault(match.group(1), content_id)
+    return found
+
+
+def find_card_item(results, mqc, source_id):
+    """The search hit with this content id, only if its DAM name contains the model-quality-colour code (so a wrong id
+    can never attach another product's photo). Raises FetchError otherwise."""
+    if not CONTENT_ID.fullmatch(source_id):
+        raise FetchError("sourceId invalid pentru MASCOT (32 de caractere hex)")
+    for item in results:
+        if str(item.get("id", "")) == source_id:
+            name = str(item.get("displayValues", {}).get("name", ""))
+            if not name_pattern(mqc).match(name):
+                raise FetchError(f"poza cardPhoto nu aparține codului {mqc}")
+            return name
+    raise FetchError(f"poza cardPhoto nu apare în căutarea pentru {mqc}")
 
 
 class Picturepark:
     def __init__(self):
-        self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-        self.opener.addheaders = [("User-Agent", "youprotect-catalog-sync"), ("Accept", "application/json, */*")]
-        self._open(f"{PICTUREPARK}/bff/silent-login").read()  # anonymous guest session (cookie)
+        self.client = safe_fetch.SafeClient(ALLOWED_HOSTS, user_agent="youprotect-catalog-sync")
+        self.client.request(f"{PICTUREPARK}/bff/silent-login", headers=JSON_HEADERS)  # anonymous guest session (cookie)
 
-    def _open(self, url, payload=None):
-        check_host(url)
-        data = json.dumps(payload).encode() if payload is not None else None
-        req = urllib.request.Request(url, data=data, method="POST" if data else "GET",  # noqa: S310 (host checked)
-                                     headers={"x-csrf": "1", "Content-Type": "application/json"})
-        return self.opener.open(req, timeout=60)  # noqa: S310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
+    def search(self, mqc):
+        body, _ = self.client.request(f"{PICTUREPARK}/service/Contents/search", headers=JSON_HEADERS, data=json.dumps({
+            "searchString": mqc, "limit": 60, "channelId": "rootChannel",
+            "searchType": "MetadataAndFullText", "lifeCycleFilter": "ActiveOnly"}).encode())
+        return json.loads(body).get("results", [])
 
     def frames(self, mqc):
-        """Map view -> content id for one model-quality-colour, from the search index."""
-        resp = self._open(f"{PICTUREPARK}/service/Contents/search", {
-            "searchString": mqc, "limit": 60, "channelId": "rootChannel",
-            "searchType": "MetadataAndFullText", "lifeCycleFilter": "ActiveOnly"})
-        results = json.loads(resp.read()).get("results", [])
-        # Names vary in the DAM: "19035-449-14010_P01.jpg" and also "51587-969-02 P13" (space, no extension).
-        pattern = re.compile(rf"^{re.escape(mqc)}[_ ](P\d{{2}}|PS)(\.(jpg|png))?$")
-        found = {}
-        for item in results:
-            match = pattern.match(str(item.get("displayValues", {}).get("name", "")))
-            content_id = str(item.get("id", ""))
-            if match and re.fullmatch(r"[0-9a-f]{32}", content_id):
-                found.setdefault(match.group(1), content_id)
-        return found
+        return parse_frames(self.search(mqc), mqc)
 
     def download(self, content_id):
-        resp = self._open(f"{PICTUREPARK}/service/Contents/downloads/{content_id}/Preview")
-        return read_image(resp)
-
-
-class NotRaster(ValueError):
-    pass
-
-
-def read_image(resp):
-    content_type = resp.headers.get("Content-Type", "")
-    if not content_type.startswith("image/"):
-        raise ValueError(f"răspuns care nu e imagine: {content_type}")
-    if "svg" in content_type:
-        # SVG can carry scripts; we never re-host it on our domain.
-        raise NotRaster("SVG")
-    body = resp.read(MAX_BYTES + 1)
-    if len(body) > MAX_BYTES:
-        raise ValueError("imagine prea mare")
-    return body
+        if not CONTENT_ID.fullmatch(content_id):
+            raise FetchError("id de conținut invalid")
+        return self.client.request_image(f"{PICTUREPARK}/service/Contents/downloads/{content_id}/Preview",
+                                         headers=JSON_HEADERS)
 
 
 def fetch_plain(url):
-    check_host(url)
-    req = urllib.request.Request(url, headers={"User-Agent": "youprotect-catalog-sync"})  # noqa: S310 (host checked)
-    with urllib.request.urlopen(req, timeout=30) as resp:  # noqa: S310  # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
-        return read_image(resp)
+    client = safe_fetch.SafeClient(ALLOWED_HOSTS, user_agent="youprotect-catalog-sync")
+    return client.request_image(url, timeout=30)
 
 
-def save_webp(raw, path, max_side, quality):
-    img = Image.open(io.BytesIO(raw))
-    img.load()
-    img = img.convert("RGBA") if img.mode in ("RGBA", "LA", "P") else img.convert("RGB")
-    img.thumbnail((max_side, max_side), Image.LANCZOS)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(path, "WEBP", quality=quality, method=6)
+def save_webp(raw, path, max_side, quality, base, budget=None):
+    safe_fetch.save_webp(safe_fetch.clean_image(raw), path, max_side, quality, base=base, budget=budget)
 
 
 def cached(cache_dir, mqc, view, pp, content_id):
-    path = cache_dir / mqc / f"{view}.img"
+    path = safe_fetch.safe_join(cache_dir, mqc, f"{view}.img")
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(pp.download(content_id))
@@ -124,7 +121,17 @@ def cached(cache_dir, mqc, view, pp, content_id):
     return path.read_bytes()
 
 
-def process_colour(pp, mqc, colour, is_primary, cache_dir, out_dir, with_spin=False):
+def process_card_photo(pp, mqc, colour, card, cache_dir, out_dir, public_dir):
+    """Download the person photo of `cardPhoto` (by content id, name checked) at up to 1800 px."""
+    find_card_item(pp.search(mqc), mqc, card["sourceId"])
+    view = card_view(card["sourceId"])
+    raw = cached(cache_dir, mqc, view, pp, card["sourceId"])
+    save_webp(raw, out_dir / f"{colour}-{view}.webp", CARD_MAX_SIDE, 82, public_dir, CARD_BUDGET)
+    save_webp(raw, out_dir / f"{colour}-{view}-thumb.webp", 240, 75, public_dir)
+    return view
+
+
+def process_colour(pp, mqc, colour, is_primary, cache_dir, out_dir, public_dir, with_spin=False):
     if is_primary:
         wanted = SPIN_VIEWS + ["PS"] if with_spin else GALLERY_VIEWS
     else:
@@ -136,11 +143,11 @@ def process_colour(pp, mqc, colour, is_primary, cache_dir, out_dir, with_spin=Fa
             continue
         raw = cached(cache_dir, mqc, view, pp, available[view])
         if view in GALLERY_VIEWS:
-            save_webp(raw, out_dir / f"{colour}-{view}.webp", 1200, 82)
-            save_webp(raw, out_dir / f"{colour}-{view}-thumb.webp", 240, 75)
+            save_webp(raw, out_dir / f"{colour}-{view}.webp", 1200, 82, public_dir)
+            save_webp(raw, out_dir / f"{colour}-{view}-thumb.webp", 240, 75, public_dir)
             stats["gallery"] += 1
         if with_spin and is_primary and view in SPIN_VIEWS:
-            save_webp(raw, out_dir / f"{colour}-spin-{view}.webp", 800, 72)
+            save_webp(raw, out_dir / f"{colour}-spin-{view}.webp", 800, 72, public_dir)
             stats["spin"] += 1
     return stats
 
@@ -153,26 +160,35 @@ def main(argv):
         if text_path.name.startswith("_"):
             continue
         text = json.loads(text_path.read_text(encoding="utf-8"))
-        source = json.loads((source_dir / f"{text['model']}.json").read_text(encoding="utf-8"))
+        errors = card_photo_errors(text)
+        if errors:
+            raise ValueError(f"{text_path.name}: {'; '.join(errors)}")
+        source = json.loads(safe_fetch.safe_join(source_dir, f"{text['model']}.json").read_text(encoding="utf-8"))
         slug, model, quality = text["slug"], source["model"], (source["qualities"] or [""])[0]
-        if not (SLUG.match(slug) and CODE.match(model) and CODE.match(quality)):
+        if not (SLUG.match(slug) and CODE.match(model) and CODE.match(quality) and model == text["model"]):
             raise ValueError(f"cod invalid: {slug} {model} {quality}")
         ordered = [c for c in source["colours"] if c["ordered"]] or source["colours"][:1]
         primary = text.get("primaryColour") or ordered[0]["number"]
-        out_dir = public_dir / slug
+        card = text.get("cardPhoto")
+        if card and card["colour"] not in [c["number"] for c in ordered]:
+            raise ValueError(f"{model}: cardPhoto.colour {card['colour']} nu e în colours[]")
+        out_dir = safe_fetch.safe_join(public_dir, slug)
         for c in ordered:
             colour = c["number"]
             if not CODE.match(colour):
                 raise ValueError(f"cod de culoare invalid: {colour}")
             mqc = f"{model}-{quality}-{colour}"
-            stats = process_colour(pp, mqc, colour, colour == primary, cache_dir, out_dir, with_spin)
+            stats = process_colour(pp, mqc, colour, colour == primary, cache_dir, out_dir, public_dir, with_spin)
             if c.get("swatch"):
                 try:
-                    save_webp(fetch_plain(c["swatch"]), out_dir / f"{colour}-swatch.webp", 64, 80)
+                    save_webp(fetch_plain(c["swatch"]), out_dir / f"{colour}-swatch.webp", 64, 80, public_dir)
                 except (NotRaster, urllib.error.HTTPError) as exc:  # eșantionul e opțional (F3003: 404 la MASCOT)
                     stats["missing"].append(f"swatch ({exc})")
+            if card and card["colour"] == colour:
+                stats["card"] = process_card_photo(pp, mqc, colour, card, cache_dir, out_dir, public_dir)
             note = f" lipsă: {','.join(stats['missing'])}" if stats["missing"] else ""
-            print(f"ok {mqc}: galerie {stats['gallery']}, 360° {stats['spin']}{note}")
+            extra = f", poză pe model {stats['card']}" if "card" in stats else ""
+            print(f"ok {mqc}: galerie {stats['gallery']}, 360° {stats['spin']}{extra}{note}")
 
 
 if __name__ == "__main__":
