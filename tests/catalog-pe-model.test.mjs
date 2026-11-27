@@ -52,7 +52,9 @@ function distTest(name, fn) {
 }
 
 const read = (path) => readFileSync(path, 'utf8');
-const decode = (s) => s.replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+// De-escapare într-un singur pas (o hartă de entități, un singur `replace`), ca „&amp;quot;” să rămână „&quot;”.
+const ENTITIES = { '&quot;': '"', '&#39;': "'", '&amp;': '&', '&lt;': '<', '&gt;': '>' };
+const decode = (s) => s.replace(/&(?:quot|#39|amp|lt|gt);/g, (entity) => ENTITIES[entity]);
 /** Valoarea atributului `name` dintr-un tag (atributele vin în HTML generat, cu ghilimele duble). */
 const attr = (tag, name) => {
   for (const m of tag.matchAll(/\s([a-z-]+)="([^"]*)"/g)) if (m[1] === name) return decode(m[2]);
