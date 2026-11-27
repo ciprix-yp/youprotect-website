@@ -365,12 +365,22 @@ def head_vlm_applies(product: str, head_thr: dict) -> bool:
     return product in head_thr.get("vlm_products", [product])
 
 
-def check_veto(master_sha256: str, veto: dict | None) -> dict:
-    """Veto manual legat de IMAGINE: cheia = sha256 al `master.png` (nu id-ul candidatului: același id regenerat e altă imagine). Valoarea:
-    {motiv, autor, id_informativ?}; `autor` spune cine a pus veto-ul (decizia finală e a proprietarului)."""
-    entry = (veto or {}).get(master_sha256)
-    why = None if entry is None else f"{entry['motiv']} ({entry['autor']})"
-    return ck.result("veto_manual", why, "sha256 master absent din lista de veto", entry is None, "fără veto" if entry is None else f"veto manual: {why}")
+def check_veto(master_sha256: str, veto: dict | None, candidate_id: str | None = None) -> dict:
+    """Veto manual legat de IMAGINE: cheia = sha256 al `master.png` (nu id-ul candidatului: același id regenerat/recompus e altă imagine). Valoarea:
+    {motiv, autor, id_informativ?}; `autor` spune cine a pus veto-ul (decizia finală e a proprietarului).
+    Fail-closed pe veto învechit (Fix-4): dacă `candidate_id` coincide cu un `id_informativ` din veto, dar sha256-ul masterului nu e nicio cheie din veto
+    (master recompus/regenerat sub același id), candidatul e RESPINS până când proprietarul revizuiește (veto-ul nou se adaugă ca altă cheie)."""
+    entries = veto or {}
+    entry = entries.get(master_sha256)
+    if entry is not None:
+        why = f"{entry['motiv']} ({entry['autor']})"
+        return ck.result("veto_manual", why, "sha256 master absent din lista de veto", False, f"veto manual: {why}")
+    stale = [k for k, e in entries.items() if candidate_id is not None and e.get("id_informativ") == candidate_id]
+    if stale:
+        why = "veto învechit: master recompus, cere revizuire de către proprietar"
+        return ck.result("veto_manual", why, "id cu veto fără sha256 potrivit: respins până la revizuire", False,
+                         f"{why} (id {candidate_id}, sha256 {master_sha256[:12]}… ≠ cheia veto {stale[0][:12]}…)")
+    return ck.result("veto_manual", None, "sha256 master absent din lista de veto", True, "fără veto")
 
 
 def _validate_veto(veto: object) -> None:
@@ -391,16 +401,19 @@ def check_boots_info(sig: dict | None) -> dict:
 
 
 OVERLAY_ALLOWED = {"segment": {"c_p50_max"}, "head": None, "veto_manual": None}  # None = orice conținut (validat separat)
-# Intervale permise pentru pragurile din overlay (min, max, min_exclusiv). Alese din calibrare_t5c.json (valori curente: c_p50_max 14, sag_ratio_min 0,15,
-# free_run_min 0,3, width_min 60, vlm_p_yes 0,9) cu plafon ~1,5x valoarea calibrată (vlm_p_yes: (0, 1], fiind probabilitate). Un overlay nu poate
-# relaxa un prag dincolo de acestea (ex. free_run_min=99 ar face geometria capului imposibil de îndeplinit, c_p50_max=1e9 ar accepta orice croma).
+# Intervale permise pentru pragurile din overlay (min, max, min_exclusiv): ZERO relaxare peste valorile calibrate din calibrare_t5c.json (Fix-4).
+# Direcția periculoasă (relaxarea) e în sus: geometria flaghează dom când sag/free_run/width >= prag, VLM flaghează când P(da) >= vlm_p_yes, croma
+# nuanțată acceptă când C* p50 <= c_p50_max. Maximele de mai jos = valorile calibrate; strângerile (valori mai mici) rămân permise. O relaxare reală
+# se face printr-o calibrare nouă comisă (alt fișier validat, alt hash în fișă), nu printr-un overlay.
 OVERLAY_RANGES = {
-    ("segment", "c_p50_max"): (0.0, 20.0, False),
-    ("head", "sag_ratio_min"): (0.0, 0.225, False),
-    ("head", "free_run_min"): (0.0, 0.45, False),
-    ("head", "width_min"): (0.0, 90.0, False),
-    ("head", "vlm_p_yes"): (0.0, 1.0, True),
+    ("segment", "c_p50_max"): (0.0, 14.0, False),
+    ("head", "sag_ratio_min"): (0.0, 0.15, False),
+    ("head", "free_run_min"): (0.0, 0.3, False),
+    ("head", "width_min"): (0.0, 60.0, False),
+    ("head", "vlm_p_yes"): (0.0, 0.9, True),
 }
+OVERLAY_VLM_PRODUCTS_CALIBRATED = frozenset({"S476YE"})  # un overlay poate ADĂUGA produse în head.vlm_products, nu poate scoate unul calibrat
+OVERLAY_REQUIRED = {"segment": ("c_p50_max",), "head": ("sag_ratio_min", "free_run_min", "width_min", "vlm_p_yes", "vlm_products")}
 OVERLAY_HEAD_KEYS = {"sag_ratio_min", "free_run_min", "width_min", "vlm_p_yes", "vlm_products"}
 
 
@@ -413,6 +426,8 @@ def _validate_overlay_ranges(k: str, v: Any) -> None:
         vp = v.get("vlm_products")
         if vp is not None and not (isinstance(vp, list) and all(isinstance(x, str) for x in vp)):
             raise CalibrationError("overlay: head.vlm_products trebuie să fie listă de șiruri")
+        if vp is not None and not OVERLAY_VLM_PRODUCTS_CALIBRATED <= set(vp):
+            raise CalibrationError(f"overlay: head.vlm_products trebuie să includă produsele calibrate {sorted(OVERLAY_VLM_PRODUCTS_CALIBRATED)} (nu poate scoate produse), primit {vp}")
     for key, val in v.items():
         rng = OVERLAY_RANGES.get((k, key))
         if rng is None:
@@ -442,6 +457,11 @@ def merge_overlay(cal: dict, overlay: dict) -> dict:
             out["praguri"][k].update(v)
         else:
             out["praguri"][k] = v
+    for k, keys in OVERLAY_REQUIRED.items():  # overlay-ul propriu-zis (nu doar calibrarea de bază) poartă forma de cap și croma nuanțată, complete
+        have = overlay["praguri"].get(k)
+        miss = [x for x in keys if not isinstance(have, dict) or x not in have]
+        if miss:
+            raise CalibrationError(f"overlay: {k} incomplet, lipsesc {miss} (forma de cap nu poate fi neutralizată printr-un overlay gol)")
     return validate_calibration(out)
 
 

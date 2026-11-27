@@ -31,6 +31,8 @@ test('scene Fix-1a: integritate fișă/imagine/zone, produs ≠ zone, model veri
   assert.equal(r.status, 0, `${r.stdout}\n${r.stderr}`);
   assert.match(r.stdout, /^ok$/m);
   for (const needle of [
+    'NEG scanare AST: os.environ.setdefault',
+    'POS scripturile cu modele setează FORȚAT',
     'NEG produs S476YE cu zone BZ739OR respins',
     'NEG calea sursei din zone.json nu corespunde produsului',
     'NEG generate_candidates: --product S476YE cu zone BZ739OR',

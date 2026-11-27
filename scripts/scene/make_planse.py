@@ -388,7 +388,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--base-planse", required=True)
     ap.add_argument("--fisa-name", default=FISA_NAME, help="fișa finală (același nume ca run_model_checks.py)")
-    ap.add_argument("--registry", default=None, help="implicit: <cand-dir>/../../registru.jsonl")
+    ap.add_argument("--registry", default=None, help="implicit: <cand-dir>/../../registru.jsonl; pe fluxul recompus (cand_v3/cand_v4) dați explicit <scene>/cand_vN/registru.jsonl")
     a = ap.parse_args(argv)
     try:
         if not fl.FILENAME_RE.fullmatch(a.fisa_name) or a.fisa_name.startswith("."):

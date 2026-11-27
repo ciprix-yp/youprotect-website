@@ -32,6 +32,14 @@ test('scene T5c: formă de cap și croma nuanțată, pozitiv și negativ (fără
   assert.equal(r.status, 0, `${r.stdout}\n${r.stderr}`);
   assert.match(r.stdout, /^ok$/m);
   for (const needle of [
+    'NEG overlay gol {praguri: {}} respins',
+    'NEG overlay head.vlm_products=[] respins',
+    'NEG overlay head.vlm_p_yes=1.0 respins',
+    'NEG overlay head.sag_ratio_min=0.225 respins',
+    'POS overlay mai strict',
+    'POS overlay-ul real acceptat identic',
+    'NEG același id, alt sha256 -> respins fail-closed (veto învechit)',
+    'POS id fără veto (hala_depozit-s101) trece',
     'POS dom sintetic (semisferă liberă) detectat',
     'POS trunchi cu vârf tăiat drept acceptat',
     'POS vârf tăiat drept înclinat acceptat',
@@ -48,8 +56,7 @@ test('scene T5c: formă de cap și croma nuanțată, pozitiv și negativ (fără
     'NEG segment portocaliu puternic respins și cu regula nuanțată',
     'NEG segment albastru puternic respins și cu regula nuanțată',
     'POS VLM de cap se aplică doar produsului calibrat',
-    'NEG veto manual respinge masterul cu sha256 din veto',
-    'POS veto manual nu atinge conul bun hala_depozit-s101; același id cu ALT master nu e acoperit',
+    'NEG veto manual respinge ambele mastere',
     'NEG veto cu cheie id (nu sha256) respins la îmbinare',
     'NEG veto fără autor respins la îmbinare',
     'NEG overlay care relaxează vlm_p_yes=1.01 respins',

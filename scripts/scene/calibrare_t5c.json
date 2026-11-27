@@ -19,6 +19,11 @@
     "id_informativ": "S476YE-platforma_logistica-s109",
     "motiv": "dom rotund care poate trece drept cap (regula proprietarului: manechin clar ne-uman); niciun semnal automat nu îl separă de hala_depozit-s101 (con bun)",
     "autor": "agent T5c; neconfirmat de proprietar (decizia e a proprietarului)"
+   },
+   "dd10f0f466939428b425e8ab8070bfac567a29e15fcab7f9fc37d5ce8cfdbabe": {
+    "id_informativ": "S476YE-platforma_logistica-s109",
+    "motiv": "master recompus (cand_v3) structural identic cu conurile bune, dom/gât estompat; decizia finală e a proprietarului",
+    "autor": "agent Fix-4, în așteptarea deciziei proprietarului"
    }
   }
  },

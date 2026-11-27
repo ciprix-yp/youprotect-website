@@ -28,8 +28,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub (torch/transformers/diffusers se importă mai jos, în main)
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ["HF_HUB_OFFLINE"] = "1"  # FORȚAT (nu setdefault): nicio cerere către Hub (torch/transformers/diffusers se importă mai jos, în main)
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))  # -I nu pune directorul scriptului pe sys.path

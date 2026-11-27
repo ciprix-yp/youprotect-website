@@ -222,6 +222,14 @@ def main():  # noqa: C901
         show("POS", "model_checks BZ739OR: fără qwen_head head_shape trece (produsul nu are VLM de cap)")
         vetoed = rmc.model_checks(it, {**clean, "qwen": {"p_yes": 0.01}, "qwen_head": {"p_yes": 0.01}}, thr_h, ctx0)
         neg("model_checks: master cu sha256 din veto -> veto_manual respins", next(c for c in vetoed if c["name"] == "veto_manual"), "veto manual")
+        thr_st = copy.deepcopy(thr_h)
+        thr_st["veto_manual"] = {"f" * 64: {"motiv": "test", "autor": "agent de test", "id_informativ": it["id"]}}  # același id, master cu alt sha256
+        stale = rmc.model_checks(it, {**clean, "qwen": {"p_yes": 0.01}, "qwen_head": {"p_yes": 0.01}}, thr_st, ctx0)
+        neg("model_checks: același id ca în veto, alt sha256 -> respins fail-closed (veto învechit)", next(c for c in stale if c["name"] == "veto_manual"), "veto învechit")
+        thr_ok = copy.deepcopy(thr_h)
+        thr_ok["veto_manual"] = {"f" * 64: {"motiv": "test", "autor": "agent de test", "id_informativ": "S476YE-alt-s9"}}
+        assert next(c for c in rmc.model_checks(it, {**clean, "qwen": {"p_yes": 0.01}, "qwen_head": {"p_yes": 0.01}}, thr_ok, ctx0) if c["name"] == "veto_manual")["passed"] is True
+        show("POS", "model_checks: id fără veto trece prin veto_manual")
 
     # ---- etape necesare: lipsă din --stages / eșuate în rulare
     req = cm.required_stages({"S476YE": True, "BZ739OR": True, "FD25BK": False}, thr_h)
@@ -244,6 +252,20 @@ def main():  # noqa: C901
     out = r.stdout + r.stderr
     assert r.returncode != 0 and "calibrare respinsă" in out and "nu e permisă" in out, (r.returncode, out)
     show("NEG", "run_model_checks (CLI): overlay care atinge praguri non-permise se oprește înainte de orice rulare", out.strip().splitlines()[-1][:90])
+    for bad in ("../cand", "cand/x", "Cand_V3", "cand v3", "", "/abs"):
+        r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts/scene/run_model_checks.py"), "--scene-dir", "/nu/exista", "--models-dir", "/nu/exista",
+                            "--calibrare", str(CAL_PATH), "--report-dir", "/nu/exista/r", "--calibrare-extra", str(CAL_PATH), "--cand-name", bad],
+                           capture_output=True, text=True, timeout=120, check=False)
+        assert r.returncode == 2 and "--cand-name invalid" in r.stderr, (bad, r.returncode, r.stderr)
+    r2 = subprocess.run([sys.executable, "-I", str(ROOT / "scripts/scene/collect_signals.py"), "--set", "candidates", "--models-dir", "/nu/exista", "--scene-dir", "/nu/exista",
+                         "--out", "/nu/exista/o.json", "--cand-name", "../cand_v3"], capture_output=True, text=True, timeout=120, check=False)
+    assert r2.returncode == 2 and "--cand-name invalid" in r2.stderr, r2.stderr
+    show("NEG", "--cand-name cu separatori/majuscule/gol (run_model_checks și collect_signals) refuzat de argparse, cod 2", r2.stderr.strip().splitlines()[-1][:80])
+    r3 = subprocess.run([sys.executable, "-I", str(ROOT / "scripts/scene/run_model_checks.py"), "--scene-dir", "/nu/exista", "--models-dir", "/nu/exista",
+                         "--calibrare", str(CAL_PATH), "--report-dir", "/nu/exista/r", "--calibrare-extra", str(CAL_PATH), "--cand-name", "cand_v4"],
+                        capture_output=True, text=True, timeout=120, check=False)
+    assert "--cand-name invalid" not in r3.stderr, r3.stderr
+    show("POS", "--cand-name cand_v4 trece de validare (se oprește mai târziu, la calibrare)")
     s = clean_signals(); s["siglip"] = {"pairs": [{"p_mannequin": 0.5, "p_person": 0.5}] * 6}
     t0 = copy.deepcopy(THR); t0["siglip_margin"]["haine"] = 0.0; t0["siglip_pairs"] = {}
     assert cm.check_siglip(s["siglip"], t0, "haine")["passed"] is False

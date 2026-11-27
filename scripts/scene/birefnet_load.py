@@ -17,8 +17,8 @@ import time
 import os
 from pathlib import Path
 
-os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub (torch se importă mai târziu)
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ["HF_HUB_OFFLINE"] = "1"  # FORȚAT (nu setdefault): nicio cerere către Hub (torch se importă mai târziu)
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 HERE = Path(__file__).resolve().parent
 MODEL_ID = "birefnet"

@@ -146,14 +146,20 @@ def main():  # noqa: C901
     assert cm.head_vlm_applies("S476YE", ht) and not cm.head_vlm_applies("BZ739OR", ht) and cm.head_vlm_applies("X", {})
     show("POS", "VLM de cap se aplică doar produsului calibrat (S476YE), nu gulerului BZ739OR")
     veto = THR["veto_manual"]
-    (vsha, ventry), = veto.items()  # veto legat de IMAGINE: cheia = sha256 al masterului; id-ul e doar informativ
-    assert ventry["id_informativ"] == "S476YE-platforma_logistica-s109" and ventry["autor"].startswith("agent T5c; neconfirmat de proprietar") and ventry["motiv"]
-    r = cm.check_veto(vsha, veto)
-    assert r["passed"] is False and "veto manual" in r["detail"] and "neconfirmat de proprietar" in r["detail"]
-    show("NEG", "veto manual respinge masterul cu sha256 din veto (platforma_logistica-s109)", r["detail"][:60])
+    assert len(veto) == 2 and {e["id_informativ"] for e in veto.values()} == {"S476YE-platforma_logistica-s109"}, veto  # master T5a + master recompus (Fix-4)
+    vsha, ventry = next(iter(veto.items()))  # veto legat de IMAGINE: cheia = sha256 al masterului; id-ul e informativ, dar acționează fail-closed
+    vsha2 = list(veto)[1]
+    assert ventry["autor"].startswith("agent T5c; neconfirmat de proprietar") and ventry["motiv"] and list(veto.values())[1]["autor"].startswith("agent Fix-4")
+    for k in (vsha, vsha2):
+        r = cm.check_veto(k, veto, "S476YE-platforma_logistica-s109")
+        assert r["passed"] is False and "veto manual" in r["detail"]
+    show("NEG", "veto manual respinge ambele mastere (T5a și recompus) ale platforma_logistica-s109", r["detail"][:60])
     other = hashlib.sha256(b"alt master, acelasi id S476YE-platforma_logistica-s109 regenerat").hexdigest()
-    assert cm.check_veto(other, veto)["passed"] is True and cm.check_veto(vsha, None)["passed"] is True
-    show("POS", "veto manual nu atinge conul bun hala_depozit-s101; același id cu ALT master nu e acoperit (veto legat de imagine, nu de id)")
+    r = cm.check_veto(other, veto, "S476YE-platforma_logistica-s109")
+    assert r["passed"] is False and "veto învechit: master recompus, cere revizuire de către proprietar" in r["detail"], r
+    show("NEG", "același id, alt sha256 -> respins fail-closed (veto învechit)", r["detail"][:70])
+    assert cm.check_veto(other, veto, "S476YE-hala_depozit-s101")["passed"] is True and cm.check_veto(other, veto)["passed"] is True and cm.check_veto(vsha, None, "x")["passed"] is True
+    show("POS", "id fără veto (hala_depozit-s101) trece, la fel fără listă de veto")
     neg_raises_ov("veto cu cheie id (nu sha256) respins la îmbinare", "sha256 al masterului", {"veto_manual": {"S476YE-platforma_logistica-s109": {"motiv": "m", "autor": "a"}}})
     neg_raises_ov("veto fără autor respins la îmbinare", "motiv și autor", {"veto_manual": {vsha: {"motiv": "m"}}})
     # ---- informativ bocanci, overlay, etichete
@@ -178,6 +184,25 @@ def main():  # noqa: C901
     neg_raises_ov("overlay head.free_run_min=NaN respins", "în afara intervalului", {"head": {"free_run_min": float("nan")}})
     neg_raises_ov("overlay head cu cheie necunoscută respins", "head acceptă doar", {"head": {"altceva": 1}})
     show("POS", "overlay-ul T5c real comis încape în intervalele permise")
+    # ---- Fix-4 (A): overlay complet, fără relaxare peste valorile calibrate, fără scoaterea produselor
+    neg_raises_ov("overlay gol {praguri: {}} respins", "incomplet", {})
+    neg_raises_ov("overlay doar cu veto (fără head/segment) respins", "incomplet", {"veto_manual": EXTRA["praguri"]["veto_manual"]})
+    neg_raises_ov("overlay cu head.praguri parțial respins", "incomplet", {"segment": EXTRA["praguri"]["segment"], "head": {"sag_ratio_min": 0.15}})
+    neg_raises_ov("overlay head.vlm_products=[] respins", "nu poate scoate produse", {**EXTRA["praguri"], "head": {**ht, "vlm_products": []}})
+    neg_raises_ov("overlay head.vlm_p_yes=1.0 respins", "în afara intervalului", {**EXTRA["praguri"], "head": {**ht, "vlm_p_yes": 1.0}})
+    neg_raises_ov("overlay head.sag_ratio_min=0.225 respins (un dom cu sag 0.2 nu trece prin relaxare)", "în afara intervalului", {**EXTRA["praguri"], "head": {**ht, "sag_ratio_min": 0.225}})
+    neg_raises_ov("overlay head.free_run_min=0.31 respins", "în afara intervalului", {**EXTRA["praguri"], "head": {**ht, "free_run_min": 0.31}})
+    neg_raises_ov("overlay head.width_min=61 respins", "în afara intervalului", {**EXTRA["praguri"], "head": {**ht, "width_min": 61}})
+    neg_raises_ov("overlay segment.c_p50_max=14.5 respins", "în afara intervalului", {**EXTRA["praguri"], "segment": {"c_p50_max": 14.5}})
+    dome_sag02 = {"width": 80, "free_run": 0.9, "sag_ratio": 0.2}
+    assert cm.head_is_dome(dome_sag02, ht)
+    show("POS", "cu pragul real (0.15), un dom cu sag 0.2 e detectat", "sag=0.2 >= 0.15")
+    tight = {**EXTRA["praguri"], "head": {**ht, "sag_ratio_min": 0.10, "free_run_min": 0.2, "width_min": 40, "vlm_p_yes": 0.8, "vlm_products": ["S476YE", "BZ739OR"]}, "segment": {"c_p50_max": 10.0}}
+    merged = cm.merge_overlay(CAL, {"praguri": tight})["praguri"]
+    assert merged["head"]["sag_ratio_min"] == 0.10 and merged["head"]["vlm_products"] == ["S476YE", "BZ739OR"] and merged["segment"]["c_p50_max"] == 10.0
+    show("POS", "overlay mai strict (praguri mai mici, produs în plus) acceptat")
+    assert cm.merge_overlay(CAL, EXTRA)["praguri"]["head"] == ht
+    show("POS", "overlay-ul real acceptat identic")
     relaxed = copy.deepcopy(CAL)
     relaxed["praguri"]["vlm_p_yes"] = 1.01
     try:

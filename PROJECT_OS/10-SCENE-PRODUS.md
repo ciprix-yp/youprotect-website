@@ -173,9 +173,15 @@ Cifrele de mai jos vin din `scripts/scene/*.json`, `scripts/scene/README.md` și
   detector de fețe 39/70, piele pe imaginea întreagă 1/70.
 - **Timpi verificări (110 candidați, Mac 24 GB, toate etapele):** circa 300 s în total (fețe 11 s, OCR 93 s, SigLIP2 47 s, SAM 35 s, Qwen3-VL 61 s, cap 24 s, bocanc 21 s; plus încărcarea modelelor). Recompunerea celor 110: circa 160 s de scriere efectivă, fără modele.
 - **Formă de cap (T5c):** pe S476YE, domuri respinse 3/4 și un con gri bun păstrat (hala_depozit-s101); un candidat
-  (platforma_logistica-s109) nu era separat automat; veto-ul manual e legat de sha256-ul masterului vechi, iar la masterul recompus candidatul trece (gât estompat, fără cap rotund la inspecție vizuală; decizia rămâne a proprietarului). Croma nuanțată pe BZ739OR: acceptate 13/15 gri cu nuanță, 0/11 bej/carton/piele.
+  (platforma_logistica-s109) nu era separat automat; veto-ul manual e legat de sha256-ul masterului; din Fix-4 veto-ul e și fail-closed pe id (același id cu alt master = „veto învechit”, respins) și masterul recompus are propria cheie de veto (structural identic cu conurile bune, dom/gât estompat; decizia finală e a proprietarului). Fișele `cand_v3` deja scrise (care îl dădeau ca trecut) nu au fost modificate. Croma nuanțată pe BZ739OR: acceptate 13/15 gri cu nuanță, 0/11 bej/carton/piele.
+
+- **Contaminare albă în banda E (Fix-4):** măsurată pe cele 110 `raw_768.png` (benzi de 2 px la 2-32 px în afara L ∪ E, fracția aproape-albă față de decorul la 32-48 px): extindere 0 px la 110/110 la pragul „alb" (min(R,G,B) >= 235); `BAND_RING_PX` rămâne 3. Luminanța p90 a inelului 4-24 px depășește totuși referința la unii candidați (delta p90 maxim 66,8 la S476YE, 35,1 la BZ739OR): strălucire, nu alb curat; nu s-a putut separa de iluminarea decorului fără etichete. Verificarea `check_band_contamination` există, calibrată pe cei 110, dar nu e încă în T3a.
 
 Limite cunoscute:
+
+- Umplerea benzii suprascrie și pixelii din I aflați la <= 3 px de L ∪ E (marginea gâtului manechinului; de aici „gât estompat").
+- Candidații v3 au `raw_768.png` nelegat criptografic de generare (fișele T5a vechi nu aveau `sha256_raw`).
+- Un candidat S476YE fără masă SAM pică `head_shape` (fail-closed).
 
 - Verificarea OCR pe logo este slabă: citește fragmente; când nu citește nimic în original, rezultatul e „neconcludent" (informativ, nu OK).
   Identitatea pixelilor din L (inclusiv logo) este garantată de verificarea identitate = 0 pe L complet, nu de OCR.

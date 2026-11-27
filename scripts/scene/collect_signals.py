@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -69,10 +70,21 @@ def negative_items(scene: Path) -> list[dict]:
     return [{"id": f"packshot-{p}", "path": str(scene.parent / "images/portwest" / f"{p}.jpg"), "kind": "packshot", "product": p} for p in PRODUCTS]
 
 
+CAND_NAME_RE = re.compile(r"^[a-z0-9_]+$")
+
+
+def cand_name_arg(v: str) -> str:
+    """`--cand-name`: doar `[a-z0-9_]+` (un subdirector direct al lui --scene-dir; fără separatori, `..`, majuscule sau spații)."""
+    if not CAND_NAME_RE.fullmatch(v):
+        raise argparse.ArgumentTypeError(f"--cand-name invalid: {v!r} (permis doar ^[a-z0-9_]+$, fără separatori de cale)")
+    return v
+
+
 def candidate_items(scene: Path, require_fisa: bool = False, cand_name: str = "cand") -> list[dict]:
     """Candidații din <scene>/cand. Produsul din numele directorului trebuie să coincidă cu `fisa.json["produs"]` și cu `zone.json["product"]` al
     zonelor folosite (altfel `IntegrityError`, cu toate nepotrivirile); cu `require_fisa`, un director de candidat fără fisa.json e și el eroare."""
     items, errs = [], []
+    cand_name_arg(cand_name)  # aceeași validare și pentru apelurile din cod
     for d in sorted((scene / cand_name).iterdir()):
         if not (d.is_dir() and (d / "master.png").is_file()):
             continue
@@ -113,6 +125,7 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--dump-dir", type=Path, default=None, help="unde stage_sam scrie masca SAM și decupajul gâtului (artefacte locale)")
     ap.add_argument("--only-products", nargs="+", default=None)
+    ap.add_argument("--cand-name", type=cand_name_arg, default="cand", help="subdirectorul cu candidați din --scene-dir pentru --set candidates (cand, cand_v3, cand_v4)")
     a = ap.parse_args()
     mr.SAM_DUMP_DIR = a.dump_dir
     if a.out.exists():
@@ -122,7 +135,7 @@ def main() -> int:
     elif a.set == "negatives":
         items = negative_items(a.scene_dir)
     else:
-        items = candidate_items(a.scene_dir)
+        items = candidate_items(a.scene_dir, cand_name=a.cand_name)
         if a.only_products:
             items = [i for i in items if i["product"] in a.only_products]
     if a.limit:

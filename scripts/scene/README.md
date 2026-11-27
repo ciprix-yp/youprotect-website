@@ -141,9 +141,33 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
 - Croma nuanțată: pe lângă calea strictă (piele <= 0,05, C* p90 <= 20), segmentul trece dacă mediana C* <= 14 (`segment.c_p50_max`). Pe BZ739OR segmentul gri cu nuanță caldă are mediana 3–16,
   bejul/cartonul/pielea >= 17 (setul etichetat vizual în `calibrare_t5c.json`).
 - `calibrare_t5c.json` = praguri noi + etichete (doar id-uri), suprapuse cu `run_model_checks.py --calibrare-extra` (OBLIGATORIU); fișa nouă e `fisa_finala_v3.json` (fișele finale mai vechi rămân neatinse).
-  Overlay-ul acceptă doar `segment.c_p50_max`, `head`, `veto_manual`, iar valorile sunt plafonate (`OVERLAY_RANGES`, ~1,5x valoarea calibrată în `calibrare_t5c.json`): `segment.c_p50_max` [0, 20], `head.sag_ratio_min` [0, 0,225], `head.free_run_min` [0, 0,45], `head.width_min` [0, 90], `head.vlm_p_yes` (0, 1]; `head` mai acceptă doar `vlm_products` (listă de șiruri); calibrarea îmbinată se revalidează, iar `validate_calibration` RECALCULEAZĂ `flagged` al fiecărui control din valorile salvate.
-  `veto_manual` e legat de IMAGINE: cheia = sha256 al `master.png`, cu `motiv` și `autor` (id-ul e doar informativ).
+  Overlay-ul acceptă doar `segment.c_p50_max`, `head`, `veto_manual` și TREBUIE să conțină `segment.c_p50_max` și `head` complet (`sag_ratio_min`, `free_run_min`, `width_min`, `vlm_p_yes`, `vlm_products`):
+  `{"praguri": {}}` e respins. Fix-4: ZERO relaxare peste valorile calibrate (`OVERLAY_RANGES`): `segment.c_p50_max` [0, 14], `head.sag_ratio_min` [0, 0,15], `head.free_run_min` [0, 0,3],
+  `head.width_min` [0, 60], `head.vlm_p_yes` (0, 0,9]; strângerile (valori mai mici) sunt permise. `head.vlm_products` trebuie să includă `S476YE` (poate adăuga produse, nu le poate scoate).
+  O relaxare reală se face printr-o calibrare nouă comisă, nu printr-un overlay. Calibrarea îmbinată se revalidează, iar `validate_calibration` RECALCULEAZĂ `flagged` al fiecărui control din valorile salvate.
+  `veto_manual` e legat de IMAGINE: cheia = sha256 al `master.png`, cu `motiv` și `autor`. Fail-closed pe veto învechit (Fix-4): dacă id-ul candidatului coincide cu un `id_informativ` din veto, dar sha256-ul
+  masterului nu e nicio cheie din veto (master recompus/regenerat), candidatul e RESPINS („veto învechit: master recompus, cere revizuire de către proprietar”) până când proprietarul decide.
+  `calibrare_t5c.json` are acum două chei pentru platforma_logistica-s109: masterul T5a și masterul recompus din `cand_v3` (autor „agent Fix-4, în așteptarea deciziei proprietarului”); decizia finală e a proprietarului.
 - `boots_two_info` (doar FD25BK): semnal INFORMATIV (VLM „two boots”), nu respinge. Etapele noi: `qwen_head` (după `sam`; decupajele sunt scrise de `sam` în `<report-dir>/sam_dump`) și `qwen_boots`.
+
+## Contaminare albă în banda E (Fix-4)
+
+- `checks_lib.check_band_contamination` (Pillow + numpy; `disc_dilate` = dilatare disc rapidă, identică cu `zones_lib.dilate`): luminanța p90 și fracția aproape-albă (min(R,G,B) >= 235) pe inelul 4-24 px
+  în afara lui L ∪ E (fără I), față de decorul de referință 32-48 px; respinge peste `CONTAM_P90_DELTA` (80) sau `CONTAM_WHITE_DELTA` (0,15), calibrate pe `measure_contamination.py` (110 `raw_768.png` din `cand_v3`;
+  rezultate în `.catalog-work/scene/raport_v4/contaminare.json`, local, nu în git). Verificarea NU e încă în `pilot_lib.run_checks` (fișele v3 existente nu o au; adăugarea cere calibrare nouă + regenerarea fișelor).
+- Măsurătoarea pe cei 110: fracția aproape-albă pe benzi de 2 px la 2-32 px nu depășește referința cu >= 0,10 în nicio bandă (extindere 0 px la 110/110), deci albul packshot-ului nu intră în decor la pragul min(R,G,B) >= 235;
+  `BAND_RING_PX` rămâne 3 și „B în E = decor". Rămâne totuși o strălucire (luminanță p90 peste referință) la unii candidați, mai ales BZ739OR; vezi PROJECT_OS/10-SCENE-PRODUS.md.
+- Umplerea benzii suprascrie și pixelii din I aflați la <= 3 px de L ∪ E (marginea gâtului manechinului; de aici „gât estompat" la unii candidați).
+- Candidații v3 au `raw_768.png` nelegat criptografic de generare: fișele T5a vechi nu aveau `sha256_raw`, deci hash-ul din fișa recompusă e calculat pe fișierul găsit pe disc la recompunere.
+- Un candidat S476YE fără masă SAM (`head_geometry` None) pică `head_shape` (fail-closed).
+
+## Registre implicite și `--cand-name`
+
+- Implicitele diferă între scripturi: `run_model_checks.py` = `<scene-dir>/registru.jsonl`; `make_planse.py` = `<cand-dir>/../../registru.jsonl` (adică tot `<scene-dir>/registru.jsonl` pentru `<scene>/<cand>/<nume>`);
+  `recompose_candidates.py` = `<out-base>/registru.jsonl`. Pe fluxul recompus (`cand_v3`, `cand_v4`) se dă ÎNTOTDEAUNA `--registry <scene>/cand_vN/registru.jsonl` la `run_model_checks.py` și `make_planse.py`
+  (implicitul ar pica pe integritate, fail-closed: fișa nu e în acel registru).
+- `--cand-name` (în `run_model_checks.py` și `collect_signals.py --set candidates`) acceptă doar `^[a-z0-9_]+$`; separatori de cale, `..`, majuscule și gol sunt refuzați de argparse.
+- `HF_HUB_OFFLINE` și `TRANSFORMERS_OFFLINE` se setează FORȚAT la `"1"` (nu `setdefault`) în toate scripturile cu modele; testul AST din `tests/py/scene_integrity_check.py` cere atribuirea directă.
 
 ## Integritate (Fix-1a)
 

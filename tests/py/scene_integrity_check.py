@@ -269,15 +269,21 @@ def main():  # noqa: C901
     show("POS", "toate apelurile from_pretrained din generate_candidates/klein_probe/models_runtime/sam_load au trust_remote_code=False")
 
     def has_offline(src: str) -> bool:
+        """Cerut: `os.environ["HF_HUB_OFFLINE"] = "1"` și la fel TRANSFORMERS_OFFLINE, la nivel de modul (FORȚAT; setdefault nu mai e acceptat)."""
         t = ast.parse(src)
-        got = {n.value.args[0].value for n in t.body if isinstance(n, ast.Expr) and isinstance(n.value, ast.Call) and getattr(n.value.func, "attr", "") == "setdefault"
-               and n.value.args and isinstance(n.value.args[0], ast.Constant)}
+        got = {n.targets[0].slice.value for n in t.body if isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Subscript)
+               and isinstance(n.targets[0].value, ast.Attribute) and n.targets[0].value.attr == "environ" and isinstance(n.targets[0].slice, ast.Constant)
+               and isinstance(n.value, ast.Constant) and n.value.value == "1"}
         return {"HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE"} <= got
     assert not has_offline("import os\nimport torch\n")
     show("NEG", "scanare AST: script cu modele fără HF_HUB_OFFLINE/TRANSFORMERS_OFFLINE setate e prins")
+    assert not has_offline('import os\nos.environ.setdefault("HF_HUB_OFFLINE", "1")\nos.environ.setdefault("TRANSFORMERS_OFFLINE", "1")\n')
+    show("NEG", "scanare AST: os.environ.setdefault (un mediu cu HF_HUB_OFFLINE=0 ar rămâne online) nu mai e acceptat")
+    assert not has_offline('import os\nos.environ["HF_HUB_OFFLINE"] = "0"\nos.environ["TRANSFORMERS_OFFLINE"] = "1"\n')
+    show("NEG", "scanare AST: HF_HUB_OFFLINE setat pe altceva decât \"1\" e prins")
     for f in ("generate_candidates.py", "klein_probe.py", "models_runtime.py", "sam_load.py", "birefnet_load.py"):
         assert has_offline((SC / f).read_text(encoding="utf-8")), f
-    show("POS", "scripturile cu modele setează HF_HUB_OFFLINE și TRANSFORMERS_OFFLINE (setdefault, la nivel de modul)")
+    show("POS", "scripturile cu modele setează FORȚAT HF_HUB_OFFLINE și TRANSFORMERS_OFFLINE = \"1\" (os.environ[...] =, la nivel de modul)")
     for f, call in (("generate_candidates.py", "model_info(models_dir)"), ("klein_probe.py", "mr.verify_model(models_dir, model_id)")):
         s = (SC / f).read_text(encoding="utf-8")
         assert 0 < s.index(call) < s.index(".from_pretrained("), f

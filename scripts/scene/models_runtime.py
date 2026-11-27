@@ -17,8 +17,8 @@ from __future__ import annotations
 
 import os
 
-os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub, oricare ar fi apelul (înainte de transformers/torch)
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ["HF_HUB_OFFLINE"] = "1"  # FORȚAT (nu setdefault): nicio cerere către Hub, oricare ar fi apelul (înainte de transformers/torch)
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 import gc  # noqa: E402
 import importlib.util  # noqa: E402

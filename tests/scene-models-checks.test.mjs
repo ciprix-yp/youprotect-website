@@ -33,6 +33,10 @@ test('scene verificări cu modele: logică pură, pozitiv și negativ (fără mo
   assert.equal(r.status, 0, `${r.stdout}\n${r.stderr}`);
   assert.match(r.stdout, /^ok$/m);
   for (const needle of [
+    'NEG model_checks: același id ca în veto, alt sha256',
+    'POS model_checks: id fără veto trece',
+    'NEG --cand-name cu separatori',
+    'POS --cand-name cand_v4 trece',
     'NEG segment cu ton de piele (224, 172, 105)',
     'NEG segment cromatic portocaliu',
     'POS segment gri acceptat',

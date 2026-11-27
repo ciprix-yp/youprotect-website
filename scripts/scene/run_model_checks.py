@@ -47,7 +47,7 @@ def model_checks(item: dict, st: dict, thr: dict, ctx: mr.Ctx) -> list[dict]:
                        "vlm_required": vlm_head and bool(thr.get("vlm_required"))}
     out = cm.decide_non_human(sig, thr, lset, segment_applicable=applicable)
     if "veto_manual" in thr:  # veto legat de IMAGINE (sha256 al masterului de pe disc), nu de id
-        out.append(cm.check_veto(hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest(), thr["veto_manual"]))
+        out.append(cm.check_veto(hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest(), thr["veto_manual"], item["id"]))
     if item["product"] == "FD25BK":
         out.append(cm.check_boots_info(st.get("qwen_boots")))
     o = thr["ocr"]
@@ -65,9 +65,9 @@ def main() -> int:  # noqa: C901
     ap.add_argument("--report-dir", required=True, type=Path)
     ap.add_argument("--calibrare-extra", required=True, type=Path, help="overlay T5c OBLIGATORIU (segment.c_p50_max, head, veto_manual); calea intră în etapa și în hash-ul de cod al fișei")
     ap.add_argument("--fisa-name", default=FISA_FINALA, help="numele fișei finale (nu se suprascrie niciodată)")
-    ap.add_argument("--registry", type=Path, default=None)
+    ap.add_argument("--registry", type=Path, default=None, help="implicit: <scene-dir>/registru.jsonl; pe fluxul recompus (cand_v3/cand_v4) dați explicit <scene>/cand_vN/registru.jsonl")
     ap.add_argument("--stages", nargs="+", default=["faces", "ocr", "siglip", "sam", "qwen", "qwen_head", "qwen_boots"], choices=list(mr.STAGES))
-    ap.add_argument("--cand-name", default="cand", help="subdirectorul cu candidați din --scene-dir (implicit cand; cand_v3 pentru candidații recompuși)")
+    ap.add_argument("--cand-name", type=cs.cand_name_arg, default="cand", help="subdirectorul cu candidați din --scene-dir (implicit cand; cand_v3 pentru candidații recompuși)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--legacy", action="store_true", help="acceptă fișe T5a fără sha256_master, MARCATE (legacy_fara_sha_master) și cu rezultat global fals")
     a = ap.parse_args()
