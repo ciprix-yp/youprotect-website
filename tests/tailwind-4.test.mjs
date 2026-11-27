@@ -309,6 +309,9 @@ const STRONG = /^(?:[a-z0-9]+:)*!?-?(?:bg|text|px|py|pt|pb|pl|pr|mt|mb|ml|mr|mx|
 
 const bareUtility = (token) => token.replace(/^(?:[^\s:[]+:|\[[^\]]*\]:)*/, '').replace(/^!/, '').replace(/!$/, '');
 
+/** `!` la începutul utilitarului, cu sau fără variante în față (`!mt-0`, `md:!p-0`); sufixul `mt-0!` din v4 nu intră. */
+export const leadingBang = (token) => token.replace(/^(?:[^\s:[]+:|\[[^\]]*\]:)*/, '').startsWith('!');
+
 /** Clasele din v3 eliminate dintr-un șir de clase: [{ token, motiv }]. */
 export function removedClasses(classString) {
   const found = [];
@@ -349,6 +352,7 @@ test('clase v3 (detector): prinde clasele eliminate și nu se sperie de cele val
     'outline-none', 'rounded', 'shadow', 'blur', 'md:rounded', 'hover:shadow-sm', 'flex-shrink-0', 'flex-grow', 'bg-gradient-to-t',
     'bg-opacity-50', 'bg-[--x]', 'order-none', 'overflow-ellipsis', 'outline', 'ring', 'focus:outline-none',
   ]);
+  assert.deepEqual(['!mt-0', 'md:!p-0', 'hover:!mt-2', 'mt-0!', 'md:mt-0!', 'p-4'].filter(leadingBang), ['!mt-0', 'md:!p-0', 'hover:!mt-2']);
   const good = 'outline-hidden outline-solid outline-2 rounded-sm rounded-md rounded-xs shadow-card shadow-lg shrink-0 grow bg-linear-to-t/srgb bg-white/50 bg-(--x) order-0 text-ellipsis ring-2 focus-visible:outline-solid lg:order-0';
   assert.deepEqual(removedClasses(good), []);
 });
@@ -363,7 +367,7 @@ test('clase v3: niciuna dintre clasele eliminate sau redenumite nu mai apare în
       for (const { token, motiv } of removedClasses(s)) problems.push(`${rel}: "${token}": ${motiv}`);
       for (const token of s.split(/\s+/)) {
         if (bareUtility(token) === 'rounded-sm') roundedSmSeen.add(rel);
-        if (token.startsWith('!') && !(LEADING_BANG_FILES.get(rel) ?? []).includes(token)) problems.push(`${rel}: "${token}": `+ '`!` la început (v4: `mt-0!`)');
+        if (leadingBang(token) && !(LEADING_BANG_FILES.get(rel) ?? []).includes(token)) problems.push(`${rel}: "${token}": `+ '`!` la început (v4: `mt-0!`)');
       }
     }
     // @apply în CSS/<style>: aceleași reguli
