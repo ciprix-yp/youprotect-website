@@ -91,3 +91,18 @@ Trei module deterministe, doar Pillow + numpy + stdlib (rulează fără modele A
 `klein_probe.py` (funcții pure în `klein_lib.py`, testate fără modele) rulează `Flux2KleinInpaintPipeline` pe MPS: codează promptul cu text encoder-ul,
 îl eliberează, apoi încarcă transformerul; scrie `input.png`, `mask_used.png`, `raw_seed<N>.png` și `report.json` într-un director nou `<out-root>/<UTC>/`.
 Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, dacă a fost adăugată) și în raportul task-ului.
+
+## Contexte, calibrare și candidați (T5a)
+
+- `contexte.json`: produsele pilot cu standardele din `catalog/texts/portwest/*.json`, regulile pe atribute (clasa 2 de vizibilitate interzice
+  `drum_rapid`/`cale_ferata`/`noapte`; EN ISO 11611 clasa 1 interzice `sudura_activa`; S7L permite noroi și apă), formularea fixă a manechinului
+  (FD25BK = natură moartă, fără manechin), lista cuvintelor interzise și contextele cu etichete și variante. Contextele cu etichete interzise
+  rămân în fișier doar ca să fie respinse explicit de `prompting.build_prompt`.
+- `prompting.py` (stdlib): `build_prompt(produs, context, variant)`, `allowed_contexts`, `validate_contexte`; CLI `--product P --context C [--variant N]`.
+  Erori (`PromptError`): context inexistent/nedeclarat, etichetă interzisă, cuvânt interzis în decor/variantă. Teste: `tests/scene-prompting.test.mjs`.
+- `calibrate_real.py` + `calibrare.json` (comis): compuneri pe produse reale pe 5 fundaluri ne-AI, defecte artificiale, praguri alese, calibrarea
+  exportului JPEG (q90, q85) pe packshot-ul singur. `pilot_lib.py`: încărcare, așezare, foreground pymatting, fundaluri.
+- `generate_candidates.py`: un lot per produs (`--context` unul sau mai multe, `--n` per context). Candidat = director nou
+  `<PRODUS>-<context>-s<seed>` cu `master.png`, `raw_768.png`, `fisa.json`; linie în `registru.jsonl`. Generare la 768, fundal LANCZOS la 1100
+  (produsul rămâne pixel-exact la scale 1.0; fundalul e mai puțin clar decât produsul). Fișa are `etapa: "T5a-fara-verificari-model"` și o verificare
+  `verificari_model` cu passed=false: `rezultat_global` rămâne false până la T5b (OCR, fețe, ne-uman).
