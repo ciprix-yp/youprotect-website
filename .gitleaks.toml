@@ -1,0 +1,11 @@
+# Extinde regulile implicite gitleaks (nu le înlocuiește).
+title = "You Protect gitleaks"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "portwest-mediahub-collection-link"
+description = "Link de colecție Portwest Media Hub: nu intră în repo public (se dă prin variabile de mediu, `secret run`)"
+regex = '''mediahub\.portwest\.com/web/[0-9a-f]{8,32}/'''
+keywords = ["mediahub.portwest.com"]

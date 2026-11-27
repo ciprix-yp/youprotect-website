@@ -276,8 +276,11 @@ with tempfile.TemporaryDirectory() as tmp:
 
 # --- Portwest Media Hub (poza pe model, offline) ---------------------------------------------------------------------
 HUB = "https://mediahub.portwest.com"
-PAGE = f"{HUB}/web/c98f9ae4545b878/eu_row-mood-images/"
-COLL, ASSET = "90EAF721-7B52-4DFD-848B1AAC0E5EB2E5", "23AB3D37-5428-422F-83515CA34F0E814C"
+# Valori sintetice. Linkul real al colecției nu intră în repo public (regula din .gitleaks.toml);
+# segmentul hex se compune la rulare, ca sursa să nu semene cu un link de colecție.
+FAKE_HEX = "0123" * 4
+PAGE = f"{HUB}/web/{FAKE_HEX}/test-collection/"
+COLL, ASSET = "00000000-0000-0000-0000000000000000", "11111111-1111-1111-1111111111111111"
 ITEM_OK = "675F00D3-1276-4DB4-88D9F12C60B9D026"
 ITEM_SMALL = "C672BF9C-F36E-46EF-B32C455248FA5171"
 ITEM_ORIG = "2E9B4943-4750-4E5B-8E91076B0D79D417"
@@ -303,7 +306,7 @@ post = [c for c in opener.calls if c[1] == "POST"]
 check(post and "X-csrf-token" in post[0][2], "POST-ul trebuie să poarte tokenul CSRF")
 expect("sourceId invalid", FetchError, lambda: hub.derivative_id("../x"))
 expect("colecție lipsă", ValueError, lambda: portwest.MediaHub(None, None))
-expect("pagină pe alt host", ValueError, lambda: portwest.MediaHub("https://evil.example/web/c98f9ae4545b878/x/", COLL))
+expect("pagină pe alt host", ValueError, lambda: portwest.MediaHub(f"https://evil.example/web/{FAKE_HEX}/x/", COLL))
 side = Image.new("RGB", (100, 100), (255, 255, 255))
 side.paste(Image.new("RGB", (60, 100), (90, 90, 90)), (20, 0))
 check(portwest.strip_letterbox(side).size == (60, 100), "barele albe laterale trebuiau tăiate")
