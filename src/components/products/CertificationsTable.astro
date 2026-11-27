@@ -1,38 +1,68 @@
 ---
 // Tabelul „Certificările fiecărui model”, pe paginile de categorie și de marcă. Datele vin din fișele de produs.
+// Pliat (<details>/<summary> nativ, fără JS; tabelul rămâne în HTML-ul static), pe 2 coloane pe toate lățimile:
+// model + certificări. Marca nu mai e coloană: pe paginile de marcă (`hideBrand`) lipsește, iar pe cele de categorie
+// apare ca rând mic sub numele modelului doar când numele nu o conține (D-2026-11-27-03).
+// Fără derulare laterală: tabel cu `table-fixed`, fiecare cod e un bloc care se rupe doar dacă nu încape pe un rând.
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   products: CollectionEntry<'products'>[];
   headingClass: string;
+  /** Pagina de marcă: nu se mai afișează marca deloc (toate modelele sunt ale ei). */
+  hideBrand?: boolean;
 }
 
-const { products, headingClass } = Astro.props;
+const { products, headingClass, hideBrand = false } = Astro.props;
+
+// Comparație insensibilă la majuscule, diacritice, spații și punctuație.
+const flat = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLocaleLowerCase('ro-RO').replace(/[^a-z0-9]/g, '');
+const showBrand = (e: CollectionEntry<'products'>) => !hideBrand && !flat(e.data.name).includes(flat(e.data.supplier.brand));
+
+// Fără numărul de modele: decizia owner-ului din 21.11.2026 (tests/site-promises.test.mjs) e ca nicio pagină să nu
+// spună câte modele are catalogul. La un singur model, forma de singular.
+const summaryLabel = products.length === 1 ? 'Vezi certificările modelului' : 'Vezi certificările modelelor';
 ---
 
 <section class="mt-14" aria-labelledby="certificari">
   <h2 id="certificari" class={headingClass}>Certificările fiecărui model</h2>
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm text-left text-yp-white/80 border-collapse">
-      <thead>
-        <tr class="border-b border-yp-white/20 text-yp-white">
-          <th scope="col" class="py-3 pr-4 font-medium">Model</th>
-          <th scope="col" class="py-3 pr-4 font-medium">Marcă</th>
-          <th scope="col" class="py-3 font-medium">Certificări declarate de producător</th>
-        </tr>
-      </thead>
-      <tbody>
-        {products.map((e) => (
-          <tr class="border-b border-yp-white/10 align-top">
-            <th scope="row" class="py-3 pr-4 font-normal">
-              <a href={`/produse/${e.id}/`} class="text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{e.data.name}</a>
-            </th>
-            <td class="py-3 pr-4 whitespace-nowrap">{e.data.supplier.brand}</td>
-            <td class="py-3">{e.data.certifications.map((c) => c.code).join(' · ') || '—'}</td>
+  <details class="group border border-white/10 bg-[#0f0f0f]">
+    <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-6 text-lg font-medium text-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-yp-yellow [&::-webkit-details-marker]:hidden">
+      {summaryLabel}
+      <svg class="h-6 w-6 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+      </svg>
+    </summary>
+    <div class="mx-4 mb-4 md:mx-6 md:mb-6">
+      <table class="w-full table-fixed border-collapse text-left text-sm text-yp-white/80">
+        <thead>
+          <tr class="border-b border-yp-white/20 text-yp-white">
+            <th scope="col" class="w-1/2 py-3 pr-3 font-medium md:w-2/5">Model</th>
+            <th scope="col" class="py-3 font-medium">Certificări declarate de producător</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {products.map((e) => (
+            <tr class="border-b border-yp-white/10 align-top">
+              <th scope="row" class="min-w-0 py-1 pr-3 font-normal [overflow-wrap:anywhere]">
+                <a href={`/produse/${e.id}/`} class="inline-flex min-h-11 items-center text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{e.data.name}</a>
+                {showBrand(e) && <span class="block pb-2 text-xs text-yp-white/60">{e.data.supplier.brand}</span>}
+              </th>
+              <td class="min-w-0 py-3 [overflow-wrap:anywhere]">
+                {e.data.certifications.length === 0
+                  ? '—'
+                  : e.data.certifications.map((c, i) => (
+                      <>
+                        {i > 0 && ' · '}
+                        <span class="inline-block max-w-full">{c.code}</span>
+                      </>
+                    ))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
   <p class="mt-3 text-xs text-yp-white/50">Ce înseamnă fiecare marcaj găsești pe fișa produsului.</p>
 </section>
