@@ -3,6 +3,7 @@
 Fără remote code, fără rețea (`local_files_only`), după verificarea mărimii și sha256 din `models.lock.json`.
 Rulare: python -I sam_load.py --models-dir <dir> --image <poza> --out <mask.png> [--box x0 y0 x1 y1 | --point x y]
 """
+# ruff: noqa: E501
 from __future__ import annotations
 
 import argparse
@@ -11,7 +12,11 @@ import json
 import resource
 import sys
 import time
+import os
 from pathlib import Path
+
+os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub (torch/transformers se importă mai târziu)
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
 HERE = Path(__file__).resolve().parent
 MODEL_ID = "sam2.1-hiera-large"

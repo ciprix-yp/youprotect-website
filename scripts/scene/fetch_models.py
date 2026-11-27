@@ -11,6 +11,7 @@ Doar stdlib. Reguli de securitate (documentate în PROJECT_OS/10-SCENE-PRODUS.md
 
 Rulare: python -I fetch_models.py --models-dir <dir> --group matte [--verify-only]
 """
+# ruff: noqa: E501
 from __future__ import annotations
 
 import argparse
@@ -201,22 +202,29 @@ def fetch_file(models_dir: Path, model: dict, entry: dict, pin: bool) -> tuple[s
     """Returnează (stare, sha256_calculat dacă s-a pinuit). stare: `ok` (deja valid) | `descărcat`."""
     dest = resolve_dest(models_dir, model["id"], entry["path"])
     sha = entry.get("sha256")
-    if sha is None and not pin:
-        raise FetchError(f"{model['id']}/{entry['path']}: hash necunoscut; rulează cu --pin-new-hashes pentru prima descărcare")
     if dest.exists():
         if sha is None:
-            raise FetchError(f"{dest} există deja dar manifestul nu are hash; verifică manual")
+            raise FetchError(
+                f"{dest} este deja descărcat, dar manifestul nu are sha256 pentru {model['id']}/{entry['path']}: nu pot verifica fișierul. "
+                f"sha256 calculat acum: {sha256_file(dest)} (verifică-l din sursă și înscrie-l în manifest; fișierul nu a fost modificat)"
+            )
         reason = verify_file(dest, entry["size"], sha)
         if reason is None:
             return "ok", None
         raise FetchError(f"{dest} există dar nu se potrivește ({reason}); nu îl șterg, verifică manual")
+    if sha is None and not pin:
+        raise FetchError(f"{model['id']}/{entry['path']}: hash necunoscut; rulează cu --pin-new-hashes pentru prima descărcare")
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_name(dest.name + ".part")
+    if part.exists() or part.is_symlink():  # rămas dintr-o rulare anterioară: NU se șterge (nu e creat de acest run)
+        raise FetchError(f"{part} există din altă rulare (descărcare întreruptă sau în curs); nu îl șterg. Verifică-l și șterge-l tu dacă nu e în uz")
     try:
         download_to_part(file_url(model, entry), part, entry["size"])
+    except FileExistsError as e:  # alt proces a creat .part între verificare și `xb`: nu e al nostru, nu se șterge
+        raise FetchError(f"{part} a apărut între timp (altă rulare); nu îl șterg") from e
     except BaseException:
         if part.exists():
-            part.unlink()  # doar fișierul creat de acest run
+            part.unlink()  # doar fișierul creat de acest run (`xb` a reușit, deci l-am creat noi)
         raise
     got_size = part.stat().st_size
     digest = sha256_file(part)

@@ -15,15 +15,20 @@ Item = {"id", "path", "kind": "control"|"candidat"|"packshot", "product"?, "zone
 # ruff: noqa: E501
 from __future__ import annotations
 
-import gc
-import importlib.util
-import sys
-import time
-from pathlib import Path
-from typing import Any, Callable
+import os
 
-import numpy as np
-from PIL import Image
+os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub, oricare ar fi apelul (înainte de transformers/torch)
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
+import gc  # noqa: E402
+import importlib.util  # noqa: E402
+import sys  # noqa: E402
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable  # noqa: E402
+
+import numpy as np  # noqa: E402
+from PIL import Image  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))  # -I nu pune directorul scriptului pe sys.path
@@ -67,22 +72,38 @@ def _fm():
     return mod
 
 
-def model_dir_verified(models_dir: Path, model_id: str) -> tuple[Path, dict]:
-    """Verifică mărime + sha256 din manifest; întoarce (director, {id, revizie, sha256 = hash peste hash-urile fișierelor})."""
+def verify_model(models_dir: Path, model_id: str, weights_path: str | None = None) -> tuple[Path, dict, Path]:
+    """Verifică mărimea + sha256 REALE (calculate acum pe disc) ale tuturor fișierelor modelului din manifest. Întoarce (director model, info, primul fișier);
+    `info.sha256` = hash peste hash-urile VERIFICATE ale fișierelor, sau, cu `weights_path`, sha256-ul VERIFICAT al acelui fișier (ex. transformerul).
+    Nu se copiază nimic din manifest în fișă fără verificare."""
     import hashlib
     fm = _fm()
     man = fm.load_manifest(fm.DEFAULT_MANIFEST)
-    m = next(x for x in man["models"] if x["id"] == model_id)
+    m = next((x for x in man["models"] if x["id"] == model_id), None)
+    if m is None:
+        raise SystemExit(f"model necunoscut în manifest: {model_id!r}")
     h = hashlib.sha256()
-    first = None
+    first, weights = None, None
     for e in m["files"]:
         dest = fm.resolve_dest(models_dir, model_id, e["path"])
-        reason = fm.verify_file(dest, e["size"], e["sha256"])
-        if reason:
-            raise SystemExit(f"{model_id}/{e['path']} invalid: {reason}")
-        h.update(e["path"].encode() + b"\0" + e["sha256"].encode() + b"\0")
+        if not dest.is_file() or dest.stat().st_size != e["size"]:
+            raise SystemExit(f"{model_id}/{e['path']} invalid: lipsește sau mărime ≠ {e['size']}")
+        real = fm.sha256_file(dest)  # hash recalculat acum, apoi comparat
+        if real != e["sha256"]:
+            raise SystemExit(f"{model_id}/{e['path']} invalid: sha256 {real} != {e['sha256']}")
+        h.update(e["path"].encode() + b"\0" + real.encode() + b"\0")
         first = first or dest
-    return first.parent, {"id": model_id, "revizie": m["revision"], "sha256": h.hexdigest()}
+        if e["path"] == weights_path:
+            weights = real
+    if weights_path is not None and weights is None:
+        raise SystemExit(f"{model_id}: fișierul de greutăți {weights_path!r} nu e în manifest")
+    return models_dir / model_id, {"id": model_id, "revizie": m["revision"], "sha256": weights if weights_path else h.hexdigest()}, first
+
+
+def model_dir_verified(models_dir: Path, model_id: str) -> tuple[Path, dict]:
+    """Verifică mărime + sha256 din manifest; întoarce (director, {id, revizie, sha256 = hash peste hash-urile fișierelor})."""
+    _root, info, first = verify_model(models_dir, model_id)
+    return first.parent, info
 
 
 def load_rgb(path: str | Path) -> np.ndarray:

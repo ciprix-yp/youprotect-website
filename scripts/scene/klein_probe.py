@@ -8,12 +8,14 @@ Rulare (vezi scripts/scene/README.md):
   python -I klein_probe.py --models-dir <dir> --model-id flux2-klein-4b --source <jpg> --zone-dir <zones> --out-root <dir> \
       --resolution 768 --dtype bf16 --steps 4 --seeds 1 2
 """
+# ruff: noqa: E501
 from __future__ import annotations
 
 import argparse
 import datetime as dt
 import gc
 import json
+import os
 import resource
 import subprocess
 import sys
@@ -23,10 +25,14 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub (torch/transformers/diffusers se importă în main)
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # -I nu pune directorul scriptului pe sys.path
 import compose_lib as cl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
 import klein_lib as kl  # noqa: E402
-import zones_lib as zl  # noqa: E402
+import models_runtime as mr  # noqa: E402
 
 CANVAS = (1100, 1100)
 DEFAULT_PROMPT = (
@@ -75,10 +81,8 @@ def build_input(source: Path, zone_dir: Path, res: tuple[int, int]) -> tuple[Ima
         src = np.asarray(im.convert("RGB"), dtype=np.uint8).copy()
     if src.shape[:2] != (CANVAS[1], CANVAS[0]):
         raise ValueError(f"sursa trebuie să fie {CANVAS[0]}x{CANVAS[1]}, găsit {src.shape[1]}x{src.shape[0]}")
-    alpha = zl.load_gray_png(zone_dir / "alpha.png")
-    L, E, I = (zl.load_mask_png(zone_dir / f"{n}.png") for n in ("L", "E", "I"))  # noqa: E741
-    crit = {p.stem: zl.load_mask_png(p) for p in sorted((zone_dir / "critical").glob("*.png"))}
-    placed = cl.place_product(src, alpha, L, E, I, crit, CANVAS, 1.0, 0, 0)
+    z = ilib.load_zone_checked(zone_dir)  # doar prin numele din zone.json, cu sha256 verificat
+    placed = cl.place_product(src, z["alpha"], z["L"], z["E"], z["I"], z["critical"], CANVAS, 1.0, 0, 0)
     mask = cl.inpaint_mask(placed["L"], placed["E"])
     image = Image.fromarray(placed["ref"], "RGB").resize(res, Image.LANCZOS)
     m = Image.fromarray(mask, "L").resize(res, Image.NEAREST)
@@ -106,7 +110,11 @@ def main() -> int:  # noqa: C901
     a = ap.parse_args()
 
     models_dir = kl.require_dir(a.models_dir, "models-dir")
-    model_dir = kl.require_dir(models_dir / a.model_id, "model")
+    model_id = mr._fm().validate_rel_path(a.model_id)  # noqa: SLF001  # fără '..', cale absolută sau caractere ciudate
+    if "/" in model_id:
+        raise SystemExit(f"--model-id trebuie să fie un id simplu din manifest, nu o cale: {a.model_id!r}")
+    model_dir = kl.require_dir(models_dir / model_id, "model")
+    mr.verify_model(models_dir, model_id)  # mărime + sha256 reale ale fișierelor modelului, înainte de ORICE from_pretrained
     source = kl.require_file(a.source, "source", (".jpg", ".jpeg", ".png"))
     zone_dir = kl.require_dir(a.zone_dir, "zone-dir")
     res = kl.fit_resolution(CANVAS, a.resolution)
@@ -136,9 +144,9 @@ def main() -> int:  # noqa: C901
 
     # 1) codare prompt, apoi eliberare text encoder
     t0 = time.perf_counter()
-    tok = transformers.AutoTokenizer.from_pretrained(model_dir / "tokenizer", local_files_only=True)
+    tok = transformers.AutoTokenizer.from_pretrained(model_dir / "tokenizer", local_files_only=True, trust_remote_code=False)
     te = transformers.Qwen3ForCausalLM.from_pretrained(
-        model_dir / "text_encoder", dtype=dtype, local_files_only=True, use_safetensors=True
+        model_dir / "text_encoder", dtype=dtype, local_files_only=True, use_safetensors=True, trust_remote_code=False
     )
     te.to(dev)
     torch.mps.synchronize()
@@ -160,7 +168,7 @@ def main() -> int:  # noqa: C901
     # 2) pipeline fără text encoder
     t0 = time.perf_counter()
     pipe = Flux2KleinInpaintPipeline.from_pretrained(
-        model_dir, text_encoder=None, tokenizer=None, torch_dtype=dtype, local_files_only=True, use_safetensors=True
+        model_dir, text_encoder=None, tokenizer=None, torch_dtype=dtype, local_files_only=True, use_safetensors=True, trust_remote_code=False
     )
     pipe.to(dev)
     if a.vae_fp32:

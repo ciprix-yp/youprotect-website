@@ -21,8 +21,10 @@ Reguli:
   - bocanc S7L: noroi sau apă sunt în regulă.
 - **(f) Fără cheltuieli, fără GPU închiriat.**
 - **(g) Trasabilitate.** `scripts/scene/contexte.json` este singura sursă de contexte (și de fraza manechinului);
-  fișa finală a pilotului este `fisa_finala_v2b.json`, lângă `fisa.json` a fiecărui candidat; `registru.jsonl`
-  este append-only, cu lanț de hash-uri (`prev_sha256`), verificabil cu `verify_registry`. Niciunul dintre aceste
+  fișa finală a pilotului este `fisa_finala_v3.json` (aceeași în `run_model_checks.py`, `make_planse.py` și README),
+  lângă `fisa.json` a fiecărui candidat, cu `sha256_master`/`sha256_raw` care leagă „acceptat” de imaginea de pe disc;
+  `registru.jsonl` este append-only, cu lanț de hash-uri (`prev_sha256`), verificabil cu `verify_registry`; planșa și
+  verificările cu modele re-hash-uiesc imaginea, sursa, zonele și fișa față de registru înainte de a le folosi. Niciunul dintre aceste
   artefacte generate nu intră în git (doar `contexte.json` și codul).
 
 ## 2. Pipeline

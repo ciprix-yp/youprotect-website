@@ -2,11 +2,12 @@
 
 Prompt-ul se construiește EXCLUSIV din `contexte.json`: un context e permis pentru un produs dacă produsul e în lista lui și
 niciuna din etichetele lui nu e interzisă de atributele produsului (vizibilitate clasa 2, EN ISO 11611 clasa 1, S7L).
-Prompt-ul final nu are voie să conțină cuvinte interzise (oameni, fețe etc., EN și RO); singura excepție e formularea fixă a
-manechinului (`manechin.fraza`), care se scoate din text înainte de scanare.
+Prompt-ul final nu are voie să conțină cuvinte interzise (oameni, fețe etc., EN și RO); fraza de manechin (generală sau `manechin_fraza` per produs) se scanează și ea; singura
+excepție e formularea fixă documentată „non-human” (ALLOWED_IN_LEAD), scoasă din fraza de manechin înainte de scanare.
 
 CLI: python3 -I prompting.py --product S476YE --context santier_constructii_zi [--variant 0] [--list]
 """
+# ruff: noqa: E501
 from __future__ import annotations
 
 import argparse
@@ -49,6 +50,18 @@ def forbidden_words_in(text: str, contexte: dict) -> list[str]:
         if t in banned and t not in found:
             found.append(t)
     return found
+
+
+ALLOWED_IN_LEAD = ("non-human",)  # singura formulare interzisă-prin-cuvânt permisă în fraza fixă a manechinului („abstract non-human … torso”)
+
+
+def lead_forbidden_words(lead: str, contexte: dict) -> list[str]:
+    """Cuvinte interzise din fraza de manechin (cea generală sau `manechin_fraza` per produs), după scoaterea formulării fixe documentate
+    (ALLOWED_IN_LEAD). Fraza nu mai scapă nescanată: orice alt cuvânt interzis (face, head, hair, skin ...) o respinge."""
+    t = lead
+    for ok in ALLOWED_IN_LEAD:
+        t = re.sub(re.escape(ok), " ", t, flags=re.IGNORECASE)
+    return forbidden_words_in(t, contexte)
 
 
 def forbidden_tags(product_id: str, contexte: dict) -> set[str]:
@@ -105,9 +118,12 @@ def build_prompt(product_id: str, context_id: str, variant: int = 0, contexte: d
     bad_lead = forbidden_words_in(cx["manechin"]["fraza_natura_moarta"], cx)
     if bad_lead:
         raise PromptError(f"cuvinte interzise în formularea de natură moartă: {', '.join(bad_lead)}")
+    bad_lead = lead_forbidden_words(lead, cx)  # fraza de manechin (și `manechin_fraza` per produs) se scanează, cu excepția formulării fixe documentate
+    if bad_lead:
+        raise PromptError(f"cuvinte interzise în fraza de manechin ({product_id}): {', '.join(bad_lead)}")
     prompt = f"{lead} {body}".strip()
     # verificare finală: după scoaterea formulării fixe a manechinului nu mai rămâne nimic interzis
-    rest = prompt.replace(lead, " ").replace(cx["manechin"]["fraza"], " ")
+    rest = prompt.replace(lead, " ")
     bad_all = forbidden_words_in(rest, cx)
     if bad_all:
         raise PromptError(f"prompt final cu cuvinte interzise: {', '.join(bad_all)}")

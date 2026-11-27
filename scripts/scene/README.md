@@ -115,7 +115,7 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
 - `models_runtime.py`: YuNet (1× și 2×), SigLIP2 zero-shot (6 formulări per set, perechi manechin/persoană), Qwen3-VL-4B (P(da) din logits, auxiliar), SAM 2.1 + segmentul manechinului
   `(I ∪ (SAM ∩ regiune)) \ (L ∪ E)`, RapidOCR (`use_cls=False`; logo la 3×, decor + I cu produsul mascat neutru). Un model odată în memorie.
 - `collect_signals.py` (semnale brute, JSON nou), `calibrate_models.py` (căutare pe grilă pe controale + ne-om -> `calibrare_modele.json`, comis), `run_model_checks.py`
-  (90 de candidați -> `fisa_finala.json` lângă `fisa.json`, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
+  (candidații -> `fisa_finala_v3.json` lângă `fisa.json`, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
 - Qwen3-VL-4B se descarcă cu `fetch_models.py --models-dir <m> --group vlm --model-id qwen3-vl-4b-instruct --pin-new-hashes`.
 
 ## Formă de cap și croma nuanțată (T5c)
@@ -126,6 +126,17 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
   Întrebarea din brief („has a head or a dome on top of the neck”) dă P(da) 0,78 și pe conul bun, deci nu separă; întrebarea folosită cere „rounded ball or dome that could be mistaken for a head”.
 - Croma nuanțată: pe lângă calea strictă (piele <= 0,05, C* p90 <= 20), segmentul trece dacă mediana C* <= 14 (`segment.c_p50_max`). Pe BZ739OR segmentul gri cu nuanță caldă are mediana 3–16,
   bejul/cartonul/pielea >= 17 (setul etichetat vizual în `calibrare_t5c.json`).
-- `calibrare_t5c.json` = praguri noi + etichete (doar id-uri), suprapuse cu `run_model_checks.py --calibrare-extra`; fișa nouă e `fisa_finala_v2.json` (v1 rămâne neatinsă).
-- `boots_two_info` (doar FD25BK): semnal INFORMATIV (VLM „two boots”), nu respinge. Etapele noi: `qwen_head` (după `sam`; decupajele sunt scrise de `sam` în `<report-dir>_dump`) și `qwen_boots`.
+- `calibrare_t5c.json` = praguri noi + etichete (doar id-uri), suprapuse cu `run_model_checks.py --calibrare-extra` (OBLIGATORIU); fișa nouă e `fisa_finala_v3.json` (fișele finale mai vechi rămân neatinse).
+  Overlay-ul acceptă doar `segment.c_p50_max`, `head`, `veto_manual`; calibrarea îmbinată se revalidează, iar `validate_calibration` RECALCULEAZĂ `flagged` al fiecărui control din valorile salvate.
+  `veto_manual` e legat de IMAGINE: cheia = sha256 al `master.png`, cu `motiv` și `autor` (id-ul e doar informativ).
+- `boots_two_info` (doar FD25BK): semnal INFORMATIV (VLM „two boots”), nu respinge. Etapele noi: `qwen_head` (după `sam`; decupajele sunt scrise de `sam` în `<report-dir>/sam_dump`) și `qwen_boots`.
+
+## Integritate (Fix-1a)
+
+- Fișa nouă (v3) are `sha256_master` și `sha256_raw`, calculate pe fișierele SALVATE și recitite (verificările T3a rulează pe master-ul recitit). `run_model_checks.py` și `make_planse.py` re-hash-uiesc
+  master/raw, sursa și zonele L/E/I și compară sha256 al fișei cu ultima linie a registrului (`integrity_lib.verify_candidate_binding`); orice nepotrivire oprește rularea.
+  Fișele T5a vechi (fără `sha256_master`) sunt refuzate; `--legacy` le acceptă marcat (`legacy_fara_sha_master`, rezultat global fals).
+- `run_model_checks.py` se oprește dacă o etapă necesară (faces, siglip, ocr, sam; qwen și qwen_head când calibrarea a inclus VLM) lipsește din `--stages` sau a eșuat. VLM lipsă = `ne_uman` PICAT.
+- `generate_candidates.py` refuză `--product` ≠ `zone.json["product"]` sau o sursă care nu e a produsului din `zone_specs.json`; `klein_probe.py` și `generate_candidates.py` verifică mărimea + sha256
+  ale fișierelor modelului înainte de `from_pretrained` (hash-ul din fișă = cel verificat), cu `trust_remote_code=False` și `HF_HUB_OFFLINE=1`. Zonele se încarcă doar prin numele din `zone.json` (cu sha256).
 - BZ739OR: `contexte.json` are `manechin_fraza` per produs (manechin gri neutru, material rece); `prompting.py` o preferă fraza globală.
