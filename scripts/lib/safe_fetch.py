@@ -296,8 +296,8 @@ def write_atomic(path, data):
     try:
         with os.fdopen(fd, "wb") as handle:
             handle.write(data)
-        # mkstemp creează 0600; fișierele din public/ trebuie să fie citibile de serverul de build/deploy.
-        os.chmod(tmp, 0o644)
+        # mkstemp creează 0600; 0640 (proprietar + grup), nu world-readable (CodeQL py/overly-permissive-file).
+        os.chmod(tmp, 0o640)
         os.replace(tmp, target)
     except BaseException:
         Path(tmp).unlink(missing_ok=True)
