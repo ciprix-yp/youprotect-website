@@ -31,7 +31,7 @@ function pages(dir = DIST) {
 const urlOf = (file) => file.slice(DIST.length).replace(/index\.html$/, '');
 const faqOf = (html) => {
   const out = [];
-  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script[^>]*>/g)) {
     let j;
     try { j = JSON.parse(m[1]); } catch { continue; }
     for (const o of j['@graph'] ?? [j]) if (o['@type'] === 'FAQPage') out.push(...o.mainEntity.map((q) => ({ q: q.name, a: q.acceptedAnswer.text })));

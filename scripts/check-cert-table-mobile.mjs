@@ -6,7 +6,7 @@
 // acolo `npx playwright install webkit`. Cod de ieșire 1 dacă vreo pagină depășește 390 px.
 import { createRequire } from 'node:module';
 import { createServer } from 'node:http';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,9 +27,12 @@ const server = createServer((rq, rs) => {
   let p = normalize(decodeURIComponent(new URL(rq.url, 'http://x').pathname)).replace(/^(\.\.[/\\])+/, '');
   let f = join(DIST, p);
   if (!f.startsWith(DIST)) { rs.writeHead(403).end(); return; }
-  if (existsSync(f) && statSync(f).isDirectory()) f = join(f, 'index.html');
-  if (!existsSync(f)) { rs.writeHead(404).end(); return; }
-  rs.writeHead(200, { 'content-type': TYPES[extname(f)] ?? 'application/octet-stream' }).end(readFileSync(f));
+  // Fără verificare-apoi-citire: se citește direct; EISDIR → index.html, ENOENT → 404.
+  const read = (path) => { try { return readFileSync(path); } catch (e) { if (e.code === 'ENOENT') return null; if (e.code === 'EISDIR') return read(join(path, 'index.html')); throw e; } };
+  const body = read(f);
+  if (body === null) { rs.writeHead(404).end(); return; }
+  const ext = extname(f); // fără extensie = director → index.html
+  rs.writeHead(200, { 'content-type': TYPES[ext] ?? (ext ? 'application/octet-stream' : TYPES['.html']) }).end(body);
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;

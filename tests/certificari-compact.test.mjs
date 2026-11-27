@@ -15,11 +15,12 @@ const HAS_DIST = existsSync(DIST) && statSync(DIST).isDirectory();
 const REQUIRE_DIST = process.env.POZE_REQUIRE_DIST === '1';
 const BRAND_PAGES = new Set(['/produse/mascot/', '/produse/portwest/', '/produse/sir-safety/']);
 
+const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+// O singură trecere: o entitate decodificată nu mai e decodificată a doua oară („&amp;lt;” rămâne „&lt;”).
 const decode = (s) =>
-  s
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  s.replace(/&(?:#x([0-9a-f]+)|#(\d+)|([a-z]+));/gi, (m, hex, dec, name) =>
+    hex ? String.fromCodePoint(parseInt(hex, 16)) : dec ? String.fromCodePoint(Number(dec)) : (ENTITIES[name.toLowerCase()] ?? m),
+  );
 const text = (h) => decode(h.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 // Oracol independent de componentă: forma scurtă a mărcii, scrisă de mână, așa cum apare în numele modelelor.
 const SHORT = { 'Sir Safety System': 'Sir Safety', 'MASCOT®': 'MASCOT', Portwest: 'Portwest', 'Base Protection': 'Base Protection', Climax: 'Climax' };

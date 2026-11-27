@@ -23,17 +23,17 @@ function pages(dir = DIST) {
 }
 
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+// O singură trecere: o entitate decodificată nu mai e decodificată a doua oară („&amp;lt;” rămâne „&lt;”).
 const decode = (s) =>
-  s
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
-    .replace(/&([a-z]+);/gi, (m, n) => ENTITIES[n.toLowerCase()] ?? m);
-const textOf = (html) => decode(html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+  s.replace(/&(?:#x([0-9a-f]+)|#(\d+)|([a-z]+));/gi, (m, hex, dec, name) =>
+    hex ? String.fromCodePoint(parseInt(hex, 16)) : dec ? String.fromCodePoint(Number(dec)) : (ENTITIES[name.toLowerCase()] ?? m),
+  );
+const textOf = (html) => decode(html.replace(/<script[\s\S]*?<\/script[^>]*>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
 
 function faqOf(html) {
   const out = [];
-  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script[^>]*>/g)) {
     let j;
     try { j = JSON.parse(m[1]); } catch { continue; }
     for (const o of j['@graph'] ?? [j]) {
