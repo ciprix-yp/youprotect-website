@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { cardColour, cardImage, cardSrc, packshotImage } from '../src/lib/catalog-images.js';
 import { productSchema } from '../src/lib/product-schema.ts';
 import { toCardProps } from '../src/lib/product-card.ts';
-import { CARD_HEIGHT, CARD_WIDTH, cropBox, parseFocus, planCard } from '../scripts/catalog/card-layout.mjs';
+import { CARD_HEIGHT, CARD_WIDTH, contentBox, cropBox, parseFocus, planCard } from '../scripts/catalog/card-layout.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PRODUCTS = join(ROOT, 'src/content/products');
@@ -51,8 +51,7 @@ const withPerson = () => ({
 });
 
 test('catalog: fără cardPhoto, cardColour/cardImage cad pe colours[0].images[0]', () => {
-  for (const { n, data } of products()) {
-    assert.equal(data.cardColour, undefined, `${n}: nu trebuie să existe cardColour înainte de T2`);
+  for (const { n, data } of products().filter(({ data }) => data.cardColour === undefined)) {
     assert.equal(cardColour(data), data.colours[0], n);
     assert.equal(cardImage(data).src, data.colours[0].images[0].src, n);
     assert.equal(cardImage(data).kind, 'packshot', n);
@@ -91,12 +90,36 @@ test('catalog: toCardProps dă poza cardului, tipul, alt-ul și packshot-ul pent
 
 // --- schema ----------------------------------------------------------------------------------------------------------
 
-test('schema: toate JSON-urile existente rămân valide, cu kind=packshot și cardColour=null implicit', () => {
+test('schema: toate JSON-urile rămân valide; fără cardPhoto: kind=packshot și cardColour=null; cu cardPhoto: prima poză a culorii e studio/scenă, cu alt', () => {
   for (const { n, data } of products()) {
     const parsed = productSchema.safeParse(data);
     assert.ok(parsed.success, `${n}: ${parsed.success ? '' : JSON.stringify(parsed.error.issues.slice(0, 2))}`);
-    assert.equal(parsed.data.cardColour, null, n);
-    assert.ok(parsed.data.colours.every((c) => c.images.every((i) => i.kind === 'packshot')), n);
+    if (data.cardColour === undefined) {
+      assert.equal(parsed.data.cardColour, null, n);
+      assert.ok(parsed.data.colours.every((c) => c.images.every((i) => i.kind === 'packshot')), n);
+    } else {
+      const first = cardImage(parsed.data);
+      assert.notEqual(first.kind, 'packshot', n);
+      assert.ok(first.alt && first.alt.length >= 20, `${n}: poza pe model are nevoie de alt`);
+    }
+  }
+});
+
+test('catalog: cele 6 produse Sir Safety cu om pe poză sunt recunoscute ca studio, pe poza lor existentă', () => {
+  const expected = {
+    'geaca-ploaie-sir-safety-suncity-mc4314': 'Q5',
+    'combinezon-antistatic-tip-5-6-sir-safety-chemstat-mc3443': 'P0',
+    'combinezon-protectie-biologica-tip-4b-sir-safety-virus-8700-mc3441': 'K1',
+    'combinezon-protectie-biologica-tip-5b-6b-sir-safety-virus-8500-mc3439': 'K1',
+    'combinezon-protectie-chimica-tip-3b-sir-safety-chemical-bio-mc3422': 'E0',
+    'combinezon-protectie-tip-5-6-sir-safety-chemtex-mc3442': 'K1',
+  };
+  for (const [slug, colour] of Object.entries(expected)) {
+    const data = JSON.parse(readFileSync(join(PRODUCTS, `${slug}.json`), 'utf8'));
+    const card = cardImage(data);
+    assert.equal(data.cardColour, colour, slug);
+    assert.equal(card.kind, 'studio', slug);
+    assert.equal(card.src, `/images/products/${slug}/${colour}-PS.webp`, `${slug}: poza existentă, neschimbată`);
   }
 });
 
@@ -178,4 +201,52 @@ test('card: packshot și studio încap întregi, centrate, cu margine de 12 % î
     }
   }
   assert.throws(() => planCard({ width: 0, height: 10 }));
+});
+
+// --- tăierea marginilor albe la studio -------------------------------------------------------------------------------
+
+/** Imagine RGB albă width×height cu un dreptunghi negru [x0,x1)×[y0,y1). */
+function whiteWith(width, height, [x0, y0, x1, y1], channels = 3, background = 255) {
+  const px = new Uint8Array(width * height * channels).fill(background);
+  for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) for (let c = 0; c < channels; c++) px[(y * width + x) * channels + c] = 0;
+  return px;
+}
+
+test('card: contentBox taie marginile aproape-albe, ignoră zgomotul și lasă imaginea întreagă fără conținut', () => {
+  const px = whiteWith(1100, 1100, [400, 50, 700, 1050]);
+  assert.deepEqual(contentBox(px, 1100, 1100, 3), { left: 400, top: 50, width: 300, height: 1000 });
+  // aproape-alb (252) intră în toleranță: nu lărgește caseta
+  px[(10 * 1100 + 10) * 3] = 252;
+  px[(10 * 1100 + 10) * 3 + 1] = 252;
+  px[(10 * 1100 + 10) * 3 + 2] = 252;
+  assert.deepEqual(contentBox(px, 1100, 1100, 3), { left: 400, top: 50, width: 300, height: 1000 });
+  // un singur pixel întunecat izolat e zgomot (praf), nu siluetă
+  px[(5 * 1100 + 5) * 3] = 0;
+  assert.deepEqual(contentBox(px, 1100, 1100, 3), { left: 400, top: 50, width: 300, height: 1000 });
+  assert.deepEqual(contentBox(whiteWith(20, 30, [0, 0, 0, 0]), 20, 30, 3), { left: 0, top: 0, width: 20, height: 30 });
+  // fundal gri (studio MASCOT): nu se taie nimic
+  assert.deepEqual(contentBox(whiteWith(40, 40, [0, 0, 0, 0], 3, 200), 40, 40, 3), { left: 0, top: 0, width: 40, height: 40 });
+  // RGBA: pixelii transparenți sunt fundal, oricare ar fi culoarea lor
+  const rgba = new Uint8Array(10 * 10 * 4);
+  for (let y = 2; y < 6; y++) for (let x = 3; x < 8; x++) rgba.set([10, 10, 10, 255], (y * 10 + x) * 4);
+  assert.deepEqual(contentBox(rgba, 10, 10, 4), { left: 3, top: 2, width: 5, height: 4 });
+  assert.throws(() => contentBox(new Uint8Array(5), 10, 10, 3), /pixeli invalizi/);
+});
+
+test('card: studio cu siluetă îngustă pe pătrat alb umple cutia după tăiere; packshot-ul rămâne netăiat', () => {
+  const content = { left: 400, top: 50, width: 300, height: 1000 };
+  const studio = planCard({ width: 1100, height: 1100, kind: 'studio', content });
+  assert.equal(studio.mode, 'contain');
+  assert.deepEqual(studio.extract, content);
+  assert.equal(studio.height, 606); // cutia 456×606: silueta ocupă toată înălțimea utilă
+  assert.equal(studio.width, 182);
+  assert.equal(studio.top, 72);
+  const withoutTrim = planCard({ width: 1100, height: 1100, kind: 'studio' });
+  // înălțimea siluetei pe card: 606 px după tăiere față de 456 × 1000/1100 ≈ 415 px fără tăiere
+  assert.ok(studio.height > ((withoutTrim.height * content.height) / 1100) * 1.4, 'tăierea mărește silueta pe card');
+  // packshot: `content` ignorat, geometria de dinainte
+  assert.deepEqual(planCard({ width: 1100, height: 1100, kind: 'packshot', content }), withoutTrim);
+  // fără mărire peste sursă: silueta mică de 100×200 rămâne 100×200
+  const small = planCard({ width: 1100, height: 1100, kind: 'studio', content: { left: 0, top: 0, width: 100, height: 200 } });
+  assert.deepEqual([small.width, small.height], [100, 200]);
 });
