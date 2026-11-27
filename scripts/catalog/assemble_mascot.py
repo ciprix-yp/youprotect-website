@@ -21,6 +21,7 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from card_photo import CardPhotoError, apply_card_photo  # noqa: E402
 from lint_texts import lint  # noqa: E402  (same folder; works with python -I)
 
 NBSP = " "
@@ -150,6 +151,8 @@ def sizes(source, text):
 
 
 # Same view names as fetch_images_mascot.py (gallery order: pack shot first, then around the product).
+# The person photo (cardPhoto, card_photo.py) is not in this list: it is looked up by its content id and put at
+# position 0 of its colour's images by apply_card_photo(), right before the pack shot.
 GALLERY_VIEWS = ["PS", "P01", "P04", "P07", "P13", "P19"]
 SPIN_VIEWS = [f"P{i:02d}" for i in range(1, 25)]
 PUBLIC_PREFIX = "/images/products"
@@ -280,6 +283,7 @@ def assemble(source, text, maps, network, public_dir, load=None):
     quality = source["qualities"][0] if source["qualities"] else ""
     model_quality = f"{source['model']}-{quality}" if quality else source["model"]
     colour_list, other_colours = colours(source, text, maps, network, public_dir)
+    card_colour = apply_card_photo(colour_list, text, public_dir)
 
     specs = []
     mat = material(fields, maps)
@@ -320,6 +324,7 @@ def assemble(source, text, maps, network, public_dir, load=None):
         "certifications": certs,
         "care": care,
         "colours": colour_list,
+        **({"cardColour": card_colour} if card_colour is not None else {}),
         "otherColoursCount": other_colours,
         "sizes": sizes(source, text),
         "variants": variants(text, maps, load),
@@ -372,7 +377,7 @@ def main(argv):
             def load(model):
                 return json.loads((source_dir / f"{model}.json").read_text(encoding="utf-8"))
             entry = assemble(json.loads(source_path.read_text(encoding="utf-8")), text, maps, network, public_dir, load)
-        except (MissingTranslation, FileNotFoundError) as exc:
+        except (MissingTranslation, CardPhotoError, FileNotFoundError) as exc:
             print(f"!! {text['model']}: {exc}", file=sys.stderr)
             failed = True
             continue
