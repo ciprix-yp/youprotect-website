@@ -84,3 +84,10 @@ Trei module deterministe, doar Pillow + numpy + stdlib (rulează fără modele A
   `write_fisa(cand_dir, fisa, registry_path, base_dir)` (atomic, refuză suprascrierea, cale doar sub `base_dir`, fără `..`),
   `registru.jsonl` append-only cu `prev_sha256` (lanț) și `verify_registry`. Alterarea ultimei linii nu rupe lanțul; se prinde cu
   `fisa_sha256` față de `fisa.json`. Verificările externe (OCR, fețe, SigLIP2, VLM, T5) intră în fișă dacă au aceeași formă.
+
+## Proba FLUX.2 klein (T4)
+
+`fetch_models.py --group klein --model-id flux2-klein-4b --pin-new-hashes` descarcă doar modelul distilat (~16 GB); `--model-id` restrânge grupul la un model.
+`klein_probe.py` (funcții pure în `klein_lib.py`, testate fără modele) rulează `Flux2KleinInpaintPipeline` pe MPS: codează promptul cu text encoder-ul,
+îl eliberează, apoi încarcă transformerul; scrie `input.png`, `mask_used.png`, `raw_seed<N>.png` și `report.json` într-un director nou `<out-root>/<UTC>/`.
+Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, dacă a fost adăugată) și în raportul task-ului.

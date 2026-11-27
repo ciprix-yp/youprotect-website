@@ -241,10 +241,10 @@ def scan_forbidden(models_dir: Path) -> list[str]:
     return bad
 
 
-def verify_group(models_dir: Path, manifest: dict, group: str) -> list[str]:
+def verify_group(models_dir: Path, manifest: dict, group: str, model_id: str | None = None) -> list[str]:
     problems = []
     for m in manifest["models"]:
-        if m["group"] != group:
+        if m["group"] != group or (model_id and m["id"] != model_id):
             continue
         for e in m["files"]:
             dest = resolve_dest(models_dir, m["id"], e["path"])
@@ -264,6 +264,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--models-dir", required=True, type=Path, help="obligatoriu: unde se pun modelele")
     ap.add_argument("--group", required=True, choices=GROUPS + ("all",))
     ap.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    ap.add_argument("--model-id", default=None, help="opțional: doar modelul cu acest id din grup (ex. flux2-klein-4b)")
     ap.add_argument("--verify-only", action="store_true", help="doar verifică ce e pe disc")
     ap.add_argument(
         "--pin-new-hashes", action="store_true", help="la prima descărcare, înscrie în manifest sha256 pentru intrările fără hash"
@@ -283,7 +284,7 @@ def main(argv: list[str] | None = None) -> int:
             if not args.verify_only:
                 pinned = False
                 for m in manifest["models"]:
-                    if m["group"] != group:
+                    if m["group"] != group or (args.model_id and m["id"] != args.model_id):
                         continue
                     for e in m["files"]:
                         state, new_hash = fetch_file(models_dir, m, e, args.pin_new_hashes)
@@ -294,7 +295,7 @@ def main(argv: list[str] | None = None) -> int:
                 if pinned:
                     args.manifest.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
                     print(f"  manifest actualizat cu hash-uri noi: {args.manifest}")
-            failures += verify_group(models_dir, manifest, group)
+            failures += verify_group(models_dir, manifest, group, args.model_id)
         bad = scan_forbidden(models_dir)
         if bad:
             failures += [f"extensie interzisă pe disc: {b}" for b in bad]
