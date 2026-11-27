@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PRODUCTS = join(ROOT, 'public/images/products');
-const FORBIDDEN = new Set(['EXIF', 'XMP ', 'ICCP']);
+import { FORBIDDEN_CHUNKS as FORBIDDEN, riffChunks } from '../scripts/catalog/webp-riff.mjs';
 
 function webpFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -18,22 +18,6 @@ function webpFiles(dir) {
     if (entry.isDirectory()) return webpFiles(path);
     return entry.name.endsWith('.webp') ? [path] : [];
   });
-}
-
-/** Numele chunk-urilor RIFF dintr-un WebP; aruncă dacă fișierul nu e RIFF/WEBP sau chunk-urile ies din fișier. */
-function riffChunks(buffer) {
-  if (buffer.length < 12 || buffer.toString('latin1', 0, 4) !== 'RIFF' || buffer.toString('latin1', 8, 12) !== 'WEBP') {
-    throw new Error('nu e RIFF/WEBP');
-  }
-  const names = [];
-  let offset = 12;
-  while (offset + 8 <= buffer.length) {
-    const size = buffer.readUInt32LE(offset + 4);
-    names.push(buffer.toString('latin1', offset, offset + 4));
-    offset += 8 + size + (size % 2); // chunk-urile sunt aliniate la 2 octeți
-  }
-  if (offset > buffer.length + 1) throw new Error('chunk în afara fișierului');
-  return names;
 }
 
 test('riffChunks: recunoaște chunk-urile și respinge ce nu e WebP', () => {
