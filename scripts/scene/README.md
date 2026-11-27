@@ -6,8 +6,9 @@ Nimic de aici nu intră în build-ul site-ului. Weights, imagini, fișe și regi
 ## Mediu
 
 Python 3.12, dependențe fixate exact în `pyproject.toml`, lock complet cu hash-uri în `uv.lock`
-(torch 2.15.0, torchvision 0.29.2, diffusers 0.43.0, transformers 5.24.1, numpy 2.5.5, pymatting 1.1.16, rapidocr 3.10.0 etc.).
-`uv` nu e activ direct în shell; se rulează prin mise.
+(torch 2.15.0, torchvision 0.29.2, diffusers 0.43.0, transformers 5.23.0, huggingface-hub 2.4.0, numpy 2.5.5, pymatting 1.1.16, rapidocr 3.10.0 etc.).
+Cooldown de 7 zile (`exclude-newer = "7 days"`) fără excepții per pachet (transformers 5.23.0 și huggingface-hub 2.4.0 sunt cele mai noi mai vechi de 7 zile
+care satisfac constrângerile Sam2Model/Qwen3-VL/diffusers 0.43.0). `uv` nu e activ direct în shell; se rulează prin mise.
 
 Comanda standard (căi absolute, `-I` pentru orice Python care citește fișiere descărcate sau imagini):
 
@@ -73,9 +74,12 @@ Trei module deterministe, doar Pillow + numpy + stdlib (rulează fără modele A
 
 - `compose_lib.py`: `place_product` (doar scalare <= 1 și deplasare întreagă; la scale 1.0 copie exactă, la < 1 Pillow LANCZOS și zonele
   recalculate cu `zones_lib.build_zones` din alpha și măștile critice reeșantionate, apoi validate), `inpaint_mask` = NOT(L ∪ E),
-  `compose` (L = referința așezată exact; E = F·a + B·(1−a), cu F estimat extern; restul = fundal).
+  `compose(placed, bg, foreground=None, band_fill=True)` (L = referința așezată exact; E = F·a + B·(1−a), cu F estimat extern; restul = fundal).
+  Implicit B în E vine din decorul din afara L ∪ E: `prepare_background`/`fill_from_outside` umplu E și un inel de `BAND_RING_PX`=3 px prin dilatare iterativă
+  (media vecinilor 8-conectați deja cunoscuți, determinist, fără aleatoriu), pentru că reconstrucția VAE a packshot-ului are fundal alb în E (E nu se generează).
+  `band_fill=False` = comportamentul vechi, doar pentru comparații.
 - `checks_lib.py`: fiecare verificare întoarce `{name, value, threshold, passed, detail}`; funcții pure. `check_transform`,
-  `check_identity_master` (max|Δ| = 0 în L erodat 1 px), `detect_mirror`, `check_scale_not_up` (recalculează referința din sursă
+  `check_identity_master` (max|Δ| = 0 pe L COMPLET, nu erodat: masterul e lossless; eroziunea de 1 px rămâne doar la `check_identity_export`), `detect_mirror`, `check_scale_not_up` (recalculează referința din sursă
   și parametrii declarați), `calibrate_export` + `check_identity_export` (ΔE2000 p99, SSIM 7x7 și ΔE2000 pe blocuri 8x8, praguri =
   valoarea calibrată pe packshot-ul singur + margine), `check_halo`, `check_color_spill`, `check_decor_fluo`.
   Pragurile calibrate (halo delta 12, spill 2%, fluo 0,5%, margini export ΔE +2 / SSIM −0,02) și valorile măsurate sunt în ieșirea
@@ -107,6 +111,12 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
   (produsul rămâne pixel-exact la scale 1.0; fundalul e mai puțin clar decât produsul). Fișa are `etapa: "T5a-fara-verificari-model"` și o verificare
   `verificari_model` cu passed=false: `rezultat_global` rămâne false până la T5b (OCR, fețe, ne-uman).
 
+- `recompose_candidates.py`: recompune candidații existenți din `raw_768.png` + fișa T5a (produs/context/seed/prompt/model/timp/scală/deplasare), fără
+  regenerare și fără modele, cu umplerea benzii E, într-un `--out-base` NOU (refuză un director existent, căi cu `..`, suprascrierea). Per candidat:
+  `master.png`, copia `raw_768.png`, `fisa.json` cu `etapa: "T5a-recompus-v3"` și `fisa_t5a_sha256` (fișa veche), hash-uri pe fișierele salvate și recitite,
+  linie în `<out-base>/registru.jsonl`. Zonele se verifică cu `verify_zones` și legătura produs-zone. Test: `tests/scene-recompose.test.mjs`.
+  Cifrele (rata de trecere etc.) se refac în Fix-2 după recompunerea tuturor candidaților.
+
 ## Verificări cu modele (T5b)
 
 - `checks_models_lib.py` (pur, testat fără modele): `skin_fraction` (YCbCr ∩ HSV, intervale în docstring), `chroma_stats` (C* CIELAB), `segment_is_achromatic_no_skin`,
@@ -116,6 +126,10 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
   `(I ∪ (SAM ∩ regiune)) \ (L ∪ E)`, RapidOCR (`use_cls=False`; logo la 3×, decor + I cu produsul mascat neutru). Un model odată în memorie.
 - `collect_signals.py` (semnale brute, JSON nou), `calibrate_models.py` (căutare pe grilă pe controale + ne-om -> `calibrare_modele.json`, comis), `run_model_checks.py`
   (candidații -> `fisa_finala_v3.json` lângă `fisa.json`, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
+- `check_ocr_logo`: dacă OCR nu citește nimic în original (și nici în candidat), verificarea e NECONCLUDENTĂ: `passed=true`, `value="neconcludent"`, `informativ=true`;
+  fișa o păstrează, planșa o arată „INFO" (nu „OK"). Text diferit sau apărut doar în candidat pică. Identitatea pixelilor din logo o garantează identitatea pe L complet, nu OCR.
+- Semnale: VLM = principal (recall 70/70 pe controale), SigLIP2 = secundar (marjă efectivă −0,5). Cifrele „0 respinse fals" sunt pe SETUL DE CALIBRARE, nu pe date noi.
+  `calibrate_models.py --exclude-labels calibrare_t5c.json` scoate din `--good-ids` candidații etichetați „dom"/„neclar" (nu sunt „buni"); recalibrarea pe date se face în Fix-2.
 - Qwen3-VL-4B se descarcă cu `fetch_models.py --models-dir <m> --group vlm --model-id qwen3-vl-4b-instruct --pin-new-hashes`.
 
 ## Formă de cap și croma nuanțată (T5c)

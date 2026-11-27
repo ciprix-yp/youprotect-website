@@ -40,14 +40,19 @@ Cod în `scripts/scene/` (Python, mediu `uv` separat, în afara `package.json` �
    - cutii pentru marcajele critice. Marcajele critice sunt 100% în L.
 3. **Așezare.** Doar scalare cu factor ≤ 1 și deplasare cu valori întregi. Fără oglindire, fără rotire.
 4. **Umplere cu mască** în afara L+E: FLUX.2 klein 4B prin diffusers `Flux2KleinInpaintPipeline`.
-5. **Compunere.** L se lipește din original; E se compune cu alpha, folosind estimare de foreground (pymatting).
+5. **Compunere.** L se lipește din original; E se compune cu alpha, folosind estimare de foreground (pymatting) și, ca fundal B, decorul
+   generat propagat din afara L ∪ E (`compose_lib.fill_from_outside`/`prepare_background`, implicit `band_fill=True`): reconstrucția VAE a
+   packshot-ului din E și dintr-un inel de 3 px are fundal alb (masca de inpainting e NOT(L ∪ E), E nu se generează), deci fără umplere marginea s-ar amesteca
+   cu alb, nu cu decorul. `band_fill=False` păstrează comportamentul vechi, doar pentru comparații. Candidații compuși înainte de această corecție
+   se recompun din `raw_768.png` existent cu `recompose_candidates.py` (fără regenerare), într-un director nou, etapa „T5a-recompus-v3".
 6. **Verificări** (fiecare se scrie în fișă cu valoare, prag, rezultat):
-   - identitate produs: diferența maximă în L erodat este exact 0 pe master; la export, pragul se calibrează
-     pe zgomotul de compresie;
+   - identitate produs: diferența maximă pe L COMPLET (nu erodat) este exact 0 pe master (lossless, compunerea lipește tot L); eroziunea de 1 px
+     rămâne doar la identitatea exportului lossy, unde pragul se calibrează pe zgomotul de compresie;
    - margini: halo și scurgere de culoare;
-   - OCR pe logo și OCR în decor și în zona I;
+   - OCR pe logo și OCR în decor și în zona I; OCR logo fără text citit în original (și în candidat) e INFORMATIV („neconcludent", `informativ=true`,
+     afișat „INFO" în planșă), nu „OK"; identitatea pixelilor din logo o garantează identitatea pe L, nu OCR;
    - manechin ne-uman: detector de fețe = 0; segment acromatic fără tonuri de piele; SigLIP2 zero-shot
-     „mannequin" vs „real person" cu marjă; VLM auxiliar;
+     „mannequin" vs „real person" cu marjă; VLM = semnalul principal, SigLIP2 = semnal secundar (marjă efectivă −0,5);
    - calibrare pe poze reale cu oameni: 100% semnalate „om".
 7. **Planșe pentru telefon** (revizuire vizuală pe ecran mic).
 
@@ -79,7 +84,7 @@ Statut: planificat / folosit / nefolosit / înlocuit (actualizat după etapa 1 a
 | BiRefNet_lite | matte (variantă evaluată) | HF `ZhengPeng7/BiRefNet_lite` rev `aa62cd87eafb9cc43056d08ef3615a14628b831d` | MIT | MIT | n/a | n/a | 2026-11-27 | sha256 `4417d89795250e698c3cb0ae8df15743810065f646f48a694fdfa7ca052d0815` | nefolosit | Aceleași restricții de încărcare ca BiRefNet. |
 | BiRefNet-matting | matte (variantă evaluată) | HF `ZhengPeng7/BiRefNet-matting` rev `eccde0a8cbdce7ac5fecfeb06340fe7b949e85d9` | MIT | MIT | n/a | n/a | 2026-11-27 | sha256 `a9875de5b1e6c8eb5fdaa8c727a82927ce442cdc87ba3abee6a77e6fa46c25bb` | nefolosit | Aceleași restricții de încărcare ca BiRefNet. |
 | BiRefNet_HR-matting | matte (variantă evaluată) | HF `ZhengPeng7/BiRefNet_HR-matting` rev `5d6b6f8adcb5b417c871b1d84ceaae9871355b7f` | MIT | MIT | n/a | n/a | 2026-11-27 | sha256 `a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55` | nefolosit | Aceleași restricții de încărcare ca BiRefNet. |
-| SAM 2.1 hiera-large | zone L/E/I și cutii de marcaje | HF `facebook/sam2.1-hiera-large` rev `665f8e2ad61cf5f53d65644ff27c8ee525124610` | Apache-2.0 | Apache-2.0 | https://github.com/facebookresearch/sam2/blob/main/LICENSE | https://huggingface.co/facebook/sam2.1-hiera-large/blob/main/README.md | 2026-11-27 | `model.safetensors` (897897416 B) sha256 `dc407dce21301fd94abb395c5099b4f2c455fdc8a8f261ac3d0ea6d4cd197230` | folosit | Fișierul `.pt` este pickle: NU se descarcă. Rulat prin transformers `Sam2Model` + `Sam2Processor` (transformers >= 4.56.0; ultima 5.24.1). Cod: `facebookresearch/sam2`, Apache-2.0. |
+| SAM 2.1 hiera-large | zone L/E/I și cutii de marcaje | HF `facebook/sam2.1-hiera-large` rev `665f8e2ad61cf5f53d65644ff27c8ee525124610` | Apache-2.0 | Apache-2.0 | https://github.com/facebookresearch/sam2/blob/main/LICENSE | https://huggingface.co/facebook/sam2.1-hiera-large/blob/main/README.md | 2026-11-27 | `model.safetensors` (897897416 B) sha256 `dc407dce21301fd94abb395c5099b4f2c455fdc8a8f261ac3d0ea6d4cd197230` | folosit | Fișierul `.pt` este pickle: NU se descarcă. Rulat prin transformers `Sam2Model` + `Sam2Processor` (transformers >= 4.56.0; fixat 5.23.0, cea mai nouă mai veche de 7 zile). Cod: `facebookresearch/sam2`, Apache-2.0. |
 | SAM 2.1 hiera-base-plus | alternativă ușoară la SAM 2.1 large | HF `facebook/sam2.1-hiera-base-plus` rev `b7320756a13354e7530a63935656d35b2f91a290` | Apache-2.0 | Apache-2.0 | https://github.com/facebookresearch/sam2/blob/main/LICENSE | n/a | 2026-11-27 | sha256 `2012733a0de5d03efd1bba550a2847c4551be9ef2e0d497c83074df66189f780` | nefolosit | Alternativă; aceeași regulă: fără `.pt`. |
 | SigLIP2 so400m | verificare zero-shot „mannequin" vs „real person" | HF `google/siglip2-so400m-patch14-384` rev `e8e487298228002f3d8a82e0cd5c8ea9c567f57f` | n/a | Apache-2.0 (din card) | n/a | https://huggingface.co/google/siglip2-so400m-patch14-384/blob/main/README.md | 2026-11-27 | `model.safetensors` (4544143072 B) sha256 `9f4f4a49f908ef0c979bce8ff5a5c0e88882dc6c5dc4304387cbbd152558e2c2` | folosit | Repo-ul HF nu are LICENSE separat. |
 | SigLIP2 base | alternativă ușoară la SigLIP2 so400m | HF `google/siglip2-base-patch16-224` rev `75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2` | n/a | n/a | n/a | n/a | 2026-11-27 | sha256 `612923381c76ec5a9bed335d1c48827e3f2e506ac31b044b63b2031fadee6a0b` | nefolosit | Licența nu a fost citită separat pentru această variantă. |
@@ -106,9 +111,13 @@ Variante excluse pe criteriul licenței: FLUX.2 klein 9B și FLUX.2 dev (licenț
 ## 5. Versiuni rezolvate
 
 Din `scripts/scene/pyproject.toml` (fixate exact) și `scripts/scene/uv.lock`: Python 3.12, torch 2.15.0, torchvision 0.29.2,
-diffusers 0.43.0, transformers 5.24.1, safetensors 0.8.0, accelerate 1.16.0, huggingface-hub 2.5.0, numpy 2.5.5, scipy 1.18.1,
+diffusers 0.43.0, transformers 5.23.0, safetensors 0.8.0, accelerate 1.16.0, huggingface-hub 2.4.0, numpy 2.5.5, scipy 1.18.1,
 pillow 13.0.0, opencv-python-headless 5.1.0.95, scikit-image 0.26.0, pymatting 1.1.16, rapidocr 3.10.0, onnxruntime 1.32.0,
-timm 1.0.31, kornia 0.9.2, einops 0.8.2. Manifestul modelelor: `scripts/scene/models.lock.json` (revizii și sha256 per fișier).
+timm 1.0.31, kornia 0.9.2, einops 0.8.2. Regula cooldown (`exclude-newer = "7 days"`) se aplică FĂRĂ excepții per pachet:
+transformers 5.23.0 (2026-11-13) și huggingface-hub 2.4.0 (2026-10-29) sunt cele mai noi versiuni mai vechi de 7 zile care satisfac
+constrângerile (Sam2Model >= 4.56, Qwen3-VL >= 4.57, diffusers 0.43.0 cere huggingface-hub >= 1.32.0, transformers 5.23.0 cere >= 1.31.0, < 3.0);
+excepția `exclude-newer-package` pentru transformers 5.24.1 / huggingface-hub 2.5.0 a fost eliminată. Verificat: `uv lock --check`, testele `scene_*`
+și un smoke SigLIP2 + SAM 2.1 + Qwen3-VL pe un candidat existent, fără eroare. Manifestul modelelor: `scripts/scene/models.lock.json` (revizii și sha256 per fișier).
 
 ## 6. Cum se rulează
 
@@ -139,6 +148,8 @@ RUN='mise exec uv@0.13.6 -- uv run --project "<W>/scripts/scene" --frozen python
      `raw_768.png`, `fisa.json` și linie în `registru.jsonl`;
    - `run_model_checks.py`: verificările cu modele (fețe, segment, SigLIP2, Qwen3-VL, OCR, formă de cap) peste candidați, cu pragurile din
      `calibrare_modele.json` și `--calibrare-extra calibrare_t5c.json`; scrie fișa finală lângă `fisa.json`;
+   - `recompose_candidates.py`: recompune candidații T5a existenți din `raw_768.png` (fără regenerare, fără modele) cu umplerea benzii E, într-un
+     `--out-base` NOU: `$RUN scripts/scene/recompose_candidates.py --cand-base <cand vechi> --out-base <director nou> --images-dir <imagini> --scene-dir <scene> --calibrare <calibrare.json>`;
    - `make_planse.py`: planșe de 1170 px pentru telefon per candidat (zone, zoom pe margini și logo/benzi, verdict din fișă).
 3. Calibrarea (rulată o dată, rezultatele sunt comise): `calibrate_real.py` -> `calibrare.json`; `calibrate_models.py` -> `calibrare_modele.json`.
 4. Testele rulează fără modele (`tests/scene-*.test.mjs`, `tests/py/`).
@@ -153,14 +164,17 @@ Cifrele de mai jos vin din `scripts/scene/*.json`, `scripts/scene/README.md` și
 - **Timp pe Mac (24 GB):** circa 8 s per imagine la 768 px, bf16, 4 pași. La 1024 px rularea este instabilă din cauza memoriei de 24 GB.
 - **Rata de trecere pe produs, după toate verificările:** S476YE 12/30; BZ739OR 15/50; FD25BK 27/30.
 - **Controale cu oameni (calibrare):** 70/70 semnalate „om" (recall 100%, cerința de calibrare), din 70 de controale obligatorii
-  (variantele „original" și „mic"); diagnosticul pe variante „jos": 28/30. Pe cele 67 de imagini ne-om din calibrare: 0 respinse fals.
-  Recall-ul pe semnal: VLM 70/70 (haine și bocanc), SigLIP2 69/70 (haine) și 46/70 (bocanc), detector de fețe 39/70, piele pe imaginea întreagă 1/70.
+  (variantele „original" și „mic"); diagnosticul pe variante „jos": 28/30. Pe cele 67 de imagini ne-om din calibrare: 0 respinse fals (pe SETUL DE CALIBRARE, nu pe date noi; setul „buni" conținea și candidați etichetați
+  „dom"/„neclar" la T5c, deci cifra se REFACE în Fix-2 cu `calibrate_models.py --exclude-labels calibrare_t5c.json`).
+  Cifrele din acest capitol (rata de trecere, recall, ne-om) provin din compunerea veche (fără umplerea benzii E, identitate pe L erodat) și rămân
+  „de refăcut în Fix-2"; nu sunt cifre noi. Recall-ul pe semnal: VLM 70/70 (haine și bocanc), SigLIP2 69/70 (haine) și 46/70 (bocanc), detector de fețe 39/70, piele pe imaginea întreagă 1/70.
 - **Formă de cap (T5c):** pe S476YE, domuri respinse 3/4 și un con gri bun păstrat (hala_depozit-s101); un candidat
   (platforma_logistica-s109) nu e separat automat și are veto manual. Croma nuanțată pe BZ739OR: acceptate 13/15 gri cu nuanță, 0/11 bej/carton/piele.
 
 Limite cunoscute:
 
-- Verificarea OCR pe logo este slabă: citește fragmente. Identitatea pixelilor din L este garantată de verificarea identitate = 0, nu de OCR.
+- Verificarea OCR pe logo este slabă: citește fragmente; când nu citește nimic în original, rezultatul e „neconcludent" (informativ, nu OK).
+  Identitatea pixelilor din L (inclusiv logo) este garantată de verificarea identitate = 0 pe L complet, nu de OCR.
 - Semnalul „formă de cap" este calibrat pe 4 exemple (set mic, etichete puse de agent, risc de supra-reglaj) și are nevoie de un veto manual pe un candidat.
-- Detectorul de fețe nu prinde singur toate controalele (39/70); recall-ul vine din VLM și SigLIP2.
+- Detectorul de fețe nu prinde singur toate controalele (39/70); recall-ul vine din VLM (semnalul principal) și SigLIP2 (secundar, marjă efectivă −0,5).
 - Fundalul este generat la 768 px și mărit la 1100 px (LANCZOS); rămâne o diferență de claritate față de produs, care e pixel-exact.
