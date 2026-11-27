@@ -3,13 +3,20 @@
 // Ca tests/qa-pr104-dist.test.mjs: fără dist/ testele sar; cu POZE_REQUIRE_DIST=1 pică.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DIST = join(ROOT, 'dist');
-const HAS_DIST = existsSync(DIST) && statSync(DIST).isDirectory();
+const HAS_DIST = (() => {
+  try {
+    readdirSync(DIST);
+    return true;
+  } catch {
+    return false; // dist/ lipsește: fără verificare prealabilă, doar încercarea reală
+  }
+})();
 const REQUIRE_DIST = process.env.POZE_REQUIRE_DIST === '1';
 // /cum-lucram/ are propria lui structură (PR separat).
 const SKIP = new Set(['/cum-lucram/index.html']);

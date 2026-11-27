@@ -8,13 +8,20 @@
 // Ca tests/faq-pliat.test.mjs: fără dist/ testele sar; cu POZE_REQUIRE_DIST=1 pică.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DIST = join(ROOT, 'dist');
-const HAS_DIST = existsSync(DIST) && statSync(DIST).isDirectory();
+const HAS_DIST = (() => {
+  try {
+    readdirSync(DIST);
+    return true;
+  } catch {
+    return false; // dist/ lipsește: fără verificare prealabilă, doar încercarea reală
+  }
+})();
 const REQUIRE_DIST = process.env.POZE_REQUIRE_DIST === '1';
 const FAQ_DETAILS = /<details class="group border border-white\/10 bg-\[#0f0f0f\]"[^>]*>[\s\S]*?<\/details>/g;
 // Tabelul de certificări folosește aceeași clasă pe <details>; se scoate înainte de a număra întrebările.
@@ -28,6 +35,14 @@ function pages(dir = DIST) {
     return e.name === 'index.html' ? [p] : [];
   });
 }
+const canRead = (p) => {
+  try {
+    readFileSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+};
 const urlOf = (file) => file.slice(DIST.length).replace(/index\.html$/, '');
 const faqOf = (html) => {
   const out = [];
@@ -95,7 +110,7 @@ guard('linkurile din răspunsuri: în <details>, min-h-11, către pagini existen
       assert.match(a[2], /\bmin-h-11\b/, `${urlOf(f)}: linkul „${a[3]}” fără min-h-11`);
       assert.ok(a[3].trim().length > 0);
       const target = a[1].split('#')[0];
-      if (target.startsWith('/')) assert.ok(existsSync(join(DIST, target, 'index.html')), `${urlOf(f)}: ținta ${a[1]} nu există în dist/`);
+      if (target.startsWith('/')) assert.ok(canRead(join(DIST, target, 'index.html')), `${urlOf(f)}: ținta ${a[1]} nu există în dist/`);
     }
   }
   assert.ok(links >= 20, `prea puține linkuri în răspunsuri (${links})`);

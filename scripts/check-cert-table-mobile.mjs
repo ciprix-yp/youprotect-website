@@ -6,7 +6,7 @@
 // acolo `npx playwright install webkit`. Cod de ieșire 1 dacă vreo pagină depășește 390 px.
 import { createRequire } from 'node:module';
 import { createServer } from 'node:http';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -39,10 +39,16 @@ const base = `http://127.0.0.1:${server.address().port}`;
 
 const urls = [];
 (function walk(d) {
-  for (const n of readdirSync(d)) {
-    const p = join(d, n);
-    if (statSync(p).isDirectory()) walk(p);
-    else if (n === 'index.html' && readFileSync(p, 'utf8').includes('id="certificari"')) urls.push(p.slice(DIST.length).replace(/index\.html$/, ''));
+  for (const e of readdirSync(d, { withFileTypes: true })) {
+    const p = join(d, e.name);
+    if (e.isDirectory()) walk(p);
+    else if (e.name === 'index.html') {
+      try {
+        if (readFileSync(p, 'utf8').includes('id="certificari"')) urls.push(p.slice(DIST.length).replace(/index\.html$/, ''));
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
+      }
+    }
   }
 })(DIST);
 urls.sort();
