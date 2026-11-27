@@ -302,8 +302,8 @@ const ROUNDED_SM_FILES = new Set([
   'src/components/global/Analytics.astro',
   'src/pages/confirmare.astro',
 ]);
-// `!` la început e încă acceptat în v4 (depreciat în favoarea `mt-0!`); un singur loc existent.
-const LEADING_BANG_FILES = new Map([['src/pages/ghiduri/s1p-sau-s3.astro', ['!mt-0']]]);
+// `!` la început e încă acceptat în v4, dar depreciat în favoarea `mt-0!`: nicio excepție rămasă.
+const LEADING_BANG_FILES = new Map();
 
 const STRONG = /^(?:[a-z0-9]+:)*!?-?(?:bg|text|px|py|pt|pb|pl|pr|mt|mb|ml|mr|mx|my|p|m|w|h|min-h|min-w|max-w|max-h|gap|flex|grid|items|justify|font|border|rounded|shadow|opacity|z|top|left|right|bottom|inset|overflow|aspect|space|leading|tracking|transition|duration|ease|object|col|row|order|outline|ring|blur|drop-shadow|backdrop-blur|cursor|select|divide|shrink|grow|size|self|place|content|from|via|to)-[\w[\]/.%#(),-]+$/;
 
