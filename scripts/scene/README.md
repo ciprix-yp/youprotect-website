@@ -66,3 +66,21 @@ mise exec uv@0.13.6 -- uv run --project "/Users/home/You Protect - website/.clau
 ```
 
 Fără ComfyUI, fără MCP, fără custom nodes, fără `trust_remote_code`, fără `torch.load`/pickle.
+
+## Compunere, verificări și fișă (T3a)
+
+Trei module deterministe, doar Pillow + numpy + stdlib (rulează fără modele AI; test: `tests/scene-compose.test.mjs`):
+
+- `compose_lib.py`: `place_product` (doar scalare <= 1 și deplasare întreagă; la scale 1.0 copie exactă, la < 1 Pillow LANCZOS și zonele
+  recalculate cu `zones_lib.build_zones` din alpha și măștile critice reeșantionate, apoi validate), `inpaint_mask` = NOT(L ∪ E),
+  `compose` (L = referința așezată exact; E = F·a + B·(1−a), cu F estimat extern; restul = fundal).
+- `checks_lib.py`: fiecare verificare întoarce `{name, value, threshold, passed, detail}`; funcții pure. `check_transform`,
+  `check_identity_master` (max|Δ| = 0 în L erodat 1 px), `detect_mirror`, `check_scale_not_up` (recalculează referința din sursă
+  și parametrii declarați), `calibrate_export` + `check_identity_export` (ΔE2000 p99, SSIM 7x7 și ΔE2000 pe blocuri 8x8, praguri =
+  valoarea calibrată pe packshot-ul singur + margine), `check_halo`, `check_color_spill`, `check_decor_fluo`.
+  Pragurile calibrate (halo delta 12, spill 2%, fluo 0,5%, margini export ΔE +2 / SSIM −0,02) și valorile măsurate sunt în ieșirea
+  „CAL ..." a `tests/py/scene_compose_check.py`.
+- `fisa_lib.py`: `build_fisa` (calculează `rezultat_global`: adevărat doar dacă există verificări și toate au `passed is True`),
+  `write_fisa(cand_dir, fisa, registry_path, base_dir)` (atomic, refuză suprascrierea, cale doar sub `base_dir`, fără `..`),
+  `registru.jsonl` append-only cu `prev_sha256` (lanț) și `verify_registry`. Alterarea ultimei linii nu rupe lanțul; se prinde cu
+  `fisa_sha256` față de `fisa.json`. Verificările externe (OCR, fețe, SigLIP2, VLM, T5) intră în fișă dacă au aceeași formă.
