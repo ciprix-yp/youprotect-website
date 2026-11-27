@@ -385,15 +385,16 @@ const GRID_PAGES = [
     'pantaloni-de-lucru', 'tricouri-polo-de-lucru', 'veste-de-lucru', 'mascot', 'portwest', 'sir-safety'],
 ];
 
-distTest('LCP: primul card e eager + fetchpriority high, următoarele din primul ecran eager, restul lazy (hub, categorii, mărci)', () => {
+distTest('LCP: categorii și mărci au primul card eager + fetchpriority high, restul lazy; hub-ul nu are niciun card eager', () => {
   for (const page of GRID_PAGES) {
     const html = read(join(DIST, 'produse', page, 'index.html'));
     const imgs = [...html.matchAll(/data-vt-photo="[a-z0-9-]+"/g)].map((m) => /<img\b[^>]*>/.exec(html.slice(m.index))[0]);
-    assert.ok(imgs.length >= 1, `produse/${page}: doar ${imgs.length} carduri în grilă`);
+    assert.ok(imgs.length >= 1, `produse/${page}: nu are carduri în grilă`);
     imgs.forEach((img, i) => {
-      const where = `produse/${page} cardul ${i}`;
-      assert.equal(attr(img, 'loading'), i < EAGER_CARDS ? 'eager' : 'lazy', where);
-      assert.equal(attr(img, 'fetchpriority'), i === 0 ? 'high' : null, where);
+      const where = `produse/${page || '(hub)'} cardul ${i}`;
+      const first = page !== '' && i < EAGER_CARDS;
+      assert.equal(attr(img, 'loading'), first ? 'eager' : 'lazy', where);
+      assert.equal(attr(img, 'fetchpriority'), first && i === 0 ? 'high' : null, where);
     });
   }
 });
