@@ -1,5 +1,5 @@
 ---
-// Cardul de produs: aceeași structură și aceeași înălțime pe fiecare rând (poza pătrată, numele pe 3 rânduri — 4 pe
+// Cardul de produs: aceeași structură și aceeași înălțime pe fiecare rând (poza 4:5, numele pe 3 rânduri — 4 pe
 // telefon, unde cardul e îngust —, standardul pe 2 rânduri), ca grila să rămână aliniată oricât de lung e numele.
 // Design premium (20.11.2026): card 3D (data-tilt, src/scripts/tilt.ts), poza pe fond cald (.img-well). Marca e jos,
 // lângă „Adaugă la ofertă”: în nume apare deja, iar sus ar fura un rând numelui pe telefon.
@@ -10,7 +10,9 @@ import type { CardProps } from '../../lib/product-card';
 import QuoteListButton from './QuoteListButton.astro';
 
 type Props = CardProps;
-const { slug, name, brand, spec, image } = Astro.props;
+const { slug, name, brand, spec, image, imageKind, imageAlt, imageFocus } = Astro.props;
+// Scena (poză în context): decupaj cover pe punctul de focus; focus-ul vine din schemă (regex „X% Y%”), deci e sigur în style.
+const isScene = imageKind === 'scena';
 const href = `/produse/${slug}/`;
 ---
 
@@ -18,14 +20,20 @@ const href = `/produse/${slug}/`;
   data-tilt="7"
   class="card-3d group relative flex h-full flex-col rounded-xl border border-white/[0.08] bg-yp-surface shadow-card hover:border-yp-yellow/40 hover:shadow-card-hover focus-within:border-yp-yellow"
 >
-  <div class="tilt-pop img-well relative aspect-square overflow-hidden rounded-t-xl" data-vt-photo={slug}>
+  <div class:list={['tilt-pop img-well relative aspect-[4/5] overflow-hidden rounded-t-xl', isScene && 'img-well--scene']} data-vt-photo={slug}>
     <img
       src={image}
-      alt={name}
+      alt={imageAlt ?? name}
       width="600"
-      height="600"
+      height="750"
       loading="lazy"
-      class="absolute inset-0 h-full w-full object-contain p-4 transition-transform duration-300 ease-out-strong group-hover:scale-[1.04] sm:p-6"
+      style={isScene && imageFocus ? `object-position: ${imageFocus}` : undefined}
+      class:list={[
+        'absolute inset-0 h-full w-full',
+        isScene ? 'object-cover' : 'object-contain',
+        // Zoom doar pe packshot: pe cardurile cu om, poza stă pe loc (marginea e deja în pixeli, în varianta de 600 px).
+        imageKind === 'packshot' && 'transition-transform duration-300 ease-out-strong group-hover:scale-[1.04]',
+      ]}
     />
   </div>
   <div class="flex flex-1 flex-col px-3 pb-1 pt-3 sm:px-4 sm:pt-4">

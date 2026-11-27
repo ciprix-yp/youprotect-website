@@ -27,6 +27,8 @@ export interface CardProps {
   imageKind: 'packshot' | 'studio' | 'scena';
   /** Textul alternativ propriu al pozei pe model (descrie produsul purtat) sau null: atunci cardul folosește numele. */
   imageAlt: string | null;
+  /** Punctul important al pozei („X% Y%”, validat de schemă) sau null; contează la scenă (object-position). */
+  imageFocus: string | null;
   /** Packshot-ul culorii principale, varianta de 600 px, pentru dalele de categorie (care rămân pe packshot). */
   packshot: string;
 }
@@ -43,6 +45,7 @@ export function toCardProps(entry: CardEntry): CardProps {
     image: cardSrc(photo.src),
     imageKind: photo.kind,
     imageAlt: photo.alt,
+    imageFocus: photo.focus,
     packshot: cardSrc(packshotImage(data).src),
   };
 }

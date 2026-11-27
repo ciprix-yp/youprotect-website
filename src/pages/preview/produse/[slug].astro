@@ -3,6 +3,7 @@
 // Doar pe preview-uri și local, nu pe youprotect.ro (vezi [...lista].astro).
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { isProductionBuild } from '../../../lib/build-env.js';
+import { packshotImage } from '../../../lib/catalog-images.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProductDetail from '../../../components/products/ProductDetail.astro';
 
@@ -20,6 +21,6 @@ const { entry } = Astro.props;
 const p = entry.data;
 ---
 
-<BaseLayout title={p.seo.title} description={p.seo.description} ogType="product" ogImage={p.colours[0].images[0].src} noindex>
+<BaseLayout title={p.seo.title} description={p.seo.description} ogType="product" ogImage={packshotImage(p).src} noindex>
   <ProductDetail entry={entry} preview />
 </BaseLayout>
