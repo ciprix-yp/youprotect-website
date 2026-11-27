@@ -33,7 +33,7 @@ export const BRAND_PAGES: BrandPage[] = [
     title: 'MASCOT în România: haine de lucru pentru firme',
     about:
       'MASCOT e o firmă daneză, fondată în 1982, cu sediul la vest de Silkeborg, în Danemarca. Face haine de lucru, îmbrăcăminte de protecție și încălțăminte de protecție și are fabrici proprii în Vietnam și Laos.',
-    source: { label: 'mascotworkwear.com', url: 'https://mascotworkwear.com/en/about-mascot' },
+    source: { label: 'mascotworkwear.com', url: 'https://mascotworkwear.com/about-mascot/' },
   },
   {
     brand: 'Sir Safety System',
