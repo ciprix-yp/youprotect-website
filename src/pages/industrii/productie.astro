@@ -1,4 +1,5 @@
 ---
+import FaqList from '../../components/FaqList.astro';
 import { jsonLd } from '../../lib/json-ld';
 import { CTA_DISCUSS, RESPONSE_TIME, SITE } from '../../lib/site';
 import ActionPhoto from '../../components/media/ActionPhoto.astro';
@@ -129,14 +130,7 @@ const inlineLink = "text-yp-white underline decoration-yp-white/30 underline-off
         <h2 id="intrebari" class="text-3xl md:text-4xl md:leading-10 font-light text-white leading-tight">
           Întrebări frecvente despre echipamentele pentru producție
         </h2>
-        <dl class="mt-10 space-y-8">
-          {faq.map((item) => (
-            <div>
-              <dt class="text-lg text-white font-medium">{item.q}</dt>
-              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">{item.a}</dd>
-            </div>
-          ))}
-        </dl>
+        <FaqList items={faq} class="mt-10" />
         <p class="mt-10 text-neutral-400 leading-relaxed">
           Pe larg, în ghidurile <a href="/ghiduri/haine-de-lucru-care-rezista/" class={inlineLink}>cum alegi haine de lucru care rezistă</a> și
           <a href="/ghiduri/cost-echipament-protectie-muncitor/" class={inlineLink}>cât costă echipamentul de protecție pe muncitor</a>.

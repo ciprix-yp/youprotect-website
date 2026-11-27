@@ -10,6 +10,7 @@ import { CATEGORIES } from '../../lib/catalog-taxonomy';
 import { joinRo, type CategoryPage } from '../../lib/catalog-categories';
 import { jsonLd } from '../../lib/json-ld';
 import ActionPhoto from '../media/ActionPhoto.astro';
+import FaqList from '../FaqList.astro';
 import { imageGraph } from '../../lib/poze-actiune';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { guideHref, guidesForCategory } from '../../lib/guides';
@@ -174,19 +175,7 @@ const faqSchema = {
 
   <section class="mt-14 max-w-3xl" aria-labelledby="intrebari">
     <h2 id="intrebari" class={sectionTitle}>Întrebări frecvente</h2>
-    <dl class="space-y-6">
-      {faq.map((item) => (
-        <div>
-          <dt class="text-yp-white font-medium">{item.q}</dt>
-          <dd class="mt-2 text-yp-white/75 leading-relaxed">
-            {item.a}
-            {item.link && (
-              <a href={item.link.href} class="block w-fit py-2 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
-            )}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <FaqList items={faq} />
   </section>
 
   {others.length > 0 && (

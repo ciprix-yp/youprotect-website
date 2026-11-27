@@ -5,6 +5,7 @@
 // inventate; legea ca pe homepage și în ghidul de cost (09 §5, obiecția 4); oferta de testare doar din RISK_FREE_TESTING.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TCOCalculator from "../components/calculator/TCOCalculator.tsx";
+import FaqList from "../components/FaqList.astro";
 import { jsonLd } from "../lib/json-ld";
 import { RISK_FREE_TESTING } from "../lib/site";
 import { WORKING_DAYS_PER_YEAR } from "../lib/tco.js";
@@ -67,22 +68,7 @@ const faqSchema = {
         <h2 id="intrebari" class="text-3xl md:text-4xl md:leading-10 font-light text-white leading-tight">
           Întrebări frecvente despre costul echipamentelor
         </h2>
-        <dl class="mt-10 space-y-8">
-          {faq.map((item) => (
-            <div>
-              <dt class="text-lg text-white font-medium">{item.q}</dt>
-              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">
-                {item.a}
-                {item.link && (
-                  <>
-                    {" "}
-                    <a href={item.link.href} class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{item.link.label}</a>
-                  </>
-                )}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <FaqList items={faq} class="mt-10" />
       </div>
     </div>
   </section>

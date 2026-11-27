@@ -1,0 +1,41 @@
+---
+// Întrebări frecvente pliate, comune tuturor paginilor (D-2026-11-27-03).
+// <details>/<summary> nativ, fără JavaScript: toate răspunsurile rămân în HTML-ul static, pliate pe orice lățime.
+// Componenta randează doar lista; <h2 id="intrebari"> și JSON-LD-ul FAQPage rămân în pagini, cu același array.
+// Textele sunt constante din repo, scoase ca text (nu set:html). `link` și `more` sunt același lucru (nume vechi diferite).
+export interface FaqItem {
+  q: string;
+  a: string;
+  link?: { href: string; label: string };
+  more?: { href: string; label: string };
+}
+
+interface Props {
+  items: FaqItem[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+const linkClass =
+  "mt-2 inline-flex min-h-11 items-center text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yp-yellow";
+---
+
+<div class:list={["flex flex-col gap-3", className]}>
+  {items.map((item) => {
+    const link = item.link ?? item.more;
+    return (
+      <details class="group border border-white/10 bg-[#0f0f0f]">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-6 text-lg font-medium text-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-yp-yellow [&::-webkit-details-marker]:hidden">
+          {item.q}
+          <svg class="h-6 w-6 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+          </svg>
+        </summary>
+        <div class="mx-6 mb-6 border-t border-white/10 pt-4 text-sm leading-relaxed text-yp-white/75">
+          <p class="mb-0!">{item.a}</p>
+          {link && <a href={link.href} class={linkClass}>{link.label}</a>}
+        </div>
+      </details>
+    );
+  })}
+</div>
