@@ -349,7 +349,8 @@ with tempfile.TemporaryDirectory() as tmp:
     target = root / "atomic" / "f.bin"
     safe_fetch.write_atomic(target, b"abc")
     check(target.read_bytes() == b"abc", "write_atomic")
-    check((target.stat().st_mode & 0o777) == 0o640, "write_atomic: fișierul trebuie să fie 0640, nu 0600 (mkstemp)")
+    # mkstemp => 0600; CodeQL (py/overly-permissive-file) respinge orice chmod mai larg, deci nu lărgim (git nu ține permisiunile)
+    check((target.stat().st_mode & 0o077) == 0, "write_atomic: fișierul nu trebuie să fie citibil de grup/ceilalți")
     original_replace = safe_fetch.os.replace
     safe_fetch.os.replace = lambda *a: (_ for _ in ()).throw(OSError("simulat"))
     try:
