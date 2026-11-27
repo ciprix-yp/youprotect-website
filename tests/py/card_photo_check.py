@@ -118,4 +118,46 @@ with tempfile.TemporaryDirectory() as tmp:
           "--no-image-check sare verificarea fișierului")
     expect("model exclus", CardPhotoError, lambda: card_photo.apply_card_photo(colours(), {**TEXT, "model": "20382"}, public))
 
+# poză DEJA în repo (Sir Safety): `existing` în loc de sourceId, fără descărcare; se etichetează intrarea de pe poziția 0
+EXISTING = {"colour": "Q5", "existing": "Q5-PS", "kind": "studio",
+            "alt": "Geaca de ploaie Sir Safety Suncity, purtată de un om, pe fond alb"}
+SS_TEXT = {"model": "MC4314", "slug": "geaca-test-mc4314", "category": "geci-jachete", "cardPhoto": EXISTING}
+
+
+def ss_colours():
+    base = "/images/products/geaca-test-mc4314"
+    return [{"code": c, "name": c, "swatch": None, "spin": [],
+             "images": [{"src": f"{base}/{c}-PS.webp", "thumb": f"{base}/{c}-PS-thumb.webp", "view": "PS"}]}
+            for c in ("Q5", "H1")]
+
+
+def ss_errors(**changes):
+    text = copy.deepcopy(SS_TEXT)
+    for key, value in changes.items():
+        if value is None:
+            text["cardPhoto"].pop(key, None)
+        else:
+            text["cardPhoto"][key] = value
+    return card_photo.card_photo_errors(text)
+
+
+check(card_photo.card_photo_errors(SS_TEXT) == [], f"existing valid: {card_photo.card_photo_errors(SS_TEXT)}")
+check(ss_errors(sourceId=ID), "existing și sourceId împreună trebuie să pice")
+check(ss_errors(existing="Q5/../x"), "existing cu cale trebuie să pice")
+check(ss_errors(existing="H1-PS"), "existing cu altă culoare decât colour trebuie să pice")
+check(ss_errors(existing=None), "fără existing și fără sourceId trebuie să pice")
+
+listed = ss_colours()
+before = copy.deepcopy(listed)
+check(card_photo.apply_card_photo(listed, SS_TEXT, Path("/nu/există")) == "Q5", "existing: cardColour")
+first = listed[0]["images"][0]
+check(len(listed[0]["images"]) == 1 and first["view"] == "PS" and first["kind"] == "studio", f"existing: {first}")
+check(first["src"] == before[0]["images"][0]["src"] and first["thumb"] == before[0]["images"][0]["thumb"],
+      "existing: src/thumb nu se schimbă")
+check(first["alt"] == EXISTING["alt"] and "focus" not in first, f"existing: alt, fără focus: {first}")
+check(listed[1] == before[1], "existing: alte culori neatinse")
+wrong = copy.deepcopy(SS_TEXT)
+wrong["cardPhoto"]["existing"] = "Q5-P01"
+expect("existing care nu e prima poză", CardPhotoError, lambda: card_photo.apply_card_photo(ss_colours(), wrong, Path("/x")))
+
 print("ok")
