@@ -908,3 +908,26 @@
 - `--font-accent` e definit în `@theme`, dar neutilizat azi (păstrat ca în configurația veche).
 - Impact: clasele noi se scriu pe sintaxa v4. Pentru un `text-*` responsiv peste un `leading-*`, se adaugă explicit
   `leading-*` la același breakpoint. Temele și culorile se schimbă în `@theme` din `src/styles/global.css`.
+
+## D-2026-11-27-03
+- Întrebările frecvente sunt mereu pliate, pe tot site-ul, și se randează doar prin `src/components/FaqList.astro`:
+  `<details>/<summary>` nativ, fără JavaScript, cu toate răspunsurile în HTML-ul static (nu se încarcă la click) și
+  aceeași formă pe toate lățimile. Folosit pe homepage, cele 4 ghiduri, categorii, mărci, paginile de industrie,
+  /haine-de-lucru-personalizate/, /testare-fara-riscuri/ și /calculator-cost-echipamente/. `<h2 id="intrebari">` și
+  JSON-LD-ul `FAQPage` rămân în pagini, cu același array `faq`: JSON-LD-ul e identic la caracter cu cel de dinainte
+  (comparat pe 178 de pagini). Nu s-a șters niciun cuvânt, s-a schimbat doar forma. Excepții: fișele de produs au
+  întrebările pliate prin propriul `<details>` din `ProductDetail.astro`, iar /cum-lucram/ are structura proprie
+  (alt PR); ambele rămân pe căile lor.
+- Tabelul „Certificările fiecărui model” (categorii și mărci, 17 pagini) e compact: pliat (`<details>` nativ, h2 și
+  `#certificari` în afara lui), pe 2 coloane pe toate lățimile (model, certificări), fără derulare laterală (`table-fixed`,
+  codurile se rup doar dacă nu încap pe un rând). Fără coloana „Marcă”: pe paginile de marcă nu apare deloc, pe cele
+  de categorie apare ca rând mic sub numele modelului doar când numele nu conține marca (32 din 143 de modele).
+  Summary-ul („Vezi certificările modelelor”) nu spune câte modele sunt, din cauza deciziei din 21.11.2026 că nicio
+  pagină nu afișează numărul de modele (`tests/site-promises.test.mjs`).
+- Motiv: încărcare cognitivă pe telefon (auditul din 27.11.2026: ziduri de text la 390 px). Textul rămâne în HTML, deci
+  nimic nu se pierde pentru căutare sau pentru cine îl citește.
+- Consecințe: orice întrebări frecvente noi trec prin `FaqList`, nu prin `<dl>` sau paragrafe deschise. Regula e impusă de
+  `tests/faq-pliat.test.mjs` (fiecare răspuns din `FAQPage` e într-un `<details>`, întrebarea nu apare deschisă) și
+  `tests/certificari-compact.test.mjs` (tabel pliat, fără overflow-x, fără coloana „Marcă”, rând de marcă exact unde
+  trebuie, toate codurile prezente); `scripts/check-cert-table-mobile.mjs` măsoară tabelul la 390 px în WebKit. Pe scurt,
+  în `08-GHID_CONTINUT.md` §9.
