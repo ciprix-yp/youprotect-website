@@ -391,6 +391,35 @@ def check_boots_info(sig: dict | None) -> dict:
 
 
 OVERLAY_ALLOWED = {"segment": {"c_p50_max"}, "head": None, "veto_manual": None}  # None = orice conținut (validat separat)
+# Intervale permise pentru pragurile din overlay (min, max, min_exclusiv). Alese din calibrare_t5c.json (valori curente: c_p50_max 14, sag_ratio_min 0,15,
+# free_run_min 0,3, width_min 60, vlm_p_yes 0,9) cu plafon ~1,5x valoarea calibrată (vlm_p_yes: (0, 1], fiind probabilitate). Un overlay nu poate
+# relaxa un prag dincolo de acestea (ex. free_run_min=99 ar face geometria capului imposibil de îndeplinit, c_p50_max=1e9 ar accepta orice croma).
+OVERLAY_RANGES = {
+    ("segment", "c_p50_max"): (0.0, 20.0, False),
+    ("head", "sag_ratio_min"): (0.0, 0.225, False),
+    ("head", "free_run_min"): (0.0, 0.45, False),
+    ("head", "width_min"): (0.0, 90.0, False),
+    ("head", "vlm_p_yes"): (0.0, 1.0, True),
+}
+OVERLAY_HEAD_KEYS = {"sag_ratio_min", "free_run_min", "width_min", "vlm_p_yes", "vlm_products"}
+
+
+def _validate_overlay_ranges(k: str, v: Any) -> None:
+    if k not in ("segment", "head"):
+        return
+    if k == "head":
+        if not isinstance(v, dict) or set(v) - OVERLAY_HEAD_KEYS:
+            raise CalibrationError(f"overlay: head acceptă doar {sorted(OVERLAY_HEAD_KEYS)}, primit {sorted(v) if isinstance(v, dict) else v!r}")
+        vp = v.get("vlm_products")
+        if vp is not None and not (isinstance(vp, list) and all(isinstance(x, str) for x in vp)):
+            raise CalibrationError("overlay: head.vlm_products trebuie să fie listă de șiruri")
+    for key, val in v.items():
+        rng = OVERLAY_RANGES.get((k, key))
+        if rng is None:
+            continue
+        lo, hi, lo_excl = rng
+        if not finite(val) or val > hi or val < lo or (lo_excl and val <= lo):
+            raise CalibrationError(f"overlay: {k}.{key}={val!r} în afara intervalului permis {'(' if lo_excl else '['}{lo}, {hi}]")
 
 
 def merge_overlay(cal: dict, overlay: dict) -> dict:
@@ -408,6 +437,7 @@ def merge_overlay(cal: dict, overlay: dict) -> dict:
                 raise CalibrationError(f"overlay: {k} acceptă doar {sorted(allowed)}, primit {sorted(v) if isinstance(v, dict) else v!r}")
         if k == "veto_manual":
             _validate_veto(v)
+        _validate_overlay_ranges(k, v)
         if isinstance(v, dict) and isinstance(out["praguri"].get(k), dict):
             out["praguri"][k].update(v)
         else:

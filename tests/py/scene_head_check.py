@@ -169,6 +169,15 @@ def main():  # noqa: C901
     neg_raises_ov("overlay care relaxează yunet_score=1.01 respins", "nu e permisă", {"yunet_score": 1.01})
     neg_raises_ov("overlay care relaxează skin_whole_max=1.0 respins", "nu e permisă", {"skin_whole_max": 1.0})
     neg_raises_ov("overlay cu segment.skin_frac_max relaxat respins", "acceptă doar", {"segment": {"skin_frac_max": 1.0}})
+    neg_raises_ov("overlay segment.c_p50_max=1e9 respins", "în afara intervalului", {"segment": {"c_p50_max": 1e9}})
+    neg_raises_ov("overlay head.vlm_p_yes=2.0 respins", "în afara intervalului", {"head": {"vlm_p_yes": 2.0}})
+    neg_raises_ov("overlay head.vlm_p_yes=0 respins", "în afara intervalului", {"head": {"vlm_p_yes": 0}})
+    neg_raises_ov("overlay head.free_run_min=99 respins", "în afara intervalului", {"head": {"free_run_min": 99}})
+    neg_raises_ov("overlay head.sag_ratio_min=99 respins", "în afara intervalului", {"head": {"sag_ratio_min": 99}})
+    neg_raises_ov("overlay head.width_min=1e6 respins", "în afara intervalului", {"head": {"width_min": 1e6}})
+    neg_raises_ov("overlay head.free_run_min=NaN respins", "în afara intervalului", {"head": {"free_run_min": float("nan")}})
+    neg_raises_ov("overlay head cu cheie necunoscută respins", "head acceptă doar", {"head": {"altceva": 1}})
+    show("POS", "overlay-ul T5c real comis încape în intervalele permise")
     relaxed = copy.deepcopy(CAL)
     relaxed["praguri"]["vlm_p_yes"] = 1.01
     try:

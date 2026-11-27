@@ -141,7 +141,7 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
 - Croma nuanțată: pe lângă calea strictă (piele <= 0,05, C* p90 <= 20), segmentul trece dacă mediana C* <= 14 (`segment.c_p50_max`). Pe BZ739OR segmentul gri cu nuanță caldă are mediana 3–16,
   bejul/cartonul/pielea >= 17 (setul etichetat vizual în `calibrare_t5c.json`).
 - `calibrare_t5c.json` = praguri noi + etichete (doar id-uri), suprapuse cu `run_model_checks.py --calibrare-extra` (OBLIGATORIU); fișa nouă e `fisa_finala_v3.json` (fișele finale mai vechi rămân neatinse).
-  Overlay-ul acceptă doar `segment.c_p50_max`, `head`, `veto_manual`; calibrarea îmbinată se revalidează, iar `validate_calibration` RECALCULEAZĂ `flagged` al fiecărui control din valorile salvate.
+  Overlay-ul acceptă doar `segment.c_p50_max`, `head`, `veto_manual`, iar valorile sunt plafonate (`OVERLAY_RANGES`, ~1,5x valoarea calibrată în `calibrare_t5c.json`): `segment.c_p50_max` [0, 20], `head.sag_ratio_min` [0, 0,225], `head.free_run_min` [0, 0,45], `head.width_min` [0, 90], `head.vlm_p_yes` (0, 1]; `head` mai acceptă doar `vlm_products` (listă de șiruri); calibrarea îmbinată se revalidează, iar `validate_calibration` RECALCULEAZĂ `flagged` al fiecărui control din valorile salvate.
   `veto_manual` e legat de IMAGINE: cheia = sha256 al `master.png`, cu `motiv` și `autor` (id-ul e doar informativ).
 - `boots_two_info` (doar FD25BK): semnal INFORMATIV (VLM „two boots”), nu respinge. Etapele noi: `qwen_head` (după `sam`; decupajele sunt scrise de `sam` în `<report-dir>/sam_dump`) și `qwen_boots`.
 

@@ -136,6 +136,26 @@ def main():  # noqa: C901
         b = ilib.verify_candidate_binding(cand, "fisa.json", root / "src.png", zones, reg, legacy=True)
         assert b["legacy"] is True and b["sha256_master"] == ilib.file_sha(cand / "master.png")
         show("POS", "--legacy: fișa veche e acceptată doar marcat (legacy=True, hash-urile masterului luate de pe disc)")
+        # NEG: sha256_masca din fișă ≠ masca recalculată din zone (fișa re-înregistrată, deci doar legătura cu zonele pică)
+        def reg_fisa(d, fisa_dir, reg_path):
+            txt = json.dumps(d, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+            fl.append_registry(reg_path, d, hashlib.sha256(txt.encode()).hexdigest())
+            (fisa_dir / "fisa.json").write_text(txt, encoding="utf-8")
+        bad = {**old, "sha256_masca": "0" * 64}
+        reg2 = root / "registru2.jsonl"
+        reg_fisa(bad, cand, reg2)
+        neg_raises("verify_candidate_binding: sha256_masca din fișă ≠ masca din zone", ilib.IntegrityError, "sha256_masca",
+                   lambda: ilib.verify_candidate_binding(cand, "fisa.json", root / "src.png", zones, reg2, legacy=True))
+        # NEG: fișa copiată sub alt nume de director (candidat din fișă ≠ director)
+        other = root / "cand" / "ZZ1-c-s2"
+        other.mkdir()
+        for f in ("master.png", "raw_768.png"):
+            (other / f).write_bytes((cand / f).read_bytes())
+        reg3 = root / "registru3.jsonl"
+        reg_fisa(old, other, reg3)
+        neg_raises("verify_candidate_binding: fișa lui ZZ1-c-s1 copiată în directorul ZZ1-c-s2", ilib.IntegrityError, "candidatului",
+                   lambda: ilib.verify_candidate_binding(other, "fisa.json", root / "src.png", zones, reg3, legacy=True))
+        (cand / "fisa.json").write_text(json.dumps(old, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         assert ilib.missing_t3a(old["verificari"]) == []
         assert ilib.missing_t3a(old["verificari"][:-2]) == ["color_spill", "decor_fluo"]
         show("NEG", "fișă de intrare fără color_spill/decor_fluo: verificări T3a obligatorii lipsă", str(ilib.missing_t3a(old["verificari"][:-2])))
