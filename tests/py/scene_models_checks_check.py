@@ -16,6 +16,7 @@ import numpy as np
 
 ROOT = Path(sys.argv[1]).resolve()
 sys.path.insert(0, str(ROOT / "scripts" / "scene"))
+import calibrate_models as cal_m  # noqa: E402
 import checks_models_lib as cm  # noqa: E402
 import fisa_lib as fl  # noqa: E402
 import models_runtime as mr  # noqa: E402
@@ -122,7 +123,32 @@ def main():  # noqa: C901
     orig = [{"text": "ORTWEST", "conf": 0.99}, {"text": "9", "conf": 0.91}]
     assert cm.check_ocr_logo("eticheta_guler", orig, [{"text": "ORTWEST", "conf": 0.98}], o["logo_min_conf"], o["logo_min_len"])["passed"]
     show("POS", "logo identic (ignoră token-uri de 1 caracter)")
-    assert cm.check_ocr_logo("x", [], [], o["logo_min_conf"])["passed"]
+    r_ng = cm.check_ocr_logo("x", [], [], o["logo_min_conf"])
+    assert r_ng["passed"] is True and r_ng["value"] == "neconcludent" and r_ng["informativ"] is True, r_ng
+    r_low = cm.check_ocr_logo("x", [{"text": "ABC", "conf": 0.2}], [{"text": "XYZ", "conf": 0.3}], o["logo_min_conf"])  # sub prag de încredere: tot nimic citit
+    assert r_low["informativ"] is True and r_low["value"] == "neconcludent"
+    show("POS", "F4 OCR logo gol/gol = neconcludent informativ", f"value={r_ng['value']} informativ={r_ng['informativ']} | {r_ng['detail']}")
+    import make_planse as mp  # noqa: E402
+    vl = mp.verdict_lines([r_ng, cm.check_ocr_logo("y", [{"text": "POR", "conf": 0.99}], [{"text": "POR", "conf": 0.99}], o["logo_min_conf"])])
+    assert vl[0][0] is True and vl[0][2] is True and vl[1][2] is False, vl
+    assert "neconcludent" in vl[0][1], vl
+    show("POS", "F4 planșa marchează verificarea ca informativ (INFO), nu OK", f"{vl[0]}")
+    assert "informativ" not in cm.check_ocr_logo("y", [{"text": "POR", "conf": 0.99}], [{"text": "POR", "conf": 0.99}], o["logo_min_conf"])
+    show("POS", "F4 logo cu text citit și identic rămâne verificare normală (fără informativ)")
+    t5c = json.loads((ROOT / "scripts" / "scene" / "calibrare_t5c.json").read_text(encoding="utf-8"))
+    good_ids = {"S476YE-hala_depozit-s106", "S476YE-hala_depozit-s101", "S476YE-santier_constructii_zi-s103", "BZ739OR-hala_productie-s200", "BZ739OR-hala_productie-s202"}
+    kept, removed = cal_m.exclude_labeled(good_ids, t5c)
+    assert removed == {"S476YE-hala_depozit-s106", "S476YE-santier_constructii_zi-s103"} and "S476YE-hala_depozit-s101" in kept and "BZ739OR-hala_productie-s200" in kept, (kept, removed)
+    show("POS", "F5 dom/neclar scoși din „buni”; con bun și gri acceptabil rămân", f"scoși={sorted(removed)}")
+    assert cal_m.labeled_ids(t5c, ("respins_bej_carton_piele",)) >= {"BZ739OR-hala_productie-s202"}
+    assert cal_m.exclude_labeled(good_ids, t5c, ())[1] == set()
+    show("NEG", "F5 fără chei de excludere nu scoate nimic (comportamentul vechi doar explicit)")
+    h4 = "a" * 64
+    fb = dict(candidat="S476YE-test-s1", produs="S476YE", sha256_sursa=h4, sha256_masca=h4, sha256_L=h4, sha256_E=h4, sha256_I=h4, sha256_cod=h4, sha256_master=h4,
+              sha256_raw=h4, model={"id": "m/x", "revizie": "a" * 40, "sha256": h4}, seed=1, prompt="p", context="c", scara=1.0, deplasare={"dx": 0, "dy": 0},
+              flip=False, rotate_deg=0, canvas={"w": 1100, "h": 1100}, timp_generare_s=1.0)
+    assert fl.build_fisa(**fb, verificari=[r_ng])["verificari"][0]["informativ"] is True
+    neg_raises("F4 fișă cu informativ non-bool", fl.FisaError, "informativ trebuie să fie bool", lambda: fl.build_fisa(**fb, verificari=[{**r_ng, "informativ": "da"}]))
     neg("text logo diferit de original", cm.check_ocr_logo("logo_maneca", [{"text": "POR", "conf": 0.99}], [{"text": "PQR", "conf": 0.99}], o["logo_min_conf"]), "PQR")
     neg("logo dispărut în candidat", cm.check_ocr_logo("logo_maneca", [{"text": "POR", "conf": 0.99}], [], o["logo_min_conf"]), "POR")
     neg("text nou în zona logo", cm.check_ocr_logo("logo_maneca", [], [{"text": "SALE", "conf": 0.99}], o["logo_min_conf"]), "SALE")

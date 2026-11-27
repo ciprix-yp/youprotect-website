@@ -171,14 +171,15 @@ def fmt_value(v) -> str:
     return str(v)[:24]
 
 
-def verdict_lines(verificari: list[dict]) -> list[tuple[bool, str]]:
+def verdict_lines(verificari: list[dict]) -> list[tuple[bool, str, bool]]:
+    """(passed, text, informativ): o verificare `informativ` (ex. OCR logo neconcludent) se afișează „INFO”, nu „OK”."""
     out = []
     for v in verificari:
         name = v["name"]
         label = LABELS.get(name) or ("OCR logo " + name.split(":", 1)[1].replace("_", " ") if name.startswith("ocr_logo:") else name)
         thr = v.get("threshold")
         extra = f" ≤{fmt_value(thr)}" if isinstance(thr, (int, float)) and not isinstance(thr, bool) and name in ("halo", "color_spill", "decor_fluo", "mirror") else ""
-        out.append((v.get("passed") is True, f"{label}: {fmt_value(v.get('value'))}{extra}"))
+        out.append((v.get("passed") is True, f"{label}: {fmt_value(v.get('value'))}{extra}", v.get("informativ") is True))
     return out
 
 
@@ -353,10 +354,10 @@ def build_planse(cand_dir: Path, source: Image.Image, zones_dir: Path, fisa: dic
         tag(d, (x + 2, y + STRIP + 2), "ORIG", f22)
         tag(d, (x + a.width + GAP + 2, y + STRIP + 2), "SCENĂ", f22)
     strip(0, y_row4, WIDTH, "VERDICT fișă (toate trebuie OK)")
-    for i, (ok, txt) in enumerate(vlines):
+    for i, (ok, txt, info) in enumerate(vlines):
         col, row = divmod(i, nrows)
         x, y = 10 + col * HALF, y_row4 + sec + row * 32
-        d.text((x, y), "OK" if ok else "PICAT", font=f22, fill=OKC if ok else BADC)
+        d.text((x, y), ("INFO" if info else "OK") if ok else "PICAT", font=f22, fill=(YELLOW if info else OKC) if ok else BADC)
         d.text((x + 76, y), fit_text(d, txt, f22, HALF - 90), font=f22, fill=WHITE)
     assert_width(im.width)
     return im

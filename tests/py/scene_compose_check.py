@@ -87,7 +87,7 @@ def neg_raises(name, exc, needle, fn):
 def run_all(placed, output, src, alpha, L, E, I, crit, params):  # noqa: E741
     return [
         ck.check_transform(params),
-        ck.check_identity_master(output, placed["ref"], ck.eroded_L(placed["L"])),
+        ck.check_identity_master(output, placed["ref"], placed["L"]),
         ck.detect_mirror(output, placed["ref"], placed["L"]),
         ck.check_scale_not_up(output, src, alpha, L, E, I, crit, CANVAS, params),
         ck.check_halo(output, placed),
@@ -129,6 +129,36 @@ def main():  # noqa: C901
     b = cl.compose(cl.place_product(src, alpha, L, E, I, crit, CANVAS, 1.0, DX, DY), backgrounds()["gradient"], fg_placed)
     assert a.tobytes() == b.tobytes()
     print("POS determinism: două rulări dau aceiași octeți")
+    # ---- F2: umplerea benzii E din decor (bg în E/inel = reconstrucția albă a packshot-ului, ca la VAE)
+    dark = backgrounds()["intunecat"]
+    contaminated = dark.copy()
+    zone_c = zl.dilate(placed["L"] | placed["E"], 1) & ~placed["L"]
+    contaminated[zone_c] = 255  # E + 1 px în jur = alb (reconstrucția packshot-ului), restul decor închis
+    new = cl.compose(placed, contaminated, fg_placed)  # band_fill=True implicit
+    old = cl.compose(placed, contaminated, fg_placed, band_fill=False)
+    h_new, h_old = ck.check_halo(new, placed), ck.check_halo(old, placed)
+    assert h_new["passed"], h_new
+    neg("F2 compunere VECHE (band_fill=False) pe bg cu E alb: halo", h_old, "p90 luminanță inel=")
+    print(f"POS F2 compunere NOUĂ pe același bg cu E alb: halo trece | value={h_new['value']} threshold={h_new['threshold']} (vechi: {h_old['value']})")
+    assert np.array_equal(new[placed["L"]], old[placed["L"]]) and np.array_equal(new[placed["L"]], placed["ref"][placed["L"]])
+    assert ck.check_identity_master(new, placed["ref"], placed["L"])["value"] == 0
+    print("POS F2: L rămâne identic (diferență 0) cu și fără umplere")
+    assert cl.compose(placed, contaminated, fg_placed).tobytes() == new.tobytes()
+    print("POS F2 determinism: umplerea dă aceiași octeți la două rulări")
+    far = ~zl.dilate(placed["L"] | placed["E"], cl.BAND_RING_PX)
+    assert np.array_equal(new[far], contaminated[far]), "decorul din afara inelului nu se atinge"
+    prep = cl.prepare_background(contaminated, placed)
+    assert np.abs(prep[zone_c].astype(int) - np.array(dark[0, 0], dtype=int)).max() == 0
+    print("POS F2 prepare_background: banda E + inelul iau valoarea decorului din jur (fundal plat -> exact aceeași culoare)")
+    # fundal cu gradient: valorile umplute rămân între valorile vecinilor (nu alb)
+    gcont = backgrounds()["gradient"].copy()
+    zone_r = zl.dilate(placed["L"] | placed["E"], cl.BAND_RING_PX) & ~placed["L"]
+    gcont[zone_c] = 255
+    gfill = cl.fill_from_outside(gcont, zone_r, ~zl.dilate(placed["L"] | placed["E"], cl.BAND_RING_PX))
+    assert gfill[zone_c].max() < 255 and gfill[zone_c].min() >= backgrounds()["gradient"].min()
+    print(f"POS F2 gradient: max în banda umplută = {int(gfill[zone_c].max())} (< 255)")
+    neg_raises("F2 fill_from_outside fără nicio sursă validă", ValueError, "nicio sursă validă", lambda: cl.fill_from_outside(contaminated, zone_c, np.zeros(zone_c.shape, bool)))
+    neg_raises("F2 fill_from_outside cu mască de altă formă", ValueError, "măști", lambda: cl.fill_from_outside(contaminated, zone_c[:10], ~zone_c))
     # scale 1.0 = copie exactă
     assert np.array_equal(placed["ref"][DY : DY + N, DX : DX + N], src) and placed["resampling"] == "none"
     assert np.array_equal(cl.inpaint_mask(placed["L"], placed["E"]) == 0, placed["L"] | placed["E"])
@@ -137,7 +167,7 @@ def main():  # noqa: C901
     # scale 0.75: zone recalculate și validate; identitate cu referința ei
     p75 = cl.place_product(src, alpha, L, E, I, crit, CANVAS, 0.75, 100, 100)
     o75 = cl.compose(p75, backgrounds()["intunecat"])
-    r75 = ck.check_identity_master(o75, p75["ref"], ck.eroded_L(p75["L"]))
+    r75 = ck.check_identity_master(o75, p75["ref"], p75["L"])
     assert r75["passed"] and p75["resampling"] == "LANCZOS" and p75["box"] == [100, 100, 220, 220]
     print(f"POS scale 0.75: zone recalculate cu build_zones și validate, L={int(p75['L'].sum())} px, identitate {r75['value']}")
 
@@ -147,7 +177,21 @@ def main():  # noqa: C901
     ys, xs = np.nonzero(Lm)
     y, x = ys[len(ys) // 2], xs[len(xs) // 2]
     px[y, x, 0] = px[y, x, 0] - 1 if px[y, x, 0] > 0 else 1
-    neg("1 px schimbat cu 1 nivel în L", ck.check_identity_master(px, placed["ref"], Lm), "max|Δ| în L erodat = 1; 1 px diferiți")
+    neg("1 px schimbat cu 1 nivel în L", ck.check_identity_master(px, placed["ref"], placed["L"]), "max|Δ| în L = 1; 1 px diferiți")
+    # F1: un pixel chiar pe MARGINEA lui L (în L, dar nu în L erodat), schimbat cu +40: pică pe L complet; verificarea veche pe L erodat îl rata
+    edge_ys, edge_xs = np.nonzero(placed["L"] & ~Lm)
+    assert edge_ys.size > 0
+    ey, ex = edge_ys[edge_ys.size // 2], edge_xs[edge_xs.size // 2]
+    px_edge = good.copy()
+    px_edge[ey, ex] = np.clip(px_edge[ey, ex].astype(int) + 40, 0, 255).astype(np.uint8)
+    assert (px_edge[ey, ex] != placed["ref"][ey, ex]).any()
+    old_style = ck.check_identity_master(px_edge, placed["ref"], Lm)
+    assert old_style["passed"], "demonstrație: verificarea pe L erodat ratează pixelul de margine"
+    print(f"POS regresie F1: verificarea veche (pe L erodat) rata pixelul de margine ({ey},{ex}) schimbat cu +40: {old_style['detail']}")
+    neg("F1 pixel de pe marginea lui L schimbat cu +40", ck.check_identity_master(px_edge, placed["ref"], placed["L"]), "max|Δ| în L = 40; 1 px diferiți")
+    neg("F1 pixel de margine L, check_scale_not_up (referință recalculată)", ck.check_scale_not_up(px_edge, src, alpha, L, E, I, crit, CANVAS, params), "max|Δ| în L = 40")
+    assert ck.check_identity_master(good, placed["ref"], placed["L"])["passed"]
+    print("POS F1 compunere corectă: identitate 0 pe L complet")
     # ---- oglindire
     mir = good.copy()
     mir[DY : DY + N, DX : DX + N] = good[DY : DY + N, DX : DX + N, :][:, ::-1]

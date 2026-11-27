@@ -4,8 +4,9 @@ Contractul: fiecare verificare întoarce {name, value, threshold, passed, detail
 Fișa (fisa_lib) acceptă orice verificare cu aceeași formă (OCR, fețe, SigLIP2, VLM vin la T5).
 
 Constante calibrate (valorile măsurate sunt în tests/py/scene_compose_check.py, ieșirea „CAL ...", și în README):
-- eroziunea lui L pentru identitate: 1 px (disc), ca să nu conteze pixelii de pe marginea L, unde reeșantionarea/compresia
-  se amestecă cu E;
+- identitatea masterului (lossless) se verifică pe L COMPLET, nu erodat: compunerea lipește tot L din referință, deci orice pixel
+  schimbat chiar pe marginea lui L e o abatere reală; eroziunea de 1 px (disc) rămâne DOAR la identitatea exportului lossy
+  (check_identity_export), unde reeșantionarea/compresia se amestecă cu E;
 - HALO_DELTA, SPILL_MAX_FRAC, FLUO_MAX_FRAC, export: vezi mai jos.
 """
 # ruff: noqa: E501
@@ -64,16 +65,17 @@ def check_transform(params: dict) -> dict:
 
 # ---------------------------------------------------------------- identitate (master, lossless)
 
-def check_identity_master(output: np.ndarray, placed_ref: np.ndarray, L_eroded: np.ndarray) -> dict:  # noqa: N803
-    """Diferența maximă absolută pe RGB în L erodat (1 px) = exact 0. Un pixel schimbat cu 1 nivel pică."""
-    out, ref, m = np.asarray(output), np.asarray(placed_ref), np.asarray(L_eroded, dtype=bool)
+def check_identity_master(output: np.ndarray, placed_ref: np.ndarray, L: np.ndarray) -> dict:  # noqa: N803
+    """Diferența maximă absolută pe RGB pe L COMPLET (nu erodat; masterul e lossless și compunerea lipește tot L) = exact 0.
+    Un pixel schimbat cu 1 nivel, chiar pe marginea lui L, pică. Garantează și identitatea pixelilor din logo (L ⊇ zonele critice)."""
+    out, ref, m = np.asarray(output), np.asarray(placed_ref), np.asarray(L, dtype=bool)
     if out.shape != ref.shape or m.shape != ref.shape[:2]:
         return result("identity_master", None, 0, False, f"forme diferite: output {out.shape}, ref {ref.shape}, L {m.shape}")
     if not m.any():
-        return result("identity_master", None, 0, False, "L erodat e gol")
+        return result("identity_master", None, 0, False, "L e gol")
     d = np.abs(out.astype(np.int16) - ref.astype(np.int16))[m]
     mx, n = int(d.max()), int((d.max(axis=1) > 0).sum())
-    return result("identity_master", mx, 0, mx == 0, f"max|Δ| în L erodat = {mx}; {n} px diferiți din {int(m.sum())}")
+    return result("identity_master", mx, 0, mx == 0, f"max|Δ| în L = {mx}; {n} px diferiți din {int(m.sum())}")
 
 
 def _mirror_err(out: np.ndarray, ref: np.ndarray, L: np.ndarray, x0: int, y0: int, x1: int, y1: int) -> tuple[float, float, float]:
@@ -104,7 +106,7 @@ def check_scale_not_up(
     output: np.ndarray, source_rgb: np.ndarray, alpha: np.ndarray, L: np.ndarray, E: np.ndarray, I: np.ndarray,  # noqa: E741
     critical: dict, canvas_size: tuple[int, int], params: dict, zone_params: dict | None = None,
 ) -> dict:
-    """Recalculează referința din sursă + parametrii DECLARAȚI și cere identitate exactă în L erodat.
+    """Recalculează referința din sursă + parametrii DECLARAȚI și cere identitate exactă pe L complet.
     Un output făcut din produs mărit (>1) nu se potrivește cu referința recalculată la scale declarat 1.0 -> pică;
     la scale declarat > 1, place_product refuză și verificarea pică."""
     try:
@@ -112,7 +114,7 @@ def check_scale_not_up(
                                   params.get("scale"), params.get("dx"), params.get("dy"), zone_params)
     except (ValueError, TypeError) as e:
         return result("scale_not_up", None, 0, False, f"referința nu se poate recalcula din parametrii declarați: {e}")
-    r = check_identity_master(output, placed["ref"], eroded_L(placed["L"]))
+    r = check_identity_master(output, placed["ref"], placed["L"])
     return result("scale_not_up", r["value"], 0, r["passed"], "identitate față de referința recalculată: " + r["detail"])
 
 

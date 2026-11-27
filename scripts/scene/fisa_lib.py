@@ -110,6 +110,8 @@ def validate_fisa(f: dict) -> None:
             raise FisaError(f"verificari[{i}] trebuie să aibă cheile {CHECK_KEYS}")
         if not isinstance(item["name"], str) or not isinstance(item["passed"], bool):
             raise FisaError(f"verificari[{i}]: name șir, passed bool")
+        if "informativ" in item and not isinstance(item["informativ"], bool):
+            raise FisaError(f"verificari[{i}]: informativ trebuie să fie bool")
     try:
         dt.datetime.strptime(f["data"], "%Y-%m-%dT%H:%M:%SZ")
     except (TypeError, ValueError) as e:

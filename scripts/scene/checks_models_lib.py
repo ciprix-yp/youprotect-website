@@ -189,11 +189,21 @@ def _norm_items(items: list[dict], min_conf: float, min_len: int = 1) -> list[st
 def check_ocr_logo(name: str, original: list[dict], candidate: list[dict], min_conf: float, min_len: int = 2) -> dict:
     """Același text normalizat pe cutia critică în original și în candidat (la 3×). Comparăm output cu output, nu cu textul întreg
     al logo-ului (în original poate fi vizibilă doar o parte). Token-urile de un singur caracter se ignoră (zgomot OCR pe pictograme:
-    măsurat 30/150 diferențe la min_len=1, 0/150 la min_len=2)."""
+    măsurat 30/150 diferențe la min_len=1, 0/150 la min_len=2).
+
+    Dacă OCR nu citește NIMIC în original, verificarea e NECONCLUDENTĂ: `passed=True`, `value="neconcludent"`, `informativ=True` (fișa și
+    planșa o arată ca „informativ”, nu „OK”); un text apărut doar în candidat pică. Identitatea pixelilor din logo nu depinde de OCR:
+    o garantează identitatea pe L complet (logo-ul e în L), vezi checks_lib.check_identity_master."""
     a, b = _norm_items(original, min_conf, min_len), _norm_items(candidate, min_conf, min_len)
+    thr = f"identic, încredere >= {min_conf}, token >= {min_len} caractere"
+    if not a and not b:
+        r = ck.result(f"ocr_logo:{name}", "neconcludent", thr, True,
+                      "informativ: OCR nu citește nimic în original și nici în candidat; identitatea logo-ului e garantată de identitatea L, nu de OCR")
+        r["informativ"] = True
+        return r
     ok = a == b
-    return ck.result(f"ocr_logo:{name}", {"original": a, "candidat": b}, f"identic, încredere >= {min_conf}, token >= {min_len} caractere", ok,
-                     "text identic" + (" (niciun text lizibil în ambele)" if ok and not a else "") if ok else f"text diferit: original {a} vs candidat {b}")
+    return ck.result(f"ocr_logo:{name}", {"original": a, "candidat": b}, thr, ok,
+                     "text identic" if ok else f"text diferit: original {a} vs candidat {b}")
 
 
 def ocr_offenders(items: list[dict], min_len: int, min_conf: float) -> list[dict]:

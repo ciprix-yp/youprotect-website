@@ -78,19 +78,6 @@ def check_product_binding(product: str, zones_dir: Path, source: Path, summary: 
         raise SystemExit("PRODUS/ZONE NEPOTRIVITE: " + "; ".join(errs))
 
 
-def run_checks(master: np.ndarray, placed: dict, src: np.ndarray, z: dict, thr: dict) -> list[dict]:
-    Lm = ck.eroded_L(placed["L"])
-    return [
-        ck.check_transform(placed["params"]),
-        ck.check_identity_master(master, placed["ref"], Lm),
-        ck.detect_mirror(master, placed["ref"], placed["L"]),
-        ck.check_scale_not_up(master, src, z["alpha"], z["L"], z["E"], z["I"], z["critical"], pl.CANVAS, placed["params"]),
-        ck.check_halo(master, placed, thr["halo_delta"]),
-        ck.check_color_spill(master, placed, thr["spill_max_frac"]),
-        ck.check_decor_fluo(master, placed, thr["fluo_max_frac"]),
-    ]
-
-
 def jsonable(x):
     return json.loads(json.dumps(x, default=lambda o: o.item() if hasattr(o, "item") else str(o)))
 
@@ -206,7 +193,7 @@ def main() -> int:  # noqa: C901
         if not np.array_equal(master, master_mem):
             raise SystemExit(f"{name}: master.png recitit diferă de array-ul din memorie (salvare coruptă)")
         sha_master, sha_raw = ilib.file_sha(cdir / "master.png"), ilib.file_sha(cdir / "raw_768.png")
-        checks = run_checks(master, placed, src, z, thr)
+        checks = pl.run_checks(master, placed, src, z, thr)
         t3a_ok = fl.compute_global(checks)
         checks.append(ck.result("verificari_model", None, "OCR + fețe + ne-uman (T5b)", False,
                                 "nerulate în T5a: OCR logo/decor/I, detector de fețe, SigLIP2/VLM"))

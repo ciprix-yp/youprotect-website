@@ -5,7 +5,10 @@ imaginea întreagă). „Ne-om” = packshot-urile + candidații marcați vizual
 (jumătatea de jos, fără față) sunt doar diagnostic. Parametrii (prag YuNet, subsetul de formulări și marja SigLIP2 per set, prag piele,
 prag VLM) se aleg printr-o căutare pe grilă: recall 100% pe controale, apoi minimum de respingeri false pe ne-om.
 
-Rulare: python -I calibrate_models.py --controls <json..> --negatives <json..> --candidates <json..> [--good-ids <txt>] --out <calibrare_modele.json>
+Candidații etichetați „dom” sau „neclar” la T5c (calibrare_t5c.json, secțiunile `etichete_*`) NU sunt „buni” pentru rata de respingere falsă: `--exclude-labels
+calibrare_t5c.json` îi scoate din `--good-ids` (cheile se pot schimba cu `--exclude-keys`). Cifrele „0 respinse fals” sunt pe setul de calibrare, nu pe date noi.
+
+Rulare: python -I calibrate_models.py --controls <json..> --negatives <json..> --candidates <json..> [--good-ids <txt>] [--exclude-labels <calibrare_t5c.json>] --out <calibrare_modele.json>
 Semnalele cu aceleași id-uri din mai multe fișiere se îmbină pe etape (ex. fețe+SigLIP dintr-un fișier, qwen din altul).
 """
 # ruff: noqa: E501
@@ -44,6 +47,29 @@ def merge(paths: list[str]) -> tuple[list[dict], dict, dict]:
             sig.setdefault(k, {}).update(v)
         models.update(d["models"])
     return list(items.values()), sig, models
+
+
+EXCLUDE_KEYS = ("dom", "neclar")
+
+
+def labeled_ids(t5c: dict, keys: tuple[str, ...] = EXCLUDE_KEYS) -> set[str]:
+    """Id-urile de candidat (`<PRODUS>-<context>-s<seed>`) din listele cu cheile `keys` ale secțiunilor `etichete_<tip>_<PRODUS>` din calibrare_t5c.json."""
+    out: set[str] = set()
+    for sec, val in t5c.items():
+        if not sec.startswith("etichete_") or not isinstance(val, dict):
+            continue
+        product = sec.rsplit("_", 1)[-1]
+        for k in keys:
+            lst = val.get(k, [])
+            if isinstance(lst, list):
+                out |= {f"{product}-{x}" for x in lst if isinstance(x, str)}
+    return out
+
+
+def exclude_labeled(good: set[str], t5c: dict, keys: tuple[str, ...] = EXCLUDE_KEYS) -> tuple[set[str], set[str]]:
+    """(buni rămași, scoși): scoate din `good` candidații etichetați cu `keys` (implicit „dom” și „neclar”)."""
+    bad = labeled_ids(t5c, keys)
+    return good - bad, good & bad
 
 
 def judge_signals(item: dict, st: dict, ctx: mr.Ctx) -> dict:
@@ -105,6 +131,8 @@ def main() -> int:  # noqa: C901
     ap.add_argument("--negatives", nargs="+", required=True)
     ap.add_argument("--candidates", nargs="+", required=True)
     ap.add_argument("--good-ids", type=Path, default=None, help="fișier text: un id de candidat vizual bun pe linie (ne-om pentru rata de respingere falsă)")
+    ap.add_argument("--exclude-labels", type=Path, default=None, help="calibrare_t5c.json: candidații etichetați dom/neclar se scot din --good-ids (nu sunt „buni”)")
+    ap.add_argument("--exclude-keys", nargs="+", default=list(EXCLUDE_KEYS), help="cheile de etichetă excluse (implicit: dom neclar)")
     ap.add_argument("--yunet", type=float, nargs="+", default=[0.5, 0.6, 0.7, 0.8, 0.9, 0.95], help="grila de praguri YuNet")
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args()
@@ -115,6 +143,9 @@ def main() -> int:  # noqa: C901
     n_items, n_sig, _ = merge(a.negatives)
     k_items, k_sig, _ = merge(a.candidates)
     good = set(a.good_ids.read_text().split()) if a.good_ids else set()
+    if a.exclude_labels:
+        good, removed = exclude_labeled(good, json.loads(a.exclude_labels.read_text(encoding="utf-8")), tuple(a.exclude_keys))
+        print(f"ne-om „buni”: {len(good)} (scoși {len(removed)} etichetați {'/'.join(a.exclude_keys)}: {sorted(removed)})")
     have_vlm = all("qwen" in v for v in c_sig.values()) and all("qwen" in v for v in k_sig.values())
 
     ctl = []

@@ -12,6 +12,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # -I nu pune directorul scriptului pe sys.path
+import checks_lib as ck  # noqa: E402
 import compose_lib as cl  # noqa: E402
 import integrity_lib as ilib  # noqa: E402
 
@@ -55,3 +56,16 @@ def gradient_bg(top: tuple[int, int, int], bottom: tuple[int, int, int]) -> np.n
 
 def flat_bg(rgb: tuple[int, int, int]) -> np.ndarray:
     return np.broadcast_to(np.array(rgb, dtype=np.uint8), (CANVAS[1], CANVAS[0], 3)).copy()
+
+
+def run_checks(master: np.ndarray, placed: dict, src: np.ndarray, z: dict, thr: dict) -> list[dict]:
+    """Verificările T3a pe master (identitatea pe L COMPLET: masterul e lossless și compunerea lipește tot L)."""
+    return [
+        ck.check_transform(placed["params"]),
+        ck.check_identity_master(master, placed["ref"], placed["L"]),
+        ck.detect_mirror(master, placed["ref"], placed["L"]),
+        ck.check_scale_not_up(master, src, z["alpha"], z["L"], z["E"], z["I"], z["critical"], CANVAS, placed["params"]),
+        ck.check_halo(master, placed, thr["halo_delta"]),
+        ck.check_color_spill(master, placed, thr["spill_max_frac"]),
+        ck.check_decor_fluo(master, placed, thr["fluo_max_frac"]),
+    ]

@@ -120,12 +120,11 @@ def main() -> int:
         z = pl.load_zones(a.scene_dir / prod / "zones")
         placed = pl.place(src, z)
         F = pl.estimate_foreground(placed)
-        Lm = ck.eroded_L(placed["L"])
         pr: dict = {"fundaluri": {}, "export": {}}
         for name, mk in BACKGROUNDS.items():
             out = cl.compose(placed, mk(), F)
             row = {
-                "identity_master_max": ck.check_identity_master(out, placed["ref"], Lm)["value"],
+                "identity_master_max": ck.check_identity_master(out, placed["ref"], placed["L"])["value"],
                 "halo_exces": round(halo_excess(out, placed), 3),
                 "spill_frac": round(spill_frac(out, placed), 5),
                 "fluo_frac": round(fluo_frac(out, placed), 5),
@@ -148,7 +147,7 @@ def main() -> int:
             bad["fluo"].append(row["fluo_frac_artificial"])
             pr["fundaluri"][name] = row
         for q in (90, 85):
-            pr["export"][f"jpeg_q{q}"] = ck.calibrate_export(placed["ref"], Lm, jpeg_encoder(q))
+            pr["export"][f"jpeg_q{q}"] = ck.calibrate_export(placed["ref"], ck.eroded_L(placed["L"]), jpeg_encoder(q))
         rec["produse"][prod] = pr
         print(f"{prod}: {json.dumps(pr['fundaluri'], ensure_ascii=False)}", flush=True)
     d_halo, why_h = choose(ck.HALO_DELTA, max(good["halo"]), min(bad["halo"]))
