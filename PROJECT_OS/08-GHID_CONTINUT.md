@@ -182,6 +182,26 @@ voce, diacritice, ghilimele, cuvinte interzise, lungimi SEO, keyword în titlu/H
 Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecare secțiune răspunde la întrebarea ei (§0,
 §7), iar testul titlurilor trece.
 
+Semne de text scris pe pilot automat, care țin de structură, nu de cuvinte (adaptat după `anti-slop-ruleset.md` din
+inhouseseo/superseo-skills, Apache-2.0):
+
+- „Nu X, ci Y” și „nu doar X, ci și Y” de mai multe ori pe pagină. O dată e în regulă; mai des e tic. În loc de „Nu e
+  doar o geacă, ci un partener pe șantier” spui ce are geaca: „clasa 2 după EN ISO 20471”.
+- Trei din reflex: trei adjective sau trei beneficii când faptele sunt două sau patru. „Rezistenți, comozi și
+  practici” devine ce scrie în fișă: „lamelă antiperforație și talpă cu crampoane (S3)”.
+- Un rezumat la finalul secțiunii („Pe scurt, …”, „Așadar, …”) care repetă ce s-a spus. Secțiunea se termină cu
+  ultimul fapt sau cu pasul următor.
+- Toate frazele la fel de lungi, în același ritm. Alternează: „Clasa 3 e cea mai vizibilă.” după o frază lungă despre
+  suprafețele minime.
+- Testul horoscopului: paragraful ar putea sta neschimbat pe site-ul altei firme sau la alt produs? Atunci primește un
+  fapt concret: codul produsului, standardul, mărimea, termenul din `RESPONSE_TIME`, showroom-ul din Vetiș. „Siguranța
+  echipei tale e prioritatea noastră” pică testul; „Probezi bocancii în cabina din showroom-ul din Vetiș” îl trece.
+
+`lint_texts.py` semnalează, doar ca avertismente, „nu …, ci” de mai multe ori, mai mult de o frază de rezumat și
+frazele de lungimi apropiate din descriere; restul se verifică la citire. Din aceeași sursă nu preluăm lista de cuvinte
+englezești, „imperfecțiunile” sau experiențele personale adăugate ca textul să pară scris de om și cifrele de exemplu
+(§3).
+
 ## 9. Design (aceleași reguli pe toate paginile)
 
 - Antetul paginii interioare: `PageHeader.astro` (breadcrumb, H1, intro, butoane, fotografie opțională). Paginile de
