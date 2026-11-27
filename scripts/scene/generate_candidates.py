@@ -20,6 +20,7 @@ import datetime as dt
 import gc
 import hashlib
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -27,18 +28,24 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+os.environ.setdefault("HF_HUB_OFFLINE", "1")  # apărare suplimentară: nicio cerere către Hub (torch/transformers/diffusers se importă mai jos, în main)
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))  # -I nu pune directorul scriptului pe sys.path
 import checks_lib as ck  # noqa: E402
 import compose_lib as cl  # noqa: E402
 import fisa_lib as fl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
 import klein_lib as kl  # noqa: E402
+import models_runtime as mr  # noqa: E402
 import pilot_lib as pl  # noqa: E402
 import prompting as pr  # noqa: E402
 import verify_zones as vz  # noqa: E402
 
 CODE_FILES = ["generate_candidates.py", "prompting.py", "contexte.json", "pilot_lib.py", "compose_lib.py", "checks_lib.py",
-              "fisa_lib.py", "zones_lib.py", "klein_lib.py", "verify_zones.py"]
+              "fisa_lib.py", "zones_lib.py", "klein_lib.py", "verify_zones.py", "integrity_lib.py", "models_runtime.py"]
+WEIGHTS = "transformer/diffusion_pytorch_model.safetensors"
 GEN_RES = 768
 STEPS, GUIDANCE, STRENGTH = 4, 1.0, 1.0
 MODEL_ID = "flux2-klein-4b"
@@ -51,15 +58,24 @@ def log(msg: str) -> None:
     print(f"[{dt.datetime.now(dt.timezone.utc).strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
-def sha_arr(a: np.ndarray) -> str:
-    return hashlib.sha256(np.packbits(np.asarray(a, dtype=bool)).tobytes() + str(a.shape).encode()).hexdigest()
+sha_arr = ilib.sha_arr
 
 
-def model_info(models_lock: Path) -> dict:
-    m = json.loads(models_lock.read_text(encoding="utf-8"))
-    ent = next(x for x in m["models"] if x["id"] == MODEL_ID)
-    w = next(f for f in ent["files"] if f["path"] == "transformer/diffusion_pytorch_model.safetensors")
-    return {"id": MODEL_ID, "revizie": ent["revision"], "sha256": w["sha256"]}
+def model_info(models_dir: Path) -> dict:
+    """Verifică mărimea + sha256 ale TUTUROR fișierelor flux2-klein-4b (recalculate pe disc) ÎNAINTE de orice from_pretrained; hash-ul din fișă
+    e cel VERIFICAT al transformerului, nu cel copiat din manifest."""
+    _root, info, _first = mr.verify_model(models_dir, MODEL_ID, WEIGHTS)
+    return info
+
+
+def check_product_binding(product: str, zones_dir: Path, source: Path, summary: dict) -> None:
+    """Produsul cerut = zone.json = zone_specs.json = rezultatul verify_zones; sursa din zone.json = sursa produsului. Altfel SystemExit."""
+    zj = json.loads((zones_dir / "zone.json").read_text(encoding="utf-8"))
+    errs = ilib.check_product_binding(product, zj, ilib.load_specs(), source)
+    if summary.get("product") != product:
+        errs.append(f"verify_zones raportează produsul {summary.get('product')!r}, cerut {product!r}")
+    if errs:
+        raise SystemExit("PRODUS/ZONE NEPOTRIVITE: " + "; ".join(errs))
 
 
 def run_checks(master: np.ndarray, placed: dict, src: np.ndarray, z: dict, thr: dict) -> list[dict]:
@@ -111,9 +127,10 @@ def main() -> int:  # noqa: C901
             raise SystemExit(f"context {c!r} nu e permis pentru {a.product}; permise: {', '.join(allowed)}")
 
     sha_src = hashlib.sha256(source.read_bytes()).hexdigest()
-    errs, _summary = vz.verify(zones_dir, source)
+    errs, summary = vz.verify(zones_dir, source)
     if errs:
         raise SystemExit("VERIFICARE ZONE PICATĂ: " + "; ".join(errs))
+    check_product_binding(a.product, zones_dir, source, summary)
     log(f"sursa sha256={sha_src[:12]}…, zone OK")
 
     src = pl.load_source_rgb(source)
@@ -137,6 +154,8 @@ def main() -> int:  # noqa: C901
     if not todo:
         return 0
 
+    minfo = model_info(models_dir)  # mărime + sha256 reale ale fișierelor modelului, înainte de ORICE from_pretrained
+
     import torch
     import transformers
     from diffusers import Flux2KleinInpaintPipeline
@@ -144,11 +163,11 @@ def main() -> int:  # noqa: C901
     if not torch.backends.mps.is_available():
         raise SystemExit("MPS indisponibil")
     dtype, dev = torch.bfloat16, "mps"
-    minfo = model_info(HERE / "models.lock.json")
 
     t0 = time.perf_counter()
-    tok = transformers.AutoTokenizer.from_pretrained(model_dir / "tokenizer", local_files_only=True)
-    te = transformers.Qwen3ForCausalLM.from_pretrained(model_dir / "text_encoder", dtype=dtype, local_files_only=True, use_safetensors=True)
+    tok = transformers.AutoTokenizer.from_pretrained(model_dir / "tokenizer", local_files_only=True, trust_remote_code=False)
+    te = transformers.Qwen3ForCausalLM.from_pretrained(model_dir / "text_encoder", dtype=dtype, local_files_only=True, use_safetensors=True,
+                                                       trust_remote_code=False)
     te.to(dev)
     embeds: dict[str, torch.Tensor] = {}
     with torch.no_grad():
@@ -160,7 +179,7 @@ def main() -> int:  # noqa: C901
     torch.mps.empty_cache()
     log(f"{len(embeds)} prompt-uri codate, text encoder eliberat ({time.perf_counter() - t0:.1f}s)")
     pipe = Flux2KleinInpaintPipeline.from_pretrained(
-        model_dir, text_encoder=None, tokenizer=None, torch_dtype=dtype, local_files_only=True, use_safetensors=True)
+        model_dir, text_encoder=None, tokenizer=None, torch_dtype=dtype, local_files_only=True, use_safetensors=True, trust_remote_code=False)
     pipe.to(dev)
     torch.mps.synchronize()
     log("transformer + VAE încărcate")
@@ -178,17 +197,22 @@ def main() -> int:  # noqa: C901
         torch.mps.synchronize()
         raw = out.convert("RGB")
         bg = np.asarray(raw.resize(pl.CANVAS, Image.LANCZOS), dtype=np.uint8).copy()
-        master = cl.compose(placed, bg, F)
+        master_mem = cl.compose(placed, bg, F)
         t_gen = time.perf_counter() - t_start
         raw.save(cdir / "raw_768.png")
-        Image.fromarray(master, "RGB").save(cdir / "master.png")
+        Image.fromarray(master_mem, "RGB").save(cdir / "master.png")
+        # fișierul SALVAT e cel acceptat: se recitește de pe disc, verificările rulează pe el, iar hash-urile se iau din octeții lui
+        master = pl.load_source_rgb(cdir / "master.png")
+        if not np.array_equal(master, master_mem):
+            raise SystemExit(f"{name}: master.png recitit diferă de array-ul din memorie (salvare coruptă)")
+        sha_master, sha_raw = ilib.file_sha(cdir / "master.png"), ilib.file_sha(cdir / "raw_768.png")
         checks = run_checks(master, placed, src, z, thr)
         t3a_ok = fl.compute_global(checks)
         checks.append(ck.result("verificari_model", None, "OCR + fețe + ne-uman (T5b)", False,
                                 "nerulate în T5a: OCR logo/decor/I, detector de fețe, SigLIP2/VLM"))
         fisa = fl.build_fisa(
             candidat=name, produs=a.product, sha256_sursa=sha_src, sha256_masca=hashlib.sha256(mask.tobytes()).hexdigest(),
-            sha256_L=sha_arr(placed["L"]), sha256_E=sha_arr(placed["E"]), sha256_I=sha_arr(placed["I"]), sha256_cod=code_sha,
+            sha256_L=sha_arr(placed["L"]), sha256_E=sha_arr(placed["E"]), sha256_I=sha_arr(placed["I"]), sha256_cod=code_sha, sha256_master=sha_master, sha256_raw=sha_raw,
             model=minfo, seed=seed, prompt=prompt, context=ctx, scara=1.0, deplasare={"dx": 0, "dy": 0}, flip=False, rotate_deg=0,
             canvas={"w": pl.CANVAS[0], "h": pl.CANVAS[1]}, verificari=jsonable(checks), timp_generare_s=round(t_gen, 2),
             etapa=ETAPA, verificari_modele=[], nota=NOTA, rezultat_t3a=t3a_ok, variant=variant,

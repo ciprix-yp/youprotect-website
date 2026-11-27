@@ -23,6 +23,7 @@ from PIL import Image
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 sys.path.insert(0, str(HERE))
+import integrity_lib as ilib  # noqa: E402
 import models_runtime as mr  # noqa: E402
 
 NO_PEOPLE = {"M21", "M22", "S17"}  # poze de acțiune fără oameni (verificat din alt): nu sunt controale
@@ -68,13 +69,36 @@ def negative_items(scene: Path) -> list[dict]:
     return [{"id": f"packshot-{p}", "path": str(scene.parent / "images/portwest" / f"{p}.jpg"), "kind": "packshot", "product": p} for p in PRODUCTS]
 
 
-def candidate_items(scene: Path) -> list[dict]:
-    items = []
+def candidate_items(scene: Path, require_fisa: bool = False) -> list[dict]:
+    """Candidații din <scene>/cand. Produsul din numele directorului trebuie să coincidă cu `fisa.json["produs"]` și cu `zone.json["product"]` al
+    zonelor folosite (altfel `IntegrityError`, cu toate nepotrivirile); cu `require_fisa`, un director de candidat fără fisa.json e și el eroare."""
+    items, errs = [], []
     for d in sorted((scene / "cand").iterdir()):
-        if d.is_dir() and (d / "master.png").is_file():
-            p = d.name.split("-", 1)[0]
-            items.append({"id": d.name, "path": str(d / "master.png"), "kind": "candidat", "product": p,
-                          "zones_dir": str(scene / p / "zones"), "source": str(scene.parent / "images/portwest" / f"{p}.jpg")})
+        if not (d.is_dir() and (d / "master.png").is_file()):
+            continue
+        p = d.name.split("-", 1)[0]
+        fisa_path = d / "fisa.json"
+        if fisa_path.is_file():
+            try:
+                fisa = json.loads(fisa_path.read_text(encoding="utf-8"))
+            except ValueError as e:
+                errs.append(f"{d.name}: fisa.json ilizibilă ({e})")
+                continue
+            if fisa.get("produs") != p or fisa.get("candidat") != d.name:
+                errs.append(f"{d.name}: produsul din nume ({p}) ≠ fisa.json (produs {fisa.get('produs')!r}, candidat {fisa.get('candidat')!r})")
+        elif require_fisa:
+            errs.append(f"{d.name}: lipsește fisa.json")
+        try:
+            zj = json.loads((scene / p / "zones" / "zone.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError) as e:
+            errs.append(f"{d.name}: zone.json pentru {p} ilizibil ({e})")
+            continue
+        if zj.get("product") != p:
+            errs.append(f"{d.name}: produsul din nume ({p}) ≠ zone.json['product'] ({zj.get('product')!r}) din {scene / p / 'zones'}")
+        items.append({"id": d.name, "path": str(d / "master.png"), "kind": "candidat", "product": p,
+                      "zones_dir": str(scene / p / "zones"), "source": str(scene.parent / "images/portwest" / f"{p}.jpg")})
+    if errs:
+        raise ilib.IntegrityError("; ".join(errs))
     return items
 
 

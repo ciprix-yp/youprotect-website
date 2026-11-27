@@ -5,6 +5,7 @@ Liniile „POS ..." / „NEG ..." de pe stdout sunt căutate de testul mjs.
 """
 # ruff: noqa: S101, E501, E741
 import contextlib
+import hashlib
 import io
 import json
 import sys
@@ -16,6 +17,9 @@ from PIL import Image
 
 ROOT = Path(sys.argv[1]).resolve()
 sys.path.insert(0, str(ROOT / "scripts" / "scene"))
+import compose_lib as cl  # noqa: E402
+import fisa_lib as fl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
 import make_planse as mp  # noqa: E402
 
 N = 300
@@ -32,7 +36,8 @@ def must_raise(fn, needle, label):
     raise AssertionError(f"{label}: nu a picat")
 
 
-def make_cand(root: Path, glob_ok=True, name="ZZ1-test_ctx-s7"):
+def make_cand(root: Path, glob_ok=True, name="ZZ1-test_ctx-s7", with_master_hash=True):
+    """Fixture COMPLET și consistent: sursă, master, raw, zone cu zone.json (files + sha256), fișă finală v3 și registru (write_fisa)."""
     cand = root / "cand" / name
     cand.mkdir(parents=True)
     zones = root / "zones"
@@ -40,6 +45,7 @@ def make_cand(root: Path, glob_ok=True, name="ZZ1-test_ctx-s7"):
     src = rng.integers(0, 255, (N, N, 3), dtype=np.uint8)
     Image.fromarray(src).save(root / "src.jpg", quality=95)
     Image.fromarray(src).save(cand / "master.png")
+    Image.fromarray(src).save(cand / "raw_768.png")
     L = np.zeros((N, N), dtype=np.uint8)
     L[60:240, 60:240] = 255
     E = np.zeros((N, N), dtype=np.uint8)
@@ -47,14 +53,26 @@ def make_cand(root: Path, glob_ok=True, name="ZZ1-test_ctx-s7"):
     E[240:244, 56:244] = 255
     E[56:244, 56:60] = 255
     I = np.zeros((N, N), dtype=np.uint8)
+    files = {}
     for n, m in (("L", L), ("E", E), ("I", I)):
         Image.fromarray(m).save(zones / f"{n}.png")
-    (zones / "zone.json").write_text(json.dumps({"critical": [{"name": "logo_a", "bbox": [80, 80, 150, 120]}, {"name": "banda_b", "bbox": [0, 200, 299, 299]}]}), encoding="utf-8")
-    ver = [{"name": "identity_master", "value": 0, "threshold": 0, "passed": True, "detail": ""},
+        files[n] = {"file": f"{n}.png", "sha256": ilib.file_sha(zones / f"{n}.png")}
+    (zones / "zone.json").write_text(json.dumps({"schema": 1, "product": "ZZ1", "files": files, "critical": [{"name": "logo_a", "bbox": [80, 80, 150, 120]}, {"name": "banda_b", "bbox": [0, 200, 299, 299]}]}), encoding="utf-8")
+    ver = [{"name": "identity_master", "value": 0, "threshold": 0, "passed": glob_ok, "detail": ""},
            {"name": "halo", "value": 1.5, "threshold": 3.0, "passed": True, "detail": ""},
            {"name": "faces", "value": {"max_score_1x": 0.1, "max_score_2x": 0.2}, "threshold": "x", "passed": True, "detail": ""}]
-    fisa = {"produs": "ZZ1", "context": "test_ctx", "seed": 7, "model": {"id": "m"}, "rezultat_global": glob_ok, "verificari": ver}
-    (cand / "fisa_finala_v2b.json").write_text(json.dumps(fisa), encoding="utf-8")
+    h = "a" * 64
+    fields = dict(candidat=name, produs="ZZ1", sha256_sursa=ilib.file_sha(root / "src.jpg"), sha256_masca=hashlib.sha256(cl.inpaint_mask(L == 255, E == 255).tobytes()).hexdigest(),
+                  sha256_L=ilib.sha_arr(L == 255), sha256_E=ilib.sha_arr(E == 255), sha256_I=ilib.sha_arr(I == 255), sha256_cod=h,
+                  sha256_master=ilib.file_sha(cand / "master.png"), sha256_raw=ilib.file_sha(cand / "raw_768.png"),
+                  model={"id": "m", "revizie": "r", "sha256": h}, seed=7, prompt="p", context="test_ctx", scara=1.0, deplasare={"dx": 0, "dy": 0}, flip=False,
+                  rotate_deg=0, canvas={"w": N, "h": N}, verificari=ver, timp_generare_s=1.0)
+    if not with_master_hash:
+        del fields["sha256_master"], fields["sha256_raw"]
+        fisa = {**fields, "data": "2026-01-01T00:00:00Z", "rezultat_global": fl.compute_global(ver)}  # fișă T5a veche, ocolește validarea
+        (cand / mp.FISA_NAME).write_text(json.dumps(fisa), encoding="utf-8")
+    else:
+        fl.write_fisa(cand, fl.build_fisa(**fields), root / "registru.jsonl", root, filename=mp.FISA_NAME)
     return cand, zones, root / "src.jpg"
 
 
@@ -135,5 +153,79 @@ with tempfile.TemporaryDirectory() as td:
     assert rc == 2 and "rezultat_global nu e true" in err, err
     assert not list(out.glob("*.jpg")) if out.exists() else True
     print("NEG candidat cu rezultat_global false refuzat")
+
+
+def fresh(**kw):
+    td = tempfile.TemporaryDirectory()
+    root = Path(td.name)
+    return td, root, *make_cand(root, **kw), root / "planse"
+
+
+# ---- legătura fișă <-> imagine/sursă/zone/registru (R2): planșa NU se face din altceva decât ce a acceptat fișa ----
+td, root, cand, zones, src, out = fresh()
+Image.fromarray(rng.integers(0, 255, (N, N, 3), dtype=np.uint8)).save(cand / "master.png")  # master înlocuit după acceptare
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "sha256_master" in err and "imaginea acceptată nu e cea de pe disc" in err and not list(out.glob("*.jpg")), err
+print("NEG planșă refuzată: master.png de pe disc ≠ sha256_master din fișă")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh()
+Image.fromarray(rng.integers(0, 255, (N, N, 3), dtype=np.uint8)).save(cand / "raw_768.png")
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "sha256_raw" in err, err
+print("NEG planșă refuzată: raw_768.png de pe disc ≠ sha256_raw din fișă")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh()
+Image.fromarray(rng.integers(0, 255, (N, N, 3), dtype=np.uint8)).save(src, quality=95)  # altă sursă decât cea din fișă
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "sha256_sursa" in err, err
+print("NEG planșă refuzată: sursa reală ≠ sha256_sursa din fișă")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh()
+m = np.zeros((N, N), np.uint8)
+m[10:20, 10:20] = 255
+Image.fromarray(m).save(zones / "L.png")  # zonă modificată după generare (zone.json păstrează sha vechi)
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "sha256 L nu corespunde" in err, err
+print("NEG planșă refuzată: zona L modificată față de zone.json")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh()
+zj = json.loads((zones / "zone.json").read_text())
+zj["files"]["L"]["sha256"] = ilib.file_sha(zones / "L.png")
+m = np.zeros((N, N), np.uint8)
+m[10:20, 10:20] = 255
+Image.fromarray(m).save(zones / "L.png")
+zj["files"]["L"]["sha256"] = ilib.file_sha(zones / "L.png")  # zone.json „reparat”: dar fișa are alt sha256_L
+(zones / "zone.json").write_text(json.dumps(zj))
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "sha256_L" in err and "zona încărcată" in err, err
+print("NEG planșă refuzată: sha256_L din fișă ≠ zona încărcată")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh()
+p = cand / mp.FISA_NAME
+p.write_text(p.read_text().replace('"seed": 7', '"seed": 7 '), encoding="utf-8")  # fișă modificată după înregistrare (hash de fișier ≠ registru)
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "registru" in err and "fișă modificată după înregistrare" in err, err
+print("NEG planșă refuzată: sha256(fisa.json) ≠ fisa_sha256 din ultima linie a registrului")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh(with_master_hash=False)
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 2 and "fișă veche" in err and "sha256_master" in err, err
+print("NEG planșă refuzată: fișă veche fără sha256_master (fail-closed)")
+td.cleanup()
+
+td, root, cand, zones, src, out = fresh()
+rc, err = run_cli(cand, src, zones, out, out)
+assert rc == 0, err
+print("POS planșă produsă doar când toate hash-urile se leagă (control pozitiv al testelor de mai sus)")
+rc = mp.main(["--cand-dir", str(cand), "--source", str(src), "--zones-dir", str(zones), "--out-dir", str(out), "--base-planse", str(out), "--fisa-name", "x.json\n"])
+assert rc == 2
+print("NEG --fisa-name cu newline final (x.json\\n) refuzat")
+td.cleanup()
 
 print("ok")

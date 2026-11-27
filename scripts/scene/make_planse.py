@@ -22,6 +22,11 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # -I nu pune directorul scriptului pe sys.path
+import fisa_lib as fl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
+
+FISA_NAME = "fisa_finala_v3.json"
 WIDTH = 1170
 HALF = 585
 QUALITY = 88
@@ -32,7 +37,7 @@ EDGE_SRC = 146  # decupaj sursă pentru zoom pe margini (2x -> 292 px)
 EDGE_K = 3
 TILE_MAX_W = 570
 TILE_MAX_H = 440
-CAND_RE = re.compile(r"^([A-Z0-9]+)-([a-z0-9_]+)-s(\d+)$")
+CAND_RE = re.compile(r"([A-Z0-9]+)-([a-z0-9_]+)-s(\d+)")  # cu fullmatch (nu `$`, care ar accepta și un \n final)
 FONT_CANDIDATES = (
     "/System/Library/Fonts/Helvetica.ttc",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
@@ -178,7 +183,7 @@ def verdict_lines(verificari: list[dict]) -> list[tuple[bool, str]]:
 
 
 def load_candidate(cand_dir: Path, fisa_name: str) -> dict:
-    m = CAND_RE.match(cand_dir.name)
+    m = CAND_RE.fullmatch(cand_dir.name)
     if not m:
         raise PlanseError(f"nume de candidat neașteptat: {cand_dir.name}")
     fp = cand_dir / fisa_name
@@ -251,14 +256,22 @@ def tag(d: ImageDraw.ImageDraw, xy: tuple[int, int], text: str, font) -> None:
     d.text((xy[0] + 4, xy[1] + 1), text, font=font, fill=WHITE)
 
 
-def build_planse(cand_dir: Path, source: Image.Image, zones_dir: Path, fisa: dict, fisa_name: str = "") -> Image.Image:
-    scene = Image.open(cand_dir / "master.png").convert("RGB")
+def build_planse(cand_dir: Path, source: Image.Image, zones_dir: Path, fisa: dict, fisa_name: str = "", master: Image.Image | None = None,
+                 masks: dict | None = None, zone_json: dict | None = None) -> Image.Image:
+    """`master`/`masks`/`zone_json`: octeții deja verificați față de fișă (main); lipsă = se citesc din director (doar pentru teste cu fixturi)."""
+    scene = master.convert("RGB") if master is not None else Image.open(cand_dir / "master.png").convert("RGB")
     src = source.convert("RGB")
     if scene.size != src.size:
         raise PlanseError(f"master {scene.size} != sursă {src.size}")
     Wd, Hd = scene.size
-    zj = json.loads((zones_dir / "zone.json").read_text(encoding="utf-8"))
-    L, E, I = (mask_png(zones_dir / f"{n}.png", (Hd, Wd)) for n in ("L", "E", "I"))
+    zj = zone_json if zone_json is not None else json.loads((zones_dir / "zone.json").read_text(encoding="utf-8"))
+    if masks is not None:
+        L, E, I = masks["L"], masks["E"], masks["I"]
+        for n, m in (("L", L), ("E", E), ("I", I)):
+            if m.shape != (Hd, Wd):
+                raise PlanseError(f"mască {n} {m.shape} != imagine {(Hd, Wd)}")
+    else:
+        L, E, I = (mask_png(zones_dir / f"{n}.png", (Hd, Wd)) for n in ("L", "E", "I"))
     crit = zj.get("critical", [])
     f24, f22, f34 = load_font(24), load_font(22), load_font(34)
 
@@ -373,15 +386,24 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--zones-dir", required=True)
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--base-planse", required=True)
-    ap.add_argument("--fisa-name", default="fisa_finala_v2b.json")
+    ap.add_argument("--fisa-name", default=FISA_NAME, help="fișa finală (același nume ca run_model_checks.py)")
+    ap.add_argument("--registry", default=None, help="implicit: <cand-dir>/../../registru.jsonl")
     a = ap.parse_args(argv)
     try:
+        if not fl.FILENAME_RE.fullmatch(a.fisa_name) or a.fisa_name.startswith("."):
+            raise PlanseError(f"--fisa-name invalid: {a.fisa_name!r}")
         cand, source, zones = safe_path(a.cand_dir), safe_path(a.source), safe_path(a.zones_dir)
         out_dir, base = safe_path(a.out_dir), safe_path(a.base_planse)
         ensure_under(out_dir, base)
+        registry = safe_path(a.registry) if a.registry else cand.parent.parent / "registru.jsonl"
         fisa = load_candidate(cand, a.fisa_name)
+        try:  # imaginea din planșă = cea legată în fișă: re-hash master/raw/sursă/zone și fișa față de registru, ÎNAINTE de desen
+            bound = ilib.verify_candidate_binding(cand, a.fisa_name, source, zones, registry)
+        except ilib.IntegrityError as e:
+            raise PlanseError(f"integritate: {e}") from e
         out_dir.mkdir(parents=True, exist_ok=True)
-        data = jpeg_bytes(build_planse(cand, Image.open(source), zones, fisa))
+        data = jpeg_bytes(build_planse(cand, Image.open(source), zones, fisa, master=Image.open(io.BytesIO(bound["master_bytes"])),
+                                       masks=bound["masks"], zone_json=bound["zone_json"]))
         target = out_dir / out_name(fisa)
         with open(target, "xb") as fh:  # creare exclusivă: nu suprascrie
             fh.write(data)

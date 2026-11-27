@@ -43,6 +43,15 @@ test('scene planșe: lățime 1170, JPG valid, căi și candidați refuzați, de
     'NEG ieșire în afara bazei refuzată',
     "NEG cale cu '..' refuzată",
     'NEG candidat cu rezultat_global false refuzat',
+    'NEG planșă refuzată: master.png de pe disc ≠ sha256_master',
+    'NEG planșă refuzată: raw_768.png de pe disc ≠ sha256_raw',
+    'NEG planșă refuzată: sursa reală ≠ sha256_sursa',
+    'NEG planșă refuzată: zona L modificată față de zone.json',
+    'NEG planșă refuzată: sha256_L din fișă ≠ zona încărcată',
+    'NEG planșă refuzată: sha256(fisa.json) ≠ fisa_sha256 din ultima linie a registrului',
+    'NEG planșă refuzată: fișă veche fără sha256_master',
+    'POS planșă produsă doar când toate hash-urile se leagă',
+    'NEG --fisa-name cu newline final',
   ]) {
     assert.ok(r.stdout.includes(needle), `testul "${needle}" nu a rulat`);
   }

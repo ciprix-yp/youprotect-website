@@ -223,7 +223,7 @@ def main():  # noqa: C901
         ok_checks = run_all(placed, good, src, alpha, L, E, I, crit, params)
         base = dict(
             candidat="c001", produs="S476YE", sha256_sursa=hx("src"), sha256_masca=hx("alpha"), sha256_L=hx("L"), sha256_E=hx("E"),
-            sha256_I=hx("I"), sha256_cod=fl.sha256_code([ROOT / "scripts/scene/compose_lib.py"]),
+            sha256_I=hx("I"), sha256_cod=fl.sha256_code([ROOT / "scripts/scene/compose_lib.py"]), sha256_master=hx("master"), sha256_raw=hx("raw"),
             model={"id": "m/x", "revizie": "a" * 40, "sha256": hx("w")}, seed=7, prompt="p", prompt_negativ="n", context="constructii",
             scara=1.0, deplasare={"dx": DX, "dy": DY}, flip=False, rotate_deg=0, canvas={"w": CANVAS[0], "h": CANVAS[1]},
             verificari=ok_checks + [{"name": "ocr", "value": 0, "threshold": 0, "passed": True, "detail": "verificare externă"}],
@@ -243,6 +243,16 @@ def main():  # noqa: C901
         # negative
         neg_raises("fișă cu câmp lipsă", fl.FisaError, "câmpuri obligatorii lipsă: seed",
                    lambda: fl.build_fisa(**{k: v for k, v in base.items() if k != "seed"}))
+        neg_raises("fișă fără sha256_master (T5a veche) respinsă", fl.FisaError, "câmpuri obligatorii lipsă: sha256_master",
+                   lambda: fl.build_fisa(**{k: v for k, v in base.items() if k != "sha256_master"}))
+        neg_raises("fișă fără sha256_raw respinsă", fl.FisaError, "câmpuri obligatorii lipsă: sha256_raw",
+                   lambda: fl.build_fisa(**{k: v for k, v in base.items() if k != "sha256_raw"}))
+        neg_raises("sha256_master nu e hash hex", fl.FisaError, "sha256_master trebuie să fie sha256",
+                   lambda: fl.build_fisa(**{**base, "sha256_master": "nu-e-hash"}))
+        assert fl.FILENAME_RE.fullmatch("fisa_finala_v3.json") and not fl.FILENAME_RE.fullmatch("x.json\n")
+        neg_raises("nume de fișă cu newline final (x.json\\n)", fl.FisaError, "filename invalid",
+                   lambda: fl.write_fisa(tmp / "cand" / "c004", f1, reg, tmp, filename="x.json\n"))
+        assert not (tmp / "cand" / "c004").exists() and len(reg.read_bytes().splitlines()) == 2
         neg_raises("rezultat_global fals contrazis", fl.FisaError, "contrazice verificările (calculat: False)",
                    lambda: fl.write_fisa(tmp / "cand" / "c003", {**f2, "candidat": "c003", "rezultat_global": True}, reg, tmp))
         neg_raises("verificare fără passed bool", fl.FisaError, "passed bool",

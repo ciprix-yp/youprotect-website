@@ -2,6 +2,7 @@
 
 Pillow + numpy (+ pymatting, import târziu). Fără modele AI, fără rețea.
 """
+# ruff: noqa: E501
 from __future__ import annotations
 
 import sys
@@ -12,7 +13,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # -I nu pune directorul scriptului pe sys.path
 import compose_lib as cl  # noqa: E402
-import zones_lib as zl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
 
 CANVAS = (1100, 1100)
 
@@ -26,10 +27,9 @@ def load_source_rgb(source: Path) -> np.ndarray:
 
 
 def load_zones(zone_dir: Path) -> dict:
-    alpha = zl.load_gray_png(zone_dir / "alpha.png")
-    L, E, I = (zl.load_mask_png(zone_dir / f"{n}.png") for n in ("L", "E", "I"))  # noqa: E741
-    crit = {p.stem: zl.load_mask_png(p) for p in sorted((zone_dir / "critical").glob("*.png"))}
-    return {"alpha": alpha, "L": L, "E": E, "I": I, "critical": crit}
+    """Zonele DOAR prin numele din zone.json, cu sha256 comparat la citire (nu prin glob: un fișier străin din director nu se încarcă)."""
+    z = ilib.load_zone_checked(zone_dir)
+    return {"alpha": z["alpha"], "L": z["L"], "E": z["E"], "I": z["I"], "critical": z["critical"]}
 
 
 def place(source_rgb: np.ndarray, z: dict, scale: float = 1.0, dx: int = 0, dy: int = 0) -> dict:

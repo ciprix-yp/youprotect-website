@@ -8,6 +8,7 @@
   64 de zerouri la prima). `verify_registry` pică dacă o linie veche e modificată sau ștearsă. Limită: alterarea sau
   ștergerea ULTIMEI linii nu rupe lanțul (nu mai există o linie următoare); se prinde comparând cu fisa.json (`fisa_sha256`).
 """
+# ruff: noqa: E501
 from __future__ import annotations
 
 import datetime as dt
@@ -27,7 +28,7 @@ except ImportError:  # pragma: no cover
 ZERO = "0" * 64
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 CHECK_KEYS = ("name", "value", "threshold", "passed", "detail")
-SHA_FIELDS = ("sha256_sursa", "sha256_masca", "sha256_L", "sha256_E", "sha256_I", "sha256_cod")
+SHA_FIELDS = ("sha256_sursa", "sha256_masca", "sha256_L", "sha256_E", "sha256_I", "sha256_cod", "sha256_master", "sha256_raw")  # master/raw: hash pe fișierul SALVAT și recitit (v3+)
 REQUIRED = (
     "candidat", "produs", *SHA_FIELDS, "model", "seed", "prompt", "context", "scara", "deplasare", "flip",
     "rotate_deg", "canvas", "verificari", "timp_generare_s", "data", "rezultat_global",
@@ -42,9 +43,12 @@ def sha256_bytes(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
 
-def sha256_code(files: list[str | Path]) -> str:
-    """Hash peste fișierele scripturilor: pentru fiecare, în ordinea numelor de bază, nume + 0x00 + conținut + 0x00."""
+def sha256_code(files: list[str | Path], salt: str = "") -> str:
+    """Hash peste fișierele scripturilor: pentru fiecare, în ordinea numelor de bază, nume + 0x00 + conținut + 0x00.
+    `salt` (ex. căile efective ale calibrărilor) intră în hash la început, ca schimbarea căii să schimbe hash-ul."""
     h = hashlib.sha256()
+    if salt:
+        h.update(salt.encode() + b"\0")
     for p in sorted((Path(f) for f in files), key=lambda x: (x.name, str(x))):
         h.update(p.name.encode() + b"\0" + p.read_bytes() + b"\0")
     return h.hexdigest()
@@ -124,7 +128,7 @@ def _under(base: Path, p: str | Path, what: str) -> Path:
     return r
 
 
-FILENAME_RE = re.compile(r"^[A-Za-z0-9_.-]+\.json$")
+FILENAME_RE = re.compile(r"[A-Za-z0-9_.-]+\.json\Z")  # folosit cu fullmatch: `$` ar accepta și „x.json\n”
 
 
 def _line_for(fisa: dict, fisa_sha: str, seq: int, prev: str, filename: str = "fisa.json") -> str:
@@ -141,7 +145,7 @@ def write_fisa(
 ) -> Path:
     """Scrie fișa atomic și o înregistrează. `cand_dir` și `registry_path` trebuie să fie sub `base_dir`.
     `filename` (implicit fisa.json; ex. fisa_finala.json la T5b): nume simplu .json, fără cale; nu suprascrie niciodată."""
-    if not isinstance(filename, str) or not FILENAME_RE.match(filename) or filename.startswith("."):
+    if not isinstance(filename, str) or not FILENAME_RE.fullmatch(filename) or filename.startswith("."):
         raise FisaError(f"filename invalid: {filename!r}")
     validate_fisa(fisa)
     cdir = _under(base_dir, cand_dir, "cand_dir")
@@ -179,6 +183,24 @@ def append_registry(reg: Path, fisa: dict, fisa_sha: str, filename: str = "fisa.
         fh.write(line.encode("utf-8") + b"\n")
         fh.flush()
         os.fsync(fh.fileno())
+
+
+def registry_sha_for(path: str | Path, candidat: str, filename: str = "fisa.json") -> str | None:
+    """`fisa_sha256` din ULTIMA linie a registrului pentru (candidat, fișier); None dacă nu există nicio linie."""
+    p = Path(path)
+    if not p.is_file():
+        return None
+    found = None
+    for raw in p.read_bytes().split(b"\n"):
+        if not raw:
+            continue
+        try:
+            rec = json.loads(raw)
+        except ValueError:
+            continue
+        if rec.get("candidat") == candidat and rec.get("fisier", "fisa.json") == filename:
+            found = rec.get("fisa_sha256")
+    return found
 
 
 def verify_registry(path: str | Path) -> list[str]:
