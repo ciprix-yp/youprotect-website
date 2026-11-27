@@ -70,7 +70,9 @@
         {
           "src": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/Q5-PS.webp",
           "thumb": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/Q5-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Geaca de ploaie Sir Safety Suncity în albastru închis, purtată de un om, văzută din față"
         }
       ],
       "spin": []
@@ -102,6 +104,7 @@
       "spin": []
     }
   ],
+  "cardColour": "Q5",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "S–3XL",
@@ -184,6 +187,6 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-19"
+    "assembledAt": "2026-11-27"
   }
 }

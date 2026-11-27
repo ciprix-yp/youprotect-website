@@ -110,12 +110,15 @@
         {
           "src": "/images/products/combinezon-protectie-chimica-tip-3b-sir-safety-chemical-bio-mc3422/E0-PS.webp",
           "thumb": "/images/products/combinezon-protectie-chimica-tip-3b-sir-safety-chemical-bio-mc3422/E0-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Combinezonul Sir Safety Chemical-Bio galben, purtat cu mănuși verzi, cizme albe și casca în mână"
         }
       ],
       "spin": []
     }
   ],
+  "cardColour": "E0",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "M–2XL",
@@ -201,7 +204,7 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-19"
+    "assembledAt": "2026-11-27"
   },
   "riskFreeTesting": false
 }

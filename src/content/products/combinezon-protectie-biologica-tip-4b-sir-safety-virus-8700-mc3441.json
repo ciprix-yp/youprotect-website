@@ -113,12 +113,15 @@
         {
           "src": "/images/products/combinezon-protectie-biologica-tip-4b-sir-safety-virus-8700-mc3441/K1-PS.webp",
           "thumb": "/images/products/combinezon-protectie-biologica-tip-4b-sir-safety-virus-8700-mc3441/K1-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Combinezonul Sir Safety Virus 8700 alb cu benzi galbene, purtat cu cască, semimască și mănuși"
         }
       ],
       "spin": []
     }
   ],
+  "cardColour": "K1",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "M–3XL",
@@ -204,7 +207,7 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-19"
+    "assembledAt": "2026-11-27"
   },
   "riskFreeTesting": false
 }
