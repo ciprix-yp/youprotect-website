@@ -18,6 +18,7 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from card_photo import CardPhotoError, apply_card_photo  # noqa: E402
 from lint_texts import lint  # noqa: E402  (same folder; works with python -I)
 
 NBSP = "\u00a0"  # spațiu nedespărțit între număr și unitate
@@ -162,6 +163,8 @@ def assemble(source, text, maps, public_dir):
         notes.append(f"Producător: {maker['name']} ({maker['country']}). Sir Safety System vinde produsul cu codul "
                      f"{source['code']} și declară că acesta corespunde modelului producătorului.")
     series = next((line.strip() for line in ds.splitlines()[1:3] if line.strip().endswith("SERIES")), None)
+    colour_list = colours(source, text, maps, public_dir)
+    card_colour = apply_card_photo(colour_list, text, public_dir, CHECK_IMAGES)  # poza pe model, dacă produsul are cardPhoto
     return {
         "status": text["status"],
         "name": text["name"],
@@ -176,7 +179,8 @@ def assemble(source, text, maps, public_dir):
         "certifications": [{"code": re.sub(r"\s+Class\s+(\d)", r", clasa \1", c["code"]), "label": c.get("label")}
                            for c in text["certifications"]],
         "care": text.get("care", []),
-        "colours": colours(source, text, maps, public_dir),
+        "colours": colour_list,
+        **({"cardColour": card_colour} if card_colour is not None else {}),
         "otherColoursCount": 0,
         "sizes": sizes(source, text),
         "personalization": None,
@@ -225,7 +229,7 @@ def main(argv):
         try:
             source = json.loads((source_dir / f"{text['model']}.json").read_text(encoding="utf-8"))
             entry = assemble(source, text, maps, public_dir)
-        except (AssemblyError, FileNotFoundError) as exc:
+        except (AssemblyError, CardPhotoError, FileNotFoundError) as exc:
             print(f"!! {text['model']}: {exc}", file=sys.stderr)
             failed = True
             continue

@@ -12,6 +12,9 @@ import sys
 import unicodedata
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from card_photo import card_photo_errors  # noqa: E402  (same folder; works with python -I)
+
 FORMAL = re.compile(
     r"\b(dumneavoastră|dumneavoastra|dvs\.?|vă|cereți|aveți|puteți|sunteți|alegeți|verificați|contactați|"
     r"consultați|aflați|descoperiți|programați|sunați|trimiteți|comandați|testați|beneficiați|solicitați)\b",
@@ -50,7 +53,9 @@ def all_strings(obj):
             yield from all_strings(item)
     elif isinstance(obj, dict):
         for key, value in obj.items():
-            if not key.startswith("_") and key not in ("model", "slug", "category", "industries", "primaryColour", "status"):
+            if key == "cardPhoto" and isinstance(value, dict):
+                yield from all_strings(value.get("alt", ""))  # restul (colour, sourceId, kind, focus) sunt coduri, nu text
+            elif not key.startswith("_") and key not in ("model", "slug", "category", "industries", "primaryColour", "status"):
                 yield from all_strings(value)
 
 
@@ -119,6 +124,7 @@ def lint(text):
     if not keyword:
         errors.append("lipsește câmpul „keyword”")
     check_voice(text, errors)
+    errors.extend(card_photo_errors(text))
     if keyword:
         check_seo(text, keyword, errors, warnings)
     check_structure(text, errors, warnings)

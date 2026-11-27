@@ -18,6 +18,7 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from card_photo import CardPhotoError, apply_card_photo  # noqa: E402
 from lint_texts import lint  # noqa: E402  (same folder; works with python -I)
 
 NBSP = " "
@@ -140,6 +141,8 @@ def manufacturer_note(source, text):
 def assemble(source, text, maps):
     check_certifications(text, source)
     check_weight(text, source)
+    colour_list = colours(source, text, maps)
+    card_colour = apply_card_photo(colour_list, text, PUBLIC_IMAGES, CHECK_IMAGES)  # poza pe model, dacă produsul are cardPhoto
     specs = []
     if text.get("material"):
         specs.append({"label": "Material", "value": text["material"]})
@@ -158,7 +161,8 @@ def assemble(source, text, maps):
         "notes": list(text.get("notes", [])) + manufacturer_note(source, text),
         "certifications": [{"code": c["code"], "label": c.get("label")} for c in text["certifications"]],
         "care": text.get("care", []),
-        "colours": colours(source, text, maps),
+        "colours": colour_list,
+        **({"cardColour": card_colour} if card_colour is not None else {}),
         "otherColoursCount": 0,
         "sizes": sizes(source, text),
         "personalization": None,
@@ -201,7 +205,7 @@ def main(argv):
                 raise AssemblyError("; ".join(errors))
             source = json.loads((source_dir / f"{text['model']}.json").read_text(encoding="utf-8"))
             entry = assemble(source, text, maps)
-        except (AssemblyError, FileNotFoundError) as exc:
+        except (AssemblyError, CardPhotoError, FileNotFoundError) as exc:
             print(f"!! {text['model']}: {exc}", file=sys.stderr)
             failed = True
             continue
