@@ -69,11 +69,11 @@ def negative_items(scene: Path) -> list[dict]:
     return [{"id": f"packshot-{p}", "path": str(scene.parent / "images/portwest" / f"{p}.jpg"), "kind": "packshot", "product": p} for p in PRODUCTS]
 
 
-def candidate_items(scene: Path, require_fisa: bool = False) -> list[dict]:
+def candidate_items(scene: Path, require_fisa: bool = False, cand_name: str = "cand") -> list[dict]:
     """Candidații din <scene>/cand. Produsul din numele directorului trebuie să coincidă cu `fisa.json["produs"]` și cu `zone.json["product"]` al
     zonelor folosite (altfel `IntegrityError`, cu toate nepotrivirile); cu `require_fisa`, un director de candidat fără fisa.json e și el eroare."""
     items, errs = [], []
-    for d in sorted((scene / "cand").iterdir()):
+    for d in sorted((scene / cand_name).iterdir()):
         if not (d.is_dir() and (d / "master.png").is_file()):
             continue
         p = d.name.split("-", 1)[0]

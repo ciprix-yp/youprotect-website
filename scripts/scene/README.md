@@ -104,8 +104,8 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
   rămân în fișier doar ca să fie respinse explicit de `prompting.build_prompt`.
 - `prompting.py` (stdlib): `build_prompt(produs, context, variant)`, `allowed_contexts`, `validate_contexte`; CLI `--product P --context C [--variant N]`.
   Erori (`PromptError`): context inexistent/nedeclarat, etichetă interzisă, cuvânt interzis în decor/variantă. Teste: `tests/scene-prompting.test.mjs`.
-- `calibrate_real.py` + `calibrare.json` (comis): compuneri pe produse reale pe 5 fundaluri ne-AI, defecte artificiale, praguri alese, calibrarea
-  exportului JPEG (q90, q85) pe packshot-ul singur. `pilot_lib.py`: încărcare, așezare, foreground pymatting, fundaluri.
+- `calibrate_real.py` + `calibrare_v3.json` (comis, ACTUAL: compunere cu umplerea benzii E, inclusiv buzunare închise ca ochiurile unui bocanc): compuneri pe produse reale pe 5 fundaluri ne-AI, defecte artificiale, praguri alese, calibrarea
+  exportului JPEG (q90, q85) pe packshot-ul singur. `calibrare.json` rămâne în git doar pentru istoric: ÎNVECHIT (compunere fără umplerea benzii), nu se mai folosește. `pilot_lib.py`: încărcare, așezare, foreground pymatting, fundaluri.
 - `generate_candidates.py`: un lot per produs (`--context` unul sau mai multe, `--n` per context). Candidat = director nou
   `<PRODUS>-<context>-s<seed>` cu `master.png`, `raw_768.png`, `fisa.json`; linie în `registru.jsonl`. Generare la 768, fundal LANCZOS la 1100
   (produsul rămâne pixel-exact la scale 1.0; fundalul e mai puțin clar decât produsul). Fișa are `etapa: "T5a-fara-verificari-model"` și o verificare
@@ -115,7 +115,7 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
   regenerare și fără modele, cu umplerea benzii E, într-un `--out-base` NOU (refuză un director existent, căi cu `..`, suprascrierea). Per candidat:
   `master.png`, copia `raw_768.png`, `fisa.json` cu `etapa: "T5a-recompus-v3"` și `fisa_t5a_sha256` (fișa veche), hash-uri pe fișierele salvate și recitite,
   linie în `<out-base>/registru.jsonl`. Zonele se verifică cu `verify_zones` și legătura produs-zone. Test: `tests/scene-recompose.test.mjs`.
-  Cifrele (rata de trecere etc.) se refac în Fix-2 după recompunerea tuturor candidaților.
+  Fix-2: `compose_lib.fill_from_outside` umple și buzunarele închise (regiune înconjurată de L, ex. ochiurile bocancului) prin tranzit prin L, nu mai pică.
 
 ## Verificări cu modele (T5b)
 
@@ -125,11 +125,11 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
 - `models_runtime.py`: YuNet (1× și 2×), SigLIP2 zero-shot (6 formulări per set, perechi manechin/persoană), Qwen3-VL-4B (P(da) din logits, auxiliar), SAM 2.1 + segmentul manechinului
   `(I ∪ (SAM ∩ regiune)) \ (L ∪ E)`, RapidOCR (`use_cls=False`; logo la 3×, decor + I cu produsul mascat neutru). Un model odată în memorie.
 - `collect_signals.py` (semnale brute, JSON nou), `calibrate_models.py` (căutare pe grilă pe controale + ne-om -> `calibrare_modele.json`, comis), `run_model_checks.py`
-  (candidații -> `fisa_finala_v3.json` lângă `fisa.json`, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
+  (candidații -> `fisa_finala_v3.json` lângă `fisa.json`; `--cand-name cand_v3` pentru directorul recompus, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
 - `check_ocr_logo`: dacă OCR nu citește nimic în original (și nici în candidat), verificarea e NECONCLUDENTĂ: `passed=true`, `value="neconcludent"`, `informativ=true`;
   fișa o păstrează, planșa o arată „INFO" (nu „OK"). Text diferit sau apărut doar în candidat pică. Identitatea pixelilor din logo o garantează identitatea pe L complet, nu OCR.
 - Semnale: VLM = principal (recall 70/70 pe controale), SigLIP2 = secundar (marjă efectivă −0,5). Cifrele „0 respinse fals" sunt pe SETUL DE CALIBRARE, nu pe date noi.
-  `calibrate_models.py --exclude-labels calibrare_t5c.json` scoate din `--good-ids` candidații etichetați „dom"/„neclar" (nu sunt „buni"); recalibrarea pe date se face în Fix-2.
+  `calibrate_models.py --exclude-labels calibrare_t5c.json` scoate din `--good-ids` candidații etichetați „dom"/„neclar" (nu sunt „buni"); recalibrarea (Fix-2) e în `calibrare_modele_v3.json`; `calibrare_modele.json` e învechit (rămâne pentru istoric).
 - Qwen3-VL-4B se descarcă cu `fetch_models.py --models-dir <m> --group vlm --model-id qwen3-vl-4b-instruct --pin-new-hashes`.
 
 ## Formă de cap și croma nuanțată (T5c)

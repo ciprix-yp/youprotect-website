@@ -165,7 +165,14 @@ def fill_from_outside(bg: np.ndarray, region_mask: np.ndarray, valid_mask: np.nd
         cnt = _neighbor_sum(kf)
         new = left & (cnt > 0)
         if not new.any():
-            break
+            # Buzunare închise (ochiuri, spații între degete): regiunea nu atinge decorul prin vecini 8-conectați. Valorile trec prin pixelii
+            # nici-regiune-nici-valizi (L, doar ca tranzit, nu se scriu în rezultat) până ajung la buzunar; se oprește imediat ce `left` e gol.
+            if not left.any():
+                break
+            transit = ~known & ~region
+            new = (left | transit) & (cnt > 0)
+            if not new.any():
+                break
         sm = _neighbor_sum(vals)
         vals[new] = sm[new] / cnt[new][:, None]
         known = known | new

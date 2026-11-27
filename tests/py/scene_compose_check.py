@@ -157,6 +157,16 @@ def main():  # noqa: C901
     gfill = cl.fill_from_outside(gcont, zone_r, ~zl.dilate(placed["L"] | placed["E"], cl.BAND_RING_PX))
     assert gfill[zone_c].max() < 255 and gfill[zone_c].min() >= backgrounds()["gradient"].min()
     print(f"POS F2 gradient: max în banda umplută = {int(gfill[zone_c].max())} (< 255)")
+    # buzunar închis: o regiune înconjurată complet de pixeli non-valizi (L) se umple prin tranzit, nu pică
+    _bg = np.full((40, 40, 3), 90, np.uint8)
+    _reg = np.zeros((40, 40), bool)
+    _reg[18:21, 18:21] = True
+    _valid = np.ones((40, 40), bool)
+    _valid[10:30, 10:30] = False
+    _valid[_reg] = False
+    _pk = cl.fill_from_outside(_bg, _reg, _valid)
+    assert (_pk[_reg] == 90).all() and (_pk[~_reg] == 90).all()
+    print("POS F2 buzunar închis (înconjurat de L) se umple prin tranzit")
     neg_raises("F2 fill_from_outside fără nicio sursă validă", ValueError, "nicio sursă validă", lambda: cl.fill_from_outside(contaminated, zone_c, np.zeros(zone_c.shape, bool)))
     neg_raises("F2 fill_from_outside cu mască de altă formă", ValueError, "măști", lambda: cl.fill_from_outside(contaminated, zone_c[:10], ~zone_c))
     # scale 1.0 = copie exactă

@@ -6,7 +6,7 @@ gri mediu, albastru închis, maro închis), apoi se măsoară halo (excesul pest
 (scurgere), pete galben fluo în decor (fluo). Pragul ales = valoarea implicită din checks_lib dacă separă corect compunerile
 bune de cele cu defect, altfel mijlocul intervalului dintre cele două. Export: calibrate_export (JPEG q90 și q85) pe packshot-ul singur.
 
-Rulare: python -I calibrate_real.py --images-dir <dir> --scene-dir <dir> --out <calibrare.json nou>
+Rulare: python -I calibrate_real.py --images-dir <dir> --scene-dir <dir> --out <calibrare_v3.json nou>
 """
 # ruff: noqa: E501
 from __future__ import annotations

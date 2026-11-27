@@ -1,0 +1,330 @@
+{
+  "alegere": {
+    "fluo": {
+      "bune_max": 0.0,
+      "defecte_min": 0.08271,
+      "motiv": "valoarea implicită separă (bune < prag < defecte)"
+    },
+    "halo": {
+      "bune_max": 0.0,
+      "defecte_min": 21.95,
+      "motiv": "valoarea implicită separă (bune < prag < defecte)",
+      "nota": "defectul de halo se evaluează doar pe fundalurile unde inelul alb se vede (nu pe gradientul deschis)"
+    },
+    "spill": {
+      "bune_max": 0.0,
+      "defecte_min": 0.24835,
+      "motiv": "valoarea implicită separă (bune < prag < defecte)",
+      "nota": "Nicio compunere corectă nu a dat scurgere pe cele 5 fundaluri (inclusiv albastru/maro închis). Riscul de fals pozitiv rămâne pentru decoruri cu nuanță apropiată de produs: ajunge în celulele paletei; dacă o compunere corectă pică, se revede manual, nu se relaxează pragul."
+    }
+  },
+  "data": "2026-11-27T12:34:51Z",
+  "praguri": {
+    "fluo_max_frac": 0.005,
+    "halo_delta": 12.0,
+    "spill_max_frac": 0.02
+  },
+  "produse": {
+    "BZ739OR": {
+      "export": {
+        "jpeg_q85": {
+          "de2000_block_cal": 2.046521524151876,
+          "de2000_block_max": 4.046521524151876,
+          "de2000_p99_cal": 6.5612511553788675,
+          "de2000_p99_max": 8.561251155378867,
+          "margins": {
+            "de2000": 2.0,
+            "ssim": 0.02
+          },
+          "ssim_mean_cal": 0.9946731249662744,
+          "ssim_mean_min": 0.9746731249662743
+        },
+        "jpeg_q90": {
+          "de2000_block_cal": 1.9490869166604903,
+          "de2000_block_max": 3.94908691666049,
+          "de2000_p99_cal": 6.2520637221072075,
+          "de2000_p99_max": 8.252063722107208,
+          "margins": {
+            "de2000": 2.0,
+            "ssim": 0.02
+          },
+          "ssim_mean_cal": 0.9964548327132111,
+          "ssim_mean_min": 0.9764548327132111
+        }
+      },
+      "fundaluri": {
+        "albastru_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08289,
+          "halo_exces": -9.52,
+          "halo_exces_cu_inel_alb": 95.09,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            255,
+            116,
+            4
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25694
+        },
+        "gradient_deschis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08289,
+          "halo_exces": -12.19,
+          "halo_exces_cu_inel_alb": 7.54,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            255,
+            116,
+            4
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25694
+        },
+        "gradient_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08289,
+          "halo_exces": -9.48,
+          "halo_exces_cu_inel_alb": 95.09,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            255,
+            116,
+            4
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25694
+        },
+        "gri_mediu": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08289,
+          "halo_exces": -8.56,
+          "halo_exces_cu_inel_alb": 95.09,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            255,
+            116,
+            4
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25694
+        },
+        "maro_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08289,
+          "halo_exces": -9.44,
+          "halo_exces_cu_inel_alb": 95.09,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            255,
+            116,
+            4
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25694
+        }
+      }
+    },
+    "FD25BK": {
+      "export": {
+        "jpeg_q85": {
+          "de2000_block_cal": 2.5261432326068833,
+          "de2000_block_max": 4.526143232606883,
+          "de2000_p99_cal": 3.5207477805522966,
+          "de2000_p99_max": 5.520747780552297,
+          "margins": {
+            "de2000": 2.0,
+            "ssim": 0.02
+          },
+          "ssim_mean_cal": 0.9986721705714168,
+          "ssim_mean_min": 0.9786721705714168
+        },
+        "jpeg_q90": {
+          "de2000_block_cal": 2.4977774862153894,
+          "de2000_block_max": 4.497777486215389,
+          "de2000_p99_cal": 3.1927141254415443,
+          "de2000_p99_max": 5.192714125441544,
+          "margins": {
+            "de2000": 2.0,
+            "ssim": 0.02
+          },
+          "ssim_mean_cal": 0.9987422634677988,
+          "ssim_mean_min": 0.9787422634677988
+        }
+      },
+      "fundaluri": {
+        "albastru_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08306,
+          "halo_exces": -18.25,
+          "halo_exces_cu_inel_alb": 122.63,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            55,
+            49,
+            85
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25607
+        },
+        "gradient_deschis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08306,
+          "halo_exces": -6.88,
+          "halo_exces_cu_inel_alb": 7.96,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            55,
+            49,
+            85
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25607
+        },
+        "gradient_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08306,
+          "halo_exces": -19.18,
+          "halo_exces_cu_inel_alb": 122.63,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            55,
+            49,
+            85
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25607
+        },
+        "gri_mediu": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08306,
+          "halo_exces": 0.0,
+          "halo_exces_cu_inel_alb": 122.0,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            55,
+            49,
+            85
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25607
+        },
+        "maro_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08306,
+          "halo_exces": -17.94,
+          "halo_exces_cu_inel_alb": 122.63,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            55,
+            49,
+            85
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.25607
+        }
+      }
+    },
+    "S476YE": {
+      "export": {
+        "jpeg_q85": {
+          "de2000_block_cal": 4.274715779966871,
+          "de2000_block_max": 6.274715779966871,
+          "de2000_p99_cal": 12.253937097669505,
+          "de2000_p99_max": 14.253937097669505,
+          "margins": {
+            "de2000": 2.0,
+            "ssim": 0.02
+          },
+          "ssim_mean_cal": 0.9948342728471712,
+          "ssim_mean_min": 0.9748342728471712
+        },
+        "jpeg_q90": {
+          "de2000_block_cal": 3.8986365191678702,
+          "de2000_block_max": 5.89863651916787,
+          "de2000_p99_cal": 12.016240237529521,
+          "de2000_p99_max": 14.016240237529521,
+          "margins": {
+            "de2000": 2.0,
+            "ssim": 0.02
+          },
+          "ssim_mean_cal": 0.9971185706033122,
+          "ssim_mean_min": 0.9771185706033122
+        }
+      },
+      "fundaluri": {
+        "albastru_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08271,
+          "halo_exces": -9.19,
+          "halo_exces_cu_inel_alb": 21.95,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            246,
+            237,
+            6
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.24835
+        },
+        "gradient_deschis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08271,
+          "halo_exces": -2.83,
+          "halo_exces_cu_inel_alb": 5.66,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            246,
+            237,
+            6
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.24835
+        },
+        "gradient_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08271,
+          "halo_exces": -9.19,
+          "halo_exces_cu_inel_alb": 21.95,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            246,
+            237,
+            6
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.24835
+        },
+        "gri_mediu": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08271,
+          "halo_exces": -9.02,
+          "halo_exces_cu_inel_alb": 21.95,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            246,
+            237,
+            6
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.24835
+        },
+        "maro_inchis": {
+          "fluo_frac": 0.0,
+          "fluo_frac_artificial": 0.08271,
+          "halo_exces": -9.19,
+          "halo_exces_cu_inel_alb": 21.95,
+          "identity_master_max": 0,
+          "spill_culoare_artificiala": [
+            246,
+            237,
+            6
+          ],
+          "spill_frac": 0.0,
+          "spill_frac_artificial": 0.24835
+        }
+      }
+    }
+  },
+  "schema": 1
+}

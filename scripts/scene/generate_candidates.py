@@ -3,14 +3,14 @@
 Pași: sha256 sursă; verificarea zonelor (verify_zones.verify); place_product scale 1.0, dx=dy=0; prompt din contexte.json (prompting);
 prompt-urile distincte se codează o dată, text encoderul se eliberează, transformerul se încarcă o dată pe lot; per seed: inpainting la
 768, fundalul se aduce la canvasul 1100 cu LANCZOS (produsul rămâne pixel-exact, la scale 1.0), compunere cu foreground pymatting
-(calculat o dată per produs), master PNG lossless, verificările T3a cu pragurile din calibrare.json, fișă + linie în registru.
+(calculat o dată per produs), master PNG lossless, verificările T3a cu pragurile din calibrare_v3.json (calibrare.json = istoric, învechit), fișă + linie în registru.
 Un candidat = un director NOU `<PRODUS>-<context>-s<seed>`; un director existent se sare (nu se suprascrie).
 Verificările de model (OCR, fețe, ne-uman SigLIP2/VLM) vin în T5b: fișa are `verificari_modele: []`, `etapa: "T5a-fara-verificari-model"`
 și o verificare „verificari_model” cu passed=false, deci `rezultat_global` nu poate fi true până la T5b.
 
 Rulare (vezi scripts/scene/README.md):
   python -I generate_candidates.py --product S476YE --context santier_constructii_zi hala_depozit --n 5 --seed-start 100 \
-     --models-dir <models> --zones-dir <zones> --source <jpg> --out-base <.catalog-work/scene/cand> --calibrare <calibrare.json>
+     --models-dir <models> --zones-dir <zones> --source <jpg> --out-base <.catalog-work/scene/cand> --calibrare <calibrare_v3.json>
 """
 # ruff: noqa: E501
 from __future__ import annotations

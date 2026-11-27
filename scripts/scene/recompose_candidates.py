@@ -10,7 +10,7 @@ suprascrie; căile cu `..` sunt refuzate. Nu se încarcă niciun model (doar Pil
 
 Rulare (vezi scripts/scene/README.md):
   python -I recompose_candidates.py --cand-base <.catalog-work/scene/cand> --out-base <.catalog-work/scene/cand-v3> \\
-     --images-dir <imagini> --scene-dir <scene> --calibrare <calibrare.json> [--only S476YE-hala_depozit-s100 ...]
+     --images-dir <imagini> --scene-dir <scene> --calibrare <calibrare_v3.json> [--only S476YE-hala_depozit-s100 ...]
 """
 # ruff: noqa: E501
 from __future__ import annotations

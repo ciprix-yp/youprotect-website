@@ -67,6 +67,7 @@ def main() -> int:  # noqa: C901
     ap.add_argument("--fisa-name", default=FISA_FINALA, help="numele fișei finale (nu se suprascrie niciodată)")
     ap.add_argument("--registry", type=Path, default=None)
     ap.add_argument("--stages", nargs="+", default=["faces", "ocr", "siglip", "sam", "qwen", "qwen_head", "qwen_boots"], choices=list(mr.STAGES))
+    ap.add_argument("--cand-name", default="cand", help="subdirectorul cu candidați din --scene-dir (implicit cand; cand_v3 pentru candidații recompuși)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--legacy", action="store_true", help="acceptă fișe T5a fără sha256_master, MARCATE (legacy_fara_sha_master) și cu rezultat global fals")
     a = ap.parse_args()
@@ -84,7 +85,7 @@ def main() -> int:  # noqa: C901
     scene = a.scene_dir
     registry = a.registry or scene / "registru.jsonl"
     try:
-        items = [i for i in cs.candidate_items(scene, require_fisa=True) if not (Path(i["path"]).parent / a.fisa_name).exists()]
+        items = [i for i in cs.candidate_items(scene, require_fisa=True, cand_name=a.cand_name) if not (Path(i["path"]).parent / a.fisa_name).exists()]
     except ilib.IntegrityError as e:
         raise SystemExit(f"candidați nepotriviți: {e}") from e
     if a.limit:

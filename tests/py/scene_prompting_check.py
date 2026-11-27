@@ -109,11 +109,11 @@ assert pr.forbidden_words_in("A man on a stand", cx) == ["man"]
 ok("POS cuvinte întregi: mannequin nu e man")
 
 # calibrarea comisă există și are pragurile
-cal = json.loads((ROOT / "scripts" / "scene" / "calibrare.json").read_text(encoding="utf-8"))
+cal = json.loads((ROOT / "scripts" / "scene" / "calibrare_v3.json").read_text(encoding="utf-8"))
 assert set(cal["praguri"]) == {"halo_delta", "spill_max_frac", "fluo_max_frac"}
 assert all(isinstance(v, (int, float)) and v > 0 for v in cal["praguri"].values())
 assert set(cal["produse"]) == {"S476YE", "BZ739OR", "FD25BK"}
-ok("POS calibrare.json: praguri și 3 produse")
+ok("POS calibrare_v3.json: praguri și 3 produse")
 
 print("\n".join(lines))
 print("ok")

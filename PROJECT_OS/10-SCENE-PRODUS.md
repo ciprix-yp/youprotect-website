@@ -147,11 +147,11 @@ RUN='mise exec uv@0.13.6 -- uv run --project "<W>/scripts/scene" --frozen python
    - `generate_candidates.py`: un lot per produs, `--context` (unul sau mai multe) și `--n` per context; candidat = director nou cu `master.png`,
      `raw_768.png`, `fisa.json` și linie în `registru.jsonl`;
    - `run_model_checks.py`: verificările cu modele (fețe, segment, SigLIP2, Qwen3-VL, OCR, formă de cap) peste candidați, cu pragurile din
-     `calibrare_modele.json` și `--calibrare-extra calibrare_t5c.json`; scrie fișa finală lângă `fisa.json`;
+     `calibrare_modele_v3.json` și `--calibrare-extra calibrare_t5c.json`; scrie fișa finală lângă `fisa.json`;
    - `recompose_candidates.py`: recompune candidații T5a existenți din `raw_768.png` (fără regenerare, fără modele) cu umplerea benzii E, într-un
-     `--out-base` NOU: `$RUN scripts/scene/recompose_candidates.py --cand-base <cand vechi> --out-base <director nou> --images-dir <imagini> --scene-dir <scene> --calibrare <calibrare.json>`;
+     `--out-base` NOU: `$RUN scripts/scene/recompose_candidates.py --cand-base <cand vechi> --out-base <director nou> --images-dir <imagini> --scene-dir <scene> --calibrare <calibrare_v3.json>`;
    - `make_planse.py`: planșe de 1170 px pentru telefon per candidat (zone, zoom pe margini și logo/benzi, verdict din fișă).
-3. Calibrarea (rulată o dată, rezultatele sunt comise): `calibrate_real.py` -> `calibrare.json`; `calibrate_models.py` -> `calibrare_modele.json`.
+3. Calibrarea (rulată o dată, rezultatele sunt comise): `calibrate_real.py` -> `calibrare_v3.json`; `calibrate_models.py` -> `calibrare_modele_v3.json` (`calibrare.json` și `calibrare_modele.json` rămân în git doar pentru istoric, învechite).
 4. Testele rulează fără modele (`tests/scene-*.test.mjs`, `tests/py/`).
 
 Argumentele exacte ale fiecărui script sunt în `scripts/scene/README.md` și în `--help`.
@@ -162,19 +162,23 @@ Produse pilot: S476YE, BZ739OR (haine) și FD25BK (bocanc, natură moartă). Eta
 Cifrele de mai jos vin din `scripts/scene/*.json`, `scripts/scene/README.md` și din rapoartele task-urilor T4/T5.
 
 - **Timp pe Mac (24 GB):** circa 8 s per imagine la 768 px, bf16, 4 pași. La 1024 px rularea este instabilă din cauza memoriei de 24 GB.
-- **Rata de trecere pe produs, după toate verificările:** S476YE 12/30; BZ739OR 15/50; FD25BK 27/30.
-- **Controale cu oameni (calibrare):** 70/70 semnalate „om" (recall 100%, cerința de calibrare), din 70 de controale obligatorii
-  (variantele „original" și „mic"); diagnosticul pe variante „jos": 28/30. Pe cele 67 de imagini ne-om din calibrare: 0 respinse fals (pe SETUL DE CALIBRARE, nu pe date noi; setul „buni" conținea și candidați etichetați
-  „dom"/„neclar" la T5c, deci cifra se REFACE în Fix-2 cu `calibrate_models.py --exclude-labels calibrare_t5c.json`).
-  Cifrele din acest capitol (rata de trecere, recall, ne-om) provin din compunerea veche (fără umplerea benzii E, identitate pe L erodat) și rămân
-  „de refăcut în Fix-2"; nu sunt cifre noi. Recall-ul pe semnal: VLM 70/70 (haine și bocanc), SigLIP2 69/70 (haine) și 46/70 (bocanc), detector de fețe 39/70, piele pe imaginea întreagă 1/70.
+- **Rata de trecere pe produs, după toate verificările (Fix-2: compunere cu umplerea benzii E, identitate pe L complet, calibrare v3):** S476YE 15/30; BZ739OR 14/50; FD25BK 27/30 (total 56/110;
+  înainte: 12/30, 15/50, 27/30). Pe cele 110 candidați recompuși: identitate pe L = 0 la toți, T3a OK 83/110 (S476YE 20/30, BZ739OR 33/50, FD25BK 30/30; cele 27 picate au `color_spill` sau `decor_fluo`
+  cu aceleași valori ca la compunerea veche, deci nu vin din recompunere). Respinse pe verificare (toți candidații): ne-om 25, formă de cap 5 (S476YE), segment acromatic 16 (BZ739OR), SigLIP2 4, piele 3,
+  OCR decor/zonă I 16, `color_spill` 15, `decor_fluo` 17 (verificările se suprapun). Calibrarea pe produse reale (`calibrare_v3.json`) dă aceleași praguri ca înainte (halo delta 12, spill 2%, fluo 0,5%):
+  defectele artificiale (halo >= 21,95, spill >= 0,248, fluo >= 0,083) rămân clar separate de compunerile corecte (halo exces <= 0, spill 0, fluo 0).
+- **Controale cu oameni (calibrare, `calibrare_modele_v3.json`):** 70/70 semnalate „om" (recall 100%, cerința de calibrare), din 70 de controale obligatorii
+  (variantele „original" și „mic"); diagnosticul pe variante „jos": 28/30. Pragurile modelelor sunt identice cu cele vechi (YuNet 0,9; piele 0,5; VLM P(da) 0,2; SigLIP2 marjă −0,5). Pe cele 58 de imagini ne-om din calibrare
+  (setul curățat: scoși cei 9 candidați etichetați „dom"/„neclar"; înainte 67): 0 respinse fals (pe SETUL DE CALIBRARE, nu pe date noi). Recall-ul pe semnal: VLM 70/70 (haine și bocanc), SigLIP2 69/70 (haine) și 46/70 (bocanc),
+  detector de fețe 39/70, piele pe imaginea întreagă 1/70.
+- **Timpi verificări (110 candidați, Mac 24 GB, toate etapele):** circa 300 s în total (fețe 11 s, OCR 93 s, SigLIP2 47 s, SAM 35 s, Qwen3-VL 61 s, cap 24 s, bocanc 21 s; plus încărcarea modelelor). Recompunerea celor 110: circa 160 s de scriere efectivă, fără modele.
 - **Formă de cap (T5c):** pe S476YE, domuri respinse 3/4 și un con gri bun păstrat (hala_depozit-s101); un candidat
-  (platforma_logistica-s109) nu e separat automat și are veto manual. Croma nuanțată pe BZ739OR: acceptate 13/15 gri cu nuanță, 0/11 bej/carton/piele.
+  (platforma_logistica-s109) nu era separat automat; veto-ul manual e legat de sha256-ul masterului vechi, iar la masterul recompus candidatul trece (gât estompat, fără cap rotund la inspecție vizuală; decizia rămâne a proprietarului). Croma nuanțată pe BZ739OR: acceptate 13/15 gri cu nuanță, 0/11 bej/carton/piele.
 
 Limite cunoscute:
 
 - Verificarea OCR pe logo este slabă: citește fragmente; când nu citește nimic în original, rezultatul e „neconcludent" (informativ, nu OK).
   Identitatea pixelilor din L (inclusiv logo) este garantată de verificarea identitate = 0 pe L complet, nu de OCR.
-- Semnalul „formă de cap" este calibrat pe 4 exemple (set mic, etichete puse de agent, risc de supra-reglaj) și are nevoie de un veto manual pe un candidat.
+- Semnalul „formă de cap" este calibrat pe 4 exemple (set mic, etichete puse de agent, risc de supra-reglaj) ; mecanismul de veto manual (legat de sha256 al masterului) rămâne disponibil.
 - Detectorul de fețe nu prinde singur toate controalele (39/70); recall-ul vine din VLM (semnalul principal) și SigLIP2 (secundar, marjă efectivă −0,5).
 - Fundalul este generat la 768 px și mărit la 1100 px (LANCZOS); rămâne o diferență de claritate față de produs, care e pixel-exact.
