@@ -383,3 +383,22 @@ test('clase v3: fiecare fișier din ROUNDED_SM_FILES chiar mai are rounded-sm (l
     assert.ok(strings.some((s) => s.split(/\s+/).includes('rounded-sm')), `${rel} nu mai are rounded-sm: scoate-l din listă`);
   }
 });
+
+// Compatibilitate cu preflight-ul v3, păstrată în @layer base (vezi D-2026-11-27-01).
+test('global.css: [type=search] cu appearance textfield și outline-offset -2px (preflight v3)', () => {
+  const m = noComments(globalCss).match(/\[type=['"]search['"]\]\s*\{([^}]*)\}/);
+  assert.ok(m, 'lipsește regula [type=\'search\'] din global.css');
+  assert.match(m[1], /(?:^|[\s;])appearance:\s*textfield\b/, 'lipsește appearance: textfield');
+  assert.match(m[1], /outline-offset:\s*-2px/, 'lipsește outline-offset: -2px');
+});
+
+test('Footer: lista cu elementul `data-consent-item` (ascuns) nu folosește space-y (ar lăsa spațiu în plus în v4)', () => {
+  const footer = read(join(SRC, 'components', 'global', 'Footer.astro'));
+  const at = footer.indexOf('data-consent-item');
+  assert.ok(at !== -1, 'lipsește data-consent-item din Footer.astro');
+  const ulStart = footer.lastIndexOf('<ul', at);
+  assert.ok(ulStart !== -1, 'elementul data-consent-item nu e într-un <ul>');
+  const ulTag = footer.slice(ulStart, footer.indexOf('>', ulStart) + 1);
+  assert.doesNotMatch(ulTag, /\bspace-y-/, `ul-ul cu data-consent-item folosește space-y: ${ulTag}`);
+  assert.match(ulTag, /\bgap-\d/, `ul-ul cu data-consent-item trebuie să folosească gap: ${ulTag}`);
+});
