@@ -9,48 +9,40 @@ Usage:
 - Sir Safety publishes one front photo per colour (PNG, ~1100 px, transparent background).
   Output per colour: <colour>-PS.webp (max 1200 px) + <colour>-PS-thumb.webp (240 px).
 - Originals are cached in <cache_dir>; only https://www.sirsafety.com/assets/img/prodotti/ is fetched.
+- Download rules (host check on every redirect, real image type, size/pixel limits, sRGB without EXIF/XMP/ICC,
+  paths under the output folders): scripts/lib/safe_fetch.py.
+- Person photos (cardPhoto) are not downloaded here; card_photo.py documents the file name assemble_sirsafety.py expects.
 """
-import io
 import json
 import re
 import sys
 import time
 import urllib.parse
-import urllib.request
 from pathlib import Path
 
-from PIL import Image
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))  # python -I does not add the script folder
+import safe_fetch  # noqa: E402
 
 ALLOWED_HOST = "www.sirsafety.com"
 ALLOWED_PATH = "/assets/img/prodotti/"
-MAX_BYTES = 25 * 1024 * 1024
 CODE_RE = re.compile(r"^[A-Z]{1,3}\d{2,5}$")
 COLOUR_RE = re.compile(r"^[A-Z0-9]{2}$")
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; catalog-sync)"}
+SLUG_RE = re.compile(r"^[a-z0-9-]+$")
+HEADERS_UA = "Mozilla/5.0 (compatible; catalog-sync)"
 
 
-def download(url, cache):
+def download(url, cache, client=None):
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != ALLOWED_HOST or not parsed.path.startswith(ALLOWED_PATH):
         raise ValueError(f"URL în afara sursei permise: {url}")
     if cache.exists():
         return cache.read_bytes()
     time.sleep(1.0)
-    req = urllib.request.Request(url, headers=HEADERS)  # noqa: S310  (schema și host validate mai sus)
-    # URL verificat mai sus: doar imaginile de produs de pe www.sirsafety.com.
-    with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310  # nosemgrep
-        data = resp.read(MAX_BYTES + 1)
-    if len(data) > MAX_BYTES:
-        raise ValueError(f"fișier prea mare: {url}")
+    client = client or safe_fetch.SafeClient({ALLOWED_HOST}, user_agent=HEADERS_UA)
+    data = client.request_image(url)  # host re-checked on every redirect; real image type; 25 MB cap
     cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_bytes(data)
     return data
-
-
-def save_webp(img, path, max_side, quality):
-    im = img.copy()
-    im.thumbnail((max_side, max_side), Image.LANCZOS)
-    im.save(path, "WEBP", quality=quality, method=6)
 
 
 def main(argv):
@@ -61,12 +53,12 @@ def main(argv):
             continue
         text = json.loads(text_path.read_text(encoding="utf-8"))
         code, slug = text["model"], text["slug"]
-        if not CODE_RE.match(code) or not re.match(r"^[a-z0-9-]+$", slug):
+        if not CODE_RE.match(code) or not SLUG_RE.match(slug) or len(slug) > safe_fetch.MAX_NAME:
             print(f"!! {text_path.name}: cod sau slug invalid", file=sys.stderr)
             failed = True
             continue
-        source = json.loads((source_dir / f"{code}.json").read_text(encoding="utf-8"))
-        out = public_dir / slug
+        source = json.loads(safe_fetch.safe_join(source_dir, f"{code}.json").read_text(encoding="utf-8"))
+        out = safe_fetch.safe_join(public_dir, slug)
         out.mkdir(parents=True, exist_ok=True)
         n = 0
         for c in source["colours"]:
@@ -74,17 +66,14 @@ def main(argv):
                 continue
             stem = f"{c['code']}-PS" if c["code"] else "PS"  # "" = produs fără variante de culoare
             try:
-                raw = download(c["image"], cache_dir / f"{code}{c['code']}.png")
-                img = Image.open(io.BytesIO(raw))
-                img.load()
-                if img.format not in ("PNG", "JPEG", "WEBP"):
-                    raise ValueError(f"format neașteptat: {img.format}")
-                img = img.convert("RGBA")
-                save_webp(img, out / f"{stem}.webp", 1200, 82)
-                save_webp(img, out / f"{stem}-thumb.webp", 240, 75)
+                raw = download(c["image"], safe_fetch.safe_join(cache_dir, f"{code}{c['code']}.png"))
+                img = safe_fetch.clean_image(raw, alpha=True)
+                safe_fetch.save_webp(img, out / f"{stem}.webp", 1200, 82, base=public_dir)
+                safe_fetch.save_webp(img, out / f"{stem}-thumb.webp", 240, 75, base=public_dir)
                 n += 1
             except Exception as exc:  # noqa: BLE001
-                print(f"!! {code} {c['code']}: {exc}", file=sys.stderr)
+                reason = exc if isinstance(exc, (ValueError, OSError)) else type(exc).__name__
+                print(f"!! {code} {c['code']}: {reason}", file=sys.stderr)
                 failed = True
         size = sum(f.stat().st_size for f in out.glob("*.webp")) // 1024
         print(f"ok {code} -> {slug}: {n} culori, {size} KB")
