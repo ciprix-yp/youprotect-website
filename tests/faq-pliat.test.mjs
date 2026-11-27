@@ -92,7 +92,7 @@ guard('nicio pagină cu FAQPage nu are <dl>/<dt> cu întrebările în afara unui
   }
 });
 
-guard('componenta FaqList: details/summary nativ, fără JavaScript', () => {
+test('componenta FaqList: details/summary nativ, fără JavaScript', () => {
   const src = readFileSync(join(ROOT, 'src/components/FaqList.astro'), 'utf8');
   assert.match(src, /<details\b/);
   assert.match(src, /<summary\b/);

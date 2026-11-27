@@ -21,7 +21,12 @@ const decode = (s) =>
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 const text = (h) => decode(h.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
-const flat = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLocaleLowerCase('ro-RO').replace(/[^a-z0-9]/g, '');
+// Oracol independent de componentă: forma scurtă a mărcii, scrisă de mână, așa cum apare în numele modelelor.
+const SHORT = { 'Sir Safety System': 'Sir Safety', 'MASCOT®': 'MASCOT', Portwest: 'Portwest', 'Base Protection': 'Base Protection', Climax: 'Climax' };
+const needsBrandRow = (name, brand) => {
+  assert.ok(SHORT[brand], `marcă nouă în catalog: „${brand}” (adaug-o în SHORT)`);
+  return !name.toLowerCase().includes(SHORT[brand].toLowerCase());
+};
 
 function certPages() {
   const out = [];
@@ -82,9 +87,9 @@ guard('mărci fără coloana „Marcă”; categorii cu rând de marcă exact un
       const id = row.match(/href="\/produse\/([^/"]+)\/"/)[1];
       const data = JSON.parse(readFileSync(join(ROOT, 'src/content/products', `${id}.json`), 'utf8'));
       const rowHead = row.match(/<th scope="row"[\s\S]*?<\/th>/)[0];
-      const small = [...rowHead.matchAll(/<span class="block[^"]*text-xs[^"]*">([\s\S]*?)<\/span>/g)].map((m) => text(m[1]));
+      const small = [...rowHead.matchAll(/<span class="[^"]*\bblock\b[^"]*text-xs[^"]*">([\s\S]*?)<\/span>/g)].map((m) => text(m[1]));
       const brand = data.supplier.brand;
-      const need = !BRAND_PAGES.has(url) && !flat(data.name).includes(flat(brand));
+      const need = !BRAND_PAGES.has(url) && needsBrandRow(data.name, brand);
       assert.deepEqual(small, need ? [brand] : [], `${url}: rândul de marcă pentru „${data.name}” (marca „${brand}”)`);
       if (need) brandRows += 1;
       models += 1;
@@ -95,6 +100,8 @@ guard('mărci fără coloana „Marcă”; categorii cu rând de marcă exact un
       else assert.equal(cells, codes.join(' · '), `${url}: codurile la „${data.name}”`);
     }
   }
+  // Pe categorii (72 de rânduri), marca apare doar la modelele al căror nume n-o conține (Base Protection / Base Amsterdam).
+  assert.equal(brandRows, 1, 'rânduri de marcă pe categorii');
   assert.ok(models > 50, `prea puține modele verificate (${models})`);
   console.log(`# modele în tabele: ${models}, cu rând de marcă: ${brandRows}`);
 });

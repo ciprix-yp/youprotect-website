@@ -118,11 +118,19 @@ test('FaqList și CertificationsTable respectă regulile de design din 08-GHID_C
     const src = readFileSync(join(ROOT, rel), 'utf8');
     assert.doesNotMatch(src, /font-light/, `${rel}: font-light pe text`);
     assert.doesNotMatch(src, /transition-all|\btransition\b(?!-)/, `${rel}: transition-all / transition generic`);
-    assert.match(src, /motion-reduce:transition-none/, `${rel}: lipsește motion-reduce`);
-    assert.match(src, /<summary class="[^"]*\bmin-h-11\b/, `${rel}: summary fără min-h-11`);
-    assert.match(src, /focus-visible:outline-2/, `${rel}: summary fără focus vizibil`);
+    // Clasele de summary și chevron sunt în constantele comune din src/lib/ui.ts (verificate mai jos).
+    assert.match(src, /<summary class=\{disclosureSummary\}/, `${rel}: summary fără disclosureSummary`);
+    assert.match(src, /class=\{disclosureChevron\}/, `${rel}: chevron fără disclosureChevron`);
     assert.doesNotMatch(src, /overflow-x-(auto|scroll)/, `${rel}: derulare laterală`);
   }
+  const ui = readFileSync(join(ROOT, 'src/lib/ui.ts'), 'utf8');
+  const summaryCls = ui.match(/disclosureSummary =\s*'([^']*)'/)[1];
+  const chevronCls = ui.match(/disclosureChevron = '([^']*)'/)[1];
+  assert.match(summaryCls, /\bmin-h-11\b/, 'summary fără min-h-11');
+  assert.match(summaryCls, /focus-visible:outline-2/, 'summary fără focus vizibil');
+  assert.match(chevronCls, /motion-reduce:transition-none/, 'chevron fără motion-reduce');
+  assert.match(chevronCls, /transition-transform/, 'chevron: tranziție doar pe transform');
+  assert.doesNotMatch(ui, /disclosure[\s\S]*font-light/, 'font-light în constantele de disclosure');
   const cert = readFileSync(join(ROOT, 'src/components/products/CertificationsTable.astro'), 'utf8');
   assert.match(cert, /table-fixed/, 'tabelul trebuie să fie table-fixed');
   assert.match(cert, /\[overflow-wrap:anywhere\]/, 'codurile foarte lungi trebuie să se rupă');

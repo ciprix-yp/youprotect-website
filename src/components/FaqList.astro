@@ -15,6 +15,8 @@ interface Props {
   class?: string;
 }
 
+import { disclosureChevron, disclosureSummary } from '../lib/ui';
+
 const { items, class: className } = Astro.props;
 const linkClass =
   "mt-2 inline-flex min-h-11 items-center text-sm font-medium text-yp-yellow underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yp-yellow";
@@ -25,9 +27,9 @@ const linkClass =
     const link = item.link ?? item.more;
     return (
       <details class="group border border-white/10 bg-[#0f0f0f]">
-        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-6 text-lg font-medium text-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-yp-yellow [&::-webkit-details-marker]:hidden">
+        <summary class={disclosureSummary}>
           {item.q}
-          <svg class="h-6 w-6 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class={disclosureChevron} fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
           </svg>
         </summary>

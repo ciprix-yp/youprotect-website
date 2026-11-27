@@ -921,7 +921,8 @@
 - Tabelul „Certificările fiecărui model” (categorii și mărci, 17 pagini) e compact: pliat (`<details>` nativ, h2 și
   `#certificari` în afara lui), pe 2 coloane pe toate lățimile (model, certificări), fără derulare laterală (`table-fixed`,
   codurile se rup doar dacă nu încap pe un rând). Fără coloana „Marcă”: pe paginile de marcă nu apare deloc, pe cele
-  de categorie apare ca rând mic sub numele modelului doar când numele nu conține marca (32 din 143 de modele).
+  de categorie apare ca rând mic sub numele modelului doar când numele nu conține marca (1 din 72 de rânduri de
+  categorie: Base Amsterdam, marca Base Protection; comparația ține cont și de forma scurtă a mărcii, „Sir Safety”).
   Summary-ul („Vezi certificările modelelor”) nu spune câte modele sunt, din cauza deciziei din 21.11.2026 că nicio
   pagină nu afișează numărul de modele (`tests/site-promises.test.mjs`).
 - Motiv: încărcare cognitivă pe telefon (auditul din 27.11.2026: ziduri de text la 390 px). Textul rămâne în HTML, deci

@@ -38,8 +38,9 @@ jobs:
         run: npm run build
 
       # Pozele în acțiune: regulile (Portwest, max. 2 pagini, erou) pe paginile generate; fără dist/ testul pică.
-      - name: Poze în acțiune în dist (reguli pe paginile generate)
-        run: node --test tests/poze-actiune.test.mjs tests/scroll-timeline-overflow.test.mjs
+      # Întrebările frecvente și tabelul de certificări pliate (D-2026-11-27-03) se verifică tot pe dist.
+      - name: Poze, întrebări pliate și certificări în dist (reguli pe paginile generate)
+        run: node --test tests/poze-actiune.test.mjs tests/scroll-timeline-overflow.test.mjs tests/faq-pliat.test.mjs tests/faq-pliat-margini.test.mjs tests/certificari-compact.test.mjs
         env:
           POZE_REQUIRE_DIST: '1'
 
