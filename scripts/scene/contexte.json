@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "nota": "Singura sursă a decorurilor pentru prompt-uri. Standardele vin din catalog/texts/portwest/<model>.json (verificate 2026-11-27). Un context are etichete; un produs are atribute; fiecare atribut interzice anumite etichete. Prompt-ul se construiește doar din contexte fără etichete interzise pentru produs.",
+  "produse": {
+    "S476YE": {
+      "model_catalog": "S476",
+      "tip": "manechin",
+      "atribute": ["vizibilitate_clasa_2"],
+      "standarde": ["EN ISO 20471 clasa 2"],
+      "sursa": "catalog/texts/portwest/S476.json"
+    },
+    "BZ739OR": {
+      "model_catalog": "BZ739",
+      "tip": "manechin",
+      "atribute": ["en_iso_11611_clasa_1"],
+      "standarde": ["EN ISO 11612 (A1+A2, B1, C1, E3, F1)", "EN ISO 11611 clasa 1", "IEC 61482-2"],
+      "sursa": "catalog/texts/portwest/BZ739.json",
+      "manechin_fraza": "An abstract non-human display mannequin torso form in matte light neutral grey, cool-toned grey material with no warm or beige tint, with a short straight cylindrical neck stub, the top of the stub cut flat and level like a sawn-off tube, smooth plain surface, standing on a slim polished chrome pole stand.",
+      "observatie": "Catalogul are primaryColour NV; poza pilot e varianta portocalie OR, care conform fișei nu e certificată EN ISO 20471 (nu se pune în decor de drum/noapte oricum, nu e vestă)."
+    },
+    "FD25BK": {
+      "model_catalog": "FD25",
+      "tip": "natura_moarta",
+      "atribute": ["s7l"],
+      "standarde": ["EN ISO 20345:2022+A1:2024 S7L (HRO, M, CI, LG, SC, AN, SR, FO)"],
+      "sursa": "catalog/texts/portwest/FD25.json"
+    }
+  },
+  "reguli": {
+    "vizibilitate_clasa_2": {
+      "interzise": ["drum_rapid", "cale_ferata", "noapte"],
+      "motiv": "Clasa 2 EN ISO 20471 nu e pentru drum rapid, cale ferată sau noapte (brief proprietar, PROJECT_OS/10 regula e)."
+    },
+    "en_iso_11611_clasa_1": {
+      "interzise": ["sudura_activa"],
+      "motiv": "Clasa 1 EN ISO 11611 acoperă tehnici cu puțini stropi; nu se arată sudură activă."
+    },
+    "s7l": {
+      "interzise": [],
+      "permise_speciale": ["noroi", "apa"],
+      "motiv": "S7L: noroi sau apă sunt în regulă."
+    }
+  },
+  "manechin": {
+    "fraza": "An abstract non-human matte grey retail display mannequin torso form with a short straight cylindrical neck stub, the top of the stub cut flat and level like a sawn-off tube, smooth plain surface, standing on a slim polished chrome pole stand.",
+    "fraza_natura_moarta": "Still life product photo, nothing else but the boots standing on the ground."
+  },
+  "cuvinte_interzise": {
+    "en": ["person", "people", "human", "man", "men", "woman", "women", "worker", "workers", "face", "faces", "head", "heads", "hair", "child", "children", "crowd", "portrait", "skin", "hand", "hands", "eyes", "smile"],
+    "ro": ["om", "oameni", "persoana", "persoane", "muncitor", "muncitori", "fata", "fete", "cap", "capul", "par", "barbat", "femeie", "copil", "copii", "mana", "maini", "ochi"]
+  },
+  "contexte": [
+    {
+      "id": "santier_constructii_zi",
+      "etichete": ["santier", "exterior", "zi"],
+      "produse": ["S476YE", "BZ739OR"],
+      "decor": "Blurred background of a building construction site in daylight: bare concrete slabs, steel scaffolding in the distance, soft overcast haze, muted colours.",
+      "variante": ["Soft overcast light.", "Late morning light, gentle shadows.", "Pale hazy sky, slightly brighter."]
+    },
+    {
+      "id": "hala_depozit",
+      "etichete": ["interior", "depozit", "zi"],
+      "produse": ["S476YE"],
+      "decor": "Blurred background of a large warehouse interior: tall steel pallet racking, concrete floor, diffuse daylight from high skylights, muted grey tones.",
+      "variante": ["Cool diffuse light.", "Slightly warmer light.", "Dim and even lighting."]
+    },
+    {
+      "id": "santier_drum_schela",
+      "etichete": ["santier", "exterior", "zi", "schela"],
+      "produse": ["S476YE"],
+      "decor": "Blurred background of an unfinished road base site without traffic: compacted gravel, steel scaffolding and formwork, a distant excavator parked, daylight, muted colours.",
+      "variante": ["Overcast light.", "Light haze.", "Even grey daylight."]
+    },
+    {
+      "id": "platforma_logistica",
+      "etichete": ["exterior", "logistica", "zi"],
+      "produse": ["S476YE"],
+      "decor": "Blurred background of a logistics loading dock in daylight: grey concrete ramp, roller doors, stacked wooden pallets, muted colours.",
+      "variante": ["Overcast light.", "Soft afternoon light.", "Bright diffuse light."]
+    },
+    {
+      "id": "santier_beton_zi",
+      "etichete": ["santier", "exterior", "zi", "beton"],
+      "produse": ["S476YE", "BZ739OR"],
+      "decor": "Blurred background of a concrete building frame under construction in daylight: bare columns, rebar stubs, grey sky, muted colours.",
+      "variante": ["Grey sky.", "Pale sky, soft light.", "Thin cloud, even light."]
+    },
+    {
+      "id": "atelier_metalurgic",
+      "etichete": ["interior", "industrial", "atelier"],
+      "produse": ["BZ739OR"],
+      "decor": "Blurred background of a metal fabrication workshop: steel beams and plates on racks, a workbench with clamps, concrete floor, cool diffuse industrial lighting, dull matte steel surfaces.",
+      "variante": ["Cool even light.", "Slightly dim light.", "Pale light from high windows."]
+    },
+    {
+      "id": "hala_productie",
+      "etichete": ["interior", "industrial", "productie"],
+      "produse": ["BZ739OR"],
+      "decor": "Blurred background of a large factory production hall: overhead crane rail, steel columns, machine lines far away, concrete floor, even neutral light, muted grey and blue tones.",
+      "variante": ["Neutral light.", "Slightly cooler light.", "Soft haze in the hall."]
+    },
+    {
+      "id": "depozit_profile_otel",
+      "etichete": ["interior", "industrial", "depozit"],
+      "produse": ["BZ739OR"],
+      "decor": "Blurred background of a steel stockyard: stacked steel profiles and pipes on racks, concrete floor, diffuse light, muted tones.",
+      "variante": ["Diffuse light.", "Dim even light.", "Pale daylight."]
+    },
+    {
+      "id": "hala_macara",
+      "etichete": ["interior", "industrial", "energie"],
+      "produse": ["BZ739OR"],
+      "decor": "Blurred background of an industrial power plant hall: large pipes, steel walkways, an overhead gantry crane, concrete floor, even neutral light, muted tones.",
+      "variante": ["Neutral light.", "Cooler light.", "Soft haze."]
+    },
+    {
+      "id": "santier_umed_noroi",
+      "etichete": ["santier", "exterior", "zi", "noroi"],
+      "produse": ["FD25BK"],
+      "decor": "Ground-level view of a wet construction site: dark brown mud with boot-sized ruts, scattered gravel, wooden planks, blurred excavator and scaffolding far behind, grey overcast daylight.",
+      "variante": ["Overcast light.", "Light drizzle haze.", "Soft cloudy light."]
+    },
+    {
+      "id": "balti_dupa_ploaie",
+      "etichete": ["santier", "exterior", "zi", "apa"],
+      "produse": ["FD25BK"],
+      "decor": "Ground-level view of a muddy site after rain: shallow puddles reflecting a grey sky, wet gravel, blurred concrete wall far behind, soft daylight.",
+      "variante": ["Grey reflections.", "Pale sky reflections.", "Soft cloudy light."]
+    },
+    {
+      "id": "bare_armatura",
+      "etichete": ["santier", "exterior", "zi", "beton"],
+      "produse": ["FD25BK"],
+      "decor": "Ground-level view of a building site: bundles of rebar bars lying on packed earth and gravel, blurred concrete columns far behind, overcast daylight.",
+      "variante": ["Overcast light.", "Soft hazy light.", "Even cloudy light."]
+    },
+    {
+      "id": "scara_schela",
+      "etichete": ["santier", "exterior", "zi", "schela"],
+      "produse": ["FD25BK"],
+      "decor": "Ground-level view of metal scaffolding steps and a dusty concrete platform, blurred building site far behind, soft daylight.",
+      "variante": ["Soft daylight.", "Overcast light.", "Hazy light."]
+    },
+    {
+      "id": "pietris_sapatura",
+      "etichete": ["santier", "exterior", "zi", "noroi"],
+      "produse": ["FD25BK"],
+      "decor": "Ground-level view of an excavation edge: crushed gravel, dry clay soil and a few wet patches, blurred trench and pipes far behind, overcast daylight.",
+      "variante": ["Overcast light.", "Soft cloudy light.", "Hazy light."]
+    },
+    {
+      "id": "drum_rapid",
+      "etichete": ["drum_rapid", "exterior", "zi"],
+      "produse": ["S476YE"],
+      "decor": "Blurred background of a motorway edge with fast traffic and crash barriers.",
+      "variante": ["Daylight."]
+    },
+    {
+      "id": "cale_ferata",
+      "etichete": ["cale_ferata", "exterior", "zi"],
+      "produse": ["S476YE"],
+      "decor": "Blurred background of railway tracks beside a platform.",
+      "variante": ["Daylight."]
+    },
+    {
+      "id": "santier_noapte",
+      "etichete": ["santier", "exterior", "noapte"],
+      "produse": ["S476YE"],
+      "decor": "Blurred background of a construction site at night under floodlights.",
+      "variante": ["Night."]
+    },
+    {
+      "id": "sudura_activa",
+      "etichete": ["interior", "industrial", "sudura_activa"],
+      "produse": ["BZ739OR"],
+      "decor": "Blurred background of a workshop with welding sparks flying.",
+      "variante": ["Bright sparks."]
+    }
+  ]
+}

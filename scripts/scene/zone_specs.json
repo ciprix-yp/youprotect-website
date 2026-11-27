@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "note": "Coordonate în pixeli ai pozei sursă (x dreapta, y în jos). box = [x0, y0, x1, y1]. Pentru fiecare regiune: SAM 2.1 primește box + puncte pozitive/negative; rezultatul se taie la box lărgit cu `pad` (sau la `clip`, un poligon), apoi (marcaje critice) se dilată cu `dilate` px și se intersectează cu alpha >= 0,99. `matte` și `matte_reason` fixează alegerea matte-ului, după compararea BiRefNet cu pragul pe alb.",
+  "products": [
+    {
+      "id": "S476YE",
+      "source": "portwest/S476YE.jpg",
+      "description": "vestă de vizibilitate galbenă, benzi reflectorizante gri",
+      "matte": "prag",
+      "matte_reason": "BiRefNet și pragul pe alb coincid (IoU hard 0,9992, dezacord ~470 px, toate pe margine); niciunul nu mănâncă benzile gri. Pragul dă o singură componentă, interior 100% opac și margine moale mai strânsă (0,7% din siluetă față de 2,5% la BiRefNet), deci mai puțini pixeli de bandă cu alpha < 0,99 la marginea siluetei. Fără umbră și fără goluri reale în poza vestei.",
+      "params": { "erode_r": 3, "band_in": 3, "band_out": 1, "i_inset": 3, "crit_dilate": 2, "threshold_lo": 8 },
+      "critical": [
+        { "name": "banda_verticala_stanga", "reason": "banda reflectorizantă verticală de pe umărul/pieptul stâng (al vestei)", "box": [280, 90, 358, 605], "points_pos": [[318, 200], [318, 450]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "banda_verticala_dreapta", "reason": "banda reflectorizantă verticală de pe umărul/pieptul drept", "box": [738, 86, 820, 595], "points_pos": [[780, 200], [780, 500]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "banda_orizontala_sus_stanga", "reason": "banda orizontală de la piept, partea stângă", "box": [248, 250, 512, 325], "points_pos": [[420, 287]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "banda_orizontala_sus_dreapta", "reason": "banda orizontală de la piept, partea dreaptă (atinge marginea din dreapta)", "box": [576, 240, 852, 326], "points_pos": [[650, 285], [830, 270]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "banda_talie_stanga", "reason": "banda orizontală de la talie, partea stângă", "box": [255, 586, 538, 686], "points_pos": [[400, 640]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "banda_talie_dreapta", "reason": "banda orizontală de la talie, partea dreaptă", "box": [563, 586, 855, 675], "points_pos": [[700, 630]], "points_neg": [], "pad": 4, "dilate": 2 }
+      ],
+      "interior": [
+        { "name": "spate_interior_gat", "reason": "interiorul spatelui vestei vizibil prin deschiderea în V", "box": [450, 40, 642, 330], "points_pos": [[545, 180], [550, 280]], "points_neg": [[435, 180], [630, 180]], "clip": [[452, 50], [645, 50], [640, 120], [600, 300], [550, 335], [505, 300], [458, 120]] },
+        { "name": "eticheta_interioara", "reason": "eticheta de mărime/compoziție cusută pe interiorul spatelui", "box": [513, 44, 576, 125], "points_pos": [[545, 85]], "points_neg": [], "clip": [[511, 42], [578, 42], [578, 127], [511, 127]] }
+      ]
+    },
+    {
+      "id": "BZ739OR",
+      "source": "portwest/BZ739OR.jpg",
+      "description": "geacă portocalie EN ISO 11611 clasa 1, logo PORTWEST pe mânecă",
+      "matte": "birefnet_solid",
+      "matte_reason": "Pragul pe alb umple golul real, îngust, dintre braț și corp (subraț, ~x 307-311, y 538-566, și simetric ~x 776-780, y 540-560: pixeli albi de fundal tratați ca produs după umplerea găurilor); BiRefNet îl lasă fundal. IoU hard 0,9987. BiRefNet are interiorul nu complet opac (589 px cu alpha < 0,99), de aceea se forțează 255 la >= 2 px de margine (variantă birefnet_solid), păstrând silueta și marginea moale din BiRefNet.",
+      "params": { "erode_r": 3, "band_in": 3, "band_out": 1, "i_inset": 3, "crit_dilate": 2, "threshold_lo": 8 },
+      "critical": [
+        { "name": "logo_maneca", "reason": "logo PORTWEST albastru pe mâneca din dreapta imaginii", "box": [872, 436, 930, 476], "points_pos": [[895, 456]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "eticheta_guler", "reason": "eticheta cu logo Portwest și pictograme de la guler (marcaj de produs vizibil)", "box": [506, 128, 580, 196], "points_pos": [[540, 143], [540, 165]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "ripa_clapa_stanga", "reason": "banda/pasepoal reflectorizant gri de la marginea de jos a clapei buzunarului din stânga imaginii", "box": [310, 398, 496, 430], "points_pos": [[400, 414]], "points_neg": [], "pad": 3, "dilate": 2 },
+        { "name": "ripa_clapa_dreapta", "reason": "banda/pasepoal reflectorizant gri de la marginea de jos a clapei buzunarului din dreapta imaginii", "box": [606, 396, 754, 428], "points_pos": [[680, 411]], "points_neg": [], "pad": 3, "dilate": 2 }
+      ],
+      "interior": [
+        { "name": "interior_guler", "reason": "spatele interior al gulerului ridicat, vizibil deasupra etichetei", "box": [458, 40, 626, 128], "points_pos": [[540, 90]], "points_neg": [[540, 200], [420, 150]], "clip": [[462, 62], [618, 50], [624, 125], [462, 125]] }
+      ]
+    },
+    {
+      "id": "FD25BK",
+      "source": "portwest/FD25BK.jpg",
+      "description": "bocanc negru S7L, natură moartă",
+      "matte": "birefnet_solid",
+      "matte_reason": "Pragul pe alb include umbra moale de sub talpă și din fața ei (~14.600 px prag-only, ~7.850 + ~6.250 în două zone la y 880-984) ca parte din produs; BiRefNet o lasă în fundal. IoU hard 0,9708. BiRefNet are 1229 px de interior cu alpha < 0,99, forțați la 255 la >= 2 px de margine (birefnet_solid). Golul real dintre șnur și limbă (~x 644-658, y 571-582) rămâne gol, ca în BiRefNet.",
+      "params": { "erode_r": 3, "band_in": 3, "band_out": 1, "i_inset": 3, "crit_dilate": 2, "threshold_lo": 8 },
+      "critical": [
+        { "name": "eticheta_guler", "reason": "eticheta PORTWEST cusută pe spatele gulerului", "box": [303, 115, 396, 176], "points_pos": [[350, 148]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "logo_bombeu", "reason": "logo PORTWEST embosat pe bombeul de cauciuc", "box": [685, 715, 800, 800], "points_pos": [[735, 765]], "points_neg": [], "pad": 4, "dilate": 2 },
+        { "name": "emblema_laterala", "reason": "emblema hexagonală embosată cu dungi de pe latura exterioară", "box": [105, 400, 298, 630], "points_pos": [[200, 515]], "points_neg": [], "pad": 4, "dilate": 2 }
+      ],
+      "interior_empty_reason": "bocanc natură moartă: deschiderea gleznei nu arată un interior distinct (căptușeala neagră se confundă cu gulerul matlasat); I rămâne gol și tot produsul vizibil intră în L.",
+      "interior": []
+    }
+  ]
+}

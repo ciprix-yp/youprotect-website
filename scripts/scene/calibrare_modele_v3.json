@@ -1,0 +1,1975 @@
+{
+ "schema": 1,
+ "data": "2026-11-27T12:35:53Z",
+ "versiune_cod": {
+  "sha256": "045a15944de5967d18e7bfede58f8158f10cbbd9ac9d8dd83a81cdc463d559d3",
+  "fisiere": [
+   "checks_models_lib.py",
+   "models_runtime.py",
+   "collect_signals.py",
+   "calibrate_models.py",
+   "checks_lib.py"
+  ]
+ },
+ "praguri": {
+  "yunet_score": 0.9,
+  "skin_whole_max": 0.5,
+  "vlm_p_yes": 0.2,
+  "siglip_pairs": {
+   "haine": [
+    0,
+    1,
+    3,
+    4
+   ],
+   "bocanc": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  "siglip_margin": {
+   "haine": -0.5,
+   "bocanc": -0.5
+  },
+  "segment": {
+   "skin_frac_max": 0.05,
+   "c_p90_max": 20.0,
+   "frac_chromatic_max": 0.1,
+   "min_px": 500
+  },
+  "ocr": {
+   "logo_min_conf": 0.8,
+   "logo_min_len": 2,
+   "decor_min_len": 3,
+   "decor_min_conf": 0.5
+  }
+ },
+ "controale": [
+  {
+   "id": "M01-960",
+   "rel": "public/images/actiune/muncitor-sapa-cu-lopata-haine-reflectorizante-portocalii-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.726,
+   "skin_whole": 0.3274,
+   "d_haine": 0.796,
+   "d_bocanc": 0.848,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M01-mic",
+   "rel": "public/images/actiune/muncitor-sapa-cu-lopata-haine-reflectorizante-portocalii-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.85,
+   "skin_whole": 0.0403,
+   "d_haine": 0.708,
+   "d_bocanc": 0.531,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M02-960",
+   "rel": "public/images/actiune/muncitor-urca-excavator-haine-reflectorizante-galbene-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.897,
+   "skin_whole": 0.365,
+   "d_haine": 0.94,
+   "d_bocanc": 0.948,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M02-mic",
+   "rel": "public/images/actiune/muncitor-urca-excavator-haine-reflectorizante-galbene-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.846,
+   "skin_whole": 0.046,
+   "d_haine": 0.951,
+   "d_bocanc": 0.733,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M04-960",
+   "rel": "public/images/actiune/trei-colegi-casti-albe-dosar-treptele-santierului-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.94,
+   "skin_whole": 0.0806,
+   "d_haine": 0.865,
+   "d_bocanc": 0.564,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M04-mic",
+   "rel": "public/images/actiune/trei-colegi-casti-albe-dosar-treptele-santierului-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.924,
+   "skin_whole": 0.0101,
+   "d_haine": 0.941,
+   "d_bocanc": 0.239,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M05-960",
+   "rel": "public/images/actiune/muncitor-drum-nou-asfaltat-stalp-semnalizare-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.937,
+   "skin_whole": 0.3203,
+   "d_haine": 0.848,
+   "d_bocanc": 0.72,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M05-mic",
+   "rel": "public/images/actiune/muncitor-drum-nou-asfaltat-stalp-semnalizare-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.923,
+   "skin_whole": 0.0396,
+   "d_haine": 0.867,
+   "d_bocanc": 0.606,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M09-960",
+   "rel": "public/images/actiune/femeie-verifica-foaie-culoar-depozit-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.889,
+   "skin_whole": 0.0367,
+   "d_haine": 0.907,
+   "d_bocanc": 0.474,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M09-mic",
+   "rel": "public/images/actiune/femeie-verifica-foaie-culoar-depozit-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.865,
+   "skin_whole": 0.0046,
+   "d_haine": 0.745,
+   "d_bocanc": 0.079,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M10-960",
+   "rel": "public/images/actiune/operator-halat-alb-aparat-curatat-podea-hala-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.915,
+   "skin_whole": 0.145,
+   "d_haine": 0.992,
+   "d_bocanc": 0.616,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M10-mic",
+   "rel": "public/images/actiune/operator-halat-alb-aparat-curatat-podea-hala-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.906,
+   "skin_whole": 0.0182,
+   "d_haine": 0.979,
+   "d_bocanc": 0.417,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M12-960",
+   "rel": "public/images/actiune/trei-colegi-casti-albe-platforma-industriala-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.926,
+   "skin_whole": 0.144,
+   "d_haine": 0.918,
+   "d_bocanc": 0.654,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M12-mic",
+   "rel": "public/images/actiune/trei-colegi-casti-albe-platforma-industriala-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.909,
+   "skin_whole": 0.0187,
+   "d_haine": 0.592,
+   "d_bocanc": 0.46,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M19-960",
+   "rel": "public/images/actiune/barbat-camasa-alba-scara-exterioara-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.931,
+   "skin_whole": 0.0782,
+   "d_haine": 0.881,
+   "d_bocanc": 0.321,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M19-mic",
+   "rel": "public/images/actiune/barbat-camasa-alba-scara-exterioara-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.92,
+   "skin_whole": 0.0098,
+   "d_haine": 0.877,
+   "d_bocanc": 0.379,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M20-960",
+   "rel": "public/images/actiune/patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.926,
+   "skin_whole": 0.1061,
+   "d_haine": 0.973,
+   "d_bocanc": 0.33,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M20-mic",
+   "rel": "public/images/actiune/patru-oameni-haine-de-lucru-rosii-la-fel-depozit-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.903,
+   "skin_whole": 0.0135,
+   "d_haine": 0.825,
+   "d_bocanc": 0.17,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M23-960",
+   "rel": "public/images/actiune/folie-transfer-termic-dezlipita-logo-alb-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.402,
+   "skin_whole": 0.2248,
+   "d_haine": 0.841,
+   "d_bocanc": 0.664,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M23-mic",
+   "rel": "public/images/actiune/folie-transfer-termic-dezlipita-logo-alb-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.318,
+   "skin_whole": 0.0275,
+   "d_haine": 0.714,
+   "d_bocanc": 0.407,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M24-960",
+   "rel": "public/images/actiune/femeie-casca-alba-dosar-coridor-tehnic-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.927,
+   "skin_whole": 0.0375,
+   "d_haine": 0.982,
+   "d_bocanc": 0.712,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M24-mic",
+   "rel": "public/images/actiune/femeie-casca-alba-dosar-coridor-tehnic-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.905,
+   "skin_whole": 0.005,
+   "d_haine": 0.978,
+   "d_bocanc": 0.703,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M24-p960",
+   "rel": "public/images/actiune/femeie-casca-alba-dosar-coridor-tehnic-mascot-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.927,
+   "skin_whole": 0.0554,
+   "d_haine": 0.969,
+   "d_bocanc": 0.625,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M25-960",
+   "rel": "public/images/actiune/barbat-casca-profil-metalic-pe-umar-hala-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.825,
+   "skin_whole": 0.0387,
+   "d_haine": 0.971,
+   "d_bocanc": 0.93,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M25-mic",
+   "rel": "public/images/actiune/barbat-casca-profil-metalic-pe-umar-hala-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.721,
+   "skin_whole": 0.005,
+   "d_haine": 0.423,
+   "d_bocanc": 0.881,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M25-p960",
+   "rel": "public/images/actiune/barbat-casca-profil-metalic-pe-umar-hala-mascot-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.851,
+   "skin_whole": 0.0261,
+   "d_haine": 0.934,
+   "d_bocanc": 0.767,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M26-960",
+   "rel": "public/images/actiune/femeie-jacheta-rosie-cutie-conveior-depozit-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.916,
+   "skin_whole": 0.1637,
+   "d_haine": 0.943,
+   "d_bocanc": 0.46,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M26-mic",
+   "rel": "public/images/actiune/femeie-jacheta-rosie-cutie-conveior-depozit-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.9,
+   "skin_whole": 0.0203,
+   "d_haine": 0.858,
+   "d_bocanc": 0.475,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M26-p960",
+   "rel": "public/images/actiune/femeie-jacheta-rosie-cutie-conveior-depozit-mascot-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.917,
+   "skin_whole": 0.2091,
+   "d_haine": 0.923,
+   "d_bocanc": 0.435,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M27-960",
+   "rel": "public/images/actiune/barbat-casca-alba-clipboard-pasarela-industriala-mascot-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.923,
+   "skin_whole": 0.139,
+   "d_haine": 0.966,
+   "d_bocanc": 0.773,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M27-mic",
+   "rel": "public/images/actiune/barbat-casca-alba-clipboard-pasarela-industriala-mascot-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.89,
+   "skin_whole": 0.0176,
+   "d_haine": 0.93,
+   "d_bocanc": 0.65,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "M27-p960",
+   "rel": "public/images/actiune/barbat-casca-alba-clipboard-pasarela-industriala-mascot-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.929,
+   "skin_whole": 0.0884,
+   "d_haine": 0.963,
+   "d_bocanc": 0.755,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P04-960",
+   "rel": "public/images/actiune/doi-colegi-citesc-plan-langa-excavator-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.935,
+   "skin_whole": 0.0805,
+   "d_haine": 0.986,
+   "d_bocanc": 0.326,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P04-mic",
+   "rel": "public/images/actiune/doi-colegi-citesc-plan-langa-excavator-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.923,
+   "skin_whole": 0.0099,
+   "d_haine": 0.968,
+   "d_bocanc": 0.199,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P05-960",
+   "rel": "public/images/actiune/muncitor-ridica-plasa-armatura-parka-reflectorizanta-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.932,
+   "skin_whole": 0.2111,
+   "d_haine": 0.969,
+   "d_bocanc": 0.696,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P05-mic",
+   "rel": "public/images/actiune/muncitor-ridica-plasa-armatura-parka-reflectorizanta-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.91,
+   "skin_whole": 0.0269,
+   "d_haine": 0.981,
+   "d_bocanc": 0.407,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P06-960",
+   "rel": "public/images/actiune/muncitor-citeste-plan-armatura-santier-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.832,
+   "skin_whole": 0.1181,
+   "d_haine": 0.979,
+   "d_bocanc": 0.708,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P06-mic",
+   "rel": "public/images/actiune/muncitor-citeste-plan-armatura-santier-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.787,
+   "skin_whole": 0.0147,
+   "d_haine": 0.985,
+   "d_bocanc": 0.501,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P11-960",
+   "rel": "public/images/actiune/muncitor-trage-transpalet-vesta-reflectorizanta-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman",
+    "skin_whole_image"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman",
+    "skin_whole_image"
+   ],
+   "faces_max": 0.898,
+   "skin_whole": 0.6113,
+   "d_haine": 0.962,
+   "d_bocanc": 0.784,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P11-mic",
+   "rel": "public/images/actiune/muncitor-trage-transpalet-vesta-reflectorizanta-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.816,
+   "skin_whole": 0.0754,
+   "d_haine": 0.888,
+   "d_bocanc": 0.551,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P14-960",
+   "rel": "public/images/actiune/tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.86,
+   "skin_whole": 0.0166,
+   "d_haine": 0.982,
+   "d_bocanc": 0.62,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P14-mic",
+   "rel": "public/images/actiune/tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.826,
+   "skin_whole": 0.0021,
+   "d_haine": 0.963,
+   "d_bocanc": 0.442,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P14-p960",
+   "rel": "public/images/actiune/tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.87,
+   "skin_whole": 0.0187,
+   "d_haine": 0.991,
+   "d_bocanc": 0.772,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P15-960",
+   "rel": "public/images/actiune/operator-haine-lime-bleumarin-coboara-scara-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.916,
+   "skin_whole": 0.1229,
+   "d_haine": 0.973,
+   "d_bocanc": 0.949,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P15-mic",
+   "rel": "public/images/actiune/operator-haine-lime-bleumarin-coboara-scara-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.917,
+   "skin_whole": 0.0155,
+   "d_haine": 0.915,
+   "d_bocanc": 0.681,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P15-p960",
+   "rel": "public/images/actiune/operator-haine-lime-bleumarin-coboara-scara-portwest-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.924,
+   "skin_whole": 0.0715,
+   "d_haine": 0.947,
+   "d_bocanc": 0.949,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P16-960",
+   "rel": "public/images/actiune/tehnician-geaca-neagra-baza-turn-eolian-portwest-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.928,
+   "skin_whole": 0.0674,
+   "d_haine": 0.89,
+   "d_bocanc": 0.706,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P16-mic",
+   "rel": "public/images/actiune/tehnician-geaca-neagra-baza-turn-eolian-portwest-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.898,
+   "skin_whole": 0.0093,
+   "d_haine": 0.881,
+   "d_bocanc": 0.618,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "P16-p960",
+   "rel": "public/images/actiune/tehnician-geaca-neagra-baza-turn-eolian-portwest-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.918,
+   "skin_whole": 0.0718,
+   "d_haine": 0.806,
+   "d_bocanc": 0.46,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S01-960",
+   "rel": "public/images/actiune/trei-muncitori-port-containere-haine-reflectorizante-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.921,
+   "skin_whole": 0.1642,
+   "d_haine": 0.988,
+   "d_bocanc": 0.467,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S01-mic",
+   "rel": "public/images/actiune/trei-muncitori-port-containere-haine-reflectorizante-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.901,
+   "skin_whole": 0.0212,
+   "d_haine": 0.918,
+   "d_bocanc": 0.282,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S02-960",
+   "rel": "public/images/actiune/doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.932,
+   "skin_whole": 0.1218,
+   "d_haine": 0.974,
+   "d_bocanc": 0.52,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S02-mic",
+   "rel": "public/images/actiune/doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.917,
+   "skin_whole": 0.0152,
+   "d_haine": 0.899,
+   "d_bocanc": 0.342,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S02-p960",
+   "rel": "public/images/actiune/doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.927,
+   "skin_whole": 0.1266,
+   "d_haine": 0.912,
+   "d_bocanc": 0.979,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S04-960",
+   "rel": "public/images/actiune/doi-muncitori-combinezoane-albe-semimasti-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.764,
+   "skin_whole": 0.0836,
+   "d_haine": 0.992,
+   "d_bocanc": 0.548,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S04-mic",
+   "rel": "public/images/actiune/doi-muncitori-combinezoane-albe-semimasti-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.846,
+   "skin_whole": 0.0104,
+   "d_haine": 0.972,
+   "d_bocanc": 0.432,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S06-960",
+   "rel": "public/images/actiune/doi-muncitori-cara-grinda-lemn-depozit-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.935,
+   "skin_whole": 0.1087,
+   "d_haine": 0.938,
+   "d_bocanc": 0.86,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S06-mic",
+   "rel": "public/images/actiune/doi-muncitori-cara-grinda-lemn-depozit-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.929,
+   "skin_whole": 0.0138,
+   "d_haine": 0.912,
+   "d_bocanc": 0.644,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S08-960",
+   "rel": "public/images/actiune/muncitor-combinezon-alb-ham-inaltime-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.643,
+   "skin_whole": 0.2344,
+   "d_haine": 0.963,
+   "d_bocanc": 0.906,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S08-mic",
+   "rel": "public/images/actiune/muncitor-combinezon-alb-ham-inaltime-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.71,
+   "skin_whole": 0.0294,
+   "d_haine": 0.901,
+   "d_bocanc": 0.88,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S12-960",
+   "rel": "public/images/actiune/muncitor-fier-beton-arata-talpa-incaltaminte-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.871,
+   "skin_whole": 0.1129,
+   "d_haine": 0.99,
+   "d_bocanc": 0.564,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S12-mic",
+   "rel": "public/images/actiune/muncitor-fier-beton-arata-talpa-incaltaminte-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.843,
+   "skin_whole": 0.0141,
+   "d_haine": 0.983,
+   "d_bocanc": 0.472,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S16-960",
+   "rel": "public/images/actiune/pasi-incaltaminte-protectie-santier-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.376,
+   "skin_whole": 0.3533,
+   "d_haine": 0.804,
+   "d_bocanc": 0.561,
+   "vlm_p_yes": 0.995
+  },
+  {
+   "id": "S16-mic",
+   "rel": "public/images/actiune/pasi-incaltaminte-protectie-santier-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.393,
+   "skin_whole": 0.0437,
+   "d_haine": 0.939,
+   "d_bocanc": 0.495,
+   "vlm_p_yes": 0.905
+  },
+  {
+   "id": "S18-960",
+   "rel": "public/images/actiune/muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.891,
+   "skin_whole": 0.0677,
+   "d_haine": 0.981,
+   "d_bocanc": 0.941,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S18-mic",
+   "rel": "public/images/actiune/muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.785,
+   "skin_whole": 0.0086,
+   "d_haine": 0.88,
+   "d_bocanc": 0.764,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S18-p960",
+   "rel": "public/images/actiune/muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.908,
+   "skin_whole": 0.1178,
+   "d_haine": 0.93,
+   "d_bocanc": 0.861,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S19-960",
+   "rel": "public/images/actiune/barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.909,
+   "skin_whole": 0.2365,
+   "d_haine": 0.966,
+   "d_bocanc": 0.698,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S19-mic",
+   "rel": "public/images/actiune/barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-960.webp",
+   "variant": "mic",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "faces",
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.923,
+   "skin_whole": 0.0296,
+   "d_haine": 0.993,
+   "d_bocanc": 0.562,
+   "vlm_p_yes": 1.0
+  },
+  {
+   "id": "S19-p960",
+   "rel": "public/images/actiune/barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-p960.webp",
+   "variant": "original",
+   "flagged": true,
+   "flagged_haine": true,
+   "flagged_bocanc": true,
+   "by_haine": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "by_bocanc": [
+    "siglip2_mannequin",
+    "vlm_ne_uman"
+   ],
+   "faces_max": 0.9,
+   "skin_whole": 0.2414,
+   "d_haine": 0.927,
+   "d_bocanc": 0.668,
+   "vlm_p_yes": 1.0
+  }
+ ],
+ "recall": {
+  "flagged": 70,
+  "total": 70,
+  "pe_semnal": {
+   "haine:siglip2_mannequin": 69,
+   "haine:vlm_ne_uman": 70,
+   "bocanc:siglip2_mannequin": 46,
+   "bocanc:vlm_ne_uman": 70,
+   "haine:faces": 39,
+   "bocanc:faces": 39,
+   "haine:skin_whole_image": 1,
+   "bocanc:skin_whole_image": 1
+  },
+  "haine": 70,
+  "bocanc": 70,
+  "vlm_inclus": true
+ },
+ "diagnostic_jos": {
+  "flagged": 28,
+  "total": 30,
+  "ne_semnalate": [
+   "M23-jos",
+   "S16-jos"
+  ]
+ },
+ "ne_om": {
+  "total": 58,
+  "respinse_fals": 0,
+  "randuri": [
+   {
+    "id": "packshot-S476YE",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "packshot-BZ739OR",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "packshot-FD25BK",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-atelier_metalurgic-s200",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-atelier_metalurgic-s203",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-atelier_metalurgic-s205",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-atelier_metalurgic-s206",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-hala_productie-s203",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-hala_productie-s205",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-hala_productie-s206",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-santier_constructii_zi-s203",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "BZ739OR-santier_constructii_zi-s206",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s300",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s301",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s302",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s303",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s304",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s305",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s306",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s307",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s308",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-balti_dupa_ploaie-s309",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s300",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s301",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s302",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s303",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s304",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s305",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s306",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s307",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s308",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-bare_armatura-s309",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s300",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s301",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s302",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s303",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s304",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s305",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s306",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s307",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s308",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "FD25BK-santier_umed_noroi-s309",
+    "set": "bocanc",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-hala_depozit-s101",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-hala_depozit-s102",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-hala_depozit-s103",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-hala_depozit-s104",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-hala_depozit-s105",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-hala_depozit-s108",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-platforma_logistica-s100",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-platforma_logistica-s101",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-platforma_logistica-s102",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-platforma_logistica-s103",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-platforma_logistica-s108",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-santier_constructii_zi-s100",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-santier_constructii_zi-s101",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-santier_constructii_zi-s102",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-santier_constructii_zi-s105",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   },
+   {
+    "id": "S476YE-santier_constructii_zi-s106",
+    "set": "haine",
+    "respins_fals": false,
+    "by": []
+   }
+  ]
+ },
+ "modele_controale": {
+  "faces": {
+   "id": "yunet-2023mar",
+   "revizie": "48b10fa505aeb51fbd127fc60a5c660040e823b7",
+   "sha256": "e8fe1a49743bee632fcf5386fae0cd79662fa7bcbb489192401a6537b326013f"
+  },
+  "siglip": {
+   "id": "siglip2-so400m-patch14-384",
+   "revizie": "e8e487298228002f3d8a82e0cd5c8ea9c567f57f",
+   "sha256": "1dc3d8ce7008c9ef1d1884ceecf9015d0f5fa8aa12049313b8db28b6ca27a5f8"
+  },
+  "qwen": {
+   "id": "qwen3-vl-4b-instruct",
+   "revizie": "ebb281ec70b05090aa6165b016eac8ec08e71b17",
+   "sha256": "987a613f89211f3bdd650cc268687247688b64561cb80d6f82456e8969b3acf1"
+  }
+ },
+ "nota": "Controalele sunt cale relativă în repo + rezultat; imaginile nu sunt în git. Controalele „original” și „mic” sunt obligatorii (100%); „jos” e diagnostic."
+}
