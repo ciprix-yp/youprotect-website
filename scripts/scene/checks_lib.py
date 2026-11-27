@@ -325,3 +325,71 @@ def check_decor_fluo(output: np.ndarray, placed: dict, max_frac: float = FLUO_MA
     frac = float(hit.mean())
     return result("decor_fluo", round(frac, 5), max_frac, frac <= max_frac,
                   f"{int(hit.sum())} din {int(decor.sum())} px de decor sunt fluo (H {_FLUO_H[0]}-{_FLUO_H[1]}°, S>={_FLUO_S}, V>={_FLUO_V})")
+
+
+# ---------------------------------------------------------------- contaminare albă în decor (Fix-4)
+
+CONTAM_NEAR = (4, 24)  # inelul măsurat (px în afara lui L ∪ E): umplerea benzii refă doar primii BAND_RING_PX px, restul e decorul generat
+CONTAM_REF = (32, 48)  # inelul de referință, în afara zonei în care packshot-ul alb poate „sângera” în decor
+CONTAM_MIN_PX = 500
+CONTAM_WHITE_MIN = 235  # „aproape alb”: min(R, G, B) >= 235
+# Praguri calibrate pe măsurătoarea pe cei 110 raw_768.png din cand_v3 (measure_contamination.py; .catalog-work/scene/raport_v4/contaminare.json):
+# delta fracției aproape-albe (inel 4-24 minus referință 32-48): max observat 0.0704 (S476YE), p95 0.0504 -> prag 0.15 (~2x maximul observat; o contaminare
+# albă de 12 px acoperă ~0.4 din inel). delta p90 luminanță: max observat 66.81, mediana -0.86 (luminanța variază și cu decorul, deci pragul e larg, doar
+# pentru ruptură grosolană) -> prag 80. Cei 110 trec; calibrare pe 110 măsurători ale aceluiași generator, deci avertisment de supra-reglaj.
+CONTAM_P90_DELTA = 80.0
+CONTAM_WHITE_DELTA = 0.15
+
+
+def disc_dilate(mask: np.ndarray, r: int) -> np.ndarray:
+    """Dilatare cu disc (identică cu zones_lib.dilate), dar rapidă: pe fiecare decalaj vertical dy, segmentul orizontal de semi-lățime
+    floor(sqrt(r^2 - dy^2)) se aplică prin sume cumulate (O(H·W) pe dy în loc de O(H·W) pe fiecare pixel al discului)."""
+    m = np.asarray(mask, dtype=bool)
+    if r <= 0:
+        return m.copy()
+    h, w = m.shape
+    out = np.zeros_like(m)
+    padded = np.pad(m, ((r, r), (r, r)), constant_values=False)
+    cs = np.cumsum(padded.astype(np.int32), axis=1)
+    cs = np.pad(cs, ((0, 0), (1, 0)))
+    for dy in range(-r, r + 1):
+        hw = int(math.isqrt(r * r - dy * dy))
+        rows = slice(r + dy, r + dy + h)
+        lo = np.arange(w) + r - hw
+        hi = np.arange(w) + r + hw + 1
+        out |= (cs[rows][:, hi] - cs[rows][:, lo]) > 0
+    return out
+
+
+def contamination_rings(L: np.ndarray, E: np.ndarray, I: np.ndarray, near: tuple[int, int] = CONTAM_NEAR,  # noqa: E741
+                        ref: tuple[int, int] = CONTAM_REF) -> tuple[np.ndarray, np.ndarray]:
+    """(inel apropiat, inel de referință) în decor: la [a, b] px în afara lui L ∪ E, fără interiorul manechinului (I)."""
+    le = np.asarray(L, dtype=bool) | np.asarray(E, dtype=bool)
+    notI = ~np.asarray(I, dtype=bool)
+    d = {r: disc_dilate(le, r) for r in {near[0], near[1], ref[0], ref[1]}}
+    return (d[near[1]] & ~d[near[0]] & notI), (d[ref[1]] & ~d[ref[0]] & notI)
+
+
+def ring_stats(rgb: np.ndarray, ring: np.ndarray) -> dict | None:
+    if not ring.any():
+        return None
+    px = np.asarray(rgb)[ring]
+    lum = _lum(px)
+    return {"n": int(ring.sum()), "p90": float(np.percentile(lum, 90)), "white_frac": float((px.min(axis=-1) >= CONTAM_WHITE_MIN).mean())}
+
+
+def check_band_contamination(output: np.ndarray, placed: dict, p90_delta: float = CONTAM_P90_DELTA, white_delta: float = CONTAM_WHITE_DELTA) -> dict:
+    """Packshot-ul alb care „sângerează” în decor dincolo de inelul refăcut la compunere: luminanța p90 și fracția aproape-albă pe inelul 4-24 px
+    în afara lui L ∪ E, față de decorul de referință 32-48 px (fără I). Respinge dacă p90 inelului depășește referința cu mai mult de `p90_delta`
+    niveluri SAU fracția aproape-albă o depășește cu mai mult de `white_delta`. Inel gol sau sub CONTAM_MIN_PX px: respins (nu se poate verifica)."""
+    near, ref = contamination_rings(placed["L"], placed["E"], placed["I"])
+    sn, sr = ring_stats(output, near), ring_stats(output, ref)
+    thr = {"p90_delta": p90_delta, "white_delta": white_delta, "inel": list(CONTAM_NEAR), "referinta": list(CONTAM_REF)}
+    if sn is None or sr is None or sn["n"] < CONTAM_MIN_PX or sr["n"] < CONTAM_MIN_PX:
+        return result("band_contamination", None, thr, False, f"inele prea mici ({0 if sn is None else sn['n']}/{0 if sr is None else sr['n']} px < {CONTAM_MIN_PX}): nu se poate verifica")
+    dp, dw = sn["p90"] - sr["p90"], sn["white_frac"] - sr["white_frac"]
+    val = {"p90_inel": round(sn["p90"], 2), "p90_ref": round(sr["p90"], 2), "delta_p90": round(dp, 2), "alb_inel": round(sn["white_frac"], 4),
+           "alb_ref": round(sr["white_frac"], 4), "delta_alb": round(dw, 4)}
+    return result("band_contamination", val, thr, dp <= p90_delta and dw <= white_delta,
+                  f"p90 luminanță inel {CONTAM_NEAR[0]}-{CONTAM_NEAR[1]}px={sn['p90']:.2f} vs ref {CONTAM_REF[0]}-{CONTAM_REF[1]}px={sr['p90']:.2f} (delta {dp:+.2f}, max {p90_delta}); "
+                  f"aproape-alb {sn['white_frac']:.4f} vs {sr['white_frac']:.4f} (delta {dw:+.4f}, max {white_delta})")

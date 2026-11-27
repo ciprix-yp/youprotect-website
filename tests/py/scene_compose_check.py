@@ -231,6 +231,25 @@ def main():  # noqa: C901
     halo = good.copy()
     halo[zl.dilate(P, 2) & ~P] = 255
     neg("inel de halo alb 2 px pe fundal închis", ck.check_halo(halo, placed), "p90 luminanță inel=255.00")
+    # ---- contaminare albă în decor (Fix-4): inelul 4-24 px față de referința 32-48 px, fără I
+    LE = placed["L"] | placed["E"]
+    rng_m = np.random.default_rng(3).random(LE.shape) > 0.995
+    for r in (1, 4, 9, 16):
+        assert (ck.disc_dilate(rng_m, r) == zl.dilate(rng_m, r)).all()
+    print("POS disc_dilate (sume cumulate) identic cu zones_lib.dilate pe raze 1, 4, 9, 16")
+    for nm in ("intunecat", "deschis", "gradient"):
+        r_ok = ck.check_band_contamination(outs[nm], placed)
+        assert r_ok["passed"] is True, r_ok
+        print(f"POS decor curat ({nm}): band_contamination trece | {r_ok['detail']}")
+        white12 = outs[nm].copy()
+        white12[zl.dilate(LE, 12) & ~LE & ~placed["I"]] = 255  # packshot-ul alb „sângerează” 12 px în decor
+        neg(f"contaminare albă de 12 px ({nm})", ck.check_band_contamination(white12, placed), "aproape-alb")
+    white3 = outs["intunecat"].copy()
+    white3[zl.dilate(LE, 3) & ~LE & ~placed["I"]] = 255  # banda refăcută la compunere (BAND_RING_PX = 3) nu e contaminare: ținta verificării e dincolo de 4 px
+    assert ck.check_band_contamination(white3, placed)["passed"] is True
+    print("POS alb de 3 px (în afara inelului 4-24 px) nu declanșează band_contamination")
+    tiny = ck.check_band_contamination(outs["intunecat"], {**placed, "L": np.ones_like(LE), "E": np.zeros_like(LE), "I": np.zeros_like(LE)})
+    neg("inele goale (L pe tot canvasul)", tiny, "nu se poate verifica")
     # ---- scurgere de culoare
     spill = good.copy()
     spill[(zl.dilate(P, 25) & ~zl.dilate(P, 4))] = NAVY
