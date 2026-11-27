@@ -3,6 +3,7 @@
 // oficială; modelele, categoriile, certificările și zonele de logo se generează din fișele de produs.
 import type { CollectionEntry } from 'astro:content';
 import ProductCard from './ProductCard.astro';
+import { cardPriority } from '../../lib/card-priority';
 import { toCardProps } from '../../lib/product-card';
 import CertificationsTable from './CertificationsTable.astro';
 import RiskFreeTesting from '../global/RiskFreeTesting.astro';
@@ -152,9 +153,9 @@ const faqSchema = {
 
     <!-- O singură grilă, în ordinea categoriilor: categoria e pe fiecare card, fără rânduri pe jumătate goale. -->
     <ul class:list={['order-1 mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:order-0 lg:mt-12 lg:grid-cols-4', page.photo && 'lg:col-span-full lg:row-start-7']} aria-label={`Modele ${page.name}`}>
-      {groups.flatMap((g) => g.items).map((e) => (
+      {groups.flatMap((g) => g.items).map((e, index) => (
         <li>
-          <ProductCard {...toCardProps(e)} />
+          <ProductCard {...toCardProps(e)} priority={cardPriority(index)} />
         </li>
       ))}
     </ul>

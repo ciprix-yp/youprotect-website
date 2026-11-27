@@ -9,8 +9,10 @@
 import type { CardProps } from '../../lib/product-card';
 import QuoteListButton from './QuoteListButton.astro';
 
-type Props = CardProps;
-const { slug, name, brand, spec, image, imageKind, imageAlt, imageFocus } = Astro.props;
+// priority: primele carduri din grilă, deasupra liniei de plutire. „high” = eager + fetchpriority high (poza LCP),
+// „eager” = eager fără prioritate; fără prop, cardul rămâne lazy.
+type Props = CardProps & { priority?: 'high' | 'eager' };
+const { slug, name, brand, spec, image, imageKind, imageAlt, imageFocus, priority } = Astro.props;
 // Scena (poză în context): decupaj cover pe punctul de focus; focus-ul vine din schemă (regex „X% Y%”), deci e sigur în style.
 const isScene = imageKind === 'scena';
 const href = `/produse/${slug}/`;
@@ -26,7 +28,8 @@ const href = `/produse/${slug}/`;
       alt={imageAlt ?? name}
       width="600"
       height="750"
-      loading="lazy"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority === 'high' ? 'high' : undefined}
       style={isScene && imageFocus ? `object-position: ${imageFocus}` : undefined}
       class:list={[
         'absolute inset-0 h-full w-full',

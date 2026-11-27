@@ -5,6 +5,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/products/ProductCard.astro';
+import { cardPriority } from '../../lib/card-priority';
 import CategoryTiles from '../../components/products/CategoryTiles.astro';
 import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 import { CATEGORIES, INDUSTRIES, type CategoryKey } from '../../lib/catalog-taxonomy';
@@ -206,7 +207,7 @@ const filterOption =
               data-brand={toCardProps(e).brand}
               data-search={searchKey(`${e.data.name} ${CATEGORIES[e.data.category]} ${e.data.supplier.brand} ${e.data.supplier.model} ${e.data.certifications.map((c) => c.code).join(' ')}`)}
             >
-              <ProductCard {...toCardProps(e)} />
+              <ProductCard {...toCardProps(e)} priority={cardPriority(index)} />
             </li>
           ))}
         </ul>

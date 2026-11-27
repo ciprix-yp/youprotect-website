@@ -26,6 +26,7 @@ import {
 } from '../scripts/catalog/card-checks.mjs';
 import { FORBIDDEN_CHUNKS, riffChunks } from '../scripts/catalog/webp-riff.mjs';
 import { reportRows } from '../scripts/catalog/card-report.mjs';
+import { EAGER_CARDS } from '../src/lib/card-priority.ts';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PRODUCTS = join(ROOT, 'src/content/products');
@@ -372,5 +373,27 @@ test('card-report: fiecare produs pe packshot are un motiv, iar cele cu poză pe
   for (const row of rows) {
     if (row.card === 'packshot') assert.ok(reasons[row.slug]?.trim(), `${row.slug}: card pe packshot fără motiv`);
     else assert.equal(reasons[row.slug], undefined, `${row.slug}: are poză pe model, dar și un motiv de packshot`);
+  }
+});
+
+// LCP: primele carduri din grilă sunt eager (primul și fetchpriority high), restul lazy -----------------------------
+
+const GRID_PAGES = [
+  '',
+  ...['bluze-si-hanorace-de-lucru', 'camasi-corporate', 'casti-de-protectie', 'combinezoane-de-protectie', 'geci-de-lucru', 'hamuri-de-siguranta',
+    'imbracaminte-reflectorizanta', 'incaltaminte-de-protectie', 'manusi-de-protectie', 'masti-de-protectie', 'ochelari-de-protectie',
+    'pantaloni-de-lucru', 'tricouri-polo-de-lucru', 'veste-de-lucru', 'mascot', 'portwest', 'sir-safety'],
+];
+
+distTest('LCP: primul card e eager + fetchpriority high, următoarele din primul ecran eager, restul lazy (hub, categorii, mărci)', () => {
+  for (const page of GRID_PAGES) {
+    const html = read(join(DIST, 'produse', page, 'index.html'));
+    const imgs = [...html.matchAll(/data-vt-photo="[a-z0-9-]+"/g)].map((m) => /<img\b[^>]*>/.exec(html.slice(m.index))[0]);
+    assert.ok(imgs.length >= 1, `produse/${page}: doar ${imgs.length} carduri în grilă`);
+    imgs.forEach((img, i) => {
+      const where = `produse/${page} cardul ${i}`;
+      assert.equal(attr(img, 'loading'), i < EAGER_CARDS ? 'eager' : 'lazy', where);
+      assert.equal(attr(img, 'fetchpriority'), i === 0 ? 'high' : null, where);
+    });
   }
 });
