@@ -50,6 +50,10 @@ def errors_with(**changes):
     return card_photo.card_photo_errors(text)
 
 
+for bad_colour in ("../alt-produs/NV", "NV\n", "N V", "A" * 11, "NV/", 5):
+    check(errors_with(colour=bad_colour), f"culoare {bad_colour!r} trebuia respinsă")
+check(errors_with(colour="") == [], "culoare goală (Sir Safety) e permisă")
+check(errors_with(colour="NV") == [], "culoare alfanumerică e permisă")
 check(errors_with(focus=None), "scena fără focus trebuie să pice")
 check(errors_with(focus="120% 5%"), "focus peste 100% trebuie să pice")
 check(errors_with(focus="la dreapta"), "focus în alt format trebuie să pice")

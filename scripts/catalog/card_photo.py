@@ -32,6 +32,7 @@ SOURCE_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
 FOCUS = re.compile(r"^(\d{1,3})% (\d{1,3})%$")
 KINDS = ("studio", "scena")
 EXISTING = re.compile(r"^([A-Za-z0-9]{1,10})-([A-Za-z0-9]{2,12})$")
+COLOUR = re.compile(r"[A-Za-z0-9]{0,10}")  # gol = produs fără culoare (Sir Safety); fullmatch, fără `\n` final
 KEYS = {"colour", "sourceId", "existing", "kind", "focus", "alt"}
 VIEW_KEYS = {"colour", "existing", "alt"}
 ALT_MIN, ALT_MAX = 20, 140  # un singur interval, același în schemă (product-schema.ts) și în card-checks.mjs
@@ -95,8 +96,8 @@ def card_photo_errors(text):
         errors.append(f"cardPhoto: modelul {text['model']} e exclus ({EXCLUDED_MODELS[str(text['model'])]})")
     if str(text.get("category", "")).startswith("incaltaminte"):
         errors.append("cardPhoto: încălțămintea rămâne pe packshot")
-    if not isinstance(card.get("colour"), str):
-        errors.append("cardPhoto.colour trebuie să fie codul unei culori din produs")
+    if not isinstance(card.get("colour"), str) or not COLOUR.fullmatch(card["colour"]):
+        errors.append("cardPhoto.colour trebuie să fie codul unei culori din produs (litere și cifre, cel mult 10)")
     errors += _source_errors(card)
     if card.get("kind") not in KINDS:
         errors.append(f"cardPhoto.kind trebuie să fie unul din {KINDS}")
@@ -131,8 +132,8 @@ def model_views_errors(text):
         if set(view) - VIEW_KEYS:
             errors.append(f"{label}: chei necunoscute {sorted(set(view) - VIEW_KEYS)}")
         colour = view.get("colour")
-        if not isinstance(colour, str):
-            errors.append(f"{label}.colour trebuie să fie codul unei culori din produs")
+        if not isinstance(colour, str) or not COLOUR.fullmatch(colour):
+            errors.append(f"{label}.colour trebuie să fie codul unei culori din produs (litere și cifre, cel mult 10)")
         elif colour == card_colour:
             errors.append(f"{label}.colour: culoarea cardului se etichetează în cardPhoto, nu aici")
         elif colour in seen:
