@@ -1,6 +1,7 @@
 // Miniaturile pentru cardurile din catalog (/produse/). Cardul arată poza principală a produsului la ~300 px, dar
 // pozele din public/ au 1200–1800 px. Scriptul face lângă poză o variantă de exact 600×750 (4:5): <nume>-card.webp.
 //  - packshot și studio: poza încape întreagă într-o cutie cu margine de 12 % (alb, sau transparent la PNG-urile cu alfa);
+//    la studio se taie întâi marginile aproape-albe din jurul siluetei (contentBox), fără mărire peste sursă;
 //  - scena: decupaj 4:5 din original, după `focus` din JSON. Geometria e în card-layout.mjs (pură, testată).
 // Ținta: ≤ 60 KB pe card; calitatea coboară în trepte până încape. WebP fără EXIF/XMP/ICC (sharp nu le păstrează).
 // Poza cardului vine din src/lib/catalog-images.js (cardImage); se face miniatură și pentru packshot-ul culorii principale
@@ -12,7 +13,7 @@ import { join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { cardImage, cardSrc, packshotImage } from '../../src/lib/catalog-images.js';
-import { CARD_HEIGHT, CARD_WIDTH, planCard } from './card-layout.mjs';
+import { CARD_HEIGHT, CARD_WIDTH, contentBox, planCard } from './card-layout.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const PRODUCTS = join(ROOT, 'src/content/products');
@@ -31,12 +32,19 @@ function publicFile(src) {
 /** Miniatura 600×750 a unei poze, ca buffer WebP, încadrată în TARGET_BYTES dacă se poate. */
 async function renderCard(input, photo) {
   const meta = await sharp(input).metadata();
-  const plan = planCard({ width: meta.width, height: meta.height, kind: photo.kind, focus: photo.focus });
+  let content;
+  if (photo.kind === 'studio') {
+    // poză pe fond alb: se taie marginile aproape-albe (card-layout.mjs), ca silueta să umple cutia
+    const { data, info } = await sharp(input).raw().toBuffer({ resolveWithObject: true });
+    content = contentBox(data, info.width, info.height, info.channels);
+  }
+  const plan = planCard({ width: meta.width, height: meta.height, kind: photo.kind, focus: photo.focus, content });
   let canvas;
   if (plan.mode === 'crop') {
     canvas = sharp(input).extract(plan.extract).resize(CARD_WIDTH, CARD_HEIGHT, { fit: 'fill' }).flatten({ background: '#ffffff' });
   } else {
-    const inner = await sharp(input).resize(plan.width, plan.height, { fit: 'fill' }).toBuffer();
+    const source = plan.extract ? sharp(input).extract(plan.extract) : sharp(input);
+    const inner = await source.resize(plan.width, plan.height, { fit: 'fill' }).toBuffer();
     const alpha = Boolean(meta.hasAlpha);
     canvas = sharp({
       create: {
