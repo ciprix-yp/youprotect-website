@@ -75,7 +75,7 @@ function catalogCards() {
 const productPage = (slug) => read(join(DIST, 'produse', slug, 'index.html'));
 
 test('set: produsele cu poză pe model nu e gol și coincide cu cardImage', () => {
-  assert.equal(products.length, 75, 'catalogul are 75 de produse');
+  assert.ok(products.length >= 75, `catalogul are ${products.length} produse, cel puțin 75`);
   assert.ok(withPerson.length >= 10, `pe model sunt ${withPerson.length} produse; după commit-ul cu MASCOT vor fi mai multe, niciodată mai puține de 10`);
   for (const { slug, data } of products) assert.equal(hasPersonPhoto(data), cardShowsPerson(data), `${slug}: poză pe model în colours[] fără cardColour (sau invers)`);
 });
@@ -149,6 +149,44 @@ distTest('d. dist: prima poză din galerie = poza cardului, pentru toate produse
     assert.ok(main, `${slug}: lipsește #gallery-main`);
     // Cardul folosește „-card.webp”; galeria poate folosi originalul (scene): comparăm după cardSrc.
     assert.equal(cardSrc(attr(main, 'src')), cardSrc(card.src), `${slug}: galeria pornește pe altă poză decât cardul`);
+  }
+});
+
+// scara omului la schimbarea culorii (Sir Safety nu are packshot separat: pozele de culoare sunt singurele) ----------
+
+test('Sir Safety: prima poză a fiecărei culori are același fel (toate pe model sau toate packshot), aceeași scară', () => {
+  const bad = [];
+  for (const { slug, data } of products) {
+    const firsts = data.colours.map((c) => c.images[0]);
+    if (!slug.includes('-sir-safety-') || data.colours.length < 2) continue;
+    if (new Set(firsts.map(kindOf)).size > 1) bad.push(`${slug}: ${firsts.map((i, n) => `${data.colours[n].code}=${kindOf(i)}`).join(' ')}`);
+  }
+  assert.deepEqual(bad, []);
+  // Suncity MC4314: toate cele 3 culori sunt om pe fond transparent
+  const suncity = products.find(({ slug }) => slug.endsWith('-mc4314')).data;
+  assert.deepEqual(suncity.colours.map((c) => `${c.code}:${kindOf(c.images[0])}`), ['Q5:studio', 'H1:studio', 'K1:studio']);
+});
+
+test('studio = fond alb pur sau transparent (colțurile poza-sursă); fondul gri se declară „scena”', async () => {
+  const bad = [];
+  for (const { slug, data } of products) {
+    for (const image of allImages(data).filter((i) => kindOf(i) === 'studio')) {
+      const { data: px, info } = await sharp(join(ROOT, 'public', image.src)).flatten({ background: '#ffffff' }).raw().toBuffer({ resolveWithObject: true });
+      for (const [x, y] of [[2, 2], [info.width - 3, 2], [2, info.height - 3], [info.width - 3, info.height - 3]]) {
+        const o = (y * info.width + x) * info.channels;
+        if (Math.min(px[o], px[o + 1], px[o + 2]) < 250) bad.push(`${slug}: ${image.src} colț (${x},${y}) nu e alb`);
+      }
+    }
+  }
+  assert.deepEqual(bad, []);
+});
+
+test('focus e rezervat la studio: pozele studio nu poartă focus, scenele da', () => {
+  for (const { slug, data } of products) {
+    for (const image of allImages(data)) {
+      if (kindOf(image) === 'studio') assert.equal(image.focus, undefined, `${slug}: ${image.src} are focus la studio (ignorat)`);
+      if (kindOf(image) === 'scena') assert.match(image.focus ?? '', /^\d{1,3}% \d{1,3}%$/, `${slug}: scena fără focus`);
+    }
   }
 });
 

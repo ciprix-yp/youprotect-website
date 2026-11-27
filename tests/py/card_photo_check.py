@@ -160,4 +160,32 @@ wrong = copy.deepcopy(SS_TEXT)
 wrong["cardPhoto"]["existing"] = "Q5-P01"
 expect("existing care nu e prima poză", CardPhotoError, lambda: card_photo.apply_card_photo(ss_colours(), wrong, Path("/x")))
 
+# modelViews: restul culorilor cu poză pe model deja în repo (Suncity H1)
+VIEW = {"colour": "H1", "existing": "H1-PS", "alt": "Geaca de ploaie Sir Safety Suncity, portocalie, purtată, văzută din lateral"}
+
+
+def mv_errors(views):
+    text = copy.deepcopy(SS_TEXT)
+    text["modelViews"] = views
+    return card_photo.card_photo_errors(text)
+
+
+check(mv_errors([VIEW]) == [], f"modelViews valid: {mv_errors([VIEW])}")
+check(mv_errors([]), "modelViews gol trebuie să pice")
+check(mv_errors([{**VIEW, "existing": "Q5-PS"}]), "modelViews.existing cu altă culoare trebuie să pice")
+check(mv_errors([{**VIEW, "colour": "Q5", "existing": "Q5-PS"}]), "modelViews pe culoarea cardului trebuie să pice")
+check(mv_errors([VIEW, VIEW]), "modelViews cu aceeași culoare de două ori trebuie să pice")
+check(mv_errors([{**VIEW, "alt": "prea scurt"}]), "modelViews.alt sub 20 de caractere trebuie să pice")
+check(mv_errors([{**VIEW, "alt": "A" * 141}]), "alt peste 140 de caractere trebuie să pice")
+check(mv_errors([{**VIEW, "kind": "scena"}]), "modelViews cu cheie necunoscută (kind) trebuie să pice")
+mv_text = copy.deepcopy(SS_TEXT)
+mv_text["modelViews"] = [VIEW]
+mv_listed = ss_colours()
+check(card_photo.apply_card_photo(mv_listed, mv_text, Path("/nu/există")) == "Q5", "modelViews: cardColour rămâne Q5")
+h1 = mv_listed[1]["images"][0]
+check(h1["kind"] == "studio" and h1["alt"] == VIEW["alt"] and "focus" not in h1, f"modelViews: {h1}")
+check(h1["src"].endswith("/H1-PS.webp"), "modelViews: fișierul nu se schimbă")
+mv_text["modelViews"] = [{**VIEW, "colour": "Z9", "existing": "Z9-PS"}]
+expect("modelViews cu culoare lipsă", CardPhotoError, lambda: card_photo.apply_card_photo(ss_colours(), mv_text, Path("/x")))
+
 print("ok")

@@ -9,6 +9,13 @@ Variantă pentru o poză pe model DEJA în repo (Sir Safety, fișierul `<culoare
 `"existing": "<culoare>-<view>"`. Nu se descarcă nimic și fișierul nu se schimbă; intrarea din images[] primește doar
 kind/focus/alt.
 
+Celelalte culori ale aceluiași produs care au TOATE poză pe model deja în repo (Sir Safety, ex. Suncity MC4314 H1 și K1)
+se etichetează cu cheia `modelViews`, o listă de `{"colour": "H1", "existing": "H1-PS", "alt": "…"}`: aceeași etichetare
+(kind „studio”, alt) pe prima poză a culorii, ca la schimbarea culorii în fișă omul să aibă aceeași scară. Nu schimbă cardul.
+
+`focus` are semantica CSS `object-position` (X% din poză aliniat cu X% din cadrul 4:5); contează doar la „scena” și e
+ignorat la „studio”.
+
 Ștergerea cheii dă exact rezultatul de dinainte (cardul rămâne pe packshot). Poza se identifică după `sourceId`
 (ID-ul din DAM / Media Hub, nu un URL: URL-urile semnate nu intră în repo). Fișierul local se numește
 `<culoare>-<view>.webp` (+ `-thumb`), cu view = "C" + primele 8 caractere ale ID-ului (card_view); la produsele fără
@@ -26,6 +33,8 @@ FOCUS = re.compile(r"^(\d{1,3})% (\d{1,3})%$")
 KINDS = ("studio", "scena")
 EXISTING = re.compile(r"^([A-Za-z0-9]{1,10})-([A-Za-z0-9]{2,12})$")
 KEYS = {"colour", "sourceId", "existing", "kind", "focus", "alt"}
+VIEW_KEYS = {"colour", "existing", "alt"}
+ALT_MIN, ALT_MAX = 20, 140  # un singur interval, același în schemă (product-schema.ts) și în card-checks.mjs
 EXCLUDED_MODELS = {"19035": "practică nesigură", "20382": "mărci concurente vizibile"}
 ALT_FORBIDDEN = re.compile(r"you protect|angaja|client", re.IGNORECASE)
 
@@ -75,10 +84,10 @@ def card_photo_errors(text):
     """Erorile cheii cardPhoto dintr-un text de produs (listă goală dacă lipsește sau e corectă)."""
     card = text.get("cardPhoto")
     if card is None:
-        return []
+        return model_views_errors(text)
+    errors = model_views_errors(text)
     if not isinstance(card, dict):
-        return ["cardPhoto trebuie să fie un obiect"]
-    errors = []
+        return errors + ["cardPhoto trebuie să fie un obiect"]
     unknown = set(card) - KEYS
     if unknown:
         errors.append(f"cardPhoto: chei necunoscute {sorted(unknown)}")
@@ -92,11 +101,47 @@ def card_photo_errors(text):
     if card.get("kind") not in KINDS:
         errors.append(f"cardPhoto.kind trebuie să fie unul din {KINDS}")
     errors += _focus_errors(card)
-    alt = card.get("alt")
-    if not isinstance(alt, str) or not 20 <= len(alt) <= 160:
-        errors.append("cardPhoto.alt: text în română de 20–160 de caractere care descrie produsul purtat")
-    elif ALT_FORBIDDEN.search(alt):
-        errors.append("cardPhoto.alt: nu sugera că oamenii sunt clienți sau angajați You Protect")
+    errors += _alt_errors(card.get("alt"), "cardPhoto.alt")
+    return errors
+
+
+def _alt_errors(alt, label):
+    if not isinstance(alt, str) or not ALT_MIN <= len(alt) <= ALT_MAX:
+        return [f"{label}: text în română de {ALT_MIN}–{ALT_MAX} de caractere care descrie doar ce se vede (produsul purtat)"]
+    if ALT_FORBIDDEN.search(alt):
+        return [f"{label}: nu sugera că oamenii sunt clienți sau angajați You Protect"]
+    return []
+
+
+def model_views_errors(text):
+    """Erorile cheii modelViews (poze pe model deja în repo la celelalte culori); listă goală dacă lipsește."""
+    views = text.get("modelViews")
+    if views is None:
+        return []
+    if not isinstance(views, list) or not views:
+        return ["modelViews trebuie să fie o listă nevidă de {colour, existing, alt}"]
+    errors = []
+    seen = set()
+    card_colour = (text.get("cardPhoto") or {}).get("colour")
+    for n, view in enumerate(views):
+        label = f"modelViews[{n}]"
+        if not isinstance(view, dict):
+            errors.append(f"{label} trebuie să fie un obiect")
+            continue
+        if set(view) - VIEW_KEYS:
+            errors.append(f"{label}: chei necunoscute {sorted(set(view) - VIEW_KEYS)}")
+        colour = view.get("colour")
+        if not isinstance(colour, str):
+            errors.append(f"{label}.colour trebuie să fie codul unei culori din produs")
+        elif colour == card_colour:
+            errors.append(f"{label}.colour: culoarea cardului se etichetează în cardPhoto, nu aici")
+        elif colour in seen:
+            errors.append(f"{label}.colour „{colour}” apare de două ori")
+        seen.add(colour)
+        match = EXISTING.fullmatch(view["existing"]) if isinstance(view.get("existing"), str) else None
+        if not match or match.group(1) != colour:
+            errors.append(f"{label}.existing: „<culoare>-<view>” cu culoarea din {label}.colour (ex. „H1-PS”)")
+        errors += _alt_errors(view.get("alt"), f"{label}.alt")
     return errors
 
 
@@ -128,12 +173,17 @@ def _label_existing(target, slug, card):
 def apply_card_photo(colour_list, text, public_dir, check_images=True):
     """Pune poza pe model pe poziția 0 din images[] la culoarea aleasă. Întoarce codul culorii (cardColour) sau None
     dacă produsul nu are cardPhoto. Pică explicit (nu revine tăcut la packshot) dacă lipsește culoarea sau fișierul."""
-    card = text.get("cardPhoto")
-    if not card:
-        return None
     errors = card_photo_errors(text)
     if errors:
         raise CardPhotoError("; ".join(errors))
+    for view in text.get("modelViews") or []:
+        other = next((c for c in colour_list if c["code"] == view["colour"]), None)
+        if other is None:
+            raise CardPhotoError(f"modelViews.colour „{view['colour']}” nu e în colours[]")
+        _label_existing(other, text["slug"], {**view, "kind": "studio"})
+    card = text.get("cardPhoto")
+    if not card:
+        return None
     target = next((c for c in colour_list if c["code"] == card["colour"]), None)
     if target is None:
         have = ", ".join(c["code"] for c in colour_list)

@@ -15,8 +15,12 @@
     "colour": "Q5",
     "existing": "Q5-PS",
     "kind": "studio",
-    "alt": "Geaca de ploaie Sir Safety Suncity în albastru închis, purtată de un om, văzută din față"
+    "alt": "Geaca de ploaie Sir Safety Suncity albastru închis, purtată cu pantalonii asortați și o cască în mână, văzută din față"
   },
+  "modelViews": [
+    {"colour": "H1", "existing": "H1-PS", "alt": "Geaca de ploaie Sir Safety Suncity, portocalie, purtată cu pantalonii asortați, văzută din lateral"},
+    {"colour": "K1", "existing": "K1-PS", "alt": "Geaca de ploaie Sir Safety Suncity, albă, purtată cu pantalonii asortați, văzută din față"}
+  ],
   "summary": "Geacă de ploaie de lucru certificată EN 343, care te ține uscat pe vreme rea și îți lasă libertate de mișcare. Arăți îngrijit, cu fermoarul ascuns sub clapă, în culoarea potrivită echipei tale.",
   "description": [
     "Geaca de ploaie de lucru Sir Safety Suncity te ține uscat când lucrezi afară: țesătura din poliester cu strat de poliuretan oprește ploaia, iar producătorul o declară și respirabilă. Manșetele elastice opresc vântul și apa la încheieturi, iar gluga cu margine elastică o desfaci doar când începe ploaia și o strângi la loc, prinsă cu capse. Producătorul a gândit-o pentru confort și libertate de mișcare, așa că nu te încurcă la lucru.",

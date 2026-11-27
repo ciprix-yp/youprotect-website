@@ -55,6 +55,9 @@ def all_strings(obj):
         for key, value in obj.items():
             if key == "cardPhoto" and isinstance(value, dict):
                 yield from all_strings(value.get("alt", ""))  # restul (colour, sourceId, kind, focus) sunt coduri, nu text
+            elif key == "modelViews" and isinstance(value, list):
+                for view in value:
+                    yield from all_strings(view.get("alt", "") if isinstance(view, dict) else "")
             elif not key.startswith("_") and key not in ("model", "slug", "category", "industries", "primaryColour", "status"):
                 yield from all_strings(value)
 

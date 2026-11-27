@@ -85,7 +85,9 @@
         {
           "src": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/H1-PS.webp",
           "thumb": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/H1-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Geaca de ploaie Sir Safety Suncity, portocalie, purtată cu pantalonii asortați, văzută din lateral"
         }
       ],
       "spin": []
@@ -98,7 +100,9 @@
         {
           "src": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/K1-PS.webp",
           "thumb": "/images/products/geaca-ploaie-sir-safety-suncity-mc4314/K1-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Geaca de ploaie Sir Safety Suncity, albă, purtată cu pantalonii asortați, văzută din față"
         }
       ],
       "spin": []

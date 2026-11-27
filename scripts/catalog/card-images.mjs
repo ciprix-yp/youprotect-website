@@ -5,7 +5,8 @@
 //  - scena: decupaj 4:5 din original, după `focus` din JSON. Geometria e în card-layout.mjs (pură, testată).
 // Ținta: ≤ 60 KB pe card; calitatea coboară în trepte până încape. WebP fără EXIF/XMP/ICC (sharp nu le păstrează).
 // Poza cardului vine din src/lib/catalog-images.js (cardImage); se face miniatură și pentru packshot-ul culorii principale
-// când diferă de ea (dalele de categorie și og:image rămân pe packshot).
+// când diferă de ea (dalele de categorie și og:image rămân pe packshot), plus pentru orice altă poză pe model
+// (studio/scenă) din galerie, ca schimbarea culorii să păstreze scara omului.
 // Rulează după fetch_images_*.py și assemble_*.py, la fiecare produs nou: npm run catalog:cards [-- --force]
 // tests/catalog-cards.test.mjs pică dacă un produs publicat nu are miniatura.
 import { readdirSync, readFileSync, statSync, existsSync, writeFileSync } from 'node:fs';
@@ -80,6 +81,12 @@ for (const name of readdirSync(PRODUCTS).filter((n) => n.endsWith('.json')).sort
   const photos = [cardImage(data)];
   const shot = packshotImage(data);
   if (shot.src !== photos[0].src) photos.push({ src: shot.src, kind: 'packshot', focus: null });
+  // Orice altă poză pe model (studio/scenă) din galerie: gallerySrc cere varianta -card la fiecare imagine studio
+  for (const image of data.colours.flatMap((c) => c.images)) {
+    if ((image.kind ?? 'packshot') !== 'packshot' && !photos.some((p) => p.src === image.src)) {
+      photos.push({ src: image.src, kind: image.kind, focus: image.focus ?? null });
+    }
+  }
   for (const photo of photos) {
     const card = cardSrc(photo.src);
     if (card === photo.src) continue; // poză externă: cardul folosește poza mare

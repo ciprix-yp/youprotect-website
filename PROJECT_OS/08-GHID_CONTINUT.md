@@ -293,8 +293,14 @@ rămâne packshot-ul. Ambele sunt 4:5, iar galeria pornește pe culoarea și poz
      cadrul 4:5, nu se centrează pe punct (la 0% decupajul pornește de la margine, la 100% se termină la margine, la 50%
      e centrat). Astfel decupajul cardului e exact zona vizibilă în galerie și tranziția card -> fișă nu sare. La `studio`
      `focus` e rezervat și ignorat: nu-l pune.
-  2. `alt`: o propoziție în română, 20–140 de caractere, care descrie produsul purtat („Vesta reflectorizantă Portwest
-     Berlin S476, galbenă, purtată”). Fără „You Protect”, „angajat”, „client”, „testimonial”.
+     `studio` = om pe fond alb pur sau transparent (se taie marginile albe și încape în cadru); o poză pe fond gri sau
+     colorat nu e `studio`, ci `scena` cu `focus` (card full-bleed, fără multiply; ex. Portwest T501, `50% 60%`).
+     La Sir Safety, celelalte culori care au tot poză pe model (ex. Suncity MC4314: H1, K1) se etichetează cu
+     `modelViews`: listă de `{colour, existing, alt}`; toate pozele `-PS` pe model trebuie etichetate `studio`, ca la
+     schimbarea culorii omul să aibă aceeași scară (testul din `catalog-pe-model` pică la culori amestecate).
+  2. `alt`: o propoziție în română, 20–140 de caractere (același interval în schemă, `card_photo.py` și teste), care
+     descrie DOAR ce se vede în poză (produsul, culoarea, că e purtat, din ce unghi), fără locuri sau contexte inventate
+     („Vesta reflectorizantă Portwest Berlin S476, galbenă, purtată peste un tricou bleumarin, văzută din față”). Fără „You Protect”, „angajat”, „client”, „testimonial”.
   3. Se rulează, în ordine: `fetch_images_<furnizor>.py` (descărcarea; fișierele de poză nu poartă metadate), apoi
      `assemble_<furnizor>.py` și `npm run catalog:cards` (miniatura 600×750).
   4. `npm run build` și `POZE_REQUIRE_DIST=1 npm test`; la un produs care era pe packshot, se șterge intrarea lui din
