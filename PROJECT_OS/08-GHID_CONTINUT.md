@@ -272,3 +272,33 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
   - Portretul real (ex. Alexandra Pop pe /despre-noi/): o fotografie primită de la owner, în afara `poze-actiune.json`,
     fără metadate și fără credit vizibil atâta timp cât autorul nu e confirmat; creditul se pune doar după ce autorul e
     confirmat.
+
+## 10. Poza pe card și în galerie (D-2026-11-27-02)
+
+Cardul de produs și prima poză din galeria fișei arată produsul purtat de un om, dacă există o poză eligibilă; altfel
+rămâne packshot-ul. Ambele sunt 4:5, iar galeria pornește pe culoarea și poza din card.
+
+- Eligibilitate (decisă de owner, nu se rediscută):
+  - fără practici nesigure (ex. lucru la înălțime fără cască);
+  - fără mărci concurente sau texte terțe vizibile;
+  - nimic care să sugereze că oamenii din poză sunt clienți sau angajați You Protect, nici în poză, nici în `alt`;
+  - culoarea din poză trebuie să fie printre culorile produsului (`colours[]`);
+  - încălțămintea rămâne pe packshot;
+  - pozele Portwest apar doar pe produse Portwest;
+  - excluse: MASCOT 19035 și 20382.
+- Cum adaugi o poză nouă:
+  1. În `catalog/texts/<furnizor>/<model>.json`, cheia `cardPhoto`: `colour`, apoi `sourceId` (ID-ul din DAM sau
+     Media Hub, nu un URL) sau `existing` (poză deja în repo), `kind` (`studio` sau `scena`), `focus` („X% Y%”, punctul
+     important al pozei; contează la scenă) și `alt`.
+  2. `alt`: o propoziție în română, 20–140 de caractere, care descrie produsul purtat („Vesta reflectorizantă Portwest
+     Berlin S476, galbenă, purtată”). Fără „You Protect”, „angajat”, „client”, „testimonial”.
+  3. Se rulează, în ordine: `fetch_images_<furnizor>.py` (descărcarea; fișierele de poză nu poartă metadate), apoi
+     `assemble_<furnizor>.py` și `npm run catalog:cards` (miniatura 600×750).
+  4. `npm run build` și `POZE_REQUIRE_DIST=1 npm test`; la un produs care era pe packshot, se șterge intrarea lui din
+     `catalog/maps/card-photo-reasons.json`.
+- Cum o scoți: ștergi cheia `cardPhoto` din fișierul de text și rulezi din nou `assemble_<furnizor>.py`; cardul revine pe
+  packshot. Apoi adaugi produsul în `catalog/maps/card-photo-reasons.json`, cu motivul.
+- Unde se verifică: `tests/catalog-pe-model.test.mjs` (culoarea din `colours[]`, excluderile, încălțămintea, galeria =
+  cardul, alt-urile, dimensiunile și metadatele pozelor, `og:image` și dalele pe packshot, grila înaintea pozelor, un
+  motiv pentru fiecare produs pe packshot), `tests/catalog-cards.test.mjs` și `tests/webp-metadata.test.mjs`. Raportul
+  cu ce arată fiecare card: `node scripts/catalog/card-report.mjs`.

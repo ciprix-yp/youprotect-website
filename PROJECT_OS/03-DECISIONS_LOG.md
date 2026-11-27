@@ -908,3 +908,40 @@
 - `--font-accent` e definit în `@theme`, dar neutilizat azi (păstrat ca în configurația veche).
 - Impact: clasele noi se scriu pe sintaxa v4. Pentru un `text-*` responsiv peste un `leading-*`, se adaugă explicit
   `leading-*` la același breakpoint. Temele și culorile se schimbă în `@theme` din `src/styles/global.css`.
+
+## D-2026-11-27-02
+- Catalog cu omul îmbrăcat: cardul de produs și prima poză din galeria fișei arată produsul purtat de un om, acolo unde
+  există o poză eligibilă; altfel rămâne packshot-ul. Cardul e 4:5 (600×750), galeria fișei e 4:5 și pornește pe culoarea
+  și poza din card.
+- Regulile de eligibilitate, decise de owner (25.11.2026) și care nu se rediscută: fără practici nesigure; fără mărci
+  concurente sau texte terțe vizibile; nimic care să sugereze că oamenii din poză sunt clienți sau angajați You
+  Protect; culoarea din poză trebuie să fie printre culorile produsului (`colours[]`); încălțămintea rămâne pe packshot;
+  pozele Portwest apar doar pe produse Portwest. Excluse de owner: MASCOT 19035
+  (practică nesigură, fără cască lângă schelă) și 20382 (mărci concurente în cadru).
+- Schema (`src/lib/product-schema.ts`): pe fiecare imagine `kind` (`packshot` | `studio` | `scena`), `focus` („X% Y%”,
+  pentru decupajul scenei) și `alt` (descrie produsul purtat); pe produs `cardColour` (codul culorii al cărei prim
+  imagine e poza pe model; trebuie să existe în `colours[]`, altfel schema pică la build). Fără `cardColour` totul e ca
+  înainte. Helperul `src/lib/catalog-images.js` (`cardColour`, `cardImage`, `packshotImage`, `cardSrc`) e singurul loc
+  care alege poza cardului. Datele vin din cheia `cardPhoto` din `catalog/texts/<furnizor>/<model>.json`
+  (`scripts/catalog/card_photo.py`); ștergerea cheii readuce cardul pe packshot.
+- Azi pe model: 10 din 75 de produse, 6 Sir Safety (poze deja în repo, `kind: studio`) și 4 Portwest (CS10, CS11, S476,
+  T501; la T501 `cardColour` e RBK, nu prima culoare). Restul de 65 rămân pe packshot, fiecare cu motiv în
+  `catalog/maps/card-photo-reasons.json`: încălțămintea (toate); fără poză pe model la furnizor; KP40 (produsul e prea
+  mic în cadru); T180 (culoarea din poză nu poate fi confirmată); MASCOT 21904, 20384 și 50636 (culoarea din poză nu e
+  printre culorile produsului; „alte culori la cerere” se citește strict: nu adaugă culori în `colours[]`); 19035 și 20382
+  (excluse de owner); cele 7 produse MASCOT cu scenă în așteptare (vezi mai jos).
+- Excepție de securitate, a owner-ului: scenele MASCOT (18015, 18065, 18075, 20254, 20637, 20739, 22004) se descarcă de pe
+  `ids-cp-ch.picturepark.com`, un host care nu e în allowlist-ul de descărcare. Adăugarea lui cere aprobarea
+  owner-ului; până atunci cele 7 produse rămân pe packshot și vor veni într-un commit ulterior (15–17 produse pe model).
+  Testele nu au listă fixă a celor 10: se calculează din date, deci merg și după.
+- Limite cunoscute: fișa folosește pentru `studio` varianta 600×750 (`-card.webp`), deci poza e puțin moale la DPR 3;
+  Sir Safety nu are packshot separat (singura poză a culorii e cea pe model), deci `og:image` și dalele de categorie
+  folosesc poza pe model doar la ei, iar la Portwest rămân pe packshot (`packshotImage`); MC3439 și MC3442 au aceeași
+  poză pe model; scenele cu decupaj cover depind de `focus`.
+- LCP: măsurat de QA, vezi PR.
+- Impact: `src/lib/product-schema.ts`, `src/lib/catalog-images.js`, `src/lib/product-card.ts`,
+  `src/components/products/ProductCard.astro` și `ProductDetail.astro`, `scripts/catalog/card_photo.py`,
+  `scripts/catalog/card-images.mjs`, datele din `src/content/products/` și pozele din `public/images/products/`. Teste:
+  `tests/catalog-pe-model.test.mjs` (pe toate produsele, pe date și pe dist, cu cazuri greșite),
+  `tests/catalog-cards.test.mjs`, `tests/webp-metadata.test.mjs`. Raport: `node scripts/catalog/card-report.mjs` (CSV cu ce
+  arată fiecare card și de ce). Regulile și pașii, în `08-GHID_CONTINUT.md` §10.
