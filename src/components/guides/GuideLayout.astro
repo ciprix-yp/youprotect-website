@@ -22,14 +22,19 @@ interface Props {
   faq: GuideFaq[];
   /** Id-ul pozei în acțiune (src/data/poze-actiune.json), pusă între „Pe scurt” și conținut. Pagina o dă ca literal. */
   photo?: string;
+  /** Titlul secțiunii de întrebări (implicit „Întrebări frecvente”). */
+  faqHeading?: string;
 }
 
-const { guide, answer, faq, photo } = Astro.props;
+const { guide, answer, faq, photo, faqHeading = 'Întrebări frecvente' } = Astro.props;
+const crumb = guide.breadcrumb ?? guide.title;
 // Poza păstrează raportul ei natural (nimic tăiat); înălțimea e limitată la 28rem, deci cea verticală iese mai îngustă.
 const photoBox = photo ? photoSize(photo) : undefined;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const pageUrl = new URL(guideHref(guide), siteOrigin).href;
 const others = GUIDES.filter((g) => g.slug !== guide.slug);
+// Grila „Alte ghiduri” are doar rânduri pline (08 §9): 3 pe rând dacă se împart la 3, altfel 2, altfel unul sub altul.
+const othersGrid = others.length % 3 === 0 ? 'lg:grid-cols-3' : others.length % 2 === 0 ? 'md:grid-cols-2' : '';
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -37,7 +42,7 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Acasă', item: siteOrigin.href },
     { '@type': 'ListItem', position: 2, name: 'Ghiduri', item: new URL(GUIDES_HREF, siteOrigin).href },
-    { '@type': 'ListItem', position: 3, name: guide.heading, item: pageUrl },
+    { '@type': 'ListItem', position: 3, name: guide.breadcrumb ?? guide.heading, item: pageUrl },
   ],
 };
 const articleSchema = {
@@ -74,7 +79,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
       <span class="mx-2" aria-hidden="true">/</span>
       <a href={GUIDES_HREF} class="inline-flex min-h-11 items-center hover:text-yp-yellow transition-colors">Ghiduri</a>
       <span class="mx-2" aria-hidden="true">/</span>
-      <span class="text-yp-white">{guide.title}</span>
+      <span class="text-yp-white" aria-current="page">{crumb}</span>
     </nav>
 
     <header class="max-w-3xl">
@@ -104,7 +109,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
     </div>
 
     <section class="mt-14 max-w-3xl" aria-labelledby="intrebari">
-      <h2 id="intrebari" class={sectionTitle}>Întrebări frecvente</h2>
+      <h2 id="intrebari" class="mb-6 text-2xl font-light leading-tight text-yp-white md:text-3xl">{faqHeading}</h2>
       <dl class="space-y-6">
         {faq.map((item) => (
           <div>
@@ -112,7 +117,7 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
             <dd class="mt-2 text-yp-white/75 leading-relaxed">
               {item.a}
               {item.link && (
-                <a href={item.link.href} class="block w-fit py-2 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
+                <a href={item.link.href} class="block w-fit py-2.5 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
               )}
             </dd>
           </div>
@@ -122,10 +127,10 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
 
     <section class="mt-14 max-w-3xl" aria-labelledby="surse">
       <h2 id="surse" class={sectionTitle}>Surse</h2>
-      <ul class="space-y-1 text-sm">
+      <ul class="text-sm">
         {guide.sources.map((s) => (
           <li>
-            <a href={s.url} rel="noopener" class="inline-flex min-h-11 items-center md:min-h-0 md:py-1.5 text-yp-white/75 underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{s.label}</a>
+            <a href={s.url} rel="noopener" class="block w-fit py-3 md:py-1.5 text-yp-white/75 underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{s.label}</a>
           </li>
         ))}
       </ul>
@@ -136,12 +141,12 @@ const sectionTitle = 'mb-4 font-heading text-lg font-medium text-yp-white';
 
     <nav class="mt-14 pt-8 border-t border-yp-white/10" aria-label="Alte ghiduri">
       <h2 class={sectionTitle}>Alte ghiduri</h2>
-      <ul class="grid md:grid-cols-2 gap-3">
+      <ul class:list={['grid gap-4', othersGrid]}>
         {others.map((g) => (
           <li>
-            <a href={guideHref(g)} class="block h-full border border-yp-white/15 p-4 hover:border-yp-yellow transition-colors">
-              <span class="block text-yp-white font-medium">{g.heading}</span>
-              <span class="block mt-1 text-sm text-yp-white/60">{g.summary}</span>
+            <a href={guideHref(g)} class="sd-rise group flex h-full flex-col rounded-lg border border-white/10 bg-white/5 p-5 transition-colors hover:border-yp-yellow/40 hover:bg-white/10">
+              <span class="font-medium leading-snug text-yp-white transition-colors group-hover:text-yp-yellow">{g.heading}</span>
+              <span class="mt-2 text-sm leading-relaxed text-yp-white/70">{g.summary}</span>
             </a>
           </li>
         ))}
