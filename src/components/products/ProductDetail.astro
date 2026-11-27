@@ -441,8 +441,8 @@ const singleImage = primary.images.length <= 1;
   const well = document.getElementById('gallery-well');
   const thumbs = document.getElementById('gallery-thumbs');
 
-  // „X% Y%”, ca în schema produsului: doar o valoare validată ajunge în style.
-  const FOCUS = /^\d{1,3}% \d{1,3}%$/;
+  // „X% Y%”, 0–100 pe ambele axe, ca în schema produsului: doar o valoare validată ajunge în style.
+  const FOCUS = /^(?:\d{1,2}|100)% (?:\d{1,2}|100)%$/;
   type Look = { kind?: string; focus?: string; alt?: string };
   // Scena: cover + object-position, fără multiply (.img-well--scene); packshot și studio: contain + multiply.
   function applyLook({ kind, focus, alt }: Look) {

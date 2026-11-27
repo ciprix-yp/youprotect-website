@@ -17,7 +17,10 @@ const media = z.union([localImage, httpsUrl]);
 // arată galeria (`object-fit: cover; object-position: focus`), de aceea e obligatoriu la scenă. La studio e
 // rezervat/ignorat (poza se încadrează întreagă, nu se decupează).
 const photoKind = z.enum(['packshot', 'studio', 'scena']);
-const focus = z.string().regex(/^\d{1,3}% \d{1,3}%$/);
+const focus = z
+  .string()
+  .regex(/^\d{1,3}% \d{1,3}%$/)
+  .refine((v) => v.split('% ').every((n) => parseInt(n, 10) <= 100), 'focus: 0–100% pe ambele axe');
 
 export const productSchema = z
   .object({
@@ -47,7 +50,8 @@ export const productSchema = z
                 view: z.string(),
                 kind: photoKind.default('packshot'),
                 focus: focus.optional(),
-                alt: z.string().min(10).max(200).optional(),
+                // același interval ca în scripts/catalog/card_photo.py și card-checks.mjs
+                alt: z.string().min(20).max(140).optional(),
               }),
             )
             .min(1),

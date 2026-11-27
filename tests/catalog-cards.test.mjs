@@ -161,6 +161,17 @@ test('schema: cardColour inexistent, scenă fără focus și cardColour pe packs
   const badFocus = structuredClone(ok);
   badFocus.colours[0].images[0].focus = 'la mijloc';
   assert.ok(issues(badFocus).length > 0);
+
+  for (const over of ['120% 5%', '50% 101%', '100% 100%']) {
+    const f = structuredClone(ok);
+    f.colours[0].images[0].focus = over;
+    assert.equal(issues(f).length > 0, over !== '100% 100%', `focus ${over}`);
+  }
+  for (const alt of ['Prea scurt', 'A'.repeat(141), 'A'.repeat(140), 'A'.repeat(20)]) {
+    const f = structuredClone(ok);
+    f.colours[0].images[0].alt = alt;
+    assert.equal(issues(f).length > 0, alt.length < 20 || alt.length > 140, `alt de ${alt.length}`);
+  }
 });
 
 // --- geometria cardului ----------------------------------------------------------------------------------------------
@@ -242,7 +253,7 @@ test('card: contentBox taie marginile aproape-albe, ignoră zgomotul și lasă i
   px[(5 * 1100 + 5) * 3] = 0;
   assert.deepEqual(contentBox(px, 1100, 1100, 3), { left: 400, top: 50, width: 300, height: 1000 });
   assert.deepEqual(contentBox(whiteWith(20, 30, [0, 0, 0, 0]), 20, 30, 3), { left: 0, top: 0, width: 20, height: 30 });
-  // fundal gri (studio MASCOT): nu se taie nimic
+  // fundal gri: nu se taie nimic (de aceea pozele pe fundal gri nu pot fi „studio”: T501 e „scena”, full-bleed, fără multiply)
   assert.deepEqual(contentBox(whiteWith(40, 40, [0, 0, 0, 0], 3, 200), 40, 40, 3), { left: 0, top: 0, width: 40, height: 40 });
   // RGBA: pixelii transparenți sunt fundal, oricare ar fi culoarea lor
   const rgba = new Uint8Array(10 * 10 * 4);
