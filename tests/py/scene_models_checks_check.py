@@ -3,7 +3,7 @@
 Rulare: python -I tests/py/scene_models_checks_check.py <ROOT>
 Fiecare NEG trebuie să pice cu mesajul exact; liniile „POS/NEG ..." pe stdout sunt căutate de testul mjs.
 """
-# ruff: noqa: S101, E501, E741, E702
+# ruff: noqa: S101, S603, E501, E741, E702
 import copy
 import hashlib
 import json
@@ -149,9 +149,75 @@ def main():  # noqa: C901
     s = clean_signals(); s["segment"] = None
     assert cm.decide_non_human(s, THR, "bocanc", segment_applicable=False)[-1]["passed"]
     show("POS", "FD25BK: segment N/A, restul semnalelor negative -> trece")
+    assert THR["vlm_required"] is True and CAL["recall"]["vlm_inclus"] is True  # calibrarea reală a inclus VLM
     sv = clean_signals(); sv["vlm"] = None
-    assert cm.decide_non_human(sv, THR, "haine")[-1]["passed"]
-    show("POS", "VLM nerulat nu contribuie")
+    res = cm.decide_non_human(sv, THR, "haine")
+    assert res[-1]["passed"] is False and "vlm_ne_uman" in res[-1]["value"]
+    neg("VLM nerulat NU trece când calibrarea a inclus VLM (ne_uman picat)", res[-1], "vlm_ne_uman")
+    neg("check_vlm(None) cu calibrare cu VLM", cm.check_vlm(None, THR), "VLM nerulat")
+    nov = copy.deepcopy(THR); nov["vlm_required"] = False
+    assert cm.check_vlm(None, nov)["passed"] is True and cm.decide_non_human(sv, nov, "haine")[-1]["passed"]
+    show("POS", "VLM nerulat nu contribuie doar când calibrarea însăși a fost fără VLM")
+    ht = {"sag_ratio_min": 0.15, "free_run_min": 0.3, "width_min": 60, "vlm_p_yes": 0.9, "vlm_products": ["S476YE"]}
+    neg("check_head_shape(vlm=None) pe produs cu VLM de cap", cm.check_head_shape(None, None, ht, True, vlm_required=True), "VLM nerulat")
+    assert cm.check_head_shape(None, None, ht, True, vlm_required=False)["passed"] is True
+    show("POS", "check_head_shape fără VLM trece doar când VLM-ul nu e cerut (produs în afara vlm_products)")
+
+    # ---- compunerea verificărilor per produs (model_checks) cu un `st` FĂRĂ qwen / qwen_head
+    import run_model_checks as rmc  # noqa: E402
+    with tempfile.TemporaryDirectory() as td:
+        img = Path(td) / "master.png"
+        from PIL import Image
+        Image.fromarray(np.full((64, 64, 3), 128, np.uint8)).save(img)
+        sha_img = hashlib.sha256(img.read_bytes()).hexdigest()
+        ctx0 = mr.Ctx()
+        thr_h = copy.deepcopy(THR)
+        thr_h["head"] = dict(ht)
+        thr_h["veto_manual"] = {sha_img: {"motiv": "test", "autor": "agent de test"}}
+        clean = {"faces": {"max_score_1x": 0.0, "max_score_2x": 0.0}, "siglip": {"haine": {"pairs": [{"p_mannequin": 0.99, "p_person": 0.01}] * 6}},
+                 "ocr": {"logo": {}, "decor": []}, "sam": {"applicable": False}}
+        for prod in ("S476YE", "BZ739OR"):
+            it = {"id": f"{prod}-x-s1", "path": str(img), "product": prod, "kind": "candidat"}
+            thr_nv = copy.deepcopy(thr_h); thr_nv.pop("veto_manual")
+            full = rmc.model_checks(it, {**clean, "qwen": {"p_yes": 0.01}, "qwen_head": {"p_yes": 0.01}}, thr_nv, ctx0)
+            assert next(c for c in full if c["name"] == "ne_uman")["passed"] is True, full  # control pozitiv: cu VLM-urile prezente trece
+            no_vlm = rmc.model_checks(it, clean, thr_nv, ctx0)
+            ne = next(c for c in no_vlm if c["name"] == "ne_uman")
+            assert ne["passed"] is False and "vlm_ne_uman" in ne["value"], (prod, ne)
+            neg(f"model_checks {prod}: st fără qwen -> ne_uman respins", ne, "vlm_ne_uman")
+        it = {"id": "S476YE-x-s1", "path": str(img), "product": "S476YE", "kind": "candidat"}
+        app = {**clean, "sam": {"applicable": True, "segment": clean_signals()["segment"], "head": None}}  # manechin aplicabil, segment curat, fără vârf rotunjit
+        only_head = rmc.model_checks(it, {**app, "qwen": {"p_yes": 0.01}}, thr_nv, ctx0)  # lipsește doar qwen_head (produs cu VLM de cap)
+        hs = next(c for c in only_head if c["name"] == "head_shape")
+        neg("model_checks S476YE: st fără qwen_head -> head_shape respins", hs, "VLM nerulat")
+        assert next(c for c in rmc.model_checks(it, {**app, "qwen": {"p_yes": 0.01}, "qwen_head": {"p_yes": 0.01}}, thr_nv, ctx0) if c["name"] == "ne_uman")["passed"]
+        bz = rmc.model_checks({**it, "id": "BZ739OR-x-s1", "product": "BZ739OR"}, {**app, "qwen": {"p_yes": 0.01}}, thr_nv, ctx0)
+        assert next(c for c in bz if c["name"] == "head_shape")["passed"] is True  # BZ739OR nu e în vlm_products: fără qwen_head nu pică
+        show("POS", "model_checks BZ739OR: fără qwen_head head_shape trece (produsul nu are VLM de cap)")
+        vetoed = rmc.model_checks(it, {**clean, "qwen": {"p_yes": 0.01}, "qwen_head": {"p_yes": 0.01}}, thr_h, ctx0)
+        neg("model_checks: master cu sha256 din veto -> veto_manual respins", next(c for c in vetoed if c["name"] == "veto_manual"), "veto manual")
+
+    # ---- etape necesare: lipsă din --stages / eșuate în rulare
+    req = cm.required_stages({"S476YE": True, "BZ739OR": True, "FD25BK": False}, thr_h)
+    assert req == ["faces", "siglip", "ocr", "sam", "qwen", "qwen_head"], req
+    assert cm.required_stages({"FD25BK": False}, thr_h) == ["faces", "siglip", "ocr", "qwen"]
+    probs = cm.stage_problems(req, ["faces", "ocr", "siglip", "sam"], {})
+    assert probs == ["etapa necesară 'qwen' lipsește din --stages", "etapa necesară 'qwen_head' lipsește din --stages"], probs
+    show("NEG", "--stages fără qwen/qwen_head: rularea trebuie oprită", "; ".join(probs))
+    probs = cm.stage_problems(req, ["faces", "ocr", "siglip", "sam", "qwen", "qwen_head"], {"qwen": {"eroare": "RuntimeError: MPS out of memory"}, "faces": {"id": "yunet"}})
+    assert probs == ["etapa 'qwen' a eșuat: RuntimeError: MPS out of memory"], probs
+    show("NEG", "etapă necesară cu 'eroare' în rezultate: rularea trebuie oprită", probs[0])
+    assert cm.stage_problems(req, ["qwen_head", "sam", "faces", "ocr", "siglip", "qwen"], {})[0].startswith("qwen_head trebuie")
+    show("NEG", "qwen_head înaintea sam: ordine greșită")
+    assert cm.stage_problems(req, ["faces", "ocr", "siglip", "sam", "qwen", "qwen_head", "qwen_boots"], {"qwen_boots": {"eroare": "x"}}) == []
+    show("POS", "qwen_boots (informativ) eșuat nu oprește rularea")
+    import subprocess
+    r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts/scene/run_model_checks.py"), "--scene-dir", "/nu/exista", "--models-dir", "/nu/exista",
+                        "--calibrare", str(CAL_PATH), "--report-dir", "/nu/exista/r", "--calibrare-extra", str(CAL_PATH)],  # calibrarea de bază folosită drept „overlay”: relaxează praguri
+                       capture_output=True, text=True, timeout=120, check=False)
+    out = r.stdout + r.stderr
+    assert r.returncode != 0 and "calibrare respinsă" in out and "nu e permisă" in out, (r.returncode, out)
+    show("NEG", "run_model_checks (CLI): overlay care atinge praguri non-permise se oprește înainte de orice rulare", out.strip().splitlines()[-1][:90])
     s = clean_signals(); s["siglip"] = {"pairs": [{"p_mannequin": 0.5, "p_person": 0.5}] * 6}
     t0 = copy.deepcopy(THR); t0["siglip_margin"]["haine"] = 0.0; t0["siglip_pairs"] = {}
     assert cm.check_siglip(s["siglip"], t0, "haine")["passed"] is False
@@ -165,7 +231,25 @@ def main():  # noqa: C901
     bad = copy.deepcopy(CAL); bad["controale"] = bad["controale"][:10]
     neg_raises("calibrare cu prea puține controale", cm.CalibrationError, "controale insuficiente", lambda: cm.validate_calibration(bad))
     bad = copy.deepcopy(CAL); bad["controale"][3]["flagged"] = False
-    neg_raises("calibrare cu recall < 100%", cm.CalibrationError, "recall pe controale", lambda: cm.validate_calibration(bad))
+    neg_raises("calibrare cu `flagged` stocat contrazis de valorile salvate", cm.CalibrationError, "contrazice recalculul", lambda: cm.validate_calibration(bad))
+    # recall 100% se RECALCULEAZĂ din valorile salvate: un prag relaxat pică chiar dacă `flagged` stocat rămâne true
+    # (semnalele sunt redundante — un control semnalat de mai multe — deci unele praguri relaxate singure nu schimbă verdictul; vlm_p_yes singur și toate odată da)
+    for tag, mut in (("vlm_p_yes=1.01", lambda t: t.update(vlm_p_yes=1.01)),
+                     ("toate pragurile relaxate", lambda t: (t.update(vlm_p_yes=1.01, yunet_score=1.01, skin_whole_max=1.0), t["siglip_margin"].update(haine=-1.0, bocanc=-1.0)))):
+        bad = copy.deepcopy(CAL); mut(bad["praguri"])
+        try:
+            cm.validate_calibration(bad)
+            raise AssertionError(f"{tag}: trebuia să pice")
+        except cm.CalibrationError as e:
+            assert "contrazice recalculul" in str(e) or "recall pe controale" in str(e), e
+            show("NEG", f"calibrare cu prag relaxat ({tag}): controalele recalculate nu mai sunt semnalate", str(e)[:70])
+    bad = copy.deepcopy(CAL); bad["controale"][0]["faces_max"] = None
+    neg_raises("control fără valori salvate", cm.CalibrationError, "nu e număr finit", lambda: cm.validate_calibration(bad))
+    assert "RECALCULAT" in cm.validate_calibration.__doc__ and "valorile salvate" in cm.validate_calibration.__doc__  # docstring-ul descrie ce face codul
+    # `vlm_required` e derivat din recall.vlm_inclus: nu poate fi setat din fișier
+    forged = copy.deepcopy(CAL); forged["praguri"]["vlm_required"] = False
+    assert cm.validate_calibration(forged)["praguri"]["vlm_required"] is True
+    show("POS", "vlm_required derivat din recall.vlm_inclus (valoarea din fișier e ignorată)")
     bad = copy.deepcopy(CAL); del bad["controale"]
     neg_raises("calibrare fără controale", cm.CalibrationError, "controale insuficiente", lambda: cm.validate_calibration(bad))
     bad = copy.deepcopy(CAL); del bad["praguri"]["vlm_p_yes"]
@@ -184,7 +268,7 @@ def main():  # noqa: C901
         cdir = base_dir / "cand" / "S476YE-test-s1"
         h = "a" * 64
         f5a = fl.build_fisa(candidat="S476YE-test-s1", produs="S476YE", sha256_sursa=h, sha256_masca=h, sha256_L=h, sha256_E=h, sha256_I=h, sha256_cod=h,
-                            model={"id": "m", "revizie": "r", "sha256": h}, seed=1, prompt="p", context="c", scara=1.0, deplasare={"dx": 0, "dy": 0}, flip=False,
+                            sha256_master=h, sha256_raw=h, model={"id": "m", "revizie": "r", "sha256": h}, seed=1, prompt="p", context="c", scara=1.0, deplasare={"dx": 0, "dy": 0}, flip=False,
                             rotate_deg=0, canvas={"w": 10, "h": 10}, verificari=[cm.ck.result("transform", 1.0, "x", True, "ok")], timp_generare_s=1.0)
         reg = base_dir / "registru.jsonl"
         p5a = fl.write_fisa(cdir, f5a, reg, base_dir)

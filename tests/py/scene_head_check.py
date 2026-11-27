@@ -5,6 +5,7 @@ Liniile „POS/NEG ..." de pe stdout sunt căutate de testul mjs.
 """
 # ruff: noqa: S101, E501, E741, E702
 import copy
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -24,6 +25,16 @@ rng = np.random.default_rng(11)
 
 def show(tag, name, extra=""):
     print(f"{tag} {name}{(': ' + extra) if extra else ''}")
+
+
+def neg_raises_ov(name, needle, praguri):
+    try:
+        cm.merge_overlay(CAL, {"praguri": praguri})
+    except cm.CalibrationError as e:
+        assert needle in str(e), f"{name}: mesaj {e!r} fără {needle!r}"
+        show("NEG", name, str(e)[:90])
+        return
+    raise AssertionError(f"{name}: overlay-ul trebuia respins")
 
 
 def window():
@@ -135,11 +146,16 @@ def main():  # noqa: C901
     assert cm.head_vlm_applies("S476YE", ht) and not cm.head_vlm_applies("BZ739OR", ht) and cm.head_vlm_applies("X", {})
     show("POS", "VLM de cap se aplică doar produsului calibrat (S476YE), nu gulerului BZ739OR")
     veto = THR["veto_manual"]
-    r = cm.check_veto("S476YE-platforma_logistica-s109", veto)
-    assert r["passed"] is False and "veto manual" in r["detail"]
-    show("NEG", "veto manual al proprietarului respinge platforma_logistica-s109", r["detail"][:60])
-    assert cm.check_veto("S476YE-hala_depozit-s101", veto)["passed"] is True and cm.check_veto("S476YE-hala_depozit-s106", None)["passed"] is True
-    show("POS", "veto manual nu atinge conul bun hala_depozit-s101")
+    (vsha, ventry), = veto.items()  # veto legat de IMAGINE: cheia = sha256 al masterului; id-ul e doar informativ
+    assert ventry["id_informativ"] == "S476YE-platforma_logistica-s109" and ventry["autor"].startswith("agent T5c; neconfirmat de proprietar") and ventry["motiv"]
+    r = cm.check_veto(vsha, veto)
+    assert r["passed"] is False and "veto manual" in r["detail"] and "neconfirmat de proprietar" in r["detail"]
+    show("NEG", "veto manual respinge masterul cu sha256 din veto (platforma_logistica-s109)", r["detail"][:60])
+    other = hashlib.sha256(b"alt master, acelasi id S476YE-platforma_logistica-s109 regenerat").hexdigest()
+    assert cm.check_veto(other, veto)["passed"] is True and cm.check_veto(vsha, None)["passed"] is True
+    show("POS", "veto manual nu atinge conul bun hala_depozit-s101; același id cu ALT master nu e acoperit (veto legat de imagine, nu de id)")
+    neg_raises_ov("veto cu cheie id (nu sha256) respins la îmbinare", "sha256 al masterului", {"veto_manual": {"S476YE-platforma_logistica-s109": {"motiv": "m", "autor": "a"}}})
+    neg_raises_ov("veto fără autor respins la îmbinare", "motiv și autor", {"veto_manual": {vsha: {"motiv": "m"}}})
     # ---- informativ bocanci, overlay, etichete
     assert cm.check_boots_info({"p_yes": 0.9})["passed"] is True and "2 bocanci" in cm.check_boots_info({"p_yes": 0.9})["detail"]
     assert cm.check_boots_info(None)["passed"] is True
@@ -147,7 +163,20 @@ def main():  # noqa: C901
     before = copy.deepcopy(CAL)
     cm.merge_overlay(CAL, EXTRA)
     assert CAL == before
-    show("POS", "overlay-ul T5c nu modifică calibrarea originală; calibrarea îmbinată rămâne validă", str(bool(cm.validate_calibration(cm.merge_overlay(CAL, EXTRA)))))
+    show("POS", "overlay-ul T5c nu modifică calibrarea originală")
+    # înlocuiește testul tautologic „calibrarea îmbinată rămâne validă”: un overlay care RELAXEAZĂ un prag trebuie să pice
+    neg_raises_ov("overlay care relaxează vlm_p_yes=1.01 respins", "nu e permisă", {"vlm_p_yes": 1.01})
+    neg_raises_ov("overlay care relaxează yunet_score=1.01 respins", "nu e permisă", {"yunet_score": 1.01})
+    neg_raises_ov("overlay care relaxează skin_whole_max=1.0 respins", "nu e permisă", {"skin_whole_max": 1.0})
+    neg_raises_ov("overlay cu segment.skin_frac_max relaxat respins", "acceptă doar", {"segment": {"skin_frac_max": 1.0}})
+    relaxed = copy.deepcopy(CAL)
+    relaxed["praguri"]["vlm_p_yes"] = 1.01
+    try:
+        cm.validate_calibration(relaxed)
+        raise AssertionError("validate_calibration trebuia să pice pe vlm_p_yes=1.01")
+    except cm.CalibrationError as e:
+        assert "recall pe controale" in str(e) or "contrazice" in str(e), e
+        show("NEG", "validate_calibration recalculează controalele: vlm_p_yes=1.01 nu mai semnalează 100%", str(e)[:80])
     dom, neclar = EXTRA["etichete_cap_S476YE"]["dom"], EXTRA["etichete_cap_S476YE"]["neclar"]
     assert "hala_depozit-s106" in dom and "platforma_logistica-s109" in dom and "hala_depozit-s101" not in dom + neclar and not set(dom) & set(neclar)
     e = EXTRA["etichete_croma_BZ739OR"]

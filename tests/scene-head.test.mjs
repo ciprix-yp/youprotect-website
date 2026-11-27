@@ -48,8 +48,15 @@ test('scene T5c: formă de cap și croma nuanțată, pozitiv și negativ (fără
     'NEG segment portocaliu puternic respins și cu regula nuanțată',
     'NEG segment albastru puternic respins și cu regula nuanțată',
     'POS VLM de cap se aplică doar produsului calibrat',
-    'NEG veto manual al proprietarului respinge platforma_logistica-s109',
-    'POS veto manual nu atinge conul bun',
+    'NEG veto manual respinge masterul cu sha256 din veto',
+    'POS veto manual nu atinge conul bun hala_depozit-s101; același id cu ALT master nu e acoperit',
+    'NEG veto cu cheie id (nu sha256) respins la îmbinare',
+    'NEG veto fără autor respins la îmbinare',
+    'NEG overlay care relaxează vlm_p_yes=1.01 respins',
+    'NEG overlay care relaxează yunet_score=1.01 respins',
+    'NEG overlay care relaxează skin_whole_max=1.0 respins',
+    'NEG overlay cu segment.skin_frac_max relaxat respins',
+    'NEG validate_calibration recalculează controalele: vlm_p_yes=1.01',
     'POS boots_two_info e informativ',
   ]) {
     assert.ok(r.stdout.includes(needle), `testul "${needle}" nu a rulat`);

@@ -10,7 +10,7 @@ Acromatic (chroma_stats): croma CIELAB C* = hypot(a*, b*); un segment e acromati
 fracția pixelilor cu C* > CHROMA_PIX nu depășește un prag (calibrat). Gri neutru cald/rece sub lumină colorată rămâne la C* mic.
 
 Decizia „ne-uman” respinge dacă ORICE semnal e pozitiv: fețe > 0; segment cu piele sau cromatic; piele pe imaginea întreagă peste prag;
-SigLIP2 cu P(persoană) >= P(manechin) − marjă; VLM (dacă a rulat) zice că e om.
+SigLIP2 cu P(persoană) >= P(manechin) − marjă; VLM zice că e om; VLM lipsă când calibrarea l-a inclus (fail-closed).
 """
 # ruff: noqa: E501
 from __future__ import annotations
@@ -155,8 +155,9 @@ def head_is_dome(geom: dict | None, thr: dict) -> bool:
     return bool(geom) and geom["width"] >= thr.get("width_min", 0) and geom["free_run"] >= thr["free_run_min"] and geom["sag_ratio"] >= thr["sag_ratio_min"]
 
 
-def check_head_shape(geom: dict | None, vlm: dict | None, thr: dict, applicable: bool = True) -> dict:
-    """Formă de cap: respinge dacă geometria SAU întrebarea închisă către VLM (P(da, are cap/dom rotund)) e pozitivă. Natură moartă -> N/A, trece."""
+def check_head_shape(geom: dict | None, vlm: dict | None, thr: dict, applicable: bool = True, vlm_required: bool = False) -> dict:
+    """Formă de cap: respinge dacă geometria SAU întrebarea închisă către VLM (P(da, are cap/dom rotund)) e pozitivă. Natură moartă -> N/A, trece.
+    `vlm_required` (produsul e în `vlm_products` și calibrarea a inclus VLM): fără semnal VLM verificarea PICĂ (fail-closed)."""
     name = "head_shape"
     t = {"sag_ratio_min": thr["sag_ratio_min"], "free_run_min": thr["free_run_min"], "width_min": thr.get("width_min", 0), "vlm_p_yes": thr["vlm_p_yes"]}
     if not applicable:
@@ -164,9 +165,11 @@ def check_head_shape(geom: dict | None, vlm: dict | None, thr: dict, applicable:
     dome = head_is_dome(geom, thr)
     p = None if vlm is None else float(vlm["p_yes"])
     vlm_pos = p is not None and p >= thr["vlm_p_yes"]
-    ok = not dome and not vlm_pos
+    vlm_missing = vlm_required and p is None
+    ok = not dome and not vlm_pos and not vlm_missing
     val = {"sag_ratio": None if not geom else geom["sag_ratio"], "free_run": None if not geom else geom["free_run"], "vlm_p_yes": None if p is None else round(p, 4)}
-    why = ("geometrie: vârf rotunjit liber" if dome else "") + ("; " if dome and vlm_pos else "") + (f"VLM: P(cap/dom)={p:.3f}" if vlm_pos else "")
+    why = ("geometrie: vârf rotunjit liber" if dome else "") + ("; " if dome and (vlm_pos or vlm_missing) else "") + (f"VLM: P(cap/dom)={p:.3f}" if vlm_pos else "") \
+        + ("VLM nerulat (fail-closed)" if vlm_missing else "")
     return ck.result(name, val, t, ok, "fără formă de cap" if ok else "formă de cap: " + why)
 
 
@@ -230,8 +233,13 @@ def check_siglip(sig: dict, thr: dict, label_set: str) -> dict:
 
 
 def check_vlm(sig: dict | None, thr: dict) -> dict:
+    """Semnal VLM. Fără semnal (etapă nerulată sau eșuată): PICĂ dacă calibrarea a inclus VLM (`thr["vlm_required"]`, derivat din
+    `recall.vlm_inclus` de load/validate_calibration), altfel „ne-uman” ar trece fără ca VLM-ul să fi spus ceva."""
     if sig is None:
-        return ck.result("vlm_ne_uman", None, "auxiliar", True, "VLM nerulat (semnal auxiliar); nu contribuie")
+        if thr.get("vlm_required"):
+            return ck.result("vlm_ne_uman", None, f"P(da, e o ființă umană) < {thr['vlm_p_yes']}", False,
+                             "VLM nerulat: calibrarea a inclus VLM, deci semnalul e obligatoriu (fail-closed)")
+        return ck.result("vlm_ne_uman", None, "auxiliar", True, "VLM nerulat (calibrarea fără VLM); nu contribuie")
     p = float(sig["p_yes"])
     return ck.result("vlm_ne_uman", round(p, 4), f"P(da, e o ființă umană) < {thr['vlm_p_yes']}", p < thr["vlm_p_yes"], f"P(da)={p:.3f}")
 
@@ -253,7 +261,7 @@ def decide_non_human(signals: dict, thr: dict, label_set: str, segment_applicabl
         parts.append(segment_is_achromatic_no_skin(signals.get("segment"), thr["segment"], segment_applicable))
     if "head" in signals and "head" in thr:
         h = signals["head"]
-        parts.append(check_head_shape(h.get("geom"), h.get("vlm"), thr["head"], segment_applicable))
+        parts.append(check_head_shape(h.get("geom"), h.get("vlm"), thr["head"], segment_applicable, bool(h.get("vlm_required"))))
     pos = [p["name"] for p in parts if not p["passed"]]
     comb = ck.result("ne_uman", pos, "niciun semnal de om", not pos, "toate semnalele negative" if not pos else "semnal pozitiv: " + ", ".join(pos))
     return [*parts, comb]
@@ -271,23 +279,75 @@ def is_flagged_human(signals: dict, thr: dict, label_set: str) -> tuple[bool, li
 REQUIRED_THR = ("yunet_score", "skin_whole_max", "siglip_margin", "vlm_p_yes", "segment", "ocr")
 
 
+def recompute_flagged(c: dict, thr: dict, vlm_inclus: bool) -> dict[str, bool]:
+    """Recalculează „semnalat ca om” pentru un control din valorile SALVATE (faces_max, d_haine/d_bocanc, vlm_p_yes, skin_whole) cu pragurile
+    efective: faces_max >= yunet_score, d >= −marjă, vlm_p_yes >= prag (doar dacă VLM e inclus), skin_whole > skin_whole_max."""
+    for k in ("faces_max", "skin_whole", "d_haine", "d_bocanc"):
+        if not finite(c.get(k)):
+            raise CalibrationError(f"controlul {c.get('id')!r}: valoarea {k} lipsește sau nu e număr finit")
+    vlm = c.get("vlm_p_yes")
+    if vlm_inclus and not finite(vlm):
+        raise CalibrationError(f"controlul {c.get('id')!r}: calibrarea declară VLM inclus, dar vlm_p_yes lipsește")
+    out = {}
+    for ls in ("haine", "bocanc"):
+        out[ls] = bool(c["faces_max"] >= thr["yunet_score"] or c[f"d_{ls}"] >= -thr["siglip_margin"][ls]
+                       or (vlm_inclus and vlm >= thr["vlm_p_yes"]) or c["skin_whole"] > thr["skin_whole_max"])
+    return out
+
+
 def validate_calibration(cal: dict) -> dict:
-    """Încarcă/validează calibrarea: praguri complete, >= MIN_CONTROLS controale, recall recalculat din rezultatele per control = 100%."""
+    """Validează calibrarea: praguri complete, >= MIN_CONTROLS controale și FIECARE control RECALCULAT din valorile salvate cu pragurile efective
+    (nu din `flagged` stocat) trebuie semnalat pe ambele seturi de etichete (recall 100%); `flagged*` stocat trebuie să coincidă cu recalculul.
+    Întoarce o COPIE cu `praguri.vlm_required` derivat din `recall.vlm_inclus` (nu poate fi setat din fișier)."""
     if not isinstance(cal, dict):
         raise CalibrationError("calibrarea trebuie să fie dict")
+    cal = json.loads(json.dumps(cal))
     thr = cal.get("praguri")
     if not isinstance(thr, dict) or any(k not in thr for k in REQUIRED_THR):
         raise CalibrationError(f"praguri lipsă (necesare: {', '.join(REQUIRED_THR)})")
     ctl = cal.get("controale")
     if not isinstance(ctl, list) or len(ctl) < MIN_CONTROLS:
         raise CalibrationError(f"controale insuficiente: {len(ctl) if isinstance(ctl, list) else 0} < {MIN_CONTROLS}")
-    flagged = sum(1 for c in ctl if isinstance(c, dict) and c.get("flagged") is True)
+    rec = cal.get("recall")
+    if not isinstance(rec, dict):
+        raise CalibrationError("cifra de recall din fișă nu corespunde listei de controale")
+    vlm_inclus = rec.get("vlm_inclus") is True
+    flagged = 0
+    for c in ctl:
+        if not isinstance(c, dict):
+            raise CalibrationError("control invalid (nu e dict)")
+        r = recompute_flagged(c, thr, vlm_inclus)
+        if c.get("flagged_haine") is not r["haine"] or c.get("flagged_bocanc") is not r["bocanc"] or c.get("flagged") is not (r["haine"] and r["bocanc"]):
+            raise CalibrationError(f"controlul {c.get('id')!r}: flagged stocat contrazice recalculul din valorile salvate cu pragurile efective")
+        flagged += int(r["haine"] and r["bocanc"])
     if flagged != len(ctl):
         raise CalibrationError(f"recall pe controale {flagged}/{len(ctl)} < 100%: judecătorul nu e bun")
-    rec = cal.get("recall")
-    if not isinstance(rec, dict) or rec.get("flagged") != flagged or rec.get("total") != len(ctl):
+    if rec.get("flagged") != flagged or rec.get("total") != len(ctl):
         raise CalibrationError("cifra de recall din fișă nu corespunde listei de controale")
+    thr["vlm_required"] = vlm_inclus
     return cal
+
+
+def required_stages(applicable: dict[str, bool], thr: dict) -> list[str]:
+    """Etapele de model fără de care verdictul „ne-uman” nu poate fi dat pentru produsele din lot. `applicable`: produs -> are zonă de interior (manechin).
+    faces/siglip/ocr mereu; sam dacă vreun produs are manechin; qwen dacă calibrarea a inclus VLM; qwen_head dacă un produs cu manechin are VLM de cap."""
+    req = ["faces", "siglip", "ocr"]
+    if any(applicable.values()):
+        req.append("sam")
+    if thr.get("vlm_required"):
+        req.append("qwen")
+        if "head" in thr and any(app and head_vlm_applies(p, thr["head"]) for p, app in applicable.items()):
+            req.append("qwen_head")
+    return req
+
+
+def stage_problems(required: list[str], stages: list[str], models: dict) -> list[str]:
+    """Probleme de rulare: etapă necesară absentă din `--stages`, în ordine greșită (qwen_head înaintea sam) sau cu `eroare` în rezultate."""
+    out = [f"etapa necesară {s!r} lipsește din --stages" for s in required if s not in stages]
+    if "qwen_head" in stages and "sam" in stages and stages.index("qwen_head") < stages.index("sam"):
+        out.append("qwen_head trebuie să ruleze DUPĂ sam (folosește decupajul scris de sam)")
+    out += [f"etapa {s!r} a eșuat: {models[s]['eroare']}" for s in required if s in stages and isinstance(models.get(s), dict) and "eroare" in models[s]]
+    return out
 
 
 def head_vlm_applies(product: str, head_thr: dict) -> bool:
@@ -295,10 +355,22 @@ def head_vlm_applies(product: str, head_thr: dict) -> bool:
     return product in head_thr.get("vlm_products", [product])
 
 
-def check_veto(candidate_id: str, veto: dict | None) -> dict:
-    """Veto manual al proprietarului (id candidat -> motiv), pentru cazuri pe care niciun semnal automat nu le separă (documentate în calibrarea T5c)."""
-    why = (veto or {}).get(candidate_id)
-    return ck.result("veto_manual", why, "id absent din lista de veto", why is None, "fără veto" if why is None else f"veto manual: {why}")
+def check_veto(master_sha256: str, veto: dict | None) -> dict:
+    """Veto manual legat de IMAGINE: cheia = sha256 al `master.png` (nu id-ul candidatului: același id regenerat e altă imagine). Valoarea:
+    {motiv, autor, id_informativ?}; `autor` spune cine a pus veto-ul (decizia finală e a proprietarului)."""
+    entry = (veto or {}).get(master_sha256)
+    why = None if entry is None else f"{entry['motiv']} ({entry['autor']})"
+    return ck.result("veto_manual", why, "sha256 master absent din lista de veto", entry is None, "fără veto" if entry is None else f"veto manual: {why}")
+
+
+def _validate_veto(veto: object) -> None:
+    if not isinstance(veto, dict):
+        raise CalibrationError("veto_manual trebuie să fie dict {sha256_master: {motiv, autor}}")
+    for k, v in veto.items():
+        if not isinstance(k, str) or len(k) != 64 or any(ch not in "0123456789abcdef" for ch in k):
+            raise CalibrationError(f"veto_manual: cheia trebuie să fie sha256 al masterului (64 hex), nu {k!r}")
+        if not isinstance(v, dict) or not all(isinstance(v.get(f), str) and v[f].strip() for f in ("motiv", "autor")):
+            raise CalibrationError(f"veto_manual[{k[:12]}…]: cere câmpurile motiv și autor (șiruri nenule)")
 
 
 def check_boots_info(sig: dict | None) -> dict:
@@ -308,15 +380,29 @@ def check_boots_info(sig: dict | None) -> dict:
                      "VLM nerulat" if p is None else f"P(2 bocanci)={p:.3f}" + (" -> marcat: 2 bocanci" if p >= 0.5 else ""))
 
 
+OVERLAY_ALLOWED = {"segment": {"c_p50_max"}, "head": None, "veto_manual": None}  # None = orice conținut (validat separat)
+
+
 def merge_overlay(cal: dict, overlay: dict) -> dict:
-    """Suprapune praguri noi (T5c) peste calibrarea validată: dict-urile se îmbină, restul se înlocuiește. Nu modifică argumentele."""
+    """Suprapune praguri T5c peste calibrarea validată. DOAR chei permise: `segment.c_p50_max`, `head`, `veto_manual` (orice alt prag, ex. `vlm_p_yes`,
+    `yunet_score`, `skin_whole_max`, `siglip_margin`, ar putea relaxa judecătorul și e refuzat). Calibrarea îmbinată se revalidează. Nu modifică argumentele."""
+    if not isinstance(overlay, dict) or not isinstance(overlay.get("praguri"), dict):
+        raise CalibrationError("overlay fără `praguri`")
     out = json.loads(json.dumps(cal))
-    for k, v in overlay.get("praguri", {}).items():
+    for k, v in overlay["praguri"].items():
+        if k not in OVERLAY_ALLOWED:
+            raise CalibrationError(f"overlay: cheia de prag {k!r} nu e permisă (permise: {', '.join(OVERLAY_ALLOWED)})")
+        allowed = OVERLAY_ALLOWED[k]
+        if allowed is not None:
+            if not isinstance(v, dict) or set(v) - allowed:
+                raise CalibrationError(f"overlay: {k} acceptă doar {sorted(allowed)}, primit {sorted(v) if isinstance(v, dict) else v!r}")
+        if k == "veto_manual":
+            _validate_veto(v)
         if isinstance(v, dict) and isinstance(out["praguri"].get(k), dict):
             out["praguri"][k].update(v)
         else:
             out["praguri"][k] = v
-    return out
+    return validate_calibration(out)
 
 
 def load_calibration(path: str | Path) -> dict:

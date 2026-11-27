@@ -15,7 +15,11 @@
    ]
   },
   "veto_manual": {
-   "S476YE-platforma_logistica-s109": "dom rotund care poate trece drept cap (regula proprietarului: manechin clar ne-uman); niciun semnal automat nu îl separă de hala_depozit-s101 (con bun)"
+   "c0acf5e6908658327d684a38f30df38580bd769fc5b0c44333a7ef7149f47952": {
+    "id_informativ": "S476YE-platforma_logistica-s109",
+    "motiv": "dom rotund care poate trece drept cap (regula proprietarului: manechin clar ne-uman); niciun semnal automat nu îl separă de hala_depozit-s101 (con bun)",
+    "autor": "agent T5c; neconfirmat de proprietar (decizia e a proprietarului)"
+   }
   }
  },
  "etichete_cap_S476YE": {

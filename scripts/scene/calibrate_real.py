@@ -24,6 +24,7 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import checks_lib as ck  # noqa: E402
 import compose_lib as cl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
 import pilot_lib as pl  # noqa: E402
 import zones_lib as zl  # noqa: E402
 
@@ -163,7 +164,7 @@ def main() -> int:
                           "compunere corectă pică, se revede manual, nu se relaxează pragul."},
         "fluo": {"bune_max": max(good["fluo"]), "defecte_min": min(bad["fluo"]), "motiv": why_f},
     }
-    a.out.write_text(json.dumps(rec, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    ilib.write_new_text(a.out, json.dumps(rec, indent=2, ensure_ascii=False, sort_keys=True) + "\n")  # mod exclusiv "x": nu suprascrie
     print(json.dumps({"praguri": rec["praguri"], "alegere": rec["alegere"]}, indent=2, ensure_ascii=False))
     return 0
 

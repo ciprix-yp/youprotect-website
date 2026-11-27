@@ -25,6 +25,7 @@ sys.path.insert(0, str(HERE))
 import checks_models_lib as cm  # noqa: E402
 import collect_signals as cs  # noqa: E402
 import fisa_lib as fl  # noqa: E402
+import integrity_lib as ilib  # noqa: E402
 import models_runtime as mr  # noqa: E402
 
 # Valori fixe, alese după distribuțiile măsurate (vezi raportul T5b și README): segment, OCR.
@@ -180,7 +181,7 @@ def main() -> int:  # noqa: C901
         "modele_controale": c_models,
         "nota": "Controalele sunt cale relativă în repo + rezultat; imaginile nu sunt în git. Controalele „original” și „mic” sunt obligatorii (100%); „jos” e diagnostic.",
     }
-    a.out.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    ilib.write_new_text(a.out, json.dumps(out, ensure_ascii=False, indent=1) + "\n")  # mod exclusiv "x": nu suprascrie
     print(json.dumps({"recall": out["recall"], "diagnostic_jos": out["diagnostic_jos"], "ne_om": {k: v for k, v in out["ne_om"].items() if k != "randuri"}, "praguri": thr}, indent=1, ensure_ascii=False))
     try:
         cm.validate_calibration(out)
