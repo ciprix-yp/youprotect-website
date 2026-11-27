@@ -5,12 +5,13 @@ Rulat de tests/safe-fetch.test.mjs. Usage: python -I tests/py/safe_fetch_check.p
 import email.message
 import importlib.util
 import io
+import json
 import sys
 import tempfile
 import urllib.error
 from pathlib import Path
 
-from PIL import Image, ImageCms
+from PIL import Image, ImageCms, ImageDraw
 
 REPO = Path(sys.argv[1])
 sys.path.insert(0, str(REPO / "scripts" / "lib"))
@@ -272,5 +273,42 @@ with tempfile.TemporaryDirectory() as tmp:
         expect("URL în afara sursei", ValueError, lambda: portwest.download(evil, cache / "x.jpg"))
     finally:
         portwest.safe_fetch.SafeClient = original
+
+# --- Portwest Media Hub (poza pe model, offline) ---------------------------------------------------------------------
+HUB = "https://mediahub.portwest.com"
+PAGE = f"{HUB}/web/c98f9ae4545b878/eu_row-mood-images/"
+COLL, ASSET = "90EAF721-7B52-4DFD-848B1AAC0E5EB2E5", "23AB3D37-5428-422F-83515CA34F0E814C"
+ITEM_OK = "675F00D3-1276-4DB4-88D9F12C60B9D026"
+ITEM_SMALL = "C672BF9C-F36E-46EF-B32C455248FA5171"
+ITEM_ORIG = "2E9B4943-4750-4E5B-8E91076B0D79D417"
+
+
+def anchor(item, kind, size):
+    return f'<a class="x" data-id="{item}" data-media-id="{ASSET}" data-media-type="{kind}" data-media-size="{size}">'
+
+
+detail = anchor(ITEM_ORIG, "original", 40 * 1024 * 1024) + anchor(ITEM_SMALL, "web", 17000) + anchor(ITEM_OK, "web", 196000)
+SIGNED = f"{HUB}/files/signed-abc"
+routes = {
+    f"{HUB}/media/detail/?mediaId={ASSET}": FakeResponse(detail.encode(), "text/html"),
+    PAGE: FakeResponse(b'var csrf = "0123456789abcdef0123456789abcdef";', "text/html"),
+    f"{HUB}/new_download/": FakeResponse(json.dumps({"signed_url": SIGNED}).encode(), "application/json"),
+    SIGNED: FakeResponse(jpeg((30, 40)), "image/jpeg"),
+}
+opener = FakeOpener(routes)
+hub = portwest.MediaHub(PAGE, COLL, safe_fetch.SafeClient({portwest.MEDIAHUB_HOST}, opener=opener))
+check(hub.derivative_id(ASSET) == ITEM_OK, "trebuia derivata web cea mai mare, nu originalul peste plafon")
+check(len(hub.download(ASSET)) > 0, "descărcarea derivatei")
+post = [c for c in opener.calls if c[1] == "POST"]
+check(post and "X-csrf-token" in post[0][2], "POST-ul trebuie să poarte tokenul CSRF")
+expect("sourceId invalid", FetchError, lambda: hub.derivative_id("../x"))
+expect("colecție lipsă", ValueError, lambda: portwest.MediaHub(None, None))
+expect("pagină pe alt host", ValueError, lambda: portwest.MediaHub("https://evil.example/web/c98f9ae4545b878/x/", COLL))
+side = Image.new("RGB", (100, 100), (255, 255, 255))
+side.paste(Image.new("RGB", (60, 100), (90, 90, 90)), (20, 0))
+check(portwest.strip_letterbox(side).size == (60, 100), "barele albe laterale trebuiau tăiate")
+white = Image.new("RGB", (100, 100), (255, 255, 255))
+ImageDraw.Draw(white).polygon([(50, 20), (65, 50), (50, 80), (35, 50)], fill=(20, 20, 90))  # subject: edges mostly white
+check(portwest.strip_letterbox(white).size == (100, 100), "studioul alb rămâne neatins")
 
 print("ok")
