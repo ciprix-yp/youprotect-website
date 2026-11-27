@@ -337,7 +337,7 @@ export default function TCOCalculator() {
             max={TCO_LIMITS.employees.max}
             suffix="pers."
           />
-          <p className="text-sm text-neutral-400 -mt-4">
+          <p className="text-sm text-neutral-400">
             Ai o echipă de 1–4 persoane?{' '}
             <a
               href={SMALL_TEAM_WHATSAPP}
@@ -439,7 +439,7 @@ export default function TCOCalculator() {
               {errors.categories}
             </p>
           )}
-          <p className="text-xs text-neutral-400 -mt-4">
+          <p className="text-xs text-neutral-400">
             Valorile de pornire sunt doar exemple. Pune prețurile și frecvențele tale, ca rezultatul să fie al tău. La mănuși
             și alte consumabile, „bucăți pe om” sunt perechile pe care le primește un om de fiecare dată.
           </p>
@@ -461,7 +461,7 @@ export default function TCOCalculator() {
             hint="Pornește de la 1, adică durează la fel. Mută cursorul cât crezi că durează în plus; la testare vedem cât rezistă de fapt la voi."
           />
           {inputs.categories.length > 0 && inputs.durability > 1 && (
-            <p className="text-sm text-neutral-300 -mt-4">
+            <p className="text-sm text-neutral-300">
               Adică, de exemplu, {TCO_CATEGORIES[inputs.categories[0] as CategoryId].label.toLocaleLowerCase('ro')} ar ține{' '}
               {formatDuration(monthsOf(inputs.categories[0]) * inputs.durability)}, nu {formatDuration(monthsOf(inputs.categories[0]))}.
             </p>
