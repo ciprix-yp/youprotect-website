@@ -1,7 +1,7 @@
 """Download Sir Safety product photos and save them as self-hosted WebP files.
 
 Usage:
-  uv run --no-project --with pillow python -I scripts/catalog/fetch_images_sirsafety.py \
+  uv run --no-project --with pillow==13.0.0 python -I scripts/catalog/fetch_images_sirsafety.py \
       <source_dir> <texts_dir> <cache_dir> <public_dir>
 
 - <source_dir>: JSON from extract_sirsafety.py (colour codes + image URLs).
@@ -40,8 +40,7 @@ def download(url, cache, client=None):
     time.sleep(1.0)
     client = client or safe_fetch.SafeClient({ALLOWED_HOST}, user_agent=HEADERS_UA)
     data = client.request_image(url)  # host re-checked on every redirect; real image type; 25 MB cap
-    cache.parent.mkdir(parents=True, exist_ok=True)
-    cache.write_bytes(data)
+    safe_fetch.write_atomic(cache, data)
     return data
 
 
@@ -53,7 +52,7 @@ def main(argv):
             continue
         text = json.loads(text_path.read_text(encoding="utf-8"))
         code, slug = text["model"], text["slug"]
-        if not CODE_RE.match(code) or not SLUG_RE.match(slug) or len(slug) > safe_fetch.MAX_NAME:
+        if not CODE_RE.fullmatch(code) or not SLUG_RE.fullmatch(slug) or len(slug) > safe_fetch.MAX_NAME:
             print(f"!! {text_path.name}: cod sau slug invalid", file=sys.stderr)
             failed = True
             continue
@@ -62,7 +61,7 @@ def main(argv):
         out.mkdir(parents=True, exist_ok=True)
         n = 0
         for c in source["colours"]:
-            if c["code"] and not COLOUR_RE.match(c["code"]):
+            if c["code"] and not COLOUR_RE.fullmatch(c["code"]):
                 continue
             stem = f"{c['code']}-PS" if c["code"] else "PS"  # "" = produs fără variante de culoare
             try:

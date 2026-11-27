@@ -1,7 +1,7 @@
 """Download Portwest product photos and save them as self-hosted WebP files.
 
 Usage:
-  mise x uv@0.13.6 -- uv run -q --no-project --with pillow python -I scripts/catalog/fetch_images_portwest.py \
+  mise x uv@0.13.6 -- uv run -q --no-project --with pillow==13.0.0 python -I scripts/catalog/fetch_images_portwest.py \
       <source_dir> <texts_dir> <cache_dir> <public_dir>
 
 - <source_dir>: JSON from extract_portwest.py (colour codes + photo URLs from Portwest's data file).
@@ -16,8 +16,9 @@ Usage:
 - Person photos (cardPhoto.sourceId = Media Hub asset id): `--card-only` downloads just those, anonymously, from
   mediahub.portwest.com (host re-checked on every redirect; the signed download link is never printed or stored). The
   Media Hub "xlarge" derivative (JPEG, up to 2000 px) is taken, never the multi-MB original (PSD/17 MB JPEG).
-  The collection page and id are NOT in the repo: PW_COLLECTION_URL / PW_COLLECTION_ID (or --collection-url /
-  --collection-id), same as scripts/images/fetch-poze-actiune.py. Output: <colour>-C<8 id chars>.webp (+ -thumb).
+  The collection page and id are NOT in the repo: PW_COLLECTION_URL / PW_COLLECTION_ID, environment
+  only (`secret run <project> -- …`), never on the command line (shell history, process list). Same variables as
+  scripts/images/fetch-poze-actiune.py. Output: <colour>-C<8 id chars>.webp (+ -thumb).
 """
 import json
 import os
@@ -36,9 +37,9 @@ from card_photo import card_photo_errors, card_view  # noqa: E402
 
 ALLOWED_HOST = "d11ak7fd9ypfb7.cloudfront.net"
 ALLOWED_PATH = "/styles1100px/"
-STYLE_RE = re.compile(r"^[A-Z0-9]{2,8}$")
-COLOUR_RE = re.compile(r"^[A-Z0-9]{1,4}$")
-SLUG_RE = re.compile(r"^[a-z0-9-]+$")
+STYLE_RE = re.compile(r"[A-Z0-9]{2,8}")  # folosite cu fullmatch (`$` ar accepta și un `\n` final)
+COLOUR_RE = re.compile(r"[A-Z0-9]{1,4}")
+SLUG_RE = re.compile(r"[a-z0-9-]+")
 HEADERS_UA = "Mozilla/5.0 (compatible; catalog-sync)"
 
 
@@ -51,14 +52,14 @@ def download(url, cache, client=None):
     time.sleep(0.5)
     client = client or safe_fetch.SafeClient({ALLOWED_HOST}, user_agent=HEADERS_UA)
     data = client.request_image(url)  # host re-checked on every redirect; real image type; 25 MB cap
-    cache.parent.mkdir(parents=True, exist_ok=True)
-    cache.write_bytes(data)
+    safe_fetch.write_atomic(cache, data)
     return data
 
 
 MEDIAHUB_HOST = "mediahub.portwest.com"
 ASSET_RE = re.compile(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{16}$")
 PAGE_RE = re.compile(r"^https://mediahub\.portwest\.com/web/[0-9a-f]{8,32}/[a-z0-9_-]+/?$")
+PAGE_MAX_BYTES = 2 * 1024 * 1024  # media/detail and the collection page are HTML, not images
 CARD_MAX_SIDE = 1600
 CARD_MIN_SIDE = 800  # below this the card (600 px) would be soft: the photo is refused
 CARD_BUDGET = 240 * 1024  # tests/image-weight.test.mjs
@@ -78,9 +79,9 @@ class MediaHub:
         """Item id of the largest 'web' derivative that fits the safe_fetch cap (the xlarge JPEG)."""
         if not ASSET_RE.fullmatch(asset_id):
             raise safe_fetch.FetchError("sourceId invalid pentru Portwest Media Hub")
-        body, _ = self.client.request(f"https://{MEDIAHUB_HOST}/media/detail/?mediaId={asset_id}")
+        body, _ = self.client.request(f"https://{MEDIAHUB_HOST}/media/detail/?mediaId={asset_id}", max_bytes=PAGE_MAX_BYTES)
         best, best_size = None, 0
-        for tag in re.findall(r"<a\b[^>]*>", body.decode("utf-8", "replace")):
+        for tag in re.findall(r"<a\b[^>]{0,4000}>", body.decode("utf-8", "replace")):
             attrs = dict(re.findall(r'([\w-]+)="([^"]*)"', tag))
             size = attrs.get("data-media-size", "")
             if (attrs.get("data-media-type") == "web" and attrs.get("data-media-id") == asset_id
@@ -94,7 +95,7 @@ class MediaHub:
     def download(self, asset_id):
         item = self.derivative_id(asset_id)
         if not self.csrf:
-            page, _ = self.client.request(self.page_url)
+            page, _ = self.client.request(self.page_url, max_bytes=PAGE_MAX_BYTES)
             match = re.search(r'csrf = "([0-9a-f]{20,64})"', page.decode("utf-8", "replace"))
             if not match:
                 raise safe_fetch.FetchError("token CSRF negăsit")
@@ -148,14 +149,13 @@ def process_card_photo(hub, style, colour, card, cache_dir, out, public_dir):
     else:
         time.sleep(0.5)
         raw = hub.download(card["sourceId"])
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        cache.write_bytes(raw)
+        safe_fetch.write_atomic(cache, raw)
     img = strip_letterbox(safe_fetch.clean_image(raw))
     if max(img.size) < CARD_MIN_SIDE:
         raise safe_fetch.FetchError(f"poza are doar {max(img.size)} px pe latura lungă")
     stem = f"{colour}-{view}" if colour else view
-    safe_fetch.save_webp(img, out / f"{stem}.webp", CARD_MAX_SIDE, 82, base=public_dir, budget=CARD_BUDGET)
-    safe_fetch.save_webp(img, out / f"{stem}-thumb.webp", 240, 75, base=public_dir)
+    safe_fetch.save_webp(img, out / f"{stem}.webp", CARD_MAX_SIDE, 82, base=out, budget=CARD_BUDGET)
+    safe_fetch.save_webp(img, out / f"{stem}-thumb.webp", 240, 75, base=out)
     return stem, img.size
 
 
@@ -169,7 +169,7 @@ def fetch_style(source, slug, cache_dir, out, public_dir=None, style=None):
     out.mkdir(parents=True, exist_ok=True)
     errors = []
     for c in source["colours"]:
-        if not COLOUR_RE.match(c["code"]):
+        if not COLOUR_RE.fullmatch(c["code"]):
             errors.append(f"cod de culoare invalid: {c['code']!r}")
             continue
         try:
@@ -182,13 +182,20 @@ def fetch_style(source, slug, cache_dir, out, public_dir=None, style=None):
     return errors
 
 
+def _card_colour_known(source_dir, model, colour):
+    """cardPhoto.colour trebuie să fie una din culorile sursei Portwest a modelului (numele fișierelor se construiesc din ea)."""
+    try:
+        source = json.loads(safe_fetch.safe_join(source_dir, f"{model}.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return colour in {c.get("code") for c in source.get("colours", []) if isinstance(c, dict)}
+
+
 def card_main(argv, environ):
     """`--card-only`: download just the cardPhoto person photos (Media Hub), nothing from the CDN."""
     args = [a for a in argv if a != "--card-only"]
-    options = dict(a.split("=", 1) for a in args if a.startswith("--") and "=" in a)
     source_dir, texts_dir, cache_dir, public_dir = map(Path, [a for a in args if not a.startswith("--")][:4])
-    hub = MediaHub(options.get("--collection-url") or environ.get("PW_COLLECTION_URL"),
-                   options.get("--collection-id") or environ.get("PW_COLLECTION_ID"))
+    hub = MediaHub(environ.get("PW_COLLECTION_URL"), environ.get("PW_COLLECTION_ID"))
     failed = False
     for text_path in sorted(texts_dir.glob("*.json")):
         text = json.loads(text_path.read_text(encoding="utf-8")) if not text_path.name.startswith("_") else {}
@@ -196,20 +203,26 @@ def card_main(argv, environ):
         if not card or "sourceId" not in card:
             continue
         errors = card_photo_errors(text)
-        if errors or not SLUG_RE.match(text["slug"]) or not STYLE_RE.match(text["model"]):
-            print(f"!! {text_path.name}: {'; '.join(errors) or 'cod sau slug invalid'}", file=sys.stderr)
+        slug, model = text.get("slug"), text.get("model")
+        if errors or not isinstance(slug, str) or not SLUG_RE.fullmatch(slug) or not isinstance(model, str) \
+                or not STYLE_RE.fullmatch(model):
+            print(f"!! {text_path.name}: {'; '.join(errors) or 'cod sau slug lipsă ori invalid'}", file=sys.stderr)
+            failed = True
+            continue
+        if not _card_colour_known(source_dir, model, card["colour"]):
+            print(f"!! {model}: cardPhoto.colour nu e printre culorile sursei Portwest", file=sys.stderr)
             failed = True
             continue
         try:
-            out = safe_fetch.safe_join(public_dir, text["slug"])
+            out = safe_fetch.safe_join(public_dir, slug)
             out.mkdir(parents=True, exist_ok=True)
-            stem, size = process_card_photo(hub, text["model"], card["colour"], card, cache_dir, out, public_dir)
-            print(f"ok {text['model']} -> {stem}.webp (sursă {size[0]}x{size[1]})")
+            stem, size = process_card_photo(hub, model, card["colour"], card, cache_dir, out, public_dir)
+            print(f"ok {model} -> {stem}.webp (sursă {size[0]}x{size[1]})")
         except Exception as exc:  # noqa: BLE001  (never print the message: it could carry a signed URL)
             why = exc if isinstance(exc, safe_fetch.FetchError) else type(exc).__name__
             if isinstance(exc, urllib.error.HTTPError):
                 why = f"HTTPError {exc.code}"  # code only: the message could carry a signed URL
-            print(f"!! {text['model']}: {why}", file=sys.stderr)
+            print(f"!! {model}: {why}", file=sys.stderr)
             failed = True
     sys.exit(1 if failed else 0)
 
@@ -224,7 +237,7 @@ def main(argv):
             continue
         text = json.loads(text_path.read_text(encoding="utf-8"))
         style, slug = text["model"], text["slug"]
-        if not STYLE_RE.match(style) or not SLUG_RE.match(slug) or len(slug) > safe_fetch.MAX_NAME:
+        if not STYLE_RE.fullmatch(style) or not SLUG_RE.fullmatch(slug) or len(slug) > safe_fetch.MAX_NAME:
             print(f"!! {text_path.name}: cod sau slug invalid", file=sys.stderr)
             failed = True
             continue

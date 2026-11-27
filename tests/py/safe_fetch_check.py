@@ -314,4 +314,61 @@ white = Image.new("RGB", (100, 100), (255, 255, 255))
 ImageDraw.Draw(white).polygon([(50, 20), (65, 50), (50, 80), (35, 50)], fill=(20, 20, 90))  # subject: edges mostly white
 check(portwest.strip_letterbox(white).size == (100, 100), "studioul alb rămâne neatins")
 
+# --- corecturi de securitate: culoare în nume de fișier, fullmatch, URL invalid, scrieri atomice, limite HTML ----------
+with tempfile.TemporaryDirectory() as tmp:
+    root = Path(tmp)
+    public, cache = root / "public", root / "cache"
+    (public / "produs-a").mkdir(parents=True)
+    (public / "alt-produs").mkdir(parents=True)
+
+    class StubHub:
+        def download(self, asset_id):
+            return jpeg((900, 900))
+
+    card = {"sourceId": ASSET, "colour": "NV"}
+    out = public / "produs-a"
+    stem, _ = portwest.process_card_photo(StubHub(), "C474", "NV", card, cache, out, public)
+    check((out / f"{stem}.webp").exists(), "poza pe model cu culoare validă trebuia scrisă")
+    # culoare cu `..`: ieșirea trebuie să rămână sub folderul produsului (base=out), nu doar sub public/
+    expect("culoare cu ..", FetchError, lambda: portwest.process_card_photo(
+        StubHub(), "C474", "../alt-produs/NV", card, cache, out, public))
+    check(not list((public / "alt-produs").iterdir()), "nimic nu trebuia scris în alt produs")
+    # `\n` final: regexurile cu fullmatch nu-l mai acceptă
+    for rx, good in ((portwest.STYLE_RE, "C474"), (portwest.COLOUR_RE, "NV"), (portwest.SLUG_RE, "slug-a")):
+        check(rx.fullmatch(good) and not rx.fullmatch(good + "\n"), f"{rx.pattern}: \\n final trebuia respins")
+    # cardPhoto.colour trebuie să fie în sursa Portwest a modelului (card_main)
+    src = root / "source"
+    src.mkdir()
+    (src / "C474.json").write_text(json.dumps({"style": "C474", "colours": [{"code": "NV"}]}), encoding="utf-8")
+    check(portwest._card_colour_known(src, "C474", "NV"), "NV e în sursă")
+    check(not portwest._card_colour_known(src, "C474", "ZZ"), "culoare inexistentă trebuia respinsă")
+    check(not portwest._card_colour_known(src, "C474", "../alt-produs/NV"), "culoare cu .. trebuia respinsă")
+    check(not portwest._card_colour_known(src, "NOPE", "NV"), "sursă lipsă trebuia respinsă")
+
+    # scriere atomică: la eșec nu rămâne nici fișier țintă, nici temporar
+    target = root / "atomic" / "f.bin"
+    safe_fetch.write_atomic(target, b"abc")
+    check(target.read_bytes() == b"abc", "write_atomic")
+    original_replace = safe_fetch.os.replace
+    safe_fetch.os.replace = lambda *a: (_ for _ in ()).throw(OSError("simulat"))
+    try:
+        expect("replace eșuat", OSError, lambda: safe_fetch.write_atomic(target, b"xyz"))
+    finally:
+        safe_fetch.os.replace = original_replace
+    check(target.read_bytes() == b"abc" and [f.name for f in target.parent.iterdir()] == ["f.bin"],
+          "după eșec: fișierul vechi intact, fără temporare")
+
+# URL care face urlparse să arunce ValueError: FetchError fără netloc în mesaj
+try:
+    safe_fetch.check_url("https://[evil.example/x", {"cdn.example.com"})
+    raise AssertionError("URL cu IPv6 nepotrivit trebuia respins")
+except FetchError as err:
+    check("evil" not in str(err), "mesajul nu trebuie să conțină hostul")
+
+# derivative_id: pagina de detaliu peste limita HTML se respinge
+big = FakeResponse(b"<a " + b"x" * (3 * 1024 * 1024), "text/html")
+hub_big = portwest.MediaHub(PAGE, COLL, safe_fetch.SafeClient({portwest.MEDIAHUB_HOST}, opener=FakeOpener(
+    {f"{HUB}/media/detail/?mediaId={ASSET}": big})))
+expect("pagină de detaliu uriașă", FetchError, lambda: hub_big.derivative_id(ASSET))
+
 print("ok")

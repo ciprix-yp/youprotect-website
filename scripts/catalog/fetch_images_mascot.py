@@ -1,7 +1,7 @@
 """Download MASCOT product photos from Picturepark (guest session) and build web images.
 
 Usage (needs Pillow):
-  uv run --no-project --with pillow python -I scripts/catalog/fetch_images_mascot.py \
+  uv run --no-project --with pillow==13.0.0 python -I scripts/catalog/fetch_images_mascot.py \
       <source_dir> <texts_dir> <cache_dir> <public_dir> [--spin]
 
   <source_dir>  .catalog-work/mascot           (extract_mascot.py output: qualities, ordered colours, swatches)
@@ -61,7 +61,7 @@ def parse_frames(results, mqc):
     pattern = name_pattern(mqc)
     found = {}
     for item in results:
-        match = pattern.match(str(item.get("displayValues", {}).get("name", "")))
+        match = pattern.fullmatch(str(item.get("displayValues", {}).get("name", "")))
         content_id = str(item.get("id", ""))
         if match and CONTENT_ID.fullmatch(content_id):
             found.setdefault(match.group(1), content_id)
@@ -76,7 +76,7 @@ def find_card_item(results, mqc, source_id):
     for item in results:
         if str(item.get("id", "")) == source_id:
             name = str(item.get("displayValues", {}).get("name", ""))
-            if not name_pattern(mqc).match(name):
+            if not name_pattern(mqc).fullmatch(name):
                 raise FetchError(f"poza cardPhoto nu aparține codului {mqc}")
             return name
     raise FetchError(f"poza cardPhoto nu apare în căutarea pentru {mqc}")
@@ -115,8 +115,7 @@ def save_webp(raw, path, max_side, quality, base, budget=None):
 def cached(cache_dir, mqc, view, pp, content_id):
     path = safe_fetch.safe_join(cache_dir, mqc, f"{view}.img")
     if not path.exists():
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(pp.download(content_id))
+        safe_fetch.write_atomic(path, pp.download(content_id))
         time.sleep(0.2)  # be gentle with the supplier's DAM
     return path.read_bytes()
 
@@ -165,7 +164,7 @@ def main(argv):
             raise ValueError(f"{text_path.name}: {'; '.join(errors)}")
         source = json.loads(safe_fetch.safe_join(source_dir, f"{text['model']}.json").read_text(encoding="utf-8"))
         slug, model, quality = text["slug"], source["model"], (source["qualities"] or [""])[0]
-        if not (SLUG.match(slug) and CODE.match(model) and CODE.match(quality) and model == text["model"]):
+        if not (SLUG.fullmatch(slug) and CODE.fullmatch(model) and CODE.fullmatch(quality) and model == text["model"]):
             raise ValueError(f"cod invalid: {slug} {model} {quality}")
         ordered = [c for c in source["colours"] if c["ordered"]] or source["colours"][:1]
         primary = text.get("primaryColour") or ordered[0]["number"]
@@ -175,7 +174,7 @@ def main(argv):
         out_dir = safe_fetch.safe_join(public_dir, slug)
         for c in ordered:
             colour = c["number"]
-            if not CODE.match(colour):
+            if not CODE.fullmatch(colour):
                 raise ValueError(f"cod de culoare invalid: {colour}")
             mqc = f"{model}-{quality}-{colour}"
             stats = process_colour(pp, mqc, colour, colour == primary, cache_dir, out_dir, public_dir, with_spin)

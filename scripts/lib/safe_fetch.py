@@ -5,11 +5,15 @@ Tot ce vine de la furnizor e date neîncrezute. Ce garantează modulul:
      (redirecturile se urmează manual; un redirect pe alt host oprește descărcarea). Un POST nu trece pe alt host.
   2. Tipul real: Pillow deschide octeții cu formats=[JPEG, PNG, WEBP] (nu ne bazăm pe Content-Type); SVG e refuzat;
      DecompressionBombWarning e eroare; limită de pixeli; respingere timpurie după Content-Length; max 25 MB pe corp.
-  3. Căile: numele (slug, model, stil) trec prin regex cu limită de lungime; orice cale de ieșire sau de cache
-     trebuie să rămână sub directorul de bază (resolve().is_relative_to).
+  3. Căile: numele (slug, model, stil, culoare) se verifică cu `fullmatch` în scripturile fetch_* (nu `match` + `$`,
+     care acceptă un `\n` final; `check_name` face același lucru cu limită de lungime); orice cale de ieșire
+     sau de cache trebuie să rămână sub directorul de bază (resolve().is_relative_to).
+     Scrierile (WebP, cache) sunt atomice: fișier temporar + os.replace (write_atomic).
   4. Metadatele: exif_transpose, conversie ICC -> sRGB înainte de a arunca profilul (culoarea rămâne fidelă), pixelii
      copiați într-o imagine nouă, WebP salvat fără EXIF/XMP/ICC și verificat pe octeții scriși (webp_forbidden_chunks).
-  5. URL-urile semnate din Media Hub nu se scriu nicăieri de aici; în hărți și JSON stau doar ID-uri.
+  5. Linkul colecției Media Hub (PW_COLLECTION_URL / PW_COLLECTION_ID) se dă doar prin variabile de mediu
+     (`secret run <proiect> -- …`), nu pe linia de comandă (rămâne în istoricul shell-ului și în lista de procese).
+  6. URL-urile semnate din Media Hub nu se scriu nicăieri de aici; în hărți și JSON stau doar ID-uri.
 
 Import (Python rulează cu -I, deci scriptul nu vede singur acest folder; scriptul chemător e versionat, așa că
 adaugă calea explicit):
@@ -21,7 +25,9 @@ Testele rulează fără rețea: SafeClient primește un `opener` înlocuibil (te
 """
 import http.cookiejar
 import io
+import os
 import re
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -78,11 +84,11 @@ def check_url(url, hosts):
     """Doar https curat, port 443, fără user:parola, host exact din `hosts`."""
     if not isinstance(url, str) or re.search(r"[\x00-\x20\x7f]", url):
         raise FetchError("URL cu caractere de control sau spații")
-    parsed = urllib.parse.urlparse(url)
     try:
+        parsed = urllib.parse.urlparse(url)  # ValueError la ex. IPv6 cu paranteze nepotrivite
         port = parsed.port  # ValueError la port nenumeric
     except ValueError:
-        raise FetchError("port nepermis") from None
+        raise FetchError("URL invalid sau port nepermis") from None
     if port not in (None, 443):
         raise FetchError("port nepermis")
     if parsed.scheme != "https" or parsed.hostname not in hosts or parsed.username or parsed.password:
@@ -277,6 +283,20 @@ def save_webp(img, path, max_side, quality, *, base, budget=None):
     if not target.is_relative_to(root) or target == root:
         raise FetchError("cale de ieșire în afara directorului permis")
     data = encode_webp(img, max_side, quality, budget=budget)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_bytes(data)
+    write_atomic(target, data)
     return len(data)
+
+
+def write_atomic(path, data):
+    """Scrie `data` (bytes) la `path` printr-un fișier temporar din același director + os.replace: un proces oprit la
+    mijloc nu lasă fișiere pe jumătate scrise (nici în cache, nici în public/)."""
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=target.parent, prefix=f".{target.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+        os.replace(tmp, target)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
