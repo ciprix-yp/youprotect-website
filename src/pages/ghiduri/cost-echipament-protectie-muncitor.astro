@@ -1,154 +1,152 @@
 ---
 // Ghid: cât costă echipamentul de protecție pentru un muncitor din construcții. Fără prețuri și fără cifre de cost
 // (D-2026-11-19-03): explicăm din ce se compune costul și cum îl calculezi, iar calculatorul lucrează cu prețurile
-// vizitatorului. Lista de echipamente urmează anexa 3 din HG nr. 1.048/2006, republicată.
+// vizitatorului. Pașii urmează formula din src/lib/tco.js.
+// Texte rescrise pe 27.11.2026 (SEO-003): răspunsul întâi (formula costului pe an), apoi pașii, ce echipament intră în
+// cost, cine plătește, cât de des înlocuiești și comparația pe an. Sursa a fost verificată din nou pe 27.11.2026, în
+// forma republicată (MO nr. 338/2022): lucrările din anexa 3 sunt scrise ca acolo (de exemplu „montarea și demontarea
+// cofrajelor”, „lucrări feroviare”), mănușile au două rânduri în anexă (riscuri mecanice și vibrații), anexele au
+// caracter orientativ (art. 16), durata purtării ține de art. 7, iar hainele de lucru obișnuite nu sunt echipament
+// individual de protecție (art. 3 alin. (2) lit. a).
+import { getCollection } from 'astro:content';
 import GuideLayout, { type GuideFaq } from '../../components/guides/GuideLayout.astro';
 import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
+import { activeCategoryPages } from '../../lib/catalog-categories';
+import { CATEGORIES, type CategoryKey } from '../../lib/catalog-taxonomy';
 import { guideBySlug, guideHref } from '../../lib/guides';
-import { RISK_FREE_TESTING, SITE } from '../../lib/site';
+import { RESPONSE_TIME, RISK_FREE_TESTING, SITE } from '../../lib/site';
 import { WORKING_DAYS_PER_YEAR } from '../../lib/tco.js';
 
 const guide = guideBySlug('cost-echipament-protectie-muncitor');
-const footwearGuide = guideHref(guideBySlug('s1p-sau-s3'));
-const hiVisGuide = guideHref(guideBySlug('clase-vizibilitate-en-iso-20471'));
+const footwearGuide = guideBySlug('s1p-sau-s3');
+const hiVisGuide = guideBySlug('clase-vizibilitate-en-iso-20471');
 const CALCULATOR = '/calculator-cost-echipamente/';
-const HG_1048 = 'https://legislatie.just.ro/Public/DetaliiDocument/249634';
+const HG_1048 = 'https://legislatie.just.ro/Public/DetaliiDocument/253674';
+// Numărul de telefon nu se rupe pe două rânduri.
+const phone = SITE.telephoneDisplay.replace(/ /g, '\u00a0');
 
-const answer =
-  'Nu există un preț unic. Costul depinde de echipamentul pe care îl cere evaluarea riscurilor, de produsele alese și de cât de des le înlocuiești. Îl calculezi pe an: pentru fiecare piesă, prețul înmulțit cu numărul de bucăți pe care le primește un om într-un an, plus timpul în care cineva comandă, primește și împarte echipamentul. Echipamentul individual de protecție îl plătește angajatorul: legea spune că se distribuie gratuit lucrătorilor.';
+const published = await getCollection('products', ({ data }) => data.status === 'published');
+const activePages = activeCategoryPages(published.map((p) => p.data));
+const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
 
-// Anexa 3 din HG nr. 1.048/2006: activitățile din construcții care pot cere fiecare echipament.
-const equipment: { name: string; standard: string; when: string; guide?: string }[] = [
-  {
-    name: 'Cască de protecție',
-    standard: 'EN 397',
-    when: 'Lucrări pe, sub sau lângă schele și locuri de muncă la înălțime, lucrări de construcții și rutiere, montarea cofrajelor, demolări.',
-  },
-  {
-    name: 'Încălțăminte de protecție',
-    standard: 'EN ISO 20345',
-    when: 'Lucrări de construcții și rutiere, montarea cofrajelor și a schelelor, demolări.',
-    guide: footwearGuide,
-  },
-  {
-    name: 'Îmbrăcăminte de avertizare',
-    standard: 'EN ISO 20471',
-    when: 'Lucrări în apropierea vehiculelor în mișcare, asfaltare și semnalizare rutieră.',
-    guide: hiVisGuide,
-  },
-  {
-    name: 'Echipament împotriva căderilor de la înălțime (ham)',
-    standard: 'EN 361',
-    when: 'Lucrări pe schele și pe suprafețe verticale sau înclinate.',
-  },
-  {
-    name: 'Antifoane',
-    standard: 'EN 352',
-    when: 'Lucrul cu unelte electrice, baterea piloților.',
-  },
-  {
-    name: 'Mănuși de protecție',
-    standard: 'EN 388 (riscuri mecanice), EN ISO 10819 (vibrații)',
-    when: 'Lucrul cu unelte manuale, care transmit vibrații.',
-  },
-  {
-    name: 'Genunchiere',
-    standard: 'EN 14404',
-    when: 'Montarea de blocuri, plăci ceramice și pavaje.',
-  },
-];
+// Unde găsești piesa în catalog: pagina categoriei, dacă există; altfel modelele publicate, unul câte unul.
+type ItemLink = { href: string; label: string };
+function catalogLinks(key: CategoryKey): ItemLink[] {
+  const page = activePages.find((p) => p.key === key);
+  if (page) return [{ href: `/produse/${page.slug}/`, label: `${CATEGORIES[key]} din catalog` }];
+  return published
+    .filter((p) => p.data.category === key)
+    .sort((a, b) => roCollator.compare(a.data.name, b.data.name))
+    .map((p) => ({ href: `/produse/${p.id}/`, label: p.data.name }));
+}
+const guideLink = (g: typeof guide): ItemLink => ({ href: guideHref(g), label: `Ghid: ${g.breadcrumb ?? g.title}` });
+
+const answer = `Costul pe an al echipamentului de protecție pentru un muncitor este suma, pe fiecare piesă, a prețului înmulțit cu câte bucăți primește omul într-un an, plus timpul în care cineva comandă, primește și împarte echipamentul. Împărțit la zilele lucrătoare, îți dă costul pe zi de purtare, cu care compari corect produse cu prețuri și durate diferite. Ce piese intră în calcul stabilește evaluarea riscurilor, iar echipamentul îl plătește angajatorul: legea spune că îl distribuie gratuit lucrătorilor.`;
 
 const steps = [
   {
     title: 'Faci lista pe fiecare post',
-    text: 'Pornești de la evaluarea riscurilor: ce piese primește un zidar, un fierar-betonist sau un operator de utilaj. Adaugă și hainele de lucru pe care le dai, chiar dacă nu sunt echipament de protecție.',
+    text: 'Pornești de la evaluarea riscurilor: ce piese primește un zidar, un fierar-betonist sau un operator de utilaj. Adaugi și hainele de lucru pe care le dai echipei, chiar dacă legea nu le socotește echipament de protecție.',
   },
   {
     title: 'Numeri bucățile pe an',
-    text: 'Pentru fiecare piesă: câte primește un om într-un an. O piesă înlocuită la 6 luni înseamnă 2 bucăți pe an; una înlocuită la 4 luni, 3 bucăți.',
+    text: 'Pentru fiecare piesă: câte bucăți primește un om odată și de câte ori pe an le înlocuiești. O piesă înlocuită la 6 luni înseamnă 2 bucăți pe an; una înlocuită la 4 luni, 3 bucăți.',
   },
   {
     title: 'Înmulțești cu prețul',
-    text: 'Prețul pe bucată înmulțit cu bucățile pe an dă costul de achiziție pe an, pentru un om. Înmulțit cu numărul de oameni de pe post, dă costul postului.',
+    text: 'Prețul pe bucată înmulțit cu bucățile pe an dă costul de achiziție al piesei pe an, pentru un om. Aduni piesele și ai costul unui om de pe post; înmulțit cu numărul de oameni, costul postului.',
   },
   {
     title: 'Adaugi timpul de administrare',
-    text: 'Comanda, recepția, împărțirea pe mărimi și evidența cer ore de lucru în fiecare lună. Orele pe lună, înmulțite cu costul unei ore și cu 12, intră și ele în costul pe an.',
+    text: 'Comanda, recepția, împărțirea pe mărimi și evidența cer ore de lucru în fiecare lună. Orele pe lună, înmulțite cu costul unei ore și cu 12, dau costul administrării pe an, pentru toată echipa. Împărțit la numărul de oameni, e partea fiecăruia.',
   },
   {
     title: 'Împarți la zilele de lucru',
-    text: `Costul pe an împărțit la zilele lucrătoare (calculatorul nostru folosește ${WORKING_DAYS_PER_YEAR}) îți dă costul pe zi de purtare. Așa compari corect produse cu prețuri și durate diferite.`,
+    text: `Costul pe an al unui om, împărțit la zilele lucrătoare (calculatorul folosește ${WORKING_DAYS_PER_YEAR}), îți dă costul pe zi de purtare.`,
+  },
+];
+
+// Anexa 3 din HG nr. 1.048/2006, republicată: lucrările din construcții care pot cere fiecare echipament. Standardul e
+// cel după care se certifică de obicei piesa; hotărârea nu numește standarde.
+const equipment: { name: string; standard: string; when: string; links: ItemLink[] }[] = [
+  {
+    name: 'Cască de protecție',
+    standard: 'EN 397',
+    when: 'Lucrări pe, sub sau în vecinătatea schelelor și a locurilor de muncă la înălțime, lucrări de construcții și rutiere, montarea și demontarea cofrajelor, lucrări de demolare.',
+    links: catalogLinks('casti-protectie'),
+  },
+  {
+    name: 'Încălțăminte de protecție',
+    standard: 'EN ISO 20345',
+    when: 'Lucrări de construcții și rutiere, montarea și demontarea cofrajelor, asamblarea și instalarea schelelor, lucrări de demolare.',
+    links: [guideLink(footwearGuide), ...catalogLinks('incaltaminte')],
+  },
+  {
+    name: 'Îmbrăcăminte reflectorizantă',
+    standard: 'EN ISO 20471',
+    when: 'Lucrări în apropierea vehiculelor în mișcare, lucrări de asfaltare și de semnalizare rutieră, lucrări feroviare.',
+    links: [guideLink(hiVisGuide), ...catalogLinks('reflectorizante')],
+  },
+  {
+    name: 'Echipament împotriva căderilor de la înălțime (ham)',
+    standard: 'EN 361',
+    when: 'Lucrări pe schele și pe suprafețe verticale sau înclinate.',
+    links: catalogLinks('protectie-cadere'),
+  },
+  {
+    name: 'Antifoane',
+    standard: 'EN 352',
+    when: 'Lucrări cu unelte electrice, lucrări de batere a piloților.',
+    links: catalogLinks('antifoane'),
+  },
+  {
+    name: 'Mănuși de protecție',
+    standard: 'EN 388 (riscuri mecanice), EN ISO 10819 (vibrații)',
+    when: 'Lucrări cu cadre din oțel și manipularea obiectelor cu muchii ascuțite, pentru riscurile mecanice; lucrări cu unelte manuale, pentru vibrații.',
+    links: catalogLinks('manusi'),
+  },
+  {
+    name: 'Genunchiere',
+    standard: 'EN 14404',
+    when: 'Montarea de blocuri, plăci ceramice și pavaje.',
+    links: catalogLinks('genunchiere'),
   },
 ];
 
 const faq: GuideFaq[] = [
   {
-    q: 'Cât costă să echipezi un muncitor din construcții cu echipament de protecție?',
-    a: 'Nu există un preț unic: depinde de echipamentul cerut de evaluarea riscurilor, de produsele alese și de cât de des le înlocuiești. Costul pe an pentru un muncitor este suma, pe fiecare piesă, a prețului înmulțit cu bucățile primite într-un an, la care se adaugă timpul de administrare. Calculatorul You Protect face socoteala cu prețurile tale.',
+    q: 'Cât costă echipamentul de protecție pentru un muncitor din construcții?',
+    a: 'Costul pe an pentru un muncitor este suma, pe fiecare piesă, a prețului înmulțit cu bucățile primite într-un an, plus timpul de administrare. Suma diferă de la o firmă la alta, pentru că depinde de echipamentul cerut de evaluarea riscurilor, de produsele alese și de cât de des le înlocuiești. Calculatorul de cost de pe youprotect.ro face socoteala cu prețurile tale, fără date de contact.',
     link: { href: CALCULATOR, label: 'Deschide calculatorul de cost' },
   },
   {
     q: 'Cine plătește echipamentul de protecție al angajaților?',
-    a: 'Angajatorul. Potrivit HG nr. 1.048/2006, art. 10, echipamentul individual de protecție se distribuie gratuit de angajator, care asigură și întreținerea, repararea și înlocuirea lui.',
+    a: 'Angajatorul. Potrivit HG nr. 1.048/2006, art. 10, echipamentul individual de protecție se distribuie gratuit de angajator, care asigură și întreținerea, repararea și înlocuirile necesare.',
   },
   {
     q: 'Ce echipament de protecție trebuie să primească un muncitor în construcții?',
-    a: 'Cel stabilit prin evaluarea riscurilor de la locul de muncă (HG nr. 1.048/2006, art. 14). Anexa 3 a hotărârii dă, orientativ, pentru construcții: cască de protecție, încălțăminte de protecție, îmbrăcăminte de avertizare lângă vehicule în mișcare, echipament împotriva căderilor de la înălțime, antifoane, mănuși și genunchiere, în funcție de lucrare.',
+    a: 'Cel stabilit de angajator prin evaluarea riscurilor de la locul de muncă (HG nr. 1.048/2006, art. 14). Anexa 3 a hotărârii, cu caracter orientativ, trece pentru lucrările de construcții: cască de protecție, încălțăminte de protecție, îmbrăcăminte reflectorizantă lângă vehicule în mișcare, echipament împotriva căderilor de la înălțime, antifoane, mănuși și genunchiere, în funcție de lucrare.',
   },
   {
     q: 'Cât de des se înlocuiește echipamentul de protecție?',
-    a: 'Când nu mai protejează sau nu mai e igienic: angajatorul răspunde de întreținerea, repararea și înlocuirea lui (HG nr. 1.048/2006, art. 10). Cât durează fiecare piesă depinde de produs și de lucrare, așa că merită măsurat pe echipa ta, nu ghicit.',
+    a: 'Când e nevoie: HG nr. 1.048/2006 nu fixează un termen. Angajatorul face înlocuirile necesare (art. 10), iar durata purtării se stabilește după gravitatea riscului, frecvența expunerii, postul fiecărui lucrător și performanța echipamentului (art. 7). Cât durează fiecare piesă depinde de produs și de lucrare, așa că merită măsurat pe echipa ta.',
   },
   {
-    q: 'Un echipament mai scump poate ieși mai ieftin pe an?',
-    a: 'Da, dacă durează destul de mult. Un produs de două ori mai scump care durează de două ori mai mult te costă la fel la cumpărare pe an și mai puțin la administrare, pentru că îl comanzi și îl împarți mai rar. Dacă durează și mai mult, iese mai ieftin. Cât durează în realitate afli doar testându-l în condițiile tale de lucru.',
-    link: { href: RISK_FREE_TESTING.href, label: 'Cum funcționează testarea fără riscuri' },
+    q: 'Un echipament de protecție mai scump poate ieși mai ieftin pe an?',
+    a: 'Da, dacă durează mai mult de câte ori e mai scump. Un produs de două ori mai scump care durează de două ori mai mult costă la fel la cumpărare pe an și îl comanzi și îl împarți de două ori mai rar; dacă durează și mai mult, iese mai ieftin. Cât durează în realitate afli testându-l în condițiile tale de lucru.',
+    link: { href: RISK_FREE_TESTING.href, label: RISK_FREE_TESTING.linkLabel },
   },
   {
-    q: 'De unde cer ofertă pentru echipamentul de protecție al unei echipe din construcții?',
-    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, cu prețurile pentru cantitățile echipei tale, iar livrarea se face în toată România.`,
+    q: 'De unde cer ofertă pentru echipamentul de protecție al unei echipe din construcții, în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${phone} și o primești ${RESPONSE_TIME}, cu prețurile pentru cantitățile echipei tale. Livrarea se face în toată România.`,
     link: { href: '/cere-oferta/', label: 'Cere ofertă' },
   },
 ];
 ---
 
-<GuideLayout guide={guide} answer={answer} faq={faq} photo="S06">
-  <section aria-labelledby="lista">
-    <h2 id="lista">Ce echipament poate fi necesar pe un șantier</h2>
-    <p>
-      Ce primește fiecare om stabilește angajatorul, după evaluarea riscurilor
-      (<a class="guide-link" href={HG_1048} rel="noopener">HG nr. 1.048/2006, art. 14</a>). Anexa 3 a hotărârii dă o listă
-      orientativă de lucrări care pot cere echipament de protecție. Pentru construcții, ea arată așa:
-    </p>
-    <ul class="mt-6 divide-y divide-yp-white/10 border-y border-yp-white/10">
-      {equipment.map((e) => (
-        <li class="py-4">
-          <p class="text-yp-white font-medium">
-            {e.name} <span class="text-sm font-normal text-yp-white/60">· {e.standard}</span>
-          </p>
-          <p class="mt-1">{e.when}</p>
-          {e.guide && <a class="guide-link inline-block py-1 text-sm" href={e.guide}>Ce clasă alegi</a>}
-        </li>
-      ))}
-    </ul>
-    <p class="mt-6">
-      Lista nu e completă. Evaluarea ta de risc poate cere și alte echipamente, de exemplu ochelari de protecție, mănuși
-      pentru substanțe chimice sau protecție respiratorie. Standardul de lângă fiecare piesă e cel după care se certifică de
-      obicei; verifică-l pe eticheta și pe declarația de conformitate a produsului.
-    </p>
-  </section>
-
-  <section aria-labelledby="cine-plateste">
-    <h2 id="cine-plateste">Cine plătește</h2>
-    <p>
-      Angajatorul. HG nr. 1.048/2006 spune la art. 10 că echipamentul individual de protecție se distribuie gratuit de
-      angajator, care asigură și buna lui funcționare și igiena, prin întreținere, reparații și înlocuiri. Așa că în costul
-      pe an intră și înlocuirile, nu doar prima echipare.
-    </p>
-  </section>
-
+<GuideLayout guide={guide} answer={answer} faq={faq} photo="S06" faqHeading="Întrebări frecvente despre costul echipamentului">
   <section aria-labelledby="calcul">
-    <h2 id="calcul">Cum calculezi costul pe an și pe zi de purtare</h2>
+    <h2 id="calcul">Costul pe an și pe zi de purtare, în cinci pași</h2>
     <ol class="mt-6 space-y-4">
       {steps.map((s, i) => (
         <li class="flex gap-4">
@@ -162,16 +160,85 @@ const faq: GuideFaq[] = [
     </ol>
     <p class="mt-6">
       <a class="guide-link" href={CALCULATOR}>Calculatorul de cost</a> face pașii 2–5 pentru tine: pui prețurile tale, cât
-      de des înlocuiești și cât timp pierzi cu administrarea, iar rezultatul îl vezi imediat, fără date de contact.
+      de des înlocuiești și cât timp pierzi cu administrarea, iar rezultatul îl vezi imediat, fără date de contact. Costul
+      pe an îl poți trece direct în bugetul următor.
+    </p>
+  </section>
+
+  <section aria-labelledby="lista">
+    <h2 id="lista">Ce echipament intră în cost: îl stabilește evaluarea&nbsp;riscurilor</h2>
+    <p>
+      Ce primește fiecare om stabilește angajatorul, după evaluarea riscurilor
+      (<a class="guide-link" href={HG_1048} rel="noopener">HG nr. 1.048/2006, art. 14</a>). Anexa 3 a hotărârii, o listă
+      neexhaustivă și cu caracter orientativ, trece lucrările din construcții care pot cere echipament de protecție:
+    </p>
+    <ul class="mt-6 divide-y divide-yp-white/10 border-y border-yp-white/10">
+      {equipment.map((e) => (
+        <li class="py-4">
+          <p class="text-yp-white font-medium">
+            {e.name}<span class="mt-0.5 block text-sm font-normal text-yp-white/60">{e.standard}</span>
+          </p>
+          <p>{e.when}</p>
+          {e.links.length > 0 && (
+            <ul class="mt-1 flex flex-wrap gap-x-6">
+              {e.links.map((l) => (
+                <li>
+                  <a href={l.href} class="inline-flex min-h-11 items-center gap-1 text-sm text-yp-yellow transition-colors hover:text-yp-white">
+                    {l.label}
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+    <p class="mt-6">
+      Lista nu e completă. Evaluarea ta de risc poate cere și alte echipamente, de exemplu ochelari de protecție, mănuși
+      pentru substanțe chimice sau protecție respiratorie. Hotărârea nu numește standarde: cel de lângă fiecare piesă e
+      standardul după care se certifică de obicei. Îl verifici pe eticheta și pe declarația de conformitate a produsului.
+    </p>
+  </section>
+
+  <section aria-labelledby="cine-plateste">
+    <h2 id="cine-plateste">Plătește angajatorul, inclusiv înlocuirile</h2>
+    <p>
+      HG nr. 1.048/2006 spune la art. 10 că echipamentul individual de protecție se distribuie gratuit de angajator, care îi
+      asigură buna funcționare și igiena prin întreținere, reparare și înlocuirile necesare. Așa că în buget intră și
+      înlocuirile, nu doar prima echipare.
+    </p>
+    <p>
+      Hainele de lucru și uniformele obișnuite, care nu sunt proiectate anume ca să protejeze, nu sunt echipament
+      individual de protecție (art. 3 alin. (2) lit. a). Dacă le dai echipei, le treci separat în calcul.
+    </p>
+  </section>
+
+  <section aria-labelledby="inlocuire">
+    <h2 id="inlocuire">Cât de des înlocuiești: legea nu fixează un termen</h2>
+    <p>
+      Hotărârea nu fixează câte luni ține o cască sau o pereche de bocanci. Condițiile de utilizare, în special durata
+      purtării, se stabilesc după gravitatea riscului, frecvența expunerii, caracteristicile postului fiecărui lucrător și
+      performanța echipamentului (art. 7), iar angajatorul face înlocuirile necesare (art. 10).
+    </p>
+    <p>
+      În calcul pui deci cât durează fiecare piesă la tine, pe lucrările tale. Dacă nu știi, notează o vreme când
+      înlocuiești fiecare piesă: după câteva luni ai cifrele reale.
     </p>
   </section>
 
   <section aria-labelledby="pret">
-    <h2 id="pret">De ce prețul pe bucată nu spune tot</h2>
+    <h2 id="pret">Un produs mai scump poate costa mai puțin pe an</h2>
     <p>
-      O piesă ieftină care se rupe repede o cumperi, o comanzi și o împarți de mai multe ori pe an. Un produs de două ori
-      mai scump care durează de două ori mai mult te costă la fel la cumpărare și mai puțin la administrare; dacă durează și
-      mai mult, iese mai ieftin. Cât durează un produs pe echipa ta nu scrie pe factură: îl afli testându-l.
+      Pe an contează cât durează produsul, nu doar prețul pe bucată. Un produs de două ori mai scump care durează de două
+      ori mai mult te costă la fel la cumpărare și îl comanzi și îl împarți de două ori mai rar; dacă durează și mai mult,
+      iese mai ieftin. Calculatorul îți arată pragul: de câte ori trebuie să dureze mai mult produsele noi ca să coste la
+      fel pe&nbsp;an.
+    </p>
+    <p>
+      Cât durează un produs pe echipa ta nu scrie pe factură: îl afli testându-l.
     </p>
     <RiskFreeTesting variant="box" class="mt-6" />
   </section>
