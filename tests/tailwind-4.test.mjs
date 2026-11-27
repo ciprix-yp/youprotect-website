@@ -159,7 +159,12 @@ const EXPECTED_THEME = {
   '--font-accent': 'Playfair Display, serif',
   // Culorile din paleta implicită fixate la valorile din v3 (în v4 paleta e în oklch, cu alte nuanțe)
   '--color-red-400': '#f87171',
+  '--color-neutral-100': '#f5f5f5',
+  '--color-neutral-200': '#e5e5e5',
+  '--color-neutral-300': '#d4d4d4',
   '--color-neutral-400': '#a3a3a3',
+  '--color-neutral-500': '#737373',
+  '--color-neutral-900': '#171717',
 };
 
 test('@theme: culorile, umbrele, curbele și fonturile au exact valorile din Tailwind 3', () => {

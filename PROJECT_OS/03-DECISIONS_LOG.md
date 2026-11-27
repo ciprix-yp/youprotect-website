@@ -857,8 +857,10 @@
   teste și documente ajungeau în CSS.
 - Curbele de mișcare se numesc `--ease-out-strong` și `--ease-drawer`. Variabila proprie `--ease-out` din `:root` ar fi
   suprascris curba standard a utilitarului `ease-out`.
-- Culorile `red-400` și `neutral-400` sunt fixate la valorile din v3 (`#f87171`, `#a3a3a3`): paleta v4 e în oklch, iar
-  `red-400` devine mai saturat. Restul nuanțelor folosite coincid cu v3.
+- Culorile `red-400` și `neutral-100/200/300/400/500/900` sunt fixate la hex-urile din v3 (`#f87171`, `#f5f5f5`,
+  `#e5e5e5`, `#d4d4d4`, `#a3a3a3`, `#737373`, `#171717`): paleta v4 e în oklch, fără rezervă hex, iar Chrome sub 111
+  (Windows 7/8) și Safari sub 15.4 ignoră declarația; în plus `red-400` devine mai saturat. CSS-ul compilat nu mai
+  conține `oklch(`.
 - Hover: `@custom-variant hover` cu `(hover: hover) and (pointer: fine)`, paritate exactă cu
   `future.hoverOnlyWhenSupported` din v3. Varianta implicită din v4 are doar `(hover: hover)` și ar activa hover pe
   tablete cu stylus.
