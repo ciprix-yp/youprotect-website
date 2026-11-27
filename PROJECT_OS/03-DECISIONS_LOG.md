@@ -889,5 +889,19 @@
   Versiuni vechi de browser pe desktop și Android cu versiune cunoscută ≈ 1,34% (Chrome 109 0,51%, Firefox 115 0,24%).
 - Riscuri deschise: neverificat pe iPhone real; gradientele și culorile cu alpha folosesc `color-mix` sau oklab, cu
   fallback pentru browserele fără suport.
+- `space-y-*` are altă semantică în v4: `margin-bottom` pe `:not(:last-child)` (în v3, `margin-top` pe copiii de după primul),
+  într-un selector `:where()` fără specificitate. Consecințe pentru modificările viitoare: un ultim copil ascuns sau
+  randat condiționat lasă spațiu în plus sub penultimul (de aceea `ul`-ul din subsol cu elementul `hidden` pentru
+  setările de cookie-uri folosește `flex flex-col gap-1`); `mt-*` și `mb-*` pe copii se aplică acum (în v3 `space-y` le
+  suprascria), iar copiii `absolute` nu mai primesc margine. Pentru liste cu elemente condiționale se preferă `gap`.
+- Preflight v3 → v4 pe formulare: câmpul `type="search"` din `/produse/` își recapătă `appearance: textfield` și
+  `outline-offset: -2px` (regula din preflight-ul v3, în `@layer base`). Restul elementelor de formular, comparate pe
+  `/produse/`, `/cere-oferta/`, `/programeaza-discutie/`, calculator și `/contact/`, au aceleași valori calculate
+  (diferențe doar de serializare a culorilor și `background-color` transparent pe `input[type=range]`, invizibil).
+- Fără `autoprefixer`, stilurile din `<style>` ale componentelor Astro nu mai primesc prefixe. Azi se pierd doar
+  prefixe vechi (`-o-object-position`, `-moz-`), fără impact; un `backdrop-filter` sau `mask` nou într-un `<style>` de
+  componentă ar avea nevoie de `-webkit-` scris de mână (risc pentru Safari sub 18). Clasele Tailwind sunt prefixate de
+  Lightning CSS.
+- `--font-accent` e definit în `@theme`, dar neutilizat azi (păstrat ca în configurația veche).
 - Impact: clasele noi se scriu pe sintaxa v4. Pentru un `text-*` responsiv peste un `leading-*`, se adaugă explicit
   `leading-*` la același breakpoint. Temele și culorile se schimbă în `@theme` din `src/styles/global.css`.
