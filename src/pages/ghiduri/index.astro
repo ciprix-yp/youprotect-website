@@ -1,8 +1,12 @@
 ---
-// /ghiduri/: lista ghidurilor din src/lib/guides.ts.
+// /ghiduri/: lista ghidurilor din src/lib/guides.ts. Rescrisă pe 26.11.2026 (SEO-003): intro cu cine și unde (3 rânduri
+// la 390 px), cardurile ca pe /industrii/ (colțuri, fundal, „Citește ghidul”), grila pe 2 coloane ca rândurile să fie
+// pline (08 §9) și un pas următor mic la final (08 §7: pe ghiduri, pasul următor e mic).
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { GUIDES, GUIDES_HREF, formatGuideDate, guideHref } from '../../lib/guides';
 import { jsonLd } from '../../lib/json-ld';
+import { SITE } from '../../lib/site';
+import { whatsappHref } from '../../lib/whatsapp';
 
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 const breadcrumbSchema = {
@@ -44,23 +48,33 @@ const itemListSchema = {
     <header class="max-w-3xl">
       <h1 class="text-3xl md:text-4xl font-light text-yp-white leading-tight">Ghiduri despre echipamentele de protecție</h1>
       <p class="mt-4 text-base text-yp-white/80 leading-relaxed">
-        Răspunsuri la întrebările pe care ni le pun clienții când aleg echipamentul pentru echipă. Fiecare ghid are sursele
-        la final: standardele, legea și producătorii.
+        You Protect, din Satu Mare, răspunde la întrebările pe care i le pun firmele când aleg echipamentul. Fiecare ghid
+        își arată sursele.
       </p>
     </header>
 
-    <ul class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <ul class="mt-10 grid gap-4 md:grid-cols-2 md:gap-6">
       {GUIDES.map((g) => (
         <li>
-          <a href={guideHref(g)} class="flex flex-col h-full border border-yp-white/15 p-6 hover:border-yp-yellow transition-colors">
-            <h2 class="text-lg text-yp-white font-medium leading-snug">{g.heading}</h2>
-            <p class="mt-3 text-sm text-yp-white/70 leading-relaxed">{g.summary}</p>
-            <p class="mt-auto pt-4 text-xs text-yp-white/50">
-              Actualizat pe <time datetime={g.updated}>{formatGuideDate(g.updated)}</time>
+          <a
+            href={guideHref(g)}
+            class="sd-rise group flex h-full flex-col rounded-lg border border-white/10 bg-white/5 p-6 transition-colors hover:border-yp-yellow/40 hover:bg-white/10 md:p-8"
+          >
+            <h2 class="text-lg font-medium leading-snug text-yp-white transition-colors group-hover:text-yp-yellow md:text-xl">{g.heading}</h2>
+            <p class="mt-3 text-sm leading-relaxed text-yp-white/70">{g.summary}</p>
+            <p class="mt-auto flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pt-6">
+              <span class="font-medium text-yp-yellow">Citește ghidul</span>
+              <span class="text-xs text-yp-white/50">Actualizat pe <time datetime={g.updated}>{formatGuideDate(g.updated)}</time></span>
             </p>
           </a>
         </li>
       ))}
     </ul>
+
+    <p class="mt-12 max-w-3xl text-base leading-relaxed text-yp-white/75">
+      Ai o întrebare la care nu găsești răspunsul aici?
+      <a href={whatsappHref(Astro.url.pathname)} target="_blank" rel="noopener noreferrer" data-track-location="ghiduri-intrebare" class="text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">Scrie-ne pe WhatsApp</a>
+      sau sună la <a href={`tel:${SITE.telephone}`} class="whitespace-nowrap text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow">{SITE.telephoneDisplay}</a>.
+    </p>
   </section>
 </BaseLayout>
