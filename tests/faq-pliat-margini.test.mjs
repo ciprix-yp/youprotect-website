@@ -65,8 +65,7 @@ guard('FaqList: număr de <details> = număr de întrebări din FAQPage, toate �
     const html = noCert(readFileSync(f, 'utf8'));
     const details = html.match(FAQ_DETAILS) ?? [];
     const faq = faqOf(html);
-    if (urlOf(f) === '/cum-lucram/') continue;
-    // Fișele de produs au și ele FAQPage, dar cu <details> proprii: aici contează doar paginile cu FaqList.
+    // Fișele de produs nu intră aici: nu au FaqList, iar FAQ_DETAILS (clasa `group`, border) nu se potrivește cu <details>-ul lor.
     assert.equal(details.length, faq.length, `${urlOf(f)}: ${details.length} <details> pentru ${faq.length} întrebări`);
     for (const d of details) assert.ok(!OPEN_ATTR.test(d), `${urlOf(f)}: întrebare livrată deschisă (atribut open)`);
   }
@@ -130,7 +129,7 @@ test('FaqList și CertificationsTable respectă regulile de design din 08-GHID_C
   assert.match(summaryCls, /focus-visible:outline-2/, 'summary fără focus vizibil');
   assert.match(chevronCls, /motion-reduce:transition-none/, 'chevron fără motion-reduce');
   assert.match(chevronCls, /transition-transform/, 'chevron: tranziție doar pe transform');
-  assert.doesNotMatch(ui, /disclosure[\s\S]*font-light/, 'font-light în constantele de disclosure');
+  assert.doesNotMatch(summaryCls + chevronCls, /font-light/, 'font-light în constantele de disclosure');
   const cert = readFileSync(join(ROOT, 'src/components/products/CertificationsTable.astro'), 'utf8');
   assert.match(cert, /table-fixed/, 'tabelul trebuie să fie table-fixed');
   assert.match(cert, /\[overflow-wrap:anywhere\]/, 'codurile foarte lungi trebuie să se rupă');

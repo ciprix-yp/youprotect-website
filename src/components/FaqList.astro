@@ -3,6 +3,8 @@
 // <details>/<summary> nativ, fără JavaScript: toate răspunsurile rămân în HTML-ul static, pliate pe orice lățime.
 // Componenta randează doar lista; <h2 id="intrebari"> și JSON-LD-ul FAQPage rămân în pagini, cu același array.
 // Textele sunt constante din repo, scoase ca text (nu set:html). `link` și `more` sunt același lucru (nume vechi diferite).
+import { disclosureChevron, disclosureSummary } from '../lib/ui';
+
 export interface FaqItem {
   q: string;
   a: string;
@@ -14,8 +16,6 @@ interface Props {
   items: FaqItem[];
   class?: string;
 }
-
-import { disclosureChevron, disclosureSummary } from '../lib/ui';
 
 const { items, class: className } = Astro.props;
 const linkClass =

@@ -51,7 +51,7 @@ const summaryLabel = products.length === 1 ? 'Vezi certificările modelului' : '
             <tr class="border-b border-yp-white/10 align-top">
               <th scope="row" class="min-w-0 pr-3 font-normal [overflow-wrap:anywhere]">
                 <a href={`/produse/${e.id}/`} class="inline-block py-3 text-yp-white underline underline-offset-4 decoration-yp-white/30 hover:text-yp-yellow">{e.data.name}</a>
-                {showBrand(e) && <span class="-mt-2 block pb-3 text-xs text-yp-white/60">{e.data.supplier.brand}</span>}
+                {showBrand(e) && <span class="pointer-events-none -mt-2 block pb-3 text-xs text-yp-white/60">{e.data.supplier.brand}</span>}
               </th>
               <td class="min-w-0 py-3 [overflow-wrap:anywhere]">
                 {e.data.certifications.length === 0
