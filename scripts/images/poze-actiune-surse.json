@@ -89,6 +89,42 @@
     "nota": "L08: cadru întreg din videoclipul scurt LogoService (3840x2160) la 32,5 s. Fișier local, pus manual în preview/M23.jpg: nu se descarcă automat. Nu din versiunile lungi Presentation Video."
   },
   {
+    "id": "M24",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "e0af43087fbd43b19a3a605e4e751f06",
+    "rezolutie_originala": [5820, 3880],
+    "decupaj": { "x": 0, "y": 374, "latime": 5820, "inaltime": 3274 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
+    "id": "M25",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "c703970e857d4a668aa9f3bd663dd376",
+    "rezolutie_originala": [6111, 4074],
+    "decupaj": { "x": 0, "y": 437, "latime": 6111, "inaltime": 3437 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
+    "id": "M26",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "476ec95c999d465ea8c9f374582b5bc4",
+    "rezolutie_originala": [5897, 3931],
+    "decupaj": { "x": 0, "y": 0, "latime": 5897, "inaltime": 3317 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
+    "id": "M27",
+    "furnizor": "mascot",
+    "pixeli_din": "original",
+    "id_sursa": "c283a5972f67453682870bd66355abfd",
+    "rezolutie_originala": [5760, 3840],
+    "decupaj": { "x": 0, "y": 391, "latime": 5760, "inaltime": 3240 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
     "id": "P04",
     "furnizor": "portwest",
     "pixeli_din": "original",
@@ -116,6 +152,33 @@
     "bynder_asset_id": "688DAC4B-3DF9-4876-82F58C56DD9F7B5B",
     "rezolutie_originala": [2000, 1333],
     "nota": "Preview-ul Media Hub (2000x1338) e sursa pixelilor; originalul declarat are 2000x1333. Fișier local, obținut manual din Media Hub: nu se descarcă automat."
+  },
+  {
+    "id": "P14",
+    "furnizor": "portwest",
+    "pixeli_din": "original",
+    "bynder_asset_id": "3885496E-FA70-448F-827EBD953EBC96E5",
+    "rezolutie_originala": [4332, 3330],
+    "decupaj": { "x": 0, "y": 700, "latime": 3600, "inaltime": 2025 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupajul desktop 16:9 exclude plăcuța cu text străin din colțul din dreapta jos; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
+    "id": "P15",
+    "furnizor": "portwest",
+    "pixeli_din": "original",
+    "bynder_asset_id": "6D0FCFC3-D600-4036-920C830658A80FC0",
+    "rezolutie_originala": [4870, 3208],
+    "decupaj": { "x": 0, "y": 100, "latime": 4300, "inaltime": 2419 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
+    "id": "P16",
+    "furnizor": "portwest",
+    "pixeli_din": "original",
+    "bynder_asset_id": "AFCBC595-FF8C-4124-A4912EBAF44B6BF7",
+    "rezolutie_originala": [4511, 2936],
+    "decupaj": { "x": 0, "y": 399, "latime": 4511, "inaltime": 2537 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
   },
   {
     "id": "S01",
@@ -172,5 +235,23 @@
     "pixeli_din": "original",
     "url_sursa": "https://www.sirsafety.com/assets/img/L1-2.jpg",
     "rezolutie_originala": [2048, 2048]
+  },
+  {
+    "id": "S18",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/S-4.JPG",
+    "rezolutie_originala": [2362, 1575],
+    "decupaj": { "x": 51, "y": 140, "latime": 2311, "inaltime": 1300 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
+  },
+  {
+    "id": "S19",
+    "furnizor": "sirsafety",
+    "pixeli_din": "original",
+    "url_sursa": "https://www.sirsafety.com/assets/img/dpi_landing.jpg",
+    "rezolutie_originala": [3840, 2152],
+    "decupaj": { "x": 0, "y": 0, "latime": 3824, "inaltime": 2151 },
+    "nota": "Set erou rotativ (aprobat 26.11.2026). Decupaj desktop 16:9; decupajul portret 4:5 e în poze-actiune.json, în fracții din originalul întreg."
   }
 ]

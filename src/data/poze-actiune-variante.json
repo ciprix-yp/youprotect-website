@@ -263,6 +263,166 @@
       "bytes": 24742
     }
   ],
+  "M24": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "femeie-casca-alba-dosar-coridor-tehnic-mascot-768.webp",
+      "bytes": 35838
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "femeie-casca-alba-dosar-coridor-tehnic-mascot-960.webp",
+      "bytes": 63802
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "femeie-casca-alba-dosar-coridor-tehnic-mascot-1440.webp",
+      "bytes": 113858
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "femeie-casca-alba-dosar-coridor-tehnic-mascot-1920.webp",
+      "bytes": 167720
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "femeie-casca-alba-dosar-coridor-tehnic-mascot-p768.webp",
+      "bytes": 55256,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "femeie-casca-alba-dosar-coridor-tehnic-mascot-p960.webp",
+      "bytes": 86874,
+      "portret": true
+    }
+  ],
+  "M25": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "barbat-casca-profil-metalic-pe-umar-hala-mascot-768.webp",
+      "bytes": 30410
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "barbat-casca-profil-metalic-pe-umar-hala-mascot-960.webp",
+      "bytes": 53422
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "barbat-casca-profil-metalic-pe-umar-hala-mascot-1440.webp",
+      "bytes": 95294
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "barbat-casca-profil-metalic-pe-umar-hala-mascot-1920.webp",
+      "bytes": 143474
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "barbat-casca-profil-metalic-pe-umar-hala-mascot-p768.webp",
+      "bytes": 50382,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "barbat-casca-profil-metalic-pe-umar-hala-mascot-p960.webp",
+      "bytes": 69696,
+      "portret": true
+    }
+  ],
+  "M26": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "femeie-jacheta-rosie-cutie-conveior-depozit-mascot-768.webp",
+      "bytes": 35748
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "femeie-jacheta-rosie-cutie-conveior-depozit-mascot-960.webp",
+      "bytes": 60610
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "femeie-jacheta-rosie-cutie-conveior-depozit-mascot-1440.webp",
+      "bytes": 105678
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "femeie-jacheta-rosie-cutie-conveior-depozit-mascot-1920.webp",
+      "bytes": 158246
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "femeie-jacheta-rosie-cutie-conveior-depozit-mascot-p768.webp",
+      "bytes": 49230,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "femeie-jacheta-rosie-cutie-conveior-depozit-mascot-p960.webp",
+      "bytes": 69006,
+      "portret": true
+    }
+  ],
+  "M27": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "barbat-casca-alba-clipboard-pasarela-industriala-mascot-768.webp",
+      "bytes": 39354
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "barbat-casca-alba-clipboard-pasarela-industriala-mascot-960.webp",
+      "bytes": 66040
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "barbat-casca-alba-clipboard-pasarela-industriala-mascot-1440.webp",
+      "bytes": 107036
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "barbat-casca-alba-clipboard-pasarela-industriala-mascot-1920.webp",
+      "bytes": 149712
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "barbat-casca-alba-clipboard-pasarela-industriala-mascot-p768.webp",
+      "bytes": 55356,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "barbat-casca-alba-clipboard-pasarela-industriala-mascot-p960.webp",
+      "bytes": 73624,
+      "portret": true
+    }
+  ],
   "P04": [
     {
       "width": 640,
@@ -343,6 +503,126 @@
       "bytes": 133368
     }
   ],
+  "P14": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-768.webp",
+      "bytes": 23186
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-960.webp",
+      "bytes": 39192
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-1440.webp",
+      "bytes": 66280
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-1920.webp",
+      "bytes": 98050
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-p768.webp",
+      "bytes": 35448,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "tehnician-haine-albastre-privind-stalpi-inalta-tensiune-portwest-p960.webp",
+      "bytes": 48286,
+      "portret": true
+    }
+  ],
+  "P15": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "operator-haine-lime-bleumarin-coboara-scara-portwest-768.webp",
+      "bytes": 23006
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "operator-haine-lime-bleumarin-coboara-scara-portwest-960.webp",
+      "bytes": 38446
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "operator-haine-lime-bleumarin-coboara-scara-portwest-1440.webp",
+      "bytes": 66268
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "operator-haine-lime-bleumarin-coboara-scara-portwest-1920.webp",
+      "bytes": 98836
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "operator-haine-lime-bleumarin-coboara-scara-portwest-p768.webp",
+      "bytes": 44606,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "operator-haine-lime-bleumarin-coboara-scara-portwest-p960.webp",
+      "bytes": 60532,
+      "portret": true
+    }
+  ],
+  "P16": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "tehnician-geaca-neagra-baza-turn-eolian-portwest-768.webp",
+      "bytes": 28976
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "tehnician-geaca-neagra-baza-turn-eolian-portwest-960.webp",
+      "bytes": 54536
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "tehnician-geaca-neagra-baza-turn-eolian-portwest-1440.webp",
+      "bytes": 107242
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "tehnician-geaca-neagra-baza-turn-eolian-portwest-1920.webp",
+      "bytes": 168852
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "tehnician-geaca-neagra-baza-turn-eolian-portwest-p768.webp",
+      "bytes": 55400,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "tehnician-geaca-neagra-baza-turn-eolian-portwest-p960.webp",
+      "bytes": 87002,
+      "portret": true
+    }
+  ],
   "S01": [
     {
       "width": 768,
@@ -371,10 +651,18 @@
   ],
   "S02": [
     {
+      "width": 640,
+      "height": 360,
+      "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-640.webp",
+      "bytes": 41052,
+      "doar": "corp"
+    },
+    {
       "width": 768,
       "height": 432,
       "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-768.webp",
-      "bytes": 39954
+      "bytes": 39954,
+      "doar": "erou"
     },
     {
       "width": 960,
@@ -392,7 +680,8 @@
       "width": 1920,
       "height": 1080,
       "file": "doi-muncitori-cheie-tevi-instalatie-industriala-sir-safety-1920.webp",
-      "bytes": 177152
+      "bytes": 177152,
+      "doar": "erou"
     },
     {
       "width": 768,
@@ -527,6 +816,86 @@
       "height": 1440,
       "file": "bocanc-protectie-tambur-cablu-pantaloni-reflectorizanti-sir-safety-1440.webp",
       "bytes": 200214
+    }
+  ],
+  "S18": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-768.webp",
+      "bytes": 21988
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-960.webp",
+      "bytes": 40112
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-1440.webp",
+      "bytes": 69882
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-1920.webp",
+      "bytes": 105408
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-p768.webp",
+      "bytes": 47170,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "muncitor-combinezon-galben-chimic-scara-centrala-sir-safety-p960.webp",
+      "bytes": 62966,
+      "portret": true
+    }
+  ],
+  "S19": [
+    {
+      "width": 768,
+      "height": 432,
+      "file": "barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-768.webp",
+      "bytes": 30936
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "file": "barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-960.webp",
+      "bytes": 55388
+    },
+    {
+      "width": 1440,
+      "height": 810,
+      "file": "barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-1440.webp",
+      "bytes": 95090
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "file": "barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-1920.webp",
+      "bytes": 135100
+    },
+    {
+      "width": 768,
+      "height": 960,
+      "file": "barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-p768.webp",
+      "bytes": 50784,
+      "portret": true
+    },
+    {
+      "width": 960,
+      "height": 1200,
+      "file": "barbat-casca-rosie-viziera-isi-pune-manusile-sir-safety-p960.webp",
+      "bytes": 66084,
+      "portret": true
     }
   ]
 }

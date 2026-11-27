@@ -1,0 +1,38 @@
+---
+// Eroul rotativ al homepage-ului: la fiecare încărcare se vede la întâmplare una din pozele din `photos` (index.astro,
+// `heroPhotos`; prima, S02, e și cea fără JavaScript). Alegerea e doar `Math.random` la încărcare: nimic nu se salvează
+// pe dispozitiv (fără cookie, localStorage, sessionStorage, IndexedDB) și nimic nu intră în URL (decizie: ePrivacy art. 5(3)).
+//
+// Cum funcționează, în ordinea în care rulează:
+//   1. Scriptul din <head> (index.astro) alege indexul, îl pune în `data-erou` pe <html> și adaugă două
+//      <link rel="preload" as="image"> (telefon / desktop) pentru poza aleasă, înainte ca parserul să ajungă la erou.
+//   2. Aici, în locul eroului, stau 10 <template> (conținut inert: nu cer imagini, nu se desenează), un <noscript> cu prima
+//      poză (vizibil doar fără JavaScript; cu JavaScript e text, nu DOM) și un script mic care clonează <template>-ul
+//      indexului ales înaintea lui, în timpul parsării, deci înainte de primul desen al eroului. Markup-ul îl produce Astro
+//      (HeroPhotoBlock), nu JavaScriptul: scriptul doar clonează (fără innerHTML, document.write sau eval).
+// Prima poză apare deci de două ori în SURSA HTML (template și noscript), niciodată de două ori în DOM; testele din
+// tests/poze-actiune.test.mjs nu numără template-urile `erou-N` și noscript-ul eroului ca folosiri duble (excepție documentată acolo).
+import HeroPhotoBlock from './HeroPhotoBlock.astro';
+
+interface Props {
+  photos: string[];
+}
+
+const { photos } = Astro.props;
+if (photos.length < 1) throw new Error('HeroPhotoSet: lista de poze e goală (prima, S02, e și poza fără JavaScript).');
+---
+
+{photos.map((heroPhoto, i) => (
+  <template id={`erou-${i}`}><HeroPhotoBlock id={heroPhoto} /></template>
+))}
+<noscript><HeroPhotoBlock id={photos[0]} /></noscript>
+<script is:inline>
+  (function () {
+    // Indexul vine doar din scriptul din <head> (atributul data-erou). Fără limită la 10 poze: orice index de 1-3 cifre care are
+    // template; o valoare invalidă sau fără template (nu poate veni de la scriptul din <head>) cade pe prima poză.
+    var a = document.documentElement.getAttribute("data-erou");
+    var t = document.getElementById("erou-" + (/^\d{1,3}$/.test(a) ? a : 0)) || document.getElementById("erou-0");
+    var s = document.currentScript;
+    if (t && t.content && s) s.parentNode.insertBefore(t.content.cloneNode(true), s);
+  })();
+</script>

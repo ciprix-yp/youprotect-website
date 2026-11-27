@@ -165,5 +165,9 @@ service-account*.json
 # Recenziile Google preluate la build (scripts/fetch-google-reviews.mjs); sursa de bază e src/data/testimonials.json.
 src/data/testimonials.google.json
 
+# Foldere locale ale uneltelor de agent (worktree-uri Claude Code, config Codex); nu sunt ale proiectului
+.claude/worktrees/
+.codex/
+
 # macOS
 .DS_Store

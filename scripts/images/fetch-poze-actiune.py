@@ -17,6 +17,11 @@ Output: .catalog-work/images/actiune/original/<ID>.<ext> (local only, gitignored
         .catalog-work/images/actiune/efectiv.json (per ID: sursa_folosita, motiv, rezolutie_efectiva [w, h] after
         EXIF rotation, fisier_efectiv, dimensiune_bytes), which build-poze-actiune.py reads.
 
+Partial run: `--only ID[,ID...]` checks/downloads just those IDs and MERGES their records into the existing
+efectiv.json (the other records stay as they are, in the order of poze-actiune.json). A valid file already on disk
+means no request at all, so `--only` on IDs whose originals are present (e.g. copied by hand into original/<ID>.jpg
+after checking them) makes no network call and needs no Portwest collection variables.
+
 Idempotent: a valid file already on disk is kept and not downloaded again (no request is made). A downloaded
 original must have the declared resolution. There is no silent fallback to a preview: an ID without a valid file
 is reported and no manifest is written.
@@ -401,6 +406,7 @@ def collection_settings(argv=None, environ=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     parser.add_argument("--collection-url", default=environ.get("PW_COLLECTION_URL"))
     parser.add_argument("--collection-id", default=environ.get("PW_COLLECTION_ID"))
+    parser.add_argument("--only", default=None)  # read by only_ids(); accepted here so both parse the same arguments
     args = parser.parse_args(argv)
     url, collection_id = args.collection_url or None, args.collection_id or None
     if url:
@@ -413,13 +419,37 @@ def collection_settings(argv=None, environ=None):
     return url, collection_id
 
 
-def main():
-    pw_url, pw_id = collection_settings()
+def only_ids(entries, argv=None):
+    """The set of IDs from `--only ID[,ID...]` (unique, ID_RE, present in `entries`), or None when the option is absent."""
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--only", default=None)
+    raw = parser.parse_known_args(argv)[0].only
+    if raw is None:
+        return None
+    only = raw.split(",")
+    known = {e["id"] for e in entries}
+    if len(set(only)) != len(only) or not all(ID_RE.fullmatch(i) and i in known for i in only):
+        sys.exit("EROARE: --only cere id-uri unice, în formatul [MPS]NN, din poze-actiune.json")
+    return set(only)
+
+
+def merge_records(entries, existing, fresh):
+    """efectiv.json for a partial run: fresh records for the processed IDs, existing ones kept, in the order of `entries`."""
+    records = {r["id"]: r for r in existing}
+    records.update({r["id"]: r for r in fresh})
+    return [records[e["id"]] for e in entries if e["id"] in records]
+
+
+def main(argv=None):
+    pw_url, pw_id = collection_settings(argv)
     entries = load_sources()
+    only = only_ids(entries, argv)
     client = Client()
     client.pw_collection_page, client.pw_collection_id = pw_url, pw_id
     results, failed = [], []
     for entry in entries:
+        if only is not None and entry["id"] not in only:
+            continue
         try:
             record = process(client, entry)
         except Exception as err:  # fixed text or class name only: the exception text can hold a signed URL
@@ -431,6 +461,8 @@ def main():
               f" {record['dimensiune_bytes']} B | {record['motiv']}")
     if failed:
         sys.exit(f"EROARE: {' '.join(failed)} fără fișier valid; {EFFECTIVE.name} nu a fost scris")
+    if only is not None and EFFECTIVE.exists():
+        results = merge_records(entries, json.loads(EFFECTIVE.read_text(encoding="utf-8")), results)
     tmp = EFFECTIVE.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     tmp.replace(EFFECTIVE)

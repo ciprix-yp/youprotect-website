@@ -248,11 +248,22 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
     riscuri” vin în Tab înaintea grilei); alternativa nu s-a ales ca să rămână o singură structură, poate fi reluată.
     Eroii folosesc varianta de 768 px pe telefon (≈2x).
   - `sizes` ~2x: pozele din corp trec prin `bodySizes` (în `ActionPhoto`), așa că la 390 px și DPR 3 `currentSrc` are
-    cel mult 960 px; regula se aplică și când pagina dă propriul `sizes`.
+    cel mult 960 px; regula se aplică și când pagina dă propriul `sizes`, dar numai dacă ultima intrare din `sizes` e
+    exact `calc(100vw - 2rem)`; la alte valori (de ex. `70vw` sau `100vw`) `sizes` trece nemodificat
+    (vezi `bodySizes()` și `sizesEntries()` în `src/lib/poze-actiune.ts`).
   - Antet cu poza întâi pe telefon (sub `lg`): poza 3:2, pe toată lățimea, deasupra breadcrumb-ului și a H1, fără ramă
     și fără colțuri. Desktopul rămâne ca înainte.
-  - Eroul homepage-ului vine dintr-o singură sursă, constanta `heroPhoto` din `src/pages/index.astro`; nu se pune un
-    ID de poză în alt loc din pagină.
+  - Eroul homepage-ului e rotativ (decis de Ciprian, 26.11.2026, D-2026-11-26-04): la fiecare încărcare se vede la întâmplare una din cele
+    10 poze din array-ul `heroPhotos` din `src/pages/index.astro` (S02, M24–M27, P14–P16, S18, S19; S02 e și cea fără
+    JavaScript). Singura sursă e acel array; nu se pune un ID de poză în alt loc din pagină. Alegerea e doar
+    `Math.random` la încărcare: fără cookie, localStorage, sessionStorage, IndexedDB și fără index în URL (ePrivacy
+    art. 5(3)); fără auto-slide. Mecanismul (`src/components/home/HeroPhotoSet.astro`): un script mic în `<head>` alege
+    indexul (`data-erou` pe `<html>`) și preîncarcă poza aleasă (două `<link rel="preload">`, telefon și desktop); în
+    locul eroului stau 10 `<template>` inerte (markup produs de Astro prin `HeroPhotoBlock`), iar un script mic îl
+    clonează pe cel ales, înainte de primul desen; `<noscript>` are S02. Cadrul (`eroul.poz`) și presetul de gradient
+    (`eroul.gradient`, presetele în `src/lib/erou.ts`) ale fiecărei poze stau în `poze-actiune.json`. O poză nouă în set:
+    `erou: true`, `portret`, `eroul` în date și id-ul în `heroPhotos`. Portwest pe „/” doar P14, P15, P16, doar ca parte
+    din set (excepția stă în `tests/poze-actiune.test.mjs`, `HERO_SET_PORTWEST`).
   - Fonturi (LCP): pe paginile cu poză-erou se preîncarcă doar subseturile latin și latin-ext ale fontului H1
     (Montserrat 300; ă, ș, ț sunt în latin-ext), nu cele de text (`preloadFonts={["heading-300", "heading-300-ext"]}`). Montserrat și YP Text au fonturi de rezervă cu metrici (`size-adjust`,
     ascent/descent); un titlu lung poate avea totuși un rând în plus la swap.

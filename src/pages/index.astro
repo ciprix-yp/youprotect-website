@@ -11,8 +11,9 @@ import { publishedTestimonials as testimonials } from "../lib/testimonials";
 import { CTA_DISCUSS, RESPONSE_TIME, RISK_FREE_TESTING, SITE } from "../lib/site";
 import { btnPrimary, btnSecondary, pageContainer } from "../lib/ui";
 import ActionPhoto from "../components/media/ActionPhoto.astro";
+import HeroPhotoSet from "../components/home/HeroPhotoSet.astro";
 import { jsonLd } from "../lib/json-ld";
-import { imageGraph } from "../lib/poze-actiune";
+import { heroPreload, imageGraph } from "../lib/poze-actiune";
 
 
 const sectionHeading = "font-heading text-3xl font-light leading-tight text-white lg:text-4xl";
@@ -109,9 +110,10 @@ const faqSchema = {
   mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
 
-// Poza eroului: singurul loc unde e numită (ActionPhoto și imageGraph o citesc de aici). Pentru altă poză se schimbă doar
-// această constantă (și `poz`, dacă cadrul diferă); poza trebuie să aibă `portret` în datele din poze-actiune.json.
-const heroPhoto = "S02";
+// Pozele eroului rotativ: singurul loc unde sunt numite (HeroPhotoSet, scriptul din <head> și imageGraph le citesc de aici).
+// La fiecare încărcare se afișează una la întâmplare (vezi HeroPhotoSet.astro); prima, S02, e și cea fără JavaScript. Fiecare
+// poză trebuie să aibă `erou: true`, `portret` și `eroul` (cadru + gradient) în src/data/poze-actiune.json.
+const heroPhotos = ["S02", "M24", "M25", "M26", "M27", "P14", "P15", "P16", "S18", "S19"];
 ---
 
 <BaseLayout
@@ -120,7 +122,40 @@ const heroPhoto = "S02";
   description="Echipamente de protecție și haine de lucru pentru firme, cu logo, alese după costul real. You Protect: showroom în Vetiș, Satu Mare, livrare în toată România."
 >
   <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
-  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M12", heroPhoto]))} />
+  {/* ImageObject pentru TOATE cele 10 poze ale eroului (și M12): oricare poate fi afișată la o încărcare, iar creditul trebuie să
+      stea în datele structurate pentru poza afișată (nu apare vizibil pe pagină). */}
+  <script type="application/ld+json" set:html={jsonLd(imageGraph(["M12", ...heroPhotos]))} />
+  {/* Alege poza eroului la întâmplare și îi preîncarcă fișierul (telefon: decupajul portret; desktop: varianta de erou), înainte
+      ca parserul să ajungă la erou. Nu citește și nu scrie nimic în afara paginii: indexul ajunge doar în `data-erou` pe <html>.
+      `imagesrcset`/`imagesizes` trebuie să fie identice cu `srcset`/`sizes` din <picture>-ul eroului (ActionPhoto: telefon `50vw`
+      pe <source>, desktop `100vw` pe <img>), altfel browserul ar descărca două fișiere. Datele ([slug, lățimi erou, lățimi
+      portret]) vin din heroPreload(), generate la build din poze-actiune-variante.json. */}
+  <script slot="head" is:inline define:vars={{ H: heroPreload(heroPhotos) }}>
+    (function () {
+      var i = 0;
+      try {
+        i = Math.floor(Math.random() * H.photos.length);
+      } catch (e) {}
+      if (!(i >= 0 && i < H.photos.length)) i = 0;
+      document.documentElement.setAttribute("data-erou", i);
+      var d = H.photos[i];
+      var preload = function (media, prefix, widths, sizes) {
+        var l = document.createElement("link");
+        l.rel = "preload";
+        l.as = "image";
+        l.media = media;
+        l.setAttribute("fetchpriority", "high");
+        l.setAttribute("imagesizes", sizes);
+        l.setAttribute(
+          "imagesrcset",
+          widths.map(function (w) { return H.dir + d[0] + "-" + prefix + w + ".webp " + w + "w"; }).join(", ")
+        );
+        document.head.appendChild(l);
+      };
+      preload("(max-width: 767px)", "p", d[2], "50vw");
+      preload("(min-width: 768px)", "", d[1], "100vw");
+    })();
+  </script>
 
   <!-- Butonul fix de pe telefon: dispare la derulare în jos, revine la derulare în sus. -->
   <div
@@ -158,20 +193,11 @@ const heroPhoto = "S02";
   </script>
 
   <section id="hero" class="relative overflow-clip border-b border-white/5">
-    {/* Poză reală de furnizor (ActionPhoto, `portret`). Telefon: decupaj portret 4:5, 768 px lățime pe un ecran de 390 px
+    {/* Poza eroului, aleasă la întâmplare la fiecare încărcare (HeroPhotoSet: ActionPhoto cu `portret`). Telefon: decupaj portret 4:5, 768 px lățime pe un ecran de 390 px
         (~2x), pus ca bloc în partea de sus a secțiunii; titlul începe peste ultimul sfert al pozei, pe gradient, iar restul
         textului stă pe fond negru. De la 768 px: fundal pe toată secțiunea, ca înainte (opacitate și gradient neschimbate). */}
     <div class="absolute inset-x-0 top-0 h-[30rem] md:inset-y-0 md:h-auto">
-      <ActionPhoto
-        id={heroPhoto}
-        portret
-        priority
-        sizes="100vw"
-        poz={{ telefon: "50% 25%", desktop: "70% 30%" }}
-        class="sd-hero-media md:opacity-80"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-yp-black from-5% via-yp-black/70 via-40% to-transparent md:hidden"></div>
-      <div class="absolute inset-0 hidden bg-gradient-to-t from-yp-black via-yp-black/70 to-yp-black/30 md:block"></div>
+      <HeroPhotoSet photos={heroPhotos} />
     </div>
 
     <div class:list={[pageContainer, "relative pb-14 pt-[19rem] md:py-24 lg:py-28"]}>

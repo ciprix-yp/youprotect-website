@@ -13,7 +13,14 @@ Input : src/data/poze-actiune.json (single source of truth: id, slug, source, pl
         a full regeneration needs that file (a missing file stops with a clear message).
         scripts/images/poze-actiune-surse.json, only for the optional `decupaj` of an ID: {x, y, latime, inaltime}
         in pixels of the source after EXIF rotation (M20: the left edge, with other brands on the equipment, is cut).
+        The portrait crop (`portret.decupaj` in poze-actiune.json, fractions [x0, y0, x1, y1]) is relative to the WHOLE
+        original (after EXIF rotation, before `decupaj`), independent of the desktop crop: it may extend outside it.
 Output: public/images/actiune/<slug>-<width>.webp and src/data/poze-actiune-variante.json (real sizes).
+
+Partial run: `--only ID[,ID...]` (IDs from poze-actiune.json) processes just those photos and MERGES their variants into the
+existing poze-actiune-variante.json: the other entries stay byte for byte as they are, keys in the order of
+poze-actiune.json. efectiv.json / originals are needed only for the listed IDs (useful when other originals are missing
+locally). Without `--only` everything is rebuilt and the file is rewritten, as before.
 
 Per photo: EXIF rotation, sRGB, LANCZOS resize (never upscaled), WebP with adaptive quality (starts at
 q80, goes down until the file is under its byte budget; the hard limit is 250 KB, as in
@@ -29,6 +36,7 @@ Security (inputs are untrusted files):
 - output names come only from src/data/poze-actiune.json (slug and widths are validated), never from
   external data; each output path must resolve inside public/images/actiune/.
 """
+import argparse
 import io
 import json
 import re
@@ -59,6 +67,9 @@ BASE_WIDTHS = (640, 960, 1440)
 # Lățimi. Poza obișnuită: 640/960/1440. Eroii (erou: true) nu au 640: pe telefon (390 px CSS, DPR 3) 640 px dă 1,79x și
 # muchii moi, așa că au 768/960/1440/1920 (măsurat, task 12). Excepții în planned_widths(): sursa pătrată (raport < 1,2)
 # are eroul doar 768/960/1440, iar nicio lățime nu depășește sursa (fără upscaling; după decupajul `decupaj`, dacă există).
+# Excepție: un erou cu `latimiCorp` în date (azi S02, folosit și ca poză de corp în ghid) primește și setul de corp
+# 640/960/1440; variantele doar de erou (768, 1920) au `doar: "erou"`, cele doar de corp (640) `doar: "corp"`,
+# iar 960/1440 sunt comune.
 HERO_WIDTHS = (768, 960, 1440, 1920)
 MAX_BYTES = 250 * 1024  # limita dură, ca în tests/image-weight.test.mjs: peste ea scriptul se oprește cu EROARE
 # Bugetul de octeți per lățime (țintă, nu limită dură): calitatea scade cu QUALITY_STEP până când fișierul încape.
@@ -155,22 +166,37 @@ def planned_widths(entry, source_width, source_height):
     return widths
 
 
+def planned_body_widths(source_width):
+    """Setul de corp (640/960/1440) al unui erou care apare și ca poză de corp (`latimiCorp` în date); fără upscaling."""
+    widths = []
+    for w in BASE_WIDTHS:
+        w = min(w, source_width)
+        if w not in widths:
+            widths.append(w)
+    return widths
+
+
 # Decupajul portret (4:5) al eroului homepage-ului pe telefon: `portret.decupaj` = [x0, y0, x1, y1] în fracții din
-# imaginea sursă, cu raportul 4:5 (în pixeli). Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în
-# variante; `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
+# ORIGINALUL ÎNTREG (după rotația EXIF, ÎNAINTE de `decupaj` din poze-actiune-surse.json), cu raportul 4:5 (în pixeli).
+# Decupajul de desktop (16:9, `decupaj`) și cel de telefon (4:5) sunt independente: cel de telefon poate ieși din cel de
+# desktop (ex. original 5820x3880, desktop y=374..3648, telefon y=0..3880). Lățimile eroului pe desktop
+# (planned_widths) se calculează tot pe imaginea de desktop, deci nu depind de decupajul portret.
+# Se scriu <slug>-p768.webp și <slug>-p960.webp, marcate `portret: true` în variante;
+# `photoVariants()` le lasă în afara srcset-ului obișnuit, iar ActionPhoto le pune într-un <source> pe telefon.
 PORTRAIT_WIDTHS = (768, 960)
 PORTRAIT_BUDGET = {768: 55 * 1024, 960: 100 * 1024}
 PORTRAIT_QUALITY_START = {768: 70, 960: 70}
 
 
-def portrait_crop(src, box):
+def portrait_crop(full, box):
+    """Decupajul 4:5 din imaginea ÎNTREAGĂ `full` (nu din cea decupată pentru desktop); fracțiile sunt relative la `full`."""
     if not (isinstance(box, list) and len(box) == 4 and all(isinstance(v, (int, float)) for v in box)):
         fail("portret.decupaj trebuie să fie [x0, y0, x1, y1]")
     x0, y0, x1, y1 = box
     if not (0 <= x0 < x1 <= 1 and 0 <= y0 < y1 <= 1):
         fail("portret.decupaj în afara imaginii")
-    w, h = src.size
-    crop = src.crop((round(x0 * w), round(y0 * h), round(x1 * w), round(y1 * h)))
+    w, h = full.size
+    crop = full.crop((round(x0 * w), round(y0 * h), round(x1 * w), round(y1 * h)))
     if abs(crop.size[0] / crop.size[1] - 0.8) > 0.01:
         fail(f"portret.decupaj nu e 4:5 (e {crop.size[0]}x{crop.size[1]})")
     if crop.size[0] < max(PORTRAIT_WIDTHS):
@@ -214,32 +240,62 @@ def chunk_names(data):
     return names
 
 
-def main():
+def parse_only(argv, ids):
+    """The set of IDs from `--only ID[,ID...]`, or None when the option is absent. Each ID must match ID_RE and be in `ids`."""
+    parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
+    parser.add_argument("--only", default=None, help="doar aceste ID-uri (separate prin virgulă); restul rămân neatinse")
+    raw = parser.parse_args(argv).only
+    if raw is None:
+        return None
+    only = raw.split(",")
+    if len(set(only)) != len(only) or not all(ID_RE.fullmatch(i) and i in ids for i in only):
+        fail("--only cere id-uri unice, în formatul [MPS]NN, din poze-actiune.json")
+    return set(only)
+
+
+def merge_variants(ids, existing, fresh):
+    """Variants for a partial run: fresh ones for the processed IDs, the existing ones untouched, in the order of `ids`."""
+    return {i: fresh[i] if i in fresh else existing[i] for i in ids if i in fresh or i in existing}
+
+
+def main(argv=None):
     entries = json.loads(DATA.read_text(encoding="utf-8"))
-    if not MANIFEST.exists():
-        fail(f"lipsește {MANIFEST.relative_to(ROOT)}; rulează întâi scripts/images/fetch-poze-actiune.py")
-    manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
     ids = [e["id"] for e in entries]
     if not ids or len(set(ids)) != len(ids) or not all(ID_RE.fullmatch(i) for i in ids):
         fail("poze-actiune.json: id-uri lipsă, duplicate sau în format nepermis")
+    only = parse_only(sys.argv[1:] if argv is None else argv, set(ids))
+    if only is not None and not VARIANTS.exists():
+        fail(f"--only cere un {VARIANTS.name} existent (altfel rulează fără --only)")
+    if not MANIFEST.exists():
+        fail(f"lipsește {MANIFEST.relative_to(ROOT)}; rulează întâi scripts/images/fetch-poze-actiune.py")
+    manifest = {m["id"]: m for m in json.loads(MANIFEST.read_text(encoding="utf-8"))}
     crops = load_crops(set(ids))
-    missing = [i for i in ids if i not in manifest]
+    todo = [e for e in entries if only is None or e["id"] in only]
+    missing = [e["id"] for e in todo if e["id"] not in manifest]
     if missing:
         fail(f"efectiv.json nu are intrări pentru: {' '.join(missing)}")
     OUT.mkdir(parents=True, exist_ok=True)
     out_root = OUT.resolve()
     variants = {}
-    for entry in entries:
+    for entry in todo:
         if not SLUG_RE.fullmatch(entry["slug"]):
             fail(f"{entry['id']}: slug invalid")
-        src = load_source(entry, manifest[entry["id"]])
+        full = load_source(entry, manifest[entry["id"]])
+        src = full
         if entry["id"] in crops:
             src = apply_crop(entry, src, crops[entry["id"]])
         widths = planned_widths(entry, src.size[0], src.size[1])
         if widths != entry["latimi"]:
             fail(f"{entry['id']}: latimi din JSON {entry['latimi']} != calculate {widths}")
+        # Erou care apare și în corp (ex. S02: erou pe homepage, poză de corp în ghid): două seturi de lățimi. Fișierele
+        # comune (960, 1440) se scriu o singură dată; variantele care aparțin unui singur set primesc `doar`.
+        body = None
+        if "latimiCorp" in entry:
+            body = planned_body_widths(src.size[0])
+            if not entry["erou"] or body != entry["latimiCorp"]:
+                fail(f"{entry['id']}: latimiCorp din JSON {entry['latimiCorp']} != calculate {body} (sau poza nu e erou)")
         variants[entry["id"]] = []
-        for w in widths:
+        for w in (sorted(set(widths) | set(body)) if body else widths):
             h = round(src.size[1] * w / src.size[0])
             img = src if w == src.size[0] else src.resize((w, h), Image.LANCZOS)
             data, quality = encode(img)
@@ -253,12 +309,13 @@ def main():
             if target.parent != out_root:
                 fail("cale de ieșire în afara directorului")
             target.write_bytes(data)
-            variants[entry["id"]].append(
-                {"width": img.size[0], "height": img.size[1], "file": name, "bytes": len(data)}
-            )
+            record = {"width": img.size[0], "height": img.size[1], "file": name, "bytes": len(data)}
+            if body and (w in body) != (w in widths):
+                record["doar"] = "corp" if w in body else "erou"
+            variants[entry["id"]].append(record)
             print(f"{entry['id']} {w}x{h} q{quality} {len(data) // 1024} KB")
         if entry.get("portret"):
-            crop = portrait_crop(src, entry["portret"].get("decupaj"))
+            crop = portrait_crop(full, entry["portret"].get("decupaj"))
             for w in PORTRAIT_WIDTHS:
                 h = w * 5 // 4  # exact 4:5 (testul cere raportul 1,25), nu round() pe decupajul aproximativ
                 img = crop.resize((w, h), Image.LANCZOS)
@@ -275,6 +332,11 @@ def main():
                     {"width": w, "height": h, "file": name, "bytes": len(data), "portret": True}
                 )
                 print(f"{entry['id']} portret {w}x{h} q{quality} {len(data) // 1024} KB")
+    if only is not None:
+        variants = merge_variants(ids, json.loads(VARIANTS.read_text(encoding="utf-8")), variants)
+        absent = [i for i in ids if i not in variants]
+        if absent:
+            print(f"AVERTISMENT: fără variante pentru {' '.join(absent)} (nici în fișier, nici în --only)", file=sys.stderr)
     VARIANTS.write_text(json.dumps(variants, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
