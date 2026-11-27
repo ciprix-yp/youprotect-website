@@ -9,7 +9,7 @@ import CategoryLanding from '../../components/products/CategoryLanding.astro';
 import BrandLanding from '../../components/products/BrandLanding.astro';
 import { activeCategoryPages, categoryDescription, type CategoryPage } from '../../lib/catalog-categories';
 import { activeBrandPages, brandDescription, type BrandPage } from '../../lib/catalog-brands';
-import { cardSrc } from '../../lib/catalog-images.js';
+import { cardSrc, packshotImage } from '../../lib/catalog-images.js';
 
 export async function getStaticPaths() {
   const products = await getCollection('products', ({ data }) => data.status === 'published');
@@ -63,7 +63,7 @@ const props = Astro.props;
     title={props.entry.data.seo.title}
     description={props.entry.data.seo.description}
     ogType="product"
-    ogImage={props.entry.data.colours[0].images[0].src}
+    ogImage={packshotImage(props.entry.data).src}
   >
     <!-- Prima randare a fișei așteaptă galeria, ca poza din card să aibă unde „ateriza” (tranziția din global.css). -->
     <link slot="head" rel="expect" href="#gallery-well" blocking="render" />
@@ -76,7 +76,7 @@ const props = Astro.props;
       props.page,
       [...new Set(props.entries.map((e) => e.data.supplier.brand))].sort(),
     )}
-    ogImage={cardSrc(props.entries[0].data.colours[0].images[0].src)}
+    ogImage={cardSrc(packshotImage(props.entries[0].data).src)}
   >
     <CategoryLanding page={props.page} entries={props.entries} others={props.others} />
   </BaseLayout>
@@ -84,7 +84,7 @@ const props = Astro.props;
   <BaseLayout
     title={props.page.title}
     description={brandDescription(props.page)}
-    ogImage={cardSrc(props.entries[0].data.colours[0].images[0].src)}
+    ogImage={cardSrc(packshotImage(props.entries[0].data).src)}
   >
     <BrandLanding page={props.page} entries={props.entries} others={props.others} categoryPages={props.categoryPages} />
   </BaseLayout>

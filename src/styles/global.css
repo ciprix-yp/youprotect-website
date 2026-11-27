@@ -142,6 +142,12 @@
   animation-duration: 380ms;
   animation-timing-function: var(--ease-drawer);
 }
+/* Cardul și fișa sunt 4:5; snapshot-urile se umplu pe înălțime, ca poza pe model să crească fără salt. */
+::view-transition-old(product-photo),
+::view-transition-new(product-photo) {
+  height: 100%;
+  object-fit: cover;
+}
 #gallery-well {
   view-transition-name: product-photo;
 }
@@ -477,5 +483,10 @@
   }
   .img-well img {
     mix-blend-mode: multiply;
+  }
+  /* Poza de scenă (în context, nu pe fond alb): fără multiply, decupată cover pe punctul de focus. */
+  .img-well--scene img {
+    mix-blend-mode: normal;
+    object-fit: cover;
   }
 }

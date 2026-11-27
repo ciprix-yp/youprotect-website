@@ -19,7 +19,7 @@ const tiles = (Object.keys(CATEGORIES) as CategoryKey[])
     const page = pages.find((c) => c.key === key);
     return {
       label: CATEGORIES[key],
-      image: toCardProps(items[0]).image,
+      image: toCardProps(items[0]).packshot,
       href: page ? `/produse/${page.slug}/` : `/produse/?categorie=${key}#modele`,
     };
   })
