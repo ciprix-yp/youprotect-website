@@ -19,6 +19,8 @@ export interface Guide {
   description: string;
   /** H1. */
   heading: string;
+  /** Eticheta scurtă din breadcrumb, când titlul e lung (implicit titlul). */
+  breadcrumb?: string;
   /** Textul de pe pagina /ghiduri/ și din legăturile de pe paginile de categorie. */
   summary: string;
   /** Categoriile din catalog la care ghidul e relevant: paginile lor trimit la el. */
@@ -41,13 +43,14 @@ export const GUIDES: Guide[] = [
     slug: 's1p-sau-s3',
     title: 'S1P vs S3: diferența la încălțămintea de protecție',
     description:
-      'Ce au în comun S1P și S3, ce adaugă S3 (fața rezistentă la apă și talpa cu crampoane) și ce înseamnă P, PL, PS, S3S și S7 după EN ISO 20345:2022.',
+      'S3 are tot ce are S1P, plus fața rezistentă la apă și talpă cu crampoane. Când alegi fiecare clasă și ce înseamnă S3S, S3L și S7 după EN ISO 20345:2022.',
     heading: 'S1P sau S3: care e diferența la încălțămintea de protecție',
+    breadcrumb: 'S1P sau S3',
     summary:
-      'Ce au în comun cele două clase, ce adaugă S3, ce înseamnă P, PL și PS și ce s-a schimbat în ediția 2022 a standardului EN ISO 20345.',
+      'S3 are tot ce are S1P, plus fața rezistentă la apă și talpă cu crampoane. Când alegi fiecare clasă și ce înseamnă S3S, S3L și S7.',
     categories: ['incaltaminte'],
     published: '2026-11-19',
-    updated: '2026-11-19',
+    updated: '2026-11-27',
     sources: [
       { label: 'MASCOT: EN ISO 20345', url: 'https://mascotworkwear.com/en/en-iso-20345' },
       { label: 'Atlas: EN ISO 20345:2022', url: 'https://www.atlasschuhe.de/en/technology/en-iso-203452022.html' },
