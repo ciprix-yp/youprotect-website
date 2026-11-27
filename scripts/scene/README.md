@@ -106,3 +106,14 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
   `<PRODUS>-<context>-s<seed>` cu `master.png`, `raw_768.png`, `fisa.json`; linie în `registru.jsonl`. Generare la 768, fundal LANCZOS la 1100
   (produsul rămâne pixel-exact la scale 1.0; fundalul e mai puțin clar decât produsul). Fișa are `etapa: "T5a-fara-verificari-model"` și o verificare
   `verificari_model` cu passed=false: `rezultat_global` rămâne false până la T5b (OCR, fețe, ne-uman).
+
+## Verificări cu modele (T5b)
+
+- `checks_models_lib.py` (pur, testat fără modele): `skin_fraction` (YCbCr ∩ HSV, intervale în docstring), `chroma_stats` (C* CIELAB), `segment_is_achromatic_no_skin`,
+  normalizare OCR, `check_ocr_logo` / `check_ocr_decor`, `decide_non_human` (respinge dacă ORICE semnal e pozitiv: fețe, segment, SigLIP2, VLM, piele pe imaginea întreagă),
+  `validate_calibration` (pică fără >= 30 de controale sau cu recall < 100%).
+- `models_runtime.py`: YuNet (1× și 2×), SigLIP2 zero-shot (6 formulări per set, perechi manechin/persoană), Qwen3-VL-4B (P(da) din logits, auxiliar), SAM 2.1 + segmentul manechinului
+  `(I ∪ (SAM ∩ regiune)) \ (L ∪ E)`, RapidOCR (`use_cls=False`; logo la 3×, decor + I cu produsul mascat neutru). Un model odată în memorie.
+- `collect_signals.py` (semnale brute, JSON nou), `calibrate_models.py` (căutare pe grilă pe controale + ne-om -> `calibrare_modele.json`, comis), `run_model_checks.py`
+  (90 de candidați -> `fisa_finala.json` lângă `fisa.json`, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
+- Qwen3-VL-4B se descarcă cu `fetch_models.py --models-dir <m> --group vlm --model-id qwen3-vl-4b-instruct --pin-new-hashes`.

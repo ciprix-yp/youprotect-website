@@ -124,19 +124,30 @@ def _under(base: Path, p: str | Path, what: str) -> Path:
     return r
 
 
-def _line_for(fisa: dict, fisa_sha: str, seq: int, prev: str) -> str:
+FILENAME_RE = re.compile(r"^[A-Za-z0-9_.-]+\.json$")
+
+
+def _line_for(fisa: dict, fisa_sha: str, seq: int, prev: str, filename: str = "fisa.json") -> str:
     rec = {"seq": seq, "candidat": fisa["candidat"], "produs": fisa["produs"], "data": fisa["data"],
            "rezultat_global": fisa["rezultat_global"], "fisa_sha256": fisa_sha, "prev_sha256": prev}
+    if filename != "fisa.json":  # fișe finale (T5b) lângă cea inițială: linia spune ce fișier acoperă hash-ul
+        rec["fisier"] = filename
+        rec["etapa"] = fisa.get("etapa")
     return json.dumps(rec, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
-def write_fisa(cand_dir: str | Path, fisa: dict, registry_path: str | Path, base_dir: str | Path) -> Path:
-    """Scrie fișa atomic și o înregistrează. `cand_dir` și `registry_path` trebuie să fie sub `base_dir`."""
+def write_fisa(
+    cand_dir: str | Path, fisa: dict, registry_path: str | Path, base_dir: str | Path, filename: str = "fisa.json",
+) -> Path:
+    """Scrie fișa atomic și o înregistrează. `cand_dir` și `registry_path` trebuie să fie sub `base_dir`.
+    `filename` (implicit fisa.json; ex. fisa_finala.json la T5b): nume simplu .json, fără cale; nu suprascrie niciodată."""
+    if not isinstance(filename, str) or not FILENAME_RE.match(filename) or filename.startswith("."):
+        raise FisaError(f"filename invalid: {filename!r}")
     validate_fisa(fisa)
     cdir = _under(base_dir, cand_dir, "cand_dir")
     reg = _under(base_dir, registry_path, "registry_path")
     cdir.mkdir(parents=True, exist_ok=True)
-    final = cdir / "fisa.json"
+    final = cdir / filename
     if final.exists() or final.is_symlink():
         raise FisaError(f"fișa există deja, nu se suprascrie: {final}")
     data = (json.dumps(fisa, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
@@ -152,11 +163,11 @@ def write_fisa(cand_dir: str | Path, fisa: dict, registry_path: str | Path, base
             raise FisaError(f"fișa există deja, nu se suprascrie: {final}") from e
     finally:
         os.unlink(tmp)
-    append_registry(reg, fisa, sha256_bytes(data))
+    append_registry(reg, fisa, sha256_bytes(data), filename)
     return final
 
 
-def append_registry(reg: Path, fisa: dict, fisa_sha: str) -> None:
+def append_registry(reg: Path, fisa: dict, fisa_sha: str, filename: str = "fisa.json") -> None:
     reg.parent.mkdir(parents=True, exist_ok=True)
     with open(reg, "ab+") as fh:  # mod append: nu rescrie niciodată liniile vechi
         if fcntl is not None:
@@ -164,7 +175,7 @@ def append_registry(reg: Path, fisa: dict, fisa_sha: str) -> None:
         fh.seek(0)
         lines = [ln for ln in fh.read().split(b"\n") if ln]
         prev = sha256_bytes(lines[-1]) if lines else ZERO
-        line = _line_for(fisa, fisa_sha, len(lines) + 1, prev)
+        line = _line_for(fisa, fisa_sha, len(lines) + 1, prev, filename)
         fh.write(line.encode("utf-8") + b"\n")
         fh.flush()
         os.fsync(fh.fileno())

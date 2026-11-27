@@ -424,26 +424,26 @@
         {
           "path": "config.json",
           "size": 1505,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "edac7703329133edfc53e46ac0081835144c99d7eebf28b71c732694d435224d",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "generation_config.json",
           "size": 269,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "8469742d1fce0de951c8909b26a2c0c0d8490837ce476efb114da9e0cefc4d44",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "chat_template.json",
           "size": 5502,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "6f8a6a55027e3da5160105556cda5dd69f6423f1c32645f6730d32de7773d0c4",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "merges.txt",
           "size": 1671839,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "model-00001-of-00002.safetensors",
@@ -460,38 +460,38 @@
         {
           "path": "model.safetensors.index.json",
           "size": 64742,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "58a7841d7bff2548dd91577d216274a83cf1b500bc6a534b809d6c1b1707cf2b",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "preprocessor_config.json",
           "size": 390,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "tokenizer.json",
           "size": 7032403,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "a5d85b6dcc535e6b93115a9ef287e6132fdbf30270da6218194ba742261173c7",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "tokenizer_config.json",
           "size": 10868,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "c2da771801886ad9ae98181793ffd3dfb7f1af30f6f7c6a4e15d7dbba52e2399",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "video_preprocessor_config.json",
           "size": 385,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+          "hash_sursa": "calculat-la-prima-descarcare"
         },
         {
           "path": "vocab.json",
           "size": 2776833,
-          "sha256": null,
-          "hash_sursa": "de-calculat-la-prima-descarcare"
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+          "hash_sursa": "calculat-la-prima-descarcare"
         }
       ]
     },
