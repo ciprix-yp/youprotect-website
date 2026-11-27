@@ -53,6 +53,14 @@
     padding: 1px;
   }
 
+  /* Preflight-ul v3 avea și [type='search'] { appearance: textfield; outline-offset: -2px } (WebKit/iPhone: câmpul de
+     căutare din /produse/ fără aspectul nativ de iOS); cel din v4 nu mai are. */
+  [type='search'] {
+    -webkit-appearance: textfield;
+    appearance: textfield;
+    outline-offset: -2px;
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
