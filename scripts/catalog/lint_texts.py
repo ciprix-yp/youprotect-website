@@ -8,6 +8,7 @@ Files whose name starts with "_" (templates) are skipped.
 """
 import json
 import re
+import statistics
 import sys
 import unicodedata
 from pathlib import Path
@@ -23,6 +24,17 @@ CEDILLA = re.compile(r"[şţŞŢ]")
 # În română se scrie „…”: deschiderea e U+201E, închiderea e U+201D (corectă). Greșite: “ (U+201C) și ".
 BAD_QUOTES = re.compile(r"[“\"]")
 STOPWORDS = {"de", "din", "pentru", "cu", "si", "și", "la", "în", "in", "pe"}
+
+# Semne de text scris pe pilot automat, de structură (08-GHID_CONTINUT.md §8). Doar avertismente: dau și rezultate
+# fals pozitive, așa că le citește un om.
+CONTRAST = re.compile(
+    r"\bnu\b[^.!?;]{0,120}?,\s*ci\b|\bnu\s+(?:doar|numai)\b[^.!?;]{0,120}?\bci\s+și\b", re.IGNORECASE
+)
+RECAP = re.compile(r"(?:^|(?<=[.!?]\s))(?:Pe scurt|Așadar|În concluzie|În rezumat)\b")
+SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-ZĂÂÎȘȚ„0-9])")
+# Pragul pentru frazele de aceeași lungime: pe cele 75 de texte din catalog (27.11.2026), CV < 0,2 marchează 6.
+UNIFORM_MIN_SENTENCES = 5
+UNIFORM_MAX_CV = 0.2
 
 
 def fold(text):
@@ -112,6 +124,26 @@ def check_structure(text, errors, warnings):
             warnings.append(f"răspunsul începe cu un pronume (GEO: repetă numele produsului): „{f['a'][:50]}”")
 
 
+def check_style(text, warnings):
+    """Semnele de structură din §8: „nu …, ci” des, fraze de rezumat, fraze de aceeași lungime."""
+    strings = list(all_strings(text))
+    contrasts = sum(len(CONTRAST.findall(s)) for s in strings)
+    if contrasts > 1:
+        warnings.append(f"„nu …, ci …” apare de {contrasts} ori (o dată pe pagină e destul; spune direct ce este)")
+    recaps = sum(len(RECAP.findall(s)) for s in strings)
+    if recaps > 1:
+        warnings.append(f"{recaps} fraze de rezumat („Pe scurt”, „Așadar”, „În concluzie”): taie-le, repetă ce s-a spus")
+    sentences = [x for para in text.get("description", []) for x in SENTENCE_END.split(para) if x.strip()]
+    lengths = [len(x.split()) for x in sentences]
+    if len(lengths) >= UNIFORM_MIN_SENTENCES:
+        cv = statistics.pstdev(lengths) / statistics.mean(lengths)
+        if cv < UNIFORM_MAX_CV:
+            warnings.append(
+                f"frazele din descriere au lungimi apropiate ({min(lengths)}–{max(lengths)} cuvinte): "
+                "alternează fraze scurte cu fraze lungi"
+            )
+
+
 def lint(text):
     """Return (errors, warnings) for one product text."""
     errors, warnings = [], []
@@ -122,6 +154,7 @@ def lint(text):
     if keyword:
         check_seo(text, keyword, errors, warnings)
     check_structure(text, errors, warnings)
+    check_style(text, warnings)
     return errors, warnings
 
 
