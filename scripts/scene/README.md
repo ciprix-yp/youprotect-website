@@ -117,3 +117,15 @@ Rezultatele măsurate sunt în `PROJECT_OS/10-SCENE-PRODUS.md` (secțiunea T4, d
 - `collect_signals.py` (semnale brute, JSON nou), `calibrate_models.py` (căutare pe grilă pe controale + ne-om -> `calibrare_modele.json`, comis), `run_model_checks.py`
   (90 de candidați -> `fisa_finala.json` lângă `fisa.json`, linie în registru cu `fisier`/`etapa`, raport numeric). `model.sha256` din `modele_verificare` = sha256 peste (cale, sha256) ale fișierelor modelului.
 - Qwen3-VL-4B se descarcă cu `fetch_models.py --models-dir <m> --group vlm --model-id qwen3-vl-4b-instruct --pin-new-hashes`.
+
+## Formă de cap și croma nuanțată (T5c)
+
+- `head_geometry` (pur, `checks_models_lib.py`): masa = SAM ∩ I \ (L ∪ E); pe rândul de sus al fiecărei coloane se potrivește o parabolă pe cea mai lungă secvență de coloane cu vârf liber
+  (fundal vizibil deasupra, nu guler); `sag_ratio` = înălțimea arcului / lățime (0 la vârf tăiat drept, ~0,5 la semisferă). `check_head_shape` respinge dacă geometria
+  (`free_run >= 0,3`, `sag_ratio >= 0,15`, `width >= 60`) SAU Qwen3-VL pe decupajul gâtului (`HEAD_QUESTION`, P(da) >= 0,9) e pozitivă; intră în `ne_uman` ca semnal `head_shape`.
+  Întrebarea din brief („has a head or a dome on top of the neck”) dă P(da) 0,78 și pe conul bun, deci nu separă; întrebarea folosită cere „rounded ball or dome that could be mistaken for a head”.
+- Croma nuanțată: pe lângă calea strictă (piele <= 0,05, C* p90 <= 20), segmentul trece dacă mediana C* <= 14 (`segment.c_p50_max`). Pe BZ739OR segmentul gri cu nuanță caldă are mediana 3–16,
+  bejul/cartonul/pielea >= 17 (setul etichetat vizual în `calibrare_t5c.json`).
+- `calibrare_t5c.json` = praguri noi + etichete (doar id-uri), suprapuse cu `run_model_checks.py --calibrare-extra`; fișa nouă e `fisa_finala_v2.json` (v1 rămâne neatinsă).
+- `boots_two_info` (doar FD25BK): semnal INFORMATIV (VLM „two boots”), nu respinge. Etapele noi: `qwen_head` (după `sam`; decupajele sunt scrise de `sam` în `<report-dir>_dump`) și `qwen_boots`.
+- BZ739OR: `contexte.json` are `manechin_fraza` per produs (manechin gri neutru, material rece); `prompting.py` o preferă fraza globală.

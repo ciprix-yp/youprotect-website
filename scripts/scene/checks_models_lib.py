@@ -88,10 +88,86 @@ def segment_is_achromatic_no_skin(sig: dict | None, thr: dict, applicable: bool 
         return ck.result(name, None, t, True, "N/A: natură moartă, fără manechin (I gol)")
     if not sig or sig.get("n", 0) < t["min_px"]:
         return ck.result(name, sig.get("n") if sig else None, t, False, f"segment prea mic sau lipsă (< {t['min_px']} px): nu se poate verifica")
-    ok = sig["skin_frac"] <= t["skin_frac_max"] and sig["c_p90"] <= t["c_p90_max"] and sig["frac_chromatic"] <= t["frac_chromatic_max"]
-    return ck.result(name, {"skin_frac": round(sig["skin_frac"], 5), "c_p90": round(sig["c_p90"], 3), "frac_chromatic": round(sig["frac_chromatic"], 5)}, t, ok,
+    strict = sig["skin_frac"] <= t["skin_frac_max"] and sig["c_p90"] <= t["c_p90_max"] and sig["frac_chromatic"] <= t["frac_chromatic_max"]
+    # T5c: cale nuanțată pentru gri cu ton sub lumină colorată (geacă portocalie): mediana C* <= c_p50_max (mediana ignoră marginile și fundalul din I;
+    # bej/carton/piele au mediana >= 17, griurile cu nuanță <= 14 în setul etichetat). Nu relaxează fără prag explicit (prag absent -> doar calea strictă).
+    c50 = sig.get("c_p50")
+    relaxed = "c_p50_max" in thr and c50 is not None and c50 <= thr["c_p50_max"]
+    if "c_p50_max" in thr:
+        t["c_p50_max"] = thr["c_p50_max"]
+    ok = strict or relaxed
+    return ck.result(name, {"skin_frac": round(sig["skin_frac"], 5), "c_p50": None if c50 is None else round(c50, 3), "c_p90": round(sig["c_p90"], 3), "frac_chromatic": round(sig["frac_chromatic"], 5)}, t, ok,
                      f"{sig['n']} px; piele {sig['skin_frac']:.4f} (max {t['skin_frac_max']}), C* p90 {sig['c_p90']:.2f} (max {t['c_p90_max']}), "
-                     f"cromatici {sig['frac_chromatic']:.4f} (max {t['frac_chromatic_max']})")
+                     f"cromatici {sig['frac_chromatic']:.4f} (max {t['frac_chromatic_max']}); C* p50 {'n/a' if c50 is None else f'{c50:.2f}'}" + (f" (max {thr['c_p50_max']})" if "c_p50_max" in thr else "")
+                     + (" [cale strictă]" if strict else " [cale nuanțată]" if relaxed else ""))
+
+
+# ---------------------------------------------------------------- formă de cap (T5c)
+
+HEAD_MIN_RUN = 12  # înălțimea minimă (px) a masei manechinului într-o coloană ca să conteze în profilul de sus
+HEAD_FREE_ROWS = 6  # rânduri deasupra marginii de sus care trebuie să fie fundal vizibil (în I, nu guler/produs) ca marginea să fie „liberă”
+HEAD_CROP_MARGIN = 0.35  # marja decupajului pentru VLM, față de latura mare a cutiei masei
+HEAD_CROP_MIN = 200
+
+
+def head_geometry(sam: np.ndarray, zi: np.ndarray, zl_: np.ndarray, ze: np.ndarray) -> dict | None:
+    """Descriptor geometric al formei de sus a manechinului. Masa = SAM ∩ I \\ (L ∪ E) (zona generată, fără produs). Pentru fiecare coloană cu masă
+    (>= HEAD_MIN_RUN px) se ia rândul de sus; marginea de sus e „liberă” dacă cele HEAD_FREE_ROWS rânduri de deasupra sunt fundal vizibil din I
+    (un ciot al cărui vârf se pierde sub guler nu are vârf vizibil). Pe cea mai lungă secvență contiguă de coloane libere se potrivește o parabolă
+    y = a*xn^2 + b*xn + c (xn în [-1, 1]); `sag_ratio` = a / lungime (înălțimea arcului raportată la lățime): ~0 la un vârf tăiat drept (chiar înclinat,
+    pentru că b preia înclinarea), ~0.5 la o semisferă. `free_run` = lungimea secvenței libere raportată la lățimea masei (0 = vârful nu se vede).
+    Întoarce None dacă nu există masă."""
+    obj = np.asarray(sam, bool) & np.asarray(zi, bool) & ~(np.asarray(zl_, bool) | np.asarray(ze, bool))
+    cols = np.nonzero(obj.sum(0) >= HEAD_MIN_RUN)[0]
+    if cols.size < 20:
+        return None
+    top = obj[:, cols].argmax(0)
+    free = np.array([bool(t >= HEAD_FREE_ROWS and zi[t - HEAD_FREE_ROWS:t, c].all() and not obj[t - HEAD_FREE_ROWS:t, c].any()) for t, c in zip(top, cols)])
+    # cea mai lungă secvență contiguă de coloane libere
+    best, cur, start, bstart = 0, 0, 0, 0
+    for k in range(cols.size):
+        if free[k] and (cur == 0 or cols[k] == cols[k - 1] + 1):
+            if cur == 0:
+                start = k
+            cur += 1
+            if cur > best:
+                best, bstart = cur, start
+        else:
+            cur = 1 if free[k] else 0
+            start = k
+            if cur > best:
+                best, bstart = cur, start
+    ys, xs = np.nonzero(obj)
+    x0, x1, y0, y1 = int(xs.min()), int(xs.max()) + 1, int(ys.min()), int(ys.max()) + 1
+    out = {"n_px": int(obj.sum()), "width": int(cols.size), "free_run": round(best / cols.size, 4), "sag_ratio": 0.0, "bbox": [x0, y0, x1, y1]}
+    if best >= 20:
+        xn = np.linspace(-1.0, 1.0, best)
+        a = float(np.polyfit(xn, top[bstart:bstart + best].astype(np.float64), 2)[0])
+        out["sag_ratio"] = round(a / best, 4)
+    m = int(max(HEAD_CROP_MIN, HEAD_CROP_MARGIN * max(x1 - x0, y1 - y0)))
+    h, w = obj.shape
+    out["crop_box"] = [max(0, x0 - m), max(0, y0 - m), min(w, x1 + m), min(h, y1 + m)]
+    return out
+
+
+def head_is_dome(geom: dict | None, thr: dict) -> bool:
+    """Geometric: vârf liber și rotunjit (arc peste prag) pe o secvență liberă lungă."""
+    return bool(geom) and geom["width"] >= thr.get("width_min", 0) and geom["free_run"] >= thr["free_run_min"] and geom["sag_ratio"] >= thr["sag_ratio_min"]
+
+
+def check_head_shape(geom: dict | None, vlm: dict | None, thr: dict, applicable: bool = True) -> dict:
+    """Formă de cap: respinge dacă geometria SAU întrebarea închisă către VLM (P(da, are cap/dom rotund)) e pozitivă. Natură moartă -> N/A, trece."""
+    name = "head_shape"
+    t = {"sag_ratio_min": thr["sag_ratio_min"], "free_run_min": thr["free_run_min"], "width_min": thr.get("width_min", 0), "vlm_p_yes": thr["vlm_p_yes"]}
+    if not applicable:
+        return ck.result(name, None, t, True, "N/A: natură moartă, fără manechin")
+    dome = head_is_dome(geom, thr)
+    p = None if vlm is None else float(vlm["p_yes"])
+    vlm_pos = p is not None and p >= thr["vlm_p_yes"]
+    ok = not dome and not vlm_pos
+    val = {"sag_ratio": None if not geom else geom["sag_ratio"], "free_run": None if not geom else geom["free_run"], "vlm_p_yes": None if p is None else round(p, 4)}
+    why = ("geometrie: vârf rotunjit liber" if dome else "") + ("; " if dome and vlm_pos else "") + (f"VLM: P(cap/dom)={p:.3f}" if vlm_pos else "")
+    return ck.result(name, val, t, ok, "fără formă de cap" if ok else "formă de cap: " + why)
 
 
 # ---------------------------------------------------------------- OCR
@@ -175,6 +251,9 @@ def decide_non_human(signals: dict, thr: dict, label_set: str, segment_applicabl
              check_skin_whole(signals["skin_whole"], thr)]
     if segment_applicable or "segment" in signals:
         parts.append(segment_is_achromatic_no_skin(signals.get("segment"), thr["segment"], segment_applicable))
+    if "head" in signals and "head" in thr:
+        h = signals["head"]
+        parts.append(check_head_shape(h.get("geom"), h.get("vlm"), thr["head"], segment_applicable))
     pos = [p["name"] for p in parts if not p["passed"]]
     comb = ck.result("ne_uman", pos, "niciun semnal de om", not pos, "toate semnalele negative" if not pos else "semnal pozitiv: " + ", ".join(pos))
     return [*parts, comb]
@@ -182,7 +261,7 @@ def decide_non_human(signals: dict, thr: dict, label_set: str, segment_applicabl
 
 def is_flagged_human(signals: dict, thr: dict, label_set: str) -> tuple[bool, list[str]]:
     """Judecătorul de imagine întreagă (fără segment): fețe OR SigLIP2 OR VLM OR piele pe imaginea întreagă."""
-    s = {k: v for k, v in signals.items() if k != "segment"}
+    s = {k: v for k, v in signals.items() if k not in ("segment", "head")}
     comb = decide_non_human(s, thr, label_set, segment_applicable=False)[-1]
     return (not comb["passed"]), list(comb["value"])
 
@@ -209,6 +288,35 @@ def validate_calibration(cal: dict) -> dict:
     if not isinstance(rec, dict) or rec.get("flagged") != flagged or rec.get("total") != len(ctl):
         raise CalibrationError("cifra de recall din fișă nu corespunde listei de controale")
     return cal
+
+
+def head_vlm_applies(product: str, head_thr: dict) -> bool:
+    """VLM-ul de cap se aplică doar produselor pe care a fost calibrat (`vlm_products`); lipsa cheii = toate. Pe cilindrul gulerului BZ739OR dă fals pozitiv (P(da) >= 0,9 pe un cilindru plat)."""
+    return product in head_thr.get("vlm_products", [product])
+
+
+def check_veto(candidate_id: str, veto: dict | None) -> dict:
+    """Veto manual al proprietarului (id candidat -> motiv), pentru cazuri pe care niciun semnal automat nu le separă (documentate în calibrarea T5c)."""
+    why = (veto or {}).get(candidate_id)
+    return ck.result("veto_manual", why, "id absent din lista de veto", why is None, "fără veto" if why is None else f"veto manual: {why}")
+
+
+def check_boots_info(sig: dict | None) -> dict:
+    """INFORMATIV (trece mereu): P(două bocanci vizibili) din VLM; marchează abaterea de produs (al doilea bocanc), fără să respingă."""
+    p = None if sig is None else float(sig["p_yes"])
+    return ck.result("boots_two_info", None if p is None else round(p, 4), "informativ (nu respinge)", True,
+                     "VLM nerulat" if p is None else f"P(2 bocanci)={p:.3f}" + (" -> marcat: 2 bocanci" if p >= 0.5 else ""))
+
+
+def merge_overlay(cal: dict, overlay: dict) -> dict:
+    """Suprapune praguri noi (T5c) peste calibrarea validată: dict-urile se îmbină, restul se înlocuiește. Nu modifică argumentele."""
+    out = json.loads(json.dumps(cal))
+    for k, v in overlay.get("praguri", {}).items():
+        if isinstance(v, dict) and isinstance(out["praguri"].get(k), dict):
+            out["praguri"][k].update(v)
+        else:
+            out["praguri"][k] = v
+    return out
 
 
 def load_calibration(path: str | Path) -> dict:

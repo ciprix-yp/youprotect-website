@@ -1,0 +1,94 @@
+{
+ "schema": 1,
+ "nota": "T5c: praguri noi suprapuse peste calibrare_modele.json (run_model_checks --calibrare-extra). Etichete vizuale puse de agent (nu de proprietar), fără pixeli; setul e mic, deci risc de supra-reglaj.",
+ "praguri": {
+  "segment": {
+   "c_p50_max": 14.0
+  },
+  "head": {
+   "sag_ratio_min": 0.15,
+   "free_run_min": 0.3,
+   "width_min": 60,
+   "vlm_p_yes": 0.9,
+   "vlm_products": [
+    "S476YE"
+   ]
+  },
+  "veto_manual": {
+   "S476YE-platforma_logistica-s109": "dom rotund care poate trece drept cap (regula proprietarului: manechin clar ne-uman); niciun semnal automat nu îl separă de hala_depozit-s101 (con bun)"
+  }
+ },
+ "etichete_cap_S476YE": {
+  "dom": [
+   "hala_depozit-s106",
+   "platforma_logistica-s105",
+   "platforma_logistica-s107",
+   "platforma_logistica-s109"
+  ],
+  "neclar": [
+   "hala_depozit-s100",
+   "hala_depozit-s107",
+   "hala_depozit-s109",
+   "platforma_logistica-s104",
+   "santier_constructii_zi-s103",
+   "santier_constructii_zi-s104",
+   "santier_constructii_zi-s107",
+   "santier_constructii_zi-s108",
+   "santier_constructii_zi-s109"
+  ],
+  "plat_con_neutru": "restul din S476YE (17), inclusiv hala_depozit-s101 (con gri, trebuie păstrat)",
+  "nota": "platforma_logistica-s109 e „dom” după regula proprietarului; niciun semnal automat nu îl separă de hala_depozit-s101 (veto manual în raport)."
+ },
+ "etichete_croma_BZ739OR": {
+  "acceptabil_gri_cu_nuanta": [
+   "atelier_metalurgic-s200",
+   "atelier_metalurgic-s203",
+   "atelier_metalurgic-s205",
+   "atelier_metalurgic-s206",
+   "atelier_metalurgic-s209",
+   "hala_productie-s200",
+   "hala_productie-s203",
+   "hala_productie-s205",
+   "hala_productie-s206",
+   "hala_productie-s209",
+   "santier_constructii_zi-s200",
+   "santier_constructii_zi-s203",
+   "santier_constructii_zi-s205",
+   "santier_constructii_zi-s206",
+   "santier_constructii_zi-s209"
+  ],
+  "respins_bej_carton_piele": [
+   "atelier_metalurgic-s202",
+   "atelier_metalurgic-s204",
+   "atelier_metalurgic-s207",
+   "atelier_metalurgic-s208",
+   "hala_productie-s202",
+   "hala_productie-s204",
+   "hala_productie-s207",
+   "hala_productie-s208",
+   "santier_constructii_zi-s202",
+   "santier_constructii_zi-s207",
+   "santier_constructii_zi-s208"
+  ],
+  "neclar": [
+   "atelier_metalurgic-s201",
+   "hala_productie-s201",
+   "santier_constructii_zi-s201",
+   "santier_constructii_zi-s204"
+  ]
+ },
+ "validare": {
+  "S476YE_cap": {
+   "dom_respinse": "3/4 (hala_depozit-s106, platforma_logistica-s105, -s107); platforma_logistica-s109 NEseparat automat -> veto_manual",
+   "neclar_respinse": "2/9 (santier_constructii_zi-s107, -s108)",
+   "plat_con_neutru_respinse_fals": "1/17 (hala_depozit-s105, geometrie pe un blob de fundal)",
+   "hala_depozit-s101": "păstrat"
+  },
+  "BZ739OR_croma": {
+   "acceptabil_acceptate": "13/15",
+   "respins_acceptate": "0/11",
+   "neclar_acceptate": "1/4"
+  },
+  "avertisment": "seturi mici (4 dom, 15 gri, 11 bej), etichete puse de agent; praguri alese pe aceleași date: risc real de supra-reglaj"
+ }
+}

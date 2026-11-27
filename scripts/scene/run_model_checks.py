@@ -5,7 +5,7 @@ Fiecare model se încarcă o singură dată pe lot (models_runtime.collect). Cal
 dacă lipsesc controalele sau recall-ul pe controale < 100%, scriptul pică înainte de orice rulare.
 Rezultatul global = toate verificările T3a (din fisa.json T5a) + toate cele de model trec.
 
-Rulare: python -I run_model_checks.py --scene-dir <scene> --models-dir <models> --calibrare <calibrare_modele.json> --report-dir <director nou>
+Rulare: python -I run_model_checks.py --scene-dir <scene> --models-dir <models> --calibrare <calibrare_modele.json> [--calibrare-extra <calibrare_t5c.json>] --report-dir <director nou>
 """
 # ruff: noqa: E501
 from __future__ import annotations
@@ -25,8 +25,8 @@ import collect_signals as cs  # noqa: E402
 import fisa_lib as fl  # noqa: E402
 import models_runtime as mr  # noqa: E402
 
-ETAPA = "T5b-verificari-model"
-FISA_FINALA = "fisa_finala.json"
+ETAPA = "T5c-verificari-model-v2"
+FISA_FINALA = "fisa_finala_v2.json"
 
 
 def model_checks(item: dict, st: dict, thr: dict, ctx: mr.Ctx) -> list[dict]:
@@ -35,7 +35,13 @@ def model_checks(item: dict, st: dict, thr: dict, ctx: mr.Ctx) -> list[dict]:
     applicable = bool(sam.get("applicable", True)) if "sam" in st else True
     sig = {"faces": st["faces"], "siglip": st["siglip"][lset], "vlm": st.get("qwen"), "skin_whole": mr.skin_whole(item, ctx),
            "segment": sam.get("segment") if applicable else None}
+    if "head" in thr:  # T5c: semnalul „formă de cap” (geometrie + VLM pe decupajul gâtului)
+        sig["head"] = {"geom": sam.get("head") if applicable else None, "vlm": st.get("qwen_head") if cm.head_vlm_applies(item["product"], thr["head"]) else None}
     out = cm.decide_non_human(sig, thr, lset, segment_applicable=applicable)
+    if "veto_manual" in thr:
+        out.append(cm.check_veto(item["id"], thr["veto_manual"]))
+    if item["product"] == "FD25BK":
+        out.append(cm.check_boots_info(st.get("qwen_boots")))
     o = thr["ocr"]
     for name, v in sorted(st["ocr"]["logo"].items()):
         out.append(cm.check_ocr_logo(name, v["original"], v["candidat"], o["logo_min_conf"], o["logo_min_len"]))
@@ -49,19 +55,24 @@ def main() -> int:  # noqa: C901
     ap.add_argument("--models-dir", required=True, type=Path)
     ap.add_argument("--calibrare", required=True, type=Path)
     ap.add_argument("--report-dir", required=True, type=Path)
+    ap.add_argument("--calibrare-extra", type=Path, default=None, help="praguri T5c (segment.c_p50_max, head) suprapuse peste calibrare")
+    ap.add_argument("--fisa-name", default=FISA_FINALA, help="numele fișei finale (nu se suprascrie niciodată)")
     ap.add_argument("--registry", type=Path, default=None)
-    ap.add_argument("--stages", nargs="+", default=["faces", "ocr", "siglip", "sam", "qwen"], choices=list(mr.STAGES))
+    ap.add_argument("--stages", nargs="+", default=["faces", "ocr", "siglip", "sam", "qwen", "qwen_head", "qwen_boots"], choices=list(mr.STAGES))
     ap.add_argument("--limit", type=int, default=0)
     a = ap.parse_args()
     cal = cm.load_calibration(a.calibrare)  # pică dacă recall < 100% sau lipsesc controale
+    if a.calibrare_extra:
+        cal = cm.merge_overlay(cal, json.loads(a.calibrare_extra.read_text(encoding="utf-8")))
     thr = cal["praguri"]
     if "qwen" in a.stages and not cal["recall"].get("vlm_inclus"):
         raise SystemExit("calibrarea s-a făcut fără VLM: nu se poate rula VLM pe candidați cu praguri neverificate; scoate qwen din --stages")
     if a.report_dir.exists():
         raise SystemExit(f"{a.report_dir} există: director nou cerut")
+    mr.SAM_DUMP_DIR = a.report_dir.parent / f"{a.report_dir.name}_dump"  # masca SAM și decupajul gâtului (local, nu în git)
     scene = a.scene_dir
     registry = a.registry or scene / "registru.jsonl"
-    items = [i for i in cs.candidate_items(scene) if not (Path(i["path"]).parent / FISA_FINALA).exists()]
+    items = [i for i in cs.candidate_items(scene) if not (Path(i["path"]).parent / a.fisa_name).exists()]
     if a.limit:
         items = items[:a.limit]
     if not items:
@@ -70,7 +81,7 @@ def main() -> int:  # noqa: C901
     sig, models, times = mr.collect(a.models_dir, items, a.stages, lambda m: print(m, flush=True))
     ctx = mr.Ctx()
     cal_sha = hashlib.sha256(a.calibrare.read_bytes()).hexdigest()
-    code_sha = fl.sha256_code([HERE / f for f in ("checks_models_lib.py", "models_runtime.py", "collect_signals.py", "run_model_checks.py", "calibrare_modele.json")])
+    code_sha = fl.sha256_code([HERE / f for f in ("checks_models_lib.py", "models_runtime.py", "collect_signals.py", "run_model_checks.py", "calibrare_modele.json", "calibrare_t5c.json")])
     rows = []
     for it in items:
         cdir = Path(it["path"]).parent
@@ -85,7 +96,7 @@ def main() -> int:  # noqa: C901
             recall_calibrare=cal["recall"], timpi_verificari_s={"total_etape": times, "pe_candidat": round(sum(times.values()) / len(items), 3)},
             rezultat_t3a=all(c["passed"] for c in t3a), rezultat_modele=all(c["passed"] for c in mc))
         final = fl.build_fisa(**fin)
-        fl.write_fisa(cdir, final, registry, scene, filename=FISA_FINALA)
+        fl.write_fisa(cdir, final, registry, scene, filename=a.fisa_name)
         rows.append({"id": it["id"], "produs": it["product"], "global": final["rezultat_global"], "t3a": fin["rezultat_t3a"], "modele": fin["rezultat_modele"],
                      "picate": [c["name"] for c in final["verificari"] if not c["passed"]], "timp_generare_s": f5a["timp_generare_s"]})
     errs = fl.verify_registry(registry)
@@ -111,8 +122,8 @@ def main() -> int:  # noqa: C901
         "timp_generare_total_s": round(sum(r["timp_generare_s"] for r in rows), 1), "timp_verificari_s": times,
         "modele": models, "randuri": rows,
     }
-    (a.report_dir / "raport_t5b.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    lines = [f"Raport T5b: {len(rows)} candidați, registru {'VALID' if not errs else 'INVALID'}", ""]
+    (a.report_dir / "raport_t5c.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    lines = [f"Raport T5c: {len(rows)} candidați, registru {'VALID' if not errs else 'INVALID'}", ""]
     for p in prods:
         n = rep["n_per_produs"][p]
         lines.append(f"{p}: {n} candidați; T3a OK {rep['doar_t3a_ok'][p]}; modele OK {rep['doar_modele_ok'][p]}; TREC TOT {len(rep['trec_toate'][p])}")
@@ -123,7 +134,7 @@ def main() -> int:  # noqa: C901
         lines.append(f"  {k}: " + ", ".join(f"{p}={v.get(p, 0)}" for p in [*prods, "TOTAL"]))
     lines += ["", "Motive combinate:"] + [f"  {v:3d}  {k}" for k, v in sorted(rep["motive_combinate"].items(), key=lambda x: -x[1])]
     lines += ["", f"Timp generare total (din fișele T5a): {rep['timp_generare_total_s']} s", f"Timp verificări pe etapă (s): {times}"]
-    (a.report_dir / "rezumat_t5b.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (a.report_dir / "rezumat_t5c.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0 if not errs else 3
 

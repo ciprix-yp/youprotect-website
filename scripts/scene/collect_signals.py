@@ -87,7 +87,10 @@ def main() -> int:
     ap.add_argument("--derived-dir", type=Path, default=None)
     ap.add_argument("--stages", nargs="+", default=["faces", "siglip", "qwen"], choices=list(mr.STAGES))
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--dump-dir", type=Path, default=None, help="unde stage_sam scrie masca SAM și decupajul gâtului (artefacte locale)")
+    ap.add_argument("--only-products", nargs="+", default=None)
     a = ap.parse_args()
+    mr.SAM_DUMP_DIR = a.dump_dir
     if a.out.exists():
         raise SystemExit(f"{a.out} există: nu se suprascrie")
     if a.set == "controls":
@@ -96,6 +99,8 @@ def main() -> int:
         items = negative_items(a.scene_dir)
     else:
         items = candidate_items(a.scene_dir)
+        if a.only_products:
+            items = [i for i in items if i["product"] in a.only_products]
     if a.limit:
         items = items[:a.limit]
     sig, models, times = mr.collect(a.models_dir, items, a.stages, lambda m: print(m, flush=True))

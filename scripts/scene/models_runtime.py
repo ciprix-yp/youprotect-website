@@ -34,6 +34,7 @@ import zones_lib as zl  # noqa: E402
 YUNET_ID, SAM_ID, SIGLIP_ID, QWEN_ID, OCR_ID = "yunet-2023mar", "sam2.1-hiera-large", "siglip2-so400m-patch14-384", "qwen3-vl-4b-instruct", "rapidocr-ppocrv5-onnx"
 YUNET_FLOOR = 0.3  # scorul minim reținut în semnal; decizia se ia cu pragul calibrat
 LOGO_PREFIX = ("logo", "eticheta", "emblema")
+SAM_DUMP_DIR: Path | None = None  # dacă e setat, stage_sam scrie aici masca SAM și decupajul gâtului (artefacte locale)
 
 SIGLIP_SETS = {  # (manechin/obiect, persoană); primele trei = formulările inițiale, restul alternative pentru a alege subsetul care separă
     "haine": [
@@ -53,6 +54,8 @@ SIGLIP_SETS = {  # (manechin/obiect, persoană); primele trei = formulările ini
         ("a still life of footwear", "a worker walking in boots"),
     ],
 }
+HEAD_QUESTION = "Is there a smooth rounded ball or dome shape that could be mistaken for a human head? Answer yes or no."  # varianta cerută („has a head or dome on top of the neck”) dă P(da)=0.78 și pe conul bun (neseparabil); aceasta separă (vezi raport T5c)
+BOOTS_QUESTION = "Are there two boots visible in this image? Answer yes or no."
 VLM_QUESTION = ("Is there any human being in this image (a face, a head, hands, a body or a human silhouette)? "
                 "Answer with a single word: yes or no.")
 
@@ -176,7 +179,8 @@ def stage_siglip(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, d
 
 # ---------------------------------------------------------------- Qwen3-VL (auxiliar)
 
-def stage_qwen(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, dict]:
+def _qwen_p_yes(models_dir: Path, pairs: list[tuple[str, Image.Image]], question: str) -> tuple[dict, dict]:
+    """Întrebare închisă da/nu către Qwen3-VL-4B pe fiecare imagine: P(da) din logits (softmax pe tokenii yes/no)."""
     import torch
     from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
     mdir, info = model_dir_verified(models_dir, QWEN_ID)
@@ -187,22 +191,31 @@ def stage_qwen(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, dic
     yes = sorted({tok.encode(w, add_special_tokens=False)[0] for w in ("Yes", "yes", "YES")})
     no = sorted({tok.encode(w, add_special_tokens=False)[0] for w in ("No", "no", "NO")})
     out = {}
-    for it in items:
-        img = Image.fromarray(load_rgb(it["path"]))
+    for iid, img in pairs:
         s = 768 / max(img.size)
         if s < 1:
             img = img.resize((round(img.width * s), round(img.height * s)), Image.LANCZOS)
-        msgs = [{"role": "user", "content": [{"type": "image", "image": img}, {"type": "text", "text": VLM_QUESTION}]}]
+        msgs = [{"role": "user", "content": [{"type": "image", "image": img}, {"type": "text", "text": question}]}]
         inp = proc.apply_chat_template(msgs, add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt").to(dev)
         with torch.inference_mode():
             lg = model(**inp).logits[0, -1].float().cpu()
         ly, ln = torch.logsumexp(lg[yes], 0), torch.logsumexp(lg[no], 0)
-        py = float(torch.softmax(torch.stack([ly, ln]), 0)[0])
-        top = tok.decode([int(lg.argmax())])
-        out[it["id"]] = {"p_yes": py, "top_token": top}
+        out[iid] = {"p_yes": float(torch.softmax(torch.stack([ly, ln]), 0)[0]), "top_token": tok.decode([int(lg.argmax())])}
     del model, proc
     _free()
     return out, info
+
+
+def stage_qwen(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, dict]:
+    return _qwen_p_yes(models_dir, [(it["id"], Image.fromarray(load_rgb(it["path"]))) for it in items], VLM_QUESTION)
+
+
+def stage_qwen_head(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, dict]:
+    """Întrebare închisă despre cap pe decupajul gâtului (scris de stage_sam în SAM_DUMP_DIR; rulează DUPĂ sam). Fără decupaj (fără masă) -> omis."""
+    if SAM_DUMP_DIR is None:
+        raise RuntimeError("qwen_head cere SAM_DUMP_DIR (decupajele scrise de etapa sam)")
+    pairs = [(it["id"], Image.open(SAM_DUMP_DIR / f"{it['id']}.neck.png").convert("RGB")) for it in items if (SAM_DUMP_DIR / f"{it['id']}.neck.png").is_file()]
+    return _qwen_p_yes(models_dir, pairs, HEAD_QUESTION)
 
 
 # ---------------------------------------------------------------- SAM -> segment
@@ -250,7 +263,14 @@ def stage_sam(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, dict
             o = model(**batch, multimask_output=False)
         m = proc.post_process_masks(o.pred_masks.cpu(), batch["original_sizes"])[0][0, 0].numpy().astype(bool)
         seg = build_segment(z["I"], m, segment_region(z["alpha"]), z["L"], z["E"])
-        out[it["id"]] = {"applicable": True, "segment": cm.segment_signals(rgb, seg), "sam_px": int(m.sum()), "seg_px": int(seg.sum())}
+        res = {"applicable": True, "segment": cm.segment_signals(rgb, seg), "sam_px": int(m.sum()), "seg_px": int(seg.sum())}
+        head = cm.head_geometry(m, z["I"], z["L"], z["E"])
+        res["head"] = head
+        if SAM_DUMP_DIR is not None and head is not None:  # masca SAM brută + decupajul gât/cap pentru etapa VLM; nu intră în git
+            SAM_DUMP_DIR.mkdir(parents=True, exist_ok=True)
+            Image.fromarray((m * 255).astype(np.uint8)).save(SAM_DUMP_DIR / f"{it['id']}.sam.png")
+            Image.fromarray(rgb[head["crop_box"][1]:head["crop_box"][3], head["crop_box"][0]:head["crop_box"][2]]).save(SAM_DUMP_DIR / f"{it['id']}.neck.png")
+        out[it["id"]] = res
     del model, proc
     _free()
     return out, info
@@ -326,7 +346,13 @@ def skin_whole(item: dict, ctx: Ctx) -> float:
     return cm.skin_fraction(rgb, None if z is None else ~(z["L"] | z["E"]))
 
 
-STAGES: dict[str, Callable] = {"faces": stage_faces, "ocr": stage_ocr, "siglip": stage_siglip, "sam": stage_sam, "qwen": stage_qwen}
+def stage_qwen_boots(models_dir: Path, items: list[dict], ctx: Ctx) -> tuple[dict, dict]:
+    """INFORMATIV: doar natura moartă (fără manechin, `zones.I` gol) — câți bocanci apar."""
+    its = [it for it in items if it.get("product") == "FD25BK"]
+    return _qwen_p_yes(models_dir, [(it["id"], Image.fromarray(load_rgb(it["path"]))) for it in its], BOOTS_QUESTION)
+
+
+STAGES: dict[str, Callable] = {"faces": stage_faces, "ocr": stage_ocr, "siglip": stage_siglip, "sam": stage_sam, "qwen": stage_qwen, "qwen_head": stage_qwen_head, "qwen_boots": stage_qwen_boots}
 
 
 def collect(models_dir: Path, items: list[dict], stages: list[str], log: Callable[[str], None] = print) -> tuple[dict, dict, dict]:

@@ -94,7 +94,10 @@ def build_prompt(product_id: str, context_id: str, variant: int = 0, contexte: d
     variants = ctx["variante"]
     if not variants:
         raise PromptError(f"contextul {context_id!r} nu are variante")
-    lead = cx["manechin"]["fraza"] if prod["tip"] == "manechin" else cx["manechin"]["fraza_natura_moarta"]
+    if prod["tip"] == "manechin":
+        lead = prod.get("manechin_fraza") or cx["manechin"]["fraza"]
+    else:
+        lead = cx["manechin"]["fraza_natura_moarta"]
     body = f"{ctx['decor']} {variants[variant % len(variants)]}"
     bad = forbidden_words_in(body, cx)  # formularea fixă (lead) nu se scanează
     if bad:
@@ -104,7 +107,7 @@ def build_prompt(product_id: str, context_id: str, variant: int = 0, contexte: d
         raise PromptError(f"cuvinte interzise în formularea de natură moartă: {', '.join(bad_lead)}")
     prompt = f"{lead} {body}".strip()
     # verificare finală: după scoaterea formulării fixe a manechinului nu mai rămâne nimic interzis
-    rest = prompt.replace(cx["manechin"]["fraza"], " ")
+    rest = prompt.replace(lead, " ").replace(cx["manechin"]["fraza"], " ")
     bad_all = forbidden_words_in(rest, cx)
     if bad_all:
         raise PromptError(f"prompt final cu cuvinte interzise: {', '.join(bad_all)}")
