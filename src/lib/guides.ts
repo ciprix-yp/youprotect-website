@@ -64,15 +64,16 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: 'clase-vizibilitate-en-iso-20471',
-    title: 'EN ISO 20471: ce clasă de vizibilitate îți trebuie',
+    title: 'EN ISO 20471: clasa 2 sau clasa 3 lângă drum',
     description:
-      'Clasele 1, 2 și 3 din EN ISO 20471, suprafețele minime de material fluorescent și reflectorizant și ce clasă se recomandă pentru lucru lângă drum.',
+      'Clasa 2 sau clasa 3 din EN ISO 20471: ce suprafețe minime cere fiecare, ce recomandă Centexbel lângă drum și cum ajungi la clasa 3 cu o haină sau cu un set.',
     heading: 'EN ISO 20471: ce clasă de vizibilitate îți trebuie lângă drum',
+    breadcrumb: 'Clase de vizibilitate',
     summary:
-      'Ce înseamnă clasele 1, 2 și 3, ce suprafețe minime cere fiecare, cum ajungi la clasa 3 cu un set și ce clasă se recomandă pentru lucru lângă trafic.',
+      'Clasa 3 e cea mai vizibilă. Ce suprafețe cere fiecare clasă, ce recomandă Centexbel lângă drum și cum ajungi la clasa 3 cu un set.',
     categories: ['reflectorizante'],
     published: '2026-11-19',
-    updated: '2026-11-19',
+    updated: '2026-11-27',
     sources: [
       {
         label: 'Centexbel: îmbrăcămintea de avertizare după EN ISO 20471:2013+A1:2016',
