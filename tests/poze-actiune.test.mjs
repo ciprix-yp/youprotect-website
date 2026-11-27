@@ -929,8 +929,8 @@ test('dist: homepage-ul are 10 template-uri ale eroului, în ordinea heroPhotos,
     assert.equal(tpl.img.alt?.replaceAll('&#38;', '&'), getPhoto(id).alt, `${id}: alt`); // Astro scrie „&” ca „&#38;” în atribute
     assert.match(tpl.img.tag, /\bloading="eager"/);
     assert.match(tpl.img.tag, /\bfetchpriority="high"/);
-    assert.match(tpl.html, /<div class="absolute inset-0 bg-gradient-to-t md:hidden /, `${id}: gradient de telefon`);
-    assert.match(tpl.html, /<div class="absolute inset-0 hidden bg-gradient-to-t md:block /, `${id}: gradient de desktop`);
+    assert.match(tpl.html, /<div class="absolute inset-0 bg-linear-to-t\/srgb md:hidden /, `${id}: gradient de telefon`);
+    assert.match(tpl.html, /<div class="absolute inset-0 hidden bg-linear-to-t\/srgb md:block /, `${id}: gradient de desktop`);
     const { gradient } = heroStyle(id);
     assert.ok(tpl.html.includes(gradient.telefon) && tpl.html.includes(gradient.desktop), `${id}: clasele presetului`);
   }
