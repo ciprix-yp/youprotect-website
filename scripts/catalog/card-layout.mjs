@@ -6,7 +6,8 @@
 //    La STUDIO (om pe fond alb, ex. Sir Safety 1100×1100, siluetă ~300 px lată) se taie mai întâi marginile aproape-albe
 //    (contentBox, cu toleranță), ca silueta să umple cutia, nu pătratul alb din jur; fără mărire peste rezoluția sursei.
 //    Packshot-urile nu se taie (cardurile lor rămân ca înainte).
-//  - scena: decupaj 4:5 din original, centrat pe `focus` („X% Y%”), apoi redimensionat la 600×750.
+//  - scena: decupaj 4:5 din original, poziționat după `focus` („X% Y%”) cu semantica CSS `object-position`, apoi
+//    redimensionat la 600×750.
 export const CARD_WIDTH = 600;
 export const CARD_HEIGHT = 750; // 4:5
 export const CARD_MARGIN = Math.round(CARD_WIDTH * 0.12); // 72 px
@@ -22,7 +23,11 @@ export function parseFocus(focus) {
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-/** Cel mai mare decupaj 4:5 din imaginea width×height, centrat pe focus și ținut în imagine. */
+/**
+ * Cel mai mare decupaj 4:5 din imaginea width×height, cu semantica CSS `object-position`: X% aliniază punctul X% al
+ * pozei cu punctul X% al decupajului (nu îl centrează). Așa decupajul cardului coincide cu zona vizibilă din galerie
+ * (`object-fit: cover; object-position: <focus>`) și tranziția card -> fișă nu sare.
+ */
 export function cropBox(width, height, focus) {
   const { x, y } = parseFocus(focus);
   let cropW = width;
@@ -32,8 +37,8 @@ export function cropBox(width, height, focus) {
     cropW = Math.round(height * RATIO);
   }
   return {
-    left: clamp(Math.round(x * width - cropW / 2), 0, width - cropW),
-    top: clamp(Math.round(y * height - cropH / 2), 0, height - cropH),
+    left: clamp(Math.round(x * (width - cropW)), 0, width - cropW),
+    top: clamp(Math.round(y * (height - cropH)), 0, height - cropH),
     width: cropW,
     height: cropH,
   };

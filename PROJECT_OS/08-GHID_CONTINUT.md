@@ -288,8 +288,11 @@ rămâne packshot-ul. Ambele sunt 4:5, iar galeria pornește pe culoarea și poz
   - excluse: MASCOT 19035 și 20382.
 - Cum adaugi o poză nouă:
   1. În `catalog/texts/<furnizor>/<model>.json`, cheia `cardPhoto`: `colour`, apoi `sourceId` (ID-ul din DAM sau
-     Media Hub, nu un URL) sau `existing` (poză deja în repo), `kind` (`studio` sau `scena`), `focus` („X% Y%”, punctul
-     important al pozei; contează la scenă) și `alt`.
+     Media Hub, nu un URL) sau `existing` (poză deja în repo), `kind` (`studio` sau `scena`), `focus` („X% Y%”, 0–100;
+     contează doar la scenă) și `alt`. `focus` are semantica CSS `object-position`: X% din poză se aliniază cu X% din
+     cadrul 4:5, nu se centrează pe punct (la 0% decupajul pornește de la margine, la 100% se termină la margine, la 50%
+     e centrat). Astfel decupajul cardului e exact zona vizibilă în galerie și tranziția card -> fișă nu sare. La `studio`
+     `focus` e rezervat și ignorat: nu-l pune.
   2. `alt`: o propoziție în română, 20–140 de caractere, care descrie produsul purtat („Vesta reflectorizantă Portwest
      Berlin S476, galbenă, purtată”). Fără „You Protect”, „angajat”, „client”, „testimonial”.
   3. Se rulează, în ordine: `fetch_images_<furnizor>.py` (descărcarea; fișierele de poză nu poartă metadate), apoi

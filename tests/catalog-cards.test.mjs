@@ -177,14 +177,32 @@ test('card: scena se decupează 4:5 după focus și rămâne în imagine', () =>
   assert.deepEqual(cropBox(1800, 1200, '0% 0%'), { left: 0, top: 0, width: 960, height: 1200 });
   assert.deepEqual(cropBox(1800, 1200, '100% 100%'), { left: 840, top: 0, width: 960, height: 1200 });
   // original înalt 1200×2000: decupaj de 1200×1500, pe verticală după focus
-  assert.deepEqual(cropBox(1200, 2000, '50% 10%'), { left: 0, top: 0, width: 1200, height: 1500 });
-  assert.deepEqual(cropBox(1200, 2000, '50% 90%'), { left: 0, top: 500, width: 1200, height: 1500 });
+  // `focus` are semantica CSS object-position: Y% din excesul de 500 px (2000 − 1500)
+  assert.deepEqual(cropBox(1200, 2000, '50% 10%'), { left: 0, top: 50, width: 1200, height: 1500 });
+  assert.deepEqual(cropBox(1200, 2000, '50% 90%'), { left: 0, top: 450, width: 1200, height: 1500 });
+  assert.deepEqual(cropBox(1800, 1200, '30% 50%'), { left: 252, top: 0, width: 960, height: 1200 }); // cazul din review
   for (const [w, h, f] of [[1800, 1200, '30% 70%'], [1200, 2000, '80% 60%'], [1600, 1600, '10% 90%'], [999, 1333, '50% 50%']]) {
     const c = cropBox(w, h, f);
     assert.ok(c.left >= 0 && c.top >= 0 && c.left + c.width <= w && c.top + c.height <= h, `${w}×${h} ${f}`);
     assert.ok(Math.abs(c.width / c.height - 0.8) < 0.002, `${w}×${h}: raport ${c.width / c.height}`);
   }
   assert.equal(planCard({ width: 1800, height: 1200, kind: 'scena', focus: '50% 50%' }).mode, 'crop');
+});
+
+test('card: decupajul cardului = zona vizibilă din object-fit: cover + object-position (galeria), pentru focus-uri nesimetrice', () => {
+  // calcul pur al lui CSS: poza w×h în cutia cw×ch (4:5), scalată cu max(cw/w, ch/h); X% aliniază X% din poză cu X% din cutie
+  const visible = (w, h, focus, cw = 400, ch = 500) => {
+    const { x, y } = parseFocus(focus);
+    const scale = Math.max(cw / w, ch / h);
+    return { left: -x * (cw - w * scale) / scale, top: -y * (ch - h * scale) / scale, width: cw / scale, height: ch / scale };
+  };
+  for (const [w, h, f] of [[1800, 1200, '30% 50%'], [1200, 2000, '50% 10%'], [1600, 1000, '85% 20%'], [1000, 1700, '15% 75%']]) {
+    const css = visible(w, h, f);
+    const box = cropBox(w, h, f);
+    for (const key of ['left', 'top', 'width', 'height']) {
+      assert.ok(Math.abs(css[key] - box[key]) <= 1, `${w}×${h} ${f}: ${key} CSS ${css[key].toFixed(1)} vs card ${box[key]}`);
+    }
+  }
 });
 
 test('card: packshot și studio încap întregi, centrate, cu margine de 12 % în cutia 600×750', () => {

@@ -12,8 +12,10 @@ const localImage = z.string().regex(/^\/images\/products\/[a-z0-9-]+\/[A-Za-z0-9
 const localDocument = z.string().regex(/^\/documente\/[a-z0-9-]+\/[a-z0-9-]+\.pdf$/);
 const media = z.union([localImage, httpsUrl]);
 // Poza pe model: packshot (produsul singur), studio (omul pe fond alb) sau scenă (omul la lucru).
-// `focus` = punctul important al pozei, „X% Y%” din lățime și înălțime; la scenă, decupajul 4:5 al cardului
-// se face după el (scripts/catalog/card-layout.mjs), de aceea e obligatoriu la scenă.
+// `focus` are semantica CSS `object-position`: „X% Y%” aliniază punctul X% / Y% al pozei cu același punct al cadrului
+// 4:5 (nu îl centrează). La scenă, decupajul cardului se face așa (scripts/catalog/card-layout.mjs) și coincide cu ce
+// arată galeria (`object-fit: cover; object-position: focus`), de aceea e obligatoriu la scenă. La studio e
+// rezervat/ignorat (poza se încadrează întreagă, nu se decupează).
 const photoKind = z.enum(['packshot', 'studio', 'scena']);
 const focus = z.string().regex(/^\d{1,3}% \d{1,3}%$/);
 
