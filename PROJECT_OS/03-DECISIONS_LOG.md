@@ -892,8 +892,9 @@
 - `space-y-*` are altă semantică în v4: `margin-bottom` pe `:not(:last-child)` (în v3, `margin-top` pe copiii de după primul),
   într-un selector `:where()` fără specificitate. Consecințe pentru modificările viitoare: un ultim copil ascuns sau
   randat condiționat lasă spațiu în plus sub penultimul (de aceea `ul`-ul din subsol cu elementul `hidden` pentru
-  setările de cookie-uri folosește `flex flex-col gap-1`); `mt-*` și `mb-*` pe copii se aplică acum (în v3 `space-y` le
-  suprascria), iar copiii `absolute` nu mai primesc margine. Pentru liste cu elemente condiționale se preferă `gap`.
+  setările de cookie-uri folosește `flex flex-col gap-1`). `mt-*` pe copiii de după primul se aplică acum (în v3 era
+  suprascris); `mb-*` înlocuiește marginea dintre copii (în v3 se comasa cu ea); după un copil `absolute` nu mai e spațiu
+  (în v3 fratele următor avea `margin-top`). Pentru liste cu elemente condiționale se preferă `gap`.
 - Preflight v3 → v4 pe formulare: câmpul `type="search"` din `/produse/` își recapătă `appearance: textfield` și
   `outline-offset: -2px` (regula din preflight-ul v3, în `@layer base`). Restul elementelor de formular, comparate pe
   `/produse/`, `/cere-oferta/`, `/programeaza-discutie/`, calculator și `/contact/`, au aceleași valori calculate
