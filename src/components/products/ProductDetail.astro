@@ -4,6 +4,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { CATEGORIES, INDUSTRIES, INDUSTRY_PAGES } from '../../lib/catalog-taxonomy';
 import { jsonLd } from '../../lib/json-ld';
+import { cardColour, cardSrc } from '../../lib/catalog-images.js';
 import { activeCategoryPages } from '../../lib/catalog-categories';
 import { PERSONALIZATION_PAGE } from '../../lib/personalization';
 import { activeBrandPages } from '../../lib/catalog-brands';
@@ -26,10 +27,19 @@ const published = await getCollection('products', ({ data }) => data.status === 
 const categoryPage = preview ? undefined : activeCategoryPages(published.map((e) => e.data)).find((c) => c.key === p.category);
 const categoryHref = categoryPage ? `/produse/${categoryPage.slug}/` : null;
 const brandPage = preview ? undefined : activeBrandPages(published.map((e) => e.data)).find((b) => b.brand === p.supplier.brand);
-const primary = p.colours[0];
+// Culoarea inițială a fișei = culoarea din card (cardColour; altfel colours[0]); selectorul păstrează ordinea din date.
+const primary = cardColour(p);
 // Ochelarii, vizierele și antifoanele n-au variante de culoare: o singură intrare cu codul gol (assemble_sirsafety.py).
 const hasColourVariants = !(p.colours.length === 1 && primary.code === '');
-const mainImage = primary.images[0].src;
+const first = primary.images[0];
+// Poza pe model din studio se arată în fișă în varianta de card (600×750, margini albe tăiate, același cadru ca în card):
+// din original (pătrat, cu margini mari) omul ar apărea mult mai mic și tranziția card → fișă ar avea salt de scară.
+type GalleryPhoto = { src: string; thumb: string; kind?: string; focus?: string; alt?: string };
+const gallerySrc = (img: { src: string; kind?: string }) => (img.kind === 'studio' ? cardSrc(img.src) : img.src);
+const galleryImages = (images: GalleryPhoto[]) => images.map((img) => ({ ...img, src: gallerySrc(img) }));
+const mainImage = gallerySrc(first);
+const firstIsScene = first.kind === 'scena';
+const defaultAlt = primary.name ? `${p.name}, ${primary.name}` : p.name;
 // Formularul arată produsul și îl trimite cu cererea (MultiStepForm, câmpul „produs”).
 // Cu lista de ofertă plină, formularul arată și produsele din listă (le poate scoate de acolo).
 const offerHref = `/cere-oferta/?produs=${encodeURIComponent(slug)}`;
@@ -114,14 +124,16 @@ const singleImage = primary.images.length <= 1;
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
     <!-- Galerie (fixă la derulare pe desktop) -->
     <div class="min-w-0 md:sticky md:top-24 md:self-start">
-      <div id="gallery-well" class="img-well aspect-square overflow-hidden rounded-2xl border border-white/[0.08] flex items-center justify-center">
+      <div id="gallery-well" class:list={['img-well aspect-[4/5] overflow-hidden rounded-2xl border border-white/[0.08] flex items-center justify-center', firstIsScene && 'img-well--scene']}>
         <img
           id="gallery-main"
           src={mainImage}
-          alt={primary.name ? `${p.name}, ${primary.name}` : p.name}
+          alt={first.alt ?? defaultAlt}
+          data-default-alt={defaultAlt}
           width="1000"
-          height="1000"
-          class="w-full h-full object-contain p-6"
+          height="1250"
+          style={firstIsScene && first.focus ? `object-position: ${first.focus}` : undefined}
+          class:list={['w-full h-full', firstIsScene ? 'object-cover' : 'object-contain', (first.kind ?? 'packshot') === 'packshot' && 'p-6']}
           fetchpriority="high"
         />
       </div>
@@ -130,7 +142,10 @@ const singleImage = primary.images.length <= 1;
           <button
             type="button"
             class="thumb img-well shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 border-transparent aria-[current=true]:border-yp-yellow focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
-            data-src={img.src}
+            data-src={gallerySrc(img)}
+            data-kind={img.kind}
+            data-focus={img.focus}
+            data-alt={img.alt}
             aria-label={`Imaginea ${i + 1}`}
             aria-current={i === 0 ? 'true' : 'false'}
           >
@@ -173,13 +188,13 @@ const singleImage = primary.images.length <= 1;
       <div>
         <h2 class={labelTitle}>Culori prezentate ({p.colours.length})</h2>
         <div class="flex flex-wrap gap-2" role="group" aria-label="Alege culoarea">
-          {p.colours.map((c, i) => (
+          {p.colours.map((c) => (
             <button
               type="button"
               class="swatch flex min-h-11 items-center gap-2 rounded-lg px-3 border border-yp-white/20 aria-[pressed=true]:border-yp-yellow aria-[pressed=true]:bg-yp-yellow/[0.06] text-xs text-yp-white/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yp-yellow"
-              data-images={JSON.stringify(c.images)}
+              data-images={JSON.stringify(galleryImages(c.images))}
               data-name={c.name}
-              aria-pressed={i === 0 ? 'true' : 'false'}
+              aria-pressed={c === primary ? 'true' : 'false'}
             >
               {c.swatch && <img src={c.swatch} alt="" width="20" height="20" class="w-5 h-5 rounded-full object-cover" />}
               <span>{c.name}</span>
@@ -421,9 +436,26 @@ const singleImage = primary.images.length <= 1;
 </section>
 
 <script>
-  type GalleryImage = { src: string; thumb: string };
+  type GalleryImage = { src: string; thumb: string; kind?: string; focus?: string; alt?: string };
   const main = document.getElementById('gallery-main') as HTMLImageElement | null;
+  const well = document.getElementById('gallery-well');
   const thumbs = document.getElementById('gallery-thumbs');
+
+  // „X% Y%”, ca în schema produsului: doar o valoare validată ajunge în style.
+  const FOCUS = /^\d{1,3}% \d{1,3}%$/;
+  type Look = { kind?: string; focus?: string; alt?: string };
+  // Scena: cover + object-position, fără multiply (.img-well--scene); packshot și studio: contain + multiply.
+  function applyLook({ kind, focus, alt }: Look) {
+    if (!main) return;
+    const scene = kind === 'scena';
+    well?.classList.toggle('img-well--scene', scene);
+    main.classList.toggle('object-cover', scene);
+    main.classList.toggle('object-contain', !scene);
+    // Marginea pozelor pe model e deja în pixeli (varianta de card); doar packshot-ul primește padding.
+    main.classList.toggle('p-6', !kind || kind === 'packshot');
+    main.style.objectPosition = scene && focus && FOCUS.test(focus) ? focus : '';
+    main.alt = alt || main.dataset.defaultAlt || '';
+  }
 
   // Apărare suplimentară: acceptăm doar imagini găzduite de noi sau https.
   const isSafeSrc = (src: unknown): src is string =>
@@ -432,11 +464,12 @@ const singleImage = primary.images.length <= 1;
   // Poza nouă apare cu un fade scurt, după ce s-a încărcat (nu o clipire albă). La click-uri rapide câștigă ultimul.
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let lastRequest = 0;
-  function showImage(src: string) {
+  function showImage(src: string, look: Look) {
     if (!main || main.getAttribute('src') === src) return;
     const request = ++lastRequest;
     const swap = () => {
       if (request !== lastRequest) return;
+      applyLook(look);
       main.src = src;
       if (!reduceMotion.matches) {
         main.animate([{ opacity: 0.3 }, { opacity: 1 }], { duration: 180, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
@@ -449,7 +482,9 @@ const singleImage = primary.images.length <= 1;
 
   function selectThumb(button: HTMLElement) {
     if (!main) return;
-    if (isSafeSrc(button.dataset.src)) showImage(button.dataset.src);
+    if (isSafeSrc(button.dataset.src)) {
+      showImage(button.dataset.src, { kind: button.dataset.kind, focus: button.dataset.focus, alt: button.dataset.alt });
+    }
     thumbs?.querySelectorAll('.thumb').forEach((t) => t.setAttribute('aria-current', String(t === button)));
   }
 
@@ -457,11 +492,14 @@ const singleImage = primary.images.length <= 1;
     if (!thumbs) return;
     thumbs.classList.toggle('hidden', images.length <= 1);
     thumbs.replaceChildren(
-      ...images.map(({ src, thumb }, i) => {
+      ...images.map(({ src, thumb, kind, focus, alt }, i) => {
         const b = document.createElement('button');
         b.type = 'button';
         b.className = (thumbs.querySelector('.thumb') as HTMLElement | null)?.className ?? 'thumb';
         b.dataset.src = src;
+        if (kind) b.dataset.kind = kind;
+        if (focus) b.dataset.focus = focus;
+        if (alt) b.dataset.alt = alt;
         b.setAttribute('aria-label', `Imaginea ${i + 1}`);
         b.setAttribute('aria-current', String(i === 0));
         const img = document.createElement('img');
@@ -491,8 +529,9 @@ const singleImage = primary.images.length <= 1;
       }
       if (!images.length || !main) return;
       document.querySelectorAll('.swatch').forEach((s) => s.setAttribute('aria-pressed', String(s === swatch)));
-      showImage(images[0].src);
-      main.alt = `${document.querySelector('h1')?.textContent ?? ''}, ${swatch.dataset.name ?? ''}`;
+      // Alt-ul implicit: numele produsului + culoarea; poza pe model își aduce alt-ul propriu din date.
+      main.dataset.defaultAlt = `${document.querySelector('h1')?.textContent ?? ''}, ${swatch.dataset.name ?? ''}`;
+      showImage(images[0].src, images[0]);
       renderThumbs(images);
     });
   });
