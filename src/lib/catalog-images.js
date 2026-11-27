@@ -22,8 +22,9 @@ export function cardSrc(src) {
 /**
  * Culoarea cardului (intrarea din colours[]); colours[0] dacă nu e setat cardColour sau codul nu se găsește
  * (schema pică oricum la un cardColour inexistent, vezi src/lib/product-schema.ts).
- * @param {CatalogProduct} data
- * @returns {CatalogColour}
+ * @template {CatalogProduct} T
+ * @param {T} data
+ * @returns {T['colours'][number]}
  */
 export function cardColour(data) {
   const wanted = data.cardColour;
