@@ -42,6 +42,19 @@ Grupurile `klein` și `vlm` (~16 GB și ~9 GB) nu se descarcă înainte de T4; u
 - `birefnet_load.py`: BiRefNet (cod MIT vendorizat în `vendor/birefnet`, weights din safetensors) -> mască soft PNG 8 biți.
 - `sam_load.py`: smoke SAM 2.1 (`Sam2Model` + `Sam2Processor`, `use_safetensors`, `local_files_only`) -> mască PNG.
 
+- `zones_lib.py`: bibliotecă deterministă (Pillow + numpy): morfologie cu disc, construcția L/E/I, validarea invariantelor, I/O pentru `zone.json` și măști.
+- `zone_specs.json`: specificația per produs (parametri, cutii/puncte/poligoane pentru marcaje critice și interior, matte ales cu motiv).
+- `build_zones.py`: matte (BiRefNet + prag pe alb, comparate) + SAM 2.1 + L/E/I -> `zone.json`, măști PNG și `zone_overlay.png` într-un director NOU.
+- `verify_zones.py`: `--zone-dir <dir> --source <jpg>`; cod 0 doar dacă toate invariantele (marcaje critice 100% în L, I strict interior, E în banda de 1-3 px, hash-uri, sha256 sursă) sunt respectate.
+
+```sh
+RUN='mise exec uv@0.13.6 -- uv run --project "<worktree>/scripts/scene" --frozen python -I'
+$RUN scripts/scene/build_zones.py --source <jpg> --spec scripts/scene/zone_specs.json --product S476YE --models-dir <models> --out <director nou>
+$RUN scripts/scene/verify_zones.py --zone-dir <director> --source <jpg>
+```
+
+Testele zonelor (`tests/scene-zones.test.mjs`) rulează pe imagini sintetice, fără modele; `verify_zones.py` merge și cu `uv run --no-project --with pillow --with numpy`.
+
 Exemplu:
 
 ```sh
