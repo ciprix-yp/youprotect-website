@@ -19,7 +19,10 @@
 - Fiecare pagină are PR-ul ei, cu link de preview; owner-ul o aprobă pe iPhone.
 
 **Urmează** (detaliile sunt în SEO-003, `02-BACKLOG.md`):
-1. Rescrierea pe pagini, începând cu `/echipamente-protectie-satu-mare/`.
+1. Rescrierea pe pagini e gata, toate paginile sunt live (PR #90–#124, ultima `/cum-lucram/` pe 27.11.2026).
+   Sursele din ghiduri le verifică lunar `scripts/seo/check-sources.mjs`. Rămân punctele din auditul de încărcare
+   cognitivă (sesiunea 44, PR #126), aplicate doar pe măsură ce le aprobă owner-ul. CAT-004 (catalogul interactiv)
+   nu mai așteaptă după texte; owner-ul alege varianta.
 2. 03.12.2026: verificarea indexării fișelor de produs. Claude Desktop le cere zilnic până pe 02.12.
 3. Începutul lui decembrie: clicurile pe căutările generale și măsurătoarea ChatGPT.
 4. 18.12.2026: expiră suprimarea alertei picomatch (GHSA-fc5q-39xc-vjpf) din `osv-scanner.toml`. Dacă există între timp

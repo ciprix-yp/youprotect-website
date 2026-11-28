@@ -334,9 +334,12 @@ Format task:
     le citește la câteva minute după cerere). Fișele de produs: o sarcină programată în Claude Desktop cere câte 10 pe
     zi, la 11:00, între 25.11 și 02.12.2026, în ordinea categoriilor.
   - Next action:
-    1. Rescrierea textelor pagină cu pagină (D-2026-11-23-01), cu `08-GHID_CONTINUT.md` §0 și §7 și harta din `09`.
-       Ordinea: pagina Satu Mare, catalogul, personalizarea (cu „uniforme de lucru”), Despre noi (doar cu povestea
-       factuală de la owner, §7), apoi restul. Un PR cu link de preview pe rând; owner-ul aprobă pe telefon.
+    1. `DONE` (27.11.2026): rescrierea textelor pagină cu pagină (D-2026-11-23-01), fiecare cu PR-ul și aprobarea
+       owner-ului pe telefon: Satu Mare (#90), catalogul (#94), personalizarea (#95), Despre noi (#97), industriile
+       (#98, #99, #101), testarea (#111), contactul (#112), calculatorul (#113), ghidurile (#114, #116, #117, #118,
+       #123) și `/cum-lucram/` (#124). În 27.11, MASCOT și-a mutat site-ul și patru surse din ghidul despre haine
+       dădeau 404; de atunci `scripts/seo/check-sources.mjs` verifică lunar toate sursele ghidurilor și ale paginilor
+       de marcă (`documente-lunar.yml`).
     2. 03.12.2026: `gsc.mjs inspect` pe toate fișele de produs; ce n-a intrat devine o listă scurtă pentru Claude
        Desktop.
     3. Începutul lui decembrie: clicurile pe căutările generale față de baza din 22.08–19.11.2026 și a doua măsurătoare
