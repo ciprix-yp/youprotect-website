@@ -8,12 +8,14 @@
 // când diferă de ea (dalele de categorie și og:image rămân pe packshot), plus pentru orice altă poză pe model
 // (studio/scenă) din galerie, ca schimbarea culorii să păstreze scara omului.
 // Rulează după fetch_images_*.py și assemble_*.py, la fiecare produs nou: npm run catalog:cards [-- --force]
-// tests/catalog-cards.test.mjs pică dacă un produs publicat nu are miniatura.
+// Tot de aici vine <nume>-print.jpg (600 px, JPEG pe fond alb, din colours[0].images[0]), pe care /catalog/ o folosește
+// la „Salvează ca PDF” (src/lib/catalog-images.js, printSrc).
+// tests/catalog-cards.test.mjs pică dacă un produs publicat nu are miniatura sau varianta pentru PDF.
 import { readdirSync, readFileSync, statSync, existsSync, writeFileSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { cardImage, cardSrc, packshotImage } from '../../src/lib/catalog-images.js';
+import { cardImage, cardSrc, packshotImage, printSrc } from '../../src/lib/catalog-images.js';
 import { CARD_HEIGHT, CARD_WIDTH, contentBox, planCard } from './card-layout.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
@@ -99,5 +101,16 @@ for (const name of readdirSync(PRODUCTS).filter((n) => n.endsWith('.json')).sort
     const note = bytes.length > TARGET_BYTES ? ' (peste ținta de 60 KB)' : '';
     console.log(`${card}: ${photo.kind}, ${Math.round(statSync(input).size / 1024)} KB -> ${Math.round(bytes.length / 1024)} KB${note}`);
   }
+  // Pentru PDF: JPEG fără transparență (fondul transparent ar ieși negru), alb ca fondul pozelor de produs.
+  const src = data.colours[0].images[0].src;
+  const printFile = printSrc(src);
+  if (printFile === src) continue; // poză externă: PDF-ul folosește poza mare
+  const input = publicFile(src);
+  const print = publicFile(printFile);
+  if (force || !existsSync(print) || statSync(print).mtimeMs < statSync(input).mtimeMs) {
+    await sharp(input).resize({ width: 600, height: 600, fit: 'inside', withoutEnlargement: true }).flatten({ background: '#ffffff' }).jpeg({ quality: 80, mozjpeg: true }).toFile(print);
+    made += 1;
+    console.log(`${printSrc(src)}: ${Math.round(statSync(print).size / 1024)} KB`);
+  }
 }
-console.log(`miniaturi noi: ${made}`);
+console.log(`variante noi: ${made}`);

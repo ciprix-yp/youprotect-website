@@ -1,0 +1,897 @@
+---
+// Catalogul de răsfoit (/catalog/, CAT-004, D-2026-11-28-01): îl trimitem clienților după apel, ca răspuns la „Trimiteți-mi
+// un catalog” (obiecția 9 din PROJECT_OS/09-HARTA-CUVINTE-CHEIE.md). Se generează din fișele publicate, ca /produse/:
+// la fiecare build e la zi. Pe telefon e o pagină pe ecran, pe desktop două alăturate; glisezi sau folosești săgețile.
+// Nu intră în Google (noindex și nu e în sitemap): conținutul e al fișelor, care sunt deja indexate.
+// Paginile au proporția A (1 : 1,414), iar textul din ele se scalează cu lățimea paginii (unități cqi).
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteListButton from '../components/products/QuoteListButton.astro';
+import ContactIcon from '../components/global/ContactIcon.astro';
+import { activeBrandPages } from '../lib/catalog-brands';
+import { bookSections, coverItems, editionLabel, pickBenefits, splitContents, FRONT_PAGES } from '../lib/catalog-book';
+import { toCardProps } from '../lib/product-card';
+import { printSrc } from '../lib/catalog-images.js';
+import { CTA_DISCUSS, RESPONSE_TIME, RISK_FREE_TESTING, SITE } from '../lib/site';
+import { whatsappHref } from '../lib/whatsapp';
+
+const entries = await getCollection('products', ({ data }) => data.status === 'published');
+const sections = bookSections(entries);
+const [contentsA, contentsB] = splitContents(sections);
+const productCount = sections.reduce((n, s) => n + s.items.length, 0);
+const lastPage = FRONT_PAGES + productCount + 1;
+
+const brandNames = activeBrandPages(entries.map((e) => e.data)).map((b) => b.name);
+const brandsText = brandNames.length > 1 ? `${brandNames.slice(0, -1).join(', ')} și ${brandNames.at(-1)}` : brandNames.join('');
+const edition = editionLabel(new Date());
+const cover = coverItems(sections).map((e) => ({ ...toCardProps(e), print: printSrc(e.data.colours[0].images[0].src) }));
+const responseTime = RESPONSE_TIME.replace(/ (\S+)$/, ' $1');
+const phone = SITE.telephoneDisplay.replace(/ /g, ' ');
+const waHref = whatsappHref('/catalog/');
+
+/** Poza de 600 px pe telefon, originalul (1100–1200 px) pe ecranele mari și dense. */
+const productSrcset = (card: string, full: string) => (card === full ? undefined : `${card} 600w, ${full} 1200w`);
+const productSizes = '(min-width: 1024px) 26rem, calc(100vw - 4rem)';
+
+const pages = sections.flatMap((s) =>
+  s.items.map((entry, i) => {
+    const card = toCardProps(entry);
+    const d = entry.data;
+    return {
+      entry,
+      card,
+      section: s,
+      first: i === 0,
+      full: d.colours[0].images[0].src,
+      model: d.supplier.model,
+      benefits: pickBenefits(d.benefits),
+      sizes: d.sizes.summary,
+      logo: Boolean(d.personalization && d.personalization.placements.length > 0),
+    };
+  }),
+);
+
+const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white';
+---
+
+<BaseLayout
+  title="Catalog de răsfoit: protecție și haine de lucru"
+  description={`Catalogul You Protect de răsfoit: echipamente de protecție și haine de lucru ${brandsText}, cu link spre fiecare fișă. Prețurile le primești în ofertă.`}
+  noindex
+>
+  <div class="cb">
+    <div class="cb-frame">
+      <div class="cb-book" data-cb-book tabindex="0" role="region" aria-label="Catalogul, pagină cu pagină">
+        <!-- 1. Coperta -->
+        <section class="cb-page" id="coperta" data-cb-label="Copertă" aria-labelledby="cb-title">
+          <div class="cb-in cb-cover">
+            <div class="cb-brand">
+              <img src="/images/logo-yp-clean.webp" alt="" width="192" height="192" class="cb-logo" />
+              <span>You&nbsp;Protect</span>
+            </div>
+            <p class="cb-eyebrow">Catalog · {edition}</p>
+            <h1 id="cb-title" class="cb-h1">Echipamente de protecție și haine de&nbsp;lucru</h1>
+            <p class="cb-lead">Pentru echipe de pe șantier, din depozit și din hală, de la {brandsText}.</p>
+            <div class="cb-mosaic">
+              {cover.map((c) => (
+                <div class="cb-tile img-well">
+                  <img src={c.image} alt={c.name} width="600" height="600" fetchpriority="high" data-print={c.print} />
+                </div>
+              ))}
+            </div>
+            <p class="cb-site">youprotect.ro</p>
+          </div>
+        </section>
+
+        <!-- 2. Cum lucrăm -->
+        <section class="cb-page" id="cum-lucram" data-cb-label="Cum lucrăm" aria-labelledby="cb-how">
+          <div class="cb-in">
+            <header class="cb-head"><span>Cum lucrăm</span><span>2</span></header>
+            <h2 id="cb-how" class="cb-h2">Cum lucrăm cu&nbsp;tine</h2>
+            <ol class="cb-steps">
+              <li>
+                <span class="cb-step-n" aria-hidden="true">1</span>
+                <div>
+                  <h3 class="cb-h3">Ne spui ce face echipa și unde&nbsp;lucrează</h3>
+                  <p>
+                    Ce folosesc oamenii acum și ce nu merge. Poți proba și în showroom-ul din&nbsp;Vetiș.
+                  </p>
+                </div>
+              </li>
+              <li>
+                <span class="cb-step-n" aria-hidden="true">2</span>
+                <div>
+                  <h3 class="cb-h3">Primești recomandarea pe roluri și&nbsp;oferta</h3>
+                  <p>
+                    Prețurile nu sunt în catalog: le primești în ofertă, {responseTime}.
+                  </p>
+                </div>
+              </li>
+              <li>
+                <span class="cb-step-n" aria-hidden="true">3</span>
+                <div>
+                  <h3 class="cb-h3">Testezi înainte să echipezi toată&nbsp;firma</h3>
+                  <p>
+                    {RISK_FREE_TESTING.short}{' '}
+                    <a href={RISK_FREE_TESTING.href} class={linkInline}>{RISK_FREE_TESTING.linkLabel}</a>
+                  </p>
+                </div>
+              </li>
+            </ol>
+            <div class="cb-actions">
+              <a href="/programeaza-discutie/" class="cb-btn cb-btn-primary" data-track-location="catalog-rasfoire">{CTA_DISCUSS}</a>
+              <a href={waHref} target="_blank" rel="noopener noreferrer" class="cb-btn cb-btn-secondary" data-track-location="catalog-rasfoire">
+                <ContactIcon name="whatsapp" class="cb-icon" />WhatsApp
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3–4. Cuprinsul -->
+        {[contentsA, contentsB].map((part, i) => (
+          <section
+            class="cb-page"
+            id={i === 0 ? 'cuprins' : 'cuprins-2'}
+            data-cb-label="Cuprins"
+            aria-label={i === 0 ? 'Cuprins' : 'Cuprins, continuare'}
+          >
+            <div class="cb-in cb-in-toc">
+              <header class="cb-head"><span>Cuprins</span><span>{3 + i}</span></header>
+              {i === 0 ? <h2 class="cb-h2 cb-toc-title">Cuprins</h2> : <p class="cb-h2 cb-toc-title cb-h2-ghost" aria-hidden="true">Cuprins</p>}
+              <ul class="cb-toc">
+                {part.map((s) => (
+                  <li>
+                    <a href={`#categoria-${s.key}`} data-cb-jump>
+                      <span>{s.label}</span>
+                      <span class="cb-toc-n">{s.firstPage}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ))}
+
+        <!-- Câte un produs pe pagină -->
+        {pages.map((p, i) => {
+          const n = FRONT_PAGES + 1 + i;
+          const href = `/produse/${p.card.slug}/`;
+          return (
+            <section
+              class="cb-page"
+              id={p.first ? `categoria-${p.section.key}` : `p-${n}`}
+              data-cb-label={p.section.label}
+              aria-label={`Pagina ${n}: ${p.card.name}`}
+            >
+              <div class="cb-in">
+                <header class="cb-head"><span>{p.section.label}</span><span>{n}</span></header>
+                {/* Poza duce la fișă (țintă mare pe telefon); pentru cititoarele de ecran, linkul e „Vezi fișa produsului”. */}
+                <a href={href} class="cb-photo img-well" tabindex="-1" aria-hidden="true">
+                  <img
+                    src={p.card.image}
+                    srcset={productSrcset(p.card.image, p.full)}
+                    data-print={printSrc(p.full)}
+                    sizes={productSizes}
+                    alt={p.card.name}
+                    width="600"
+                    height="600"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+                <h2 class="cb-name">{p.card.name}</h2>
+                <p class="cb-meta">{p.card.brand} · {p.model}</p>
+                {p.card.spec && <p class="cb-spec">{p.card.spec}</p>}
+                <ul class="cb-benefits">
+                  {p.benefits.map((b) => <li>{b}</li>)}
+                </ul>
+                <p class="cb-sizes">
+                  Mărimi: {p.sizes}{p.logo && <span> · Se poate personaliza cu&nbsp;logoul</span>}
+                </p>
+                <footer class="cb-foot">
+                  <a href={href} class="cb-more" aria-label={`Vezi fișa produsului: ${p.card.name}`}>Vezi fișa produsului</a>
+                  <QuoteListButton slug={p.card.slug} name={p.card.name} location="catalog-rasfoire" variant="card" />
+                </footer>
+              </div>
+            </section>
+          );
+        })}
+
+        <!-- Ultima pagină: contactul -->
+        <section class="cb-page" id="contact" data-cb-label="Contact" aria-labelledby="cb-contact">
+          <div class="cb-in">
+            <header class="cb-head"><span>Contact</span><span>{lastPage}</span></header>
+            <h2 id="cb-contact" class="cb-h2">Spune-ne ce face echipa&nbsp;ta</h2>
+            <p class="cb-text">
+              Îți recomandăm ce se potrivește fiecărui rol și îți trimitem oferta {responseTime}.
+            </p>
+            <div class="cb-actions cb-actions-top">
+              <a href="/programeaza-discutie/" class="cb-btn cb-btn-primary" data-track-location="catalog-rasfoire">{CTA_DISCUSS}</a>
+              <a href={waHref} target="_blank" rel="noopener noreferrer" class="cb-btn cb-btn-secondary" data-track-location="catalog-rasfoire">
+                <ContactIcon name="whatsapp" class="cb-icon" />WhatsApp
+              </a>
+            </div>
+            <ul class="cb-contact">
+              <li>
+                <a href={`tel:${SITE.telephone}`} data-track-location="catalog-rasfoire">
+                  <ContactIcon name="phone" class="cb-icon" />{phone}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${SITE.email}`} data-track-location="catalog-rasfoire">
+                  <ContactIcon name="email" class="cb-icon" />{SITE.email}
+                </a>
+              </li>
+              <li>
+                <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer">
+                  <ContactIcon name="pin" class="cb-icon" />
+                  <span>
+                    Showroom: {SITE.address.streetAddress}, {SITE.address.addressLocality}, Satu&nbsp;Mare
+                    <span class="cb-hours">Luni–vineri, 09:00–17:00</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="cb-site cb-site-end">youprotect.ro</p>
+          </div>
+        </section>
+
+        {/* Pe desktop paginile merg câte două: o pagină goală la final, dacă numărul e impar, ca ultima să aibă pereche. */}
+        {lastPage % 2 === 1 && <div class="cb-page cb-blank" aria-hidden="true"></div>}
+      </div>
+    </div>
+
+    <nav class="cb-bar" aria-label="Răsfoire">
+      <a href="#cuprins" class="cb-bar-btn cb-bar-toc" data-cb-jump>
+        <svg class="cb-icon" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h10" />
+        </svg>
+        Cuprins
+      </a>
+      <button type="button" class="cb-bar-btn" data-cb-prev aria-label="Pagina anterioară">
+        <svg class="cb-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+      <button type="button" class="cb-bar-btn" data-cb-next aria-label="Pagina următoare">
+        <svg class="cb-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+      {/* „Salvează ca PDF” (CAT-004, pasul 2, D-2026-11-28-02): browserul face PDF-ul din stilul de tipărire de mai jos. */}
+      <button type="button" class="cb-bar-btn cb-bar-pdf" data-cb-pdf aria-label="Salvează catalogul ca PDF">
+        <svg class="cb-icon" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14" />
+        </svg>
+        <span class="cb-pdf-short" aria-hidden="true">PDF</span><span class="cb-pdf-long" aria-hidden="true">Salvează ca PDF</span>
+      </button>
+      {/* Pe telefon, butonul WhatsApp fix acoperea „Adaugă la ofertă” de pe pagini (Footer.astro); aici e în bară. */}
+      <a href={waHref} target="_blank" rel="noopener noreferrer" class="cb-bar-btn cb-bar-wa" aria-label="Scrie-ne pe WhatsApp" data-track-location="catalog-rasfoire">
+        <ContactIcon name="whatsapp" class="cb-icon" />
+      </a>
+    </nav>
+  </div>
+</BaseLayout>
+
+<script>
+  // Săgețile și cuprinsul mută cartea cu o pagină (pe telefon) sau cu două (pe desktop). Glisarea e nativă (scroll-snap).
+  const book = document.querySelector<HTMLElement>('[data-cb-book]');
+  const prev = document.querySelector<HTMLButtonElement>('[data-cb-prev]');
+  const next = document.querySelector<HTMLButtonElement>('[data-cb-next]');
+  if (book && prev && next) {
+    const pages = [...book.querySelectorAll<HTMLElement>('.cb-page:not(.cb-blank)')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const step = () => (pages.length > 1 ? pages[1].offsetLeft - pages[0].offsetLeft : book.clientWidth);
+    const perView = () => Math.max(1, Math.round((book.clientWidth + 1) / step()));
+    const current = () => Math.round(book.scrollLeft / step());
+    // Animat doar pentru o pagină sau o pereche; un salt din cuprins e instant (o animație peste 40 de pagini durează).
+    const go = (index: number) => {
+      const per = perView();
+      const i = Math.min(Math.max(0, index - (index % per)), pages.length - 1);
+      const smooth = !reduce.matches && Math.abs(i - current()) <= per;
+      book.scrollTo({ left: pages[i].offsetLeft - pages[0].offsetLeft, behavior: smooth ? 'smooth' : 'auto' });
+    };
+    const update = () => {
+      const i = current();
+      prev.disabled = i <= 0;
+      next.disabled = i + perView() >= pages.length;
+    };
+    let frame = 0;
+    book.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    }, { passive: true });
+    addEventListener('resize', update);
+    prev.addEventListener('click', () => go(current() - perView()));
+    next.addEventListener('click', () => go(current() + perView()));
+    document.addEventListener('keydown', (e) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      if ((e.target as Element | null)?.closest?.('input, textarea, select, [contenteditable]')) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        go(current() + (e.key === 'ArrowRight' ? perView() : -perView()));
+      }
+    });
+    // Cuprinsul și „Cuprins” din bară: pagina țintă, fără ca fereastra să sară în sus sau în jos.
+    const jumpTo = (hash: string) => {
+      let id = '';
+      try {
+        id = decodeURIComponent(hash.slice(1));
+      } catch {
+        return false; // un # stricat în adresă (de exemplu „%E0”) nu oprește scriptul
+      }
+      const i = pages.findIndex((p) => p.id === id);
+      if (i < 0) return false;
+      go(i);
+      return true;
+    };
+    document.addEventListener('click', (e) => {
+      const a = (e.target as Element | null)?.closest?.('a[data-cb-jump]') as HTMLAnchorElement | null;
+      if (a && jumpTo(a.hash)) {
+        e.preventDefault();
+        history.replaceState(null, '', a.hash);
+      }
+    });
+    if (location.hash) jumpTo(location.hash);
+    update();
+  }
+
+  // „Salvează ca PDF”: înainte de fereastra de tipărire a browserului (acolo alegi „Salvează ca PDF”), fiecare poză
+  // trece pe varianta JPEG de 600 px (data-print; cu WebP, PDF-ul avea 13–44 MB) și se încarcă (pozele sunt lazy).
+  // Cu Cmd/Ctrl+P, beforeprint face același schimb, dar fără să aștepte încărcarea.
+  const loadAll = () => {
+    const imgs = [...document.querySelectorAll<HTMLImageElement>('[data-cb-book] img')];
+    for (const img of imgs) {
+      img.loading = 'eager';
+      const jpg = img.dataset.print;
+      if (jpg && !img.src.endsWith(jpg)) {
+        img.removeAttribute('srcset');
+        img.src = jpg;
+      }
+    }
+    return imgs.map((img) =>
+      img.complete
+        ? Promise.resolve()
+        : new Promise((done) => {
+            img.addEventListener('load', done, { once: true });
+            img.addEventListener('error', done, { once: true });
+          }),
+    );
+  };
+  addEventListener('beforeprint', () => void loadAll());
+  const pdf = document.querySelector<HTMLButtonElement>('[data-cb-pdf]');
+  pdf?.addEventListener('click', async () => {
+    pdf.disabled = true;
+    pdf.setAttribute('aria-busy', 'true');
+    await Promise.race([Promise.all(loadAll()), new Promise((done) => setTimeout(done, 15_000))]);
+    pdf.disabled = false;
+    pdf.removeAttribute('aria-busy');
+    // Același eveniment ca track() din src/lib/track.ts (importul ar scoate scriptul din pagină, peste 4 KB).
+    dispatchEvent(new CustomEvent('yp:track', { detail: { name: 'catalog_pdf', params: {} } }));
+    print();
+  });
+</script>
+
+<style>
+  /* Lățimea paginii: cât încape pe ecran, sub header (5 rem) și deasupra barei (3,25 rem), la proporția A (1,414).
+     Pe telefoanele mici (iPhone SE) pagina rămâne de cel puțin 20 rem, ca textul să se citească; fereastra derulează puțin. */
+  .cb {
+    --bar: 3.25rem;
+    --gap: 1rem;
+    --pw: min(100vw - 2rem, 30rem, max(20rem, (100svh - 5rem - var(--bar) - 2.25rem) / 1.4142));
+    padding-block: 0.75rem 0.5rem;
+  }
+  @media (min-width: 1024px) {
+    .cb {
+      --pw: min((100vw - 4rem - var(--gap)) / 2, (100svh - 5rem - var(--bar) - 3rem) / 1.4142, 30rem);
+      padding-block: 1.25rem 0.5rem;
+    }
+  }
+  .cb-frame {
+    width: var(--pw);
+    margin-inline: auto;
+  }
+  @media (min-width: 1024px) {
+    .cb-frame {
+      width: calc(var(--pw) * 2 + var(--gap));
+    }
+  }
+  .cb-book {
+    position: relative;
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: 0.75rem;
+  }
+  .cb-book::-webkit-scrollbar {
+    display: none;
+  }
+  .cb-book:focus-visible {
+    outline: 2px solid var(--color-yp-yellow);
+    outline-offset: 4px;
+  }
+  .cb-page {
+    flex: 0 0 var(--pw);
+    height: calc(var(--pw) * 1.4142);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    container-type: inline-size;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: 0.75rem;
+    background: var(--color-yp-surface);
+    box-shadow: var(--shadow-card);
+  }
+  .cb-blank {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .cb-page:nth-child(even) {
+      scroll-snap-align: none;
+    }
+    .cb-blank {
+      display: block;
+      visibility: hidden;
+    }
+  }
+
+  /* Conținutul paginii: totul în cqi (procente din lățimea paginii), ca pagina să arate la fel la orice mărime. */
+  .cb-in {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding: 5.5cqi;
+    font-size: 4.1cqi;
+    line-height: 1.45;
+    color: rgb(255 255 255 / 0.78);
+  }
+  .cb-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 3cqi;
+    font-size: max(0.75rem, 3.2cqi);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.5);
+  }
+  .cb-h1 {
+    margin-top: 3cqi;
+    font-family: var(--font-heading);
+    font-size: 8.6cqi;
+    font-weight: 300;
+    line-height: 1.12;
+    color: #fff;
+  }
+  .cb-h2 {
+    margin-top: 5cqi;
+    font-family: var(--font-heading);
+    font-size: 7cqi;
+    font-weight: 300;
+    line-height: 1.15;
+    color: #fff;
+  }
+  .cb-h2-ghost {
+    visibility: hidden;
+  }
+  /* Cuprinsul: nouă rânduri de 44 px încap și pe iPhone SE doar fără titlul mare (antetul paginii spune „Cuprins”). */
+  .cb-toc-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  @container (min-width: 26rem) {
+    .cb-toc-title {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+    }
+  }
+  .cb-in-toc {
+    padding-block: 4.5cqi;
+  }
+  .cb-h3 {
+    font-size: 4.3cqi;
+    font-weight: 500;
+    line-height: 1.3;
+    color: #fff;
+  }
+  .cb-text {
+    margin-top: 3cqi;
+  }
+
+  /* Coperta */
+  .cb-brand {
+    display: flex;
+    align-items: center;
+    gap: 2.5cqi;
+    font-family: var(--font-heading);
+    font-size: 4.4cqi;
+    color: #fff;
+  }
+  .cb-logo {
+    width: 11cqi;
+    height: 11cqi;
+    object-fit: contain;
+    mix-blend-mode: lighten;
+  }
+  .cb-eyebrow {
+    margin-top: 7cqi;
+    font-size: max(0.75rem, 3.2cqi);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-yp-yellow);
+  }
+  .cb-lead {
+    margin-top: 3cqi;
+    color: rgb(255 255 255 / 0.7);
+  }
+  .cb-mosaic {
+    display: grid;
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2.5cqi;
+    margin-top: 6cqi;
+  }
+  .cb-tile {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 2.5cqi;
+  }
+  .cb-tile img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1cqi;
+  }
+  .cb-site {
+    margin-top: 4cqi;
+    font-size: max(0.75rem, 3.2cqi);
+    letter-spacing: 0.04em;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .cb-site-end {
+    margin-top: auto;
+  }
+
+  /* Cum lucrăm */
+  .cb-steps {
+    display: grid;
+    gap: 4cqi;
+    margin-top: 4cqi;
+  }
+  .cb-steps li {
+    display: grid;
+    grid-template-columns: 8cqi 1fr;
+    gap: 3cqi;
+  }
+  .cb-steps p {
+    margin-top: 1cqi;
+    font-size: 3.8cqi;
+    line-height: 1.4;
+  }
+  .cb-step-n {
+    display: grid;
+    width: 8cqi;
+    height: 8cqi;
+    place-items: center;
+    border: 1px solid rgb(227 252 2 / 0.5);
+    border-radius: 999px;
+    font-size: 3.6cqi;
+    color: var(--color-yp-yellow);
+  }
+  .cb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5cqi;
+    margin-top: auto;
+    padding-top: 4cqi;
+  }
+  .cb-actions-top {
+    margin-top: 0;
+    padding-top: 5cqi;
+  }
+  .cb-btn {
+    display: inline-flex;
+    flex: 1 1 auto;
+    min-height: max(2.75rem, 12cqi);
+    align-items: center;
+    justify-content: center;
+    gap: 2cqi;
+    padding-inline: 5cqi;
+    border-radius: 0.5rem;
+    font-size: 3.7cqi;
+    font-weight: 500;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .cb-btn-primary {
+    background: var(--color-yp-yellow);
+    color: var(--color-yp-black);
+  }
+  .cb-btn-secondary {
+    border: 1px solid rgb(255 255 255 / 0.25);
+    color: #fff;
+  }
+  /* Iconițele din ContactIcon sunt altă componentă: fără :global, stilul paginii nu ajunge la ele. */
+  .cb :global(.cb-icon) {
+    flex-shrink: 0;
+    width: max(1rem, 4.6cqi);
+    height: max(1rem, 4.6cqi);
+  }
+
+  /* Cuprinsul */
+  .cb-toc {
+    margin-top: 2cqi;
+  }
+  .cb-toc a {
+    display: flex;
+    min-height: max(2.75rem, 11.5cqi);
+    align-items: center;
+    justify-content: space-between;
+    gap: 4cqi;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    color: #fff;
+    transition: color 0.2s;
+  }
+  .cb-toc-n {
+    font-variant-numeric: tabular-nums;
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  /* Pagina unui produs: poza ia cât spațiu rămâne după text. */
+  .cb-photo {
+    position: relative;
+    flex: 0 1 52cqi;
+    min-height: 28cqi;
+    margin-top: 3cqi;
+    overflow: hidden;
+    border-radius: 2.5cqi;
+  }
+  .cb-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 4cqi;
+  }
+  .cb-name {
+    margin-top: 3.5cqi;
+    font-size: 5.2cqi;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #fff;
+  }
+  .cb-meta {
+    margin-top: 1cqi;
+    font-size: 3.6cqi;
+    color: rgb(255 255 255 / 0.6);
+  }
+  .cb-spec {
+    margin-top: 0.4cqi;
+    font-size: 3.6cqi;
+    color: var(--color-yp-yellow);
+  }
+  .cb-benefits {
+    display: grid;
+    gap: 1.4cqi;
+    margin-top: 3cqi;
+    font-size: 4cqi;
+    line-height: 1.4;
+  }
+  .cb-benefits li {
+    position: relative;
+    padding-left: 4.5cqi;
+  }
+  .cb-benefits li::before {
+    content: '';
+    position: absolute;
+    left: 0.5cqi;
+    top: 0.62em;
+    width: 1.6cqi;
+    height: 1.6cqi;
+    border-radius: 999px;
+    background: var(--color-yp-yellow);
+  }
+  .cb-sizes {
+    margin-block: 2.5cqi 2cqi;
+    font-size: 3.6cqi;
+    color: rgb(255 255 255 / 0.6);
+  }
+  .cb-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3cqi;
+    margin-top: auto;
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .cb-more {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: rgb(255 255 255 / 0.35);
+  }
+  .cb-foot :global(button) {
+    font-size: 0.875rem;
+  }
+
+  /* Contactul */
+  .cb-contact {
+    margin-top: 5cqi;
+  }
+  .cb-contact a {
+    display: flex;
+    min-height: max(2.75rem, 11.5cqi);
+    align-items: center;
+    gap: 3cqi;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    padding-block: 1.5cqi;
+    color: #fff;
+  }
+  .cb-contact :global(.cb-icon) {
+    color: var(--color-yp-yellow);
+  }
+  .cb-hours {
+    display: block;
+    font-size: 3.6cqi;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  /* Bara de răsfoire: sub carte, la îndemâna degetului. Pe telefon, WhatsApp e aici (butonul fix e ascuns). */
+  .cb-bar {
+    display: flex;
+    height: var(--bar);
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .cb-bar-btn {
+    display: inline-flex;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid rgb(255 255 255 / 0.15);
+    border-radius: 0.5rem;
+    color: #fff;
+    transition:
+      border-color 0.2s,
+      color 0.2s,
+      opacity 0.2s;
+  }
+  .cb-bar-btn:disabled {
+    opacity: 0.35;
+  }
+  .cb-bar-toc {
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .cb-bar :global(.cb-icon) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .cb-bar-wa {
+    color: #25d366;
+  }
+  .cb-bar-pdf {
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .cb-bar-pdf[aria-busy='true'] {
+    cursor: progress;
+  }
+  .cb-pdf-long {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .cb-pdf-short {
+      display: none;
+    }
+    .cb-pdf-long {
+      display: inline;
+    }
+  }
+  @media (min-width: 768px) {
+    .cb-bar-wa {
+      display: none;
+    }
+  }
+  /* Hover doar cu mouse (pe ecranele tactile rămânea „lipit” după atingere), ca în restul site-ului. */
+  @media (hover: hover) and (pointer: fine) {
+    .cb-btn-primary:hover {
+      background: #fff;
+    }
+    .cb-btn-secondary:hover {
+      border-color: var(--color-yp-yellow);
+      color: var(--color-yp-yellow);
+    }
+    .cb-toc a:hover {
+      color: var(--color-yp-yellow);
+    }
+    .cb-more:hover {
+      color: var(--color-yp-yellow);
+    }
+    .cb-contact a:hover {
+      color: var(--color-yp-yellow);
+    }
+    .cb-bar-btn:hover:not(:disabled) {
+      border-color: var(--color-yp-yellow);
+      color: var(--color-yp-yellow);
+    }
+  }
+  /* Tipărirea și „Salvează ca PDF”: fiecare pagină a catalogului pe o foaie A5, cu fondul închis (print-color-adjust),
+     fără header, footer, bară și „Adaugă la ofertă”. Linkurile rămân în PDF: spre fișe, WhatsApp și, din cuprins, spre
+     pagina din PDF. Textul e în cqi, deci foaia arată ca pagina de pe ecran, doar mai mare. */
+  @page {
+    size: 148mm 210mm;
+    margin: 0;
+  }
+  @media print {
+    :global(html),
+    :global(body) {
+      background: var(--color-yp-black) !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    :global(body > :not(main)) {
+      display: none !important;
+    }
+    .cb {
+      --pw: 148mm;
+      padding: 0;
+    }
+    .cb-frame {
+      width: 148mm;
+    }
+    .cb-book {
+      display: block;
+      overflow: visible;
+      border-radius: 0;
+    }
+    .cb-page {
+      height: 210mm;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      break-inside: avoid;
+    }
+    .cb-page + .cb-page {
+      break-before: page;
+    }
+    .cb-blank,
+    .cb-bar,
+    .cb-foot :global(button) {
+      display: none !important;
+    }
+    /* Pe ecran linkul are 14 px, cât „Adaugă la ofertă”; pe foaie, butonul lipsește, iar linkul ține de text. */
+    .cb-more {
+      font-size: 4cqi;
+    }
+  }
+</style>

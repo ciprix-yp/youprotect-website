@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { cardColour, cardImage, cardSrc, packshotImage } from '../src/lib/catalog-images.js';
+import { cardColour, cardImage, cardSrc, packshotImage, printSrc } from '../src/lib/catalog-images.js';
 import { productSchema } from '../src/lib/product-schema.ts';
 import { toCardProps } from '../src/lib/product-card.ts';
 import { CARD_HEIGHT, CARD_WIDTH, contentBox, cropBox, parseFocus, planCard } from '../scripts/catalog/card-layout.mjs';
@@ -278,4 +278,25 @@ test('card: studio cu siluetă îngustă pe pătrat alb umple cutia după tăier
   // fără mărire peste sursă: silueta mică de 100×200 rămâne 100×200
   const small = planCard({ width: 1100, height: 1100, kind: 'studio', content: { left: 0, top: 0, width: 100, height: 200 } });
   assert.deepEqual([small.width, small.height], [100, 200]);
+});
+
+// --- varianta pentru PDF (/catalog/) ---------------------------------------------------------------------------------
+
+test('catalog: printSrc doar pentru pozele locale de produs', () => {
+  assert.equal(printSrc('/images/products/geaca-x/09-PS.webp'), '/images/products/geaca-x/09-PS-print.jpg');
+  assert.equal(printSrc('/images/products/geaca-x/09-PS-card.webp'), '/images/products/geaca-x/09-PS-card.webp');
+  assert.equal(printSrc('https://exemplu.ro/poza.webp'), 'https://exemplu.ro/poza.webp');
+  assert.equal(printSrc(undefined), undefined);
+});
+
+// /catalog/ pune varianta JPEG în locul pozei înainte de „Salvează ca PDF” (altfel PDF-ul are zeci de MB).
+test('catalog: fiecare produs publicat are varianta JPEG pentru PDF', () => {
+  const missing = readdirSync(PRODUCTS)
+    .filter((n) => n.endsWith('.json'))
+    .map((n) => ({ n, data: JSON.parse(readFileSync(join(PRODUCTS, n), 'utf8')) }))
+    .filter(({ data }) => data.status === 'published')
+    .map(({ n, data }) => ({ n, src: data.colours[0].images[0].src }))
+    .filter(({ src }) => printSrc(src) !== src && !existsSync(join(ROOT, 'public', printSrc(src))))
+    .map(({ n, src }) => `${n}: ${printSrc(src)} (npm run catalog:cards)`);
+  assert.deepEqual(missing, []);
 });

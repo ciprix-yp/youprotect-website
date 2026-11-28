@@ -969,3 +969,29 @@
   `tests/certificari-compact.test.mjs` (tabel pliat, fără overflow-x, fără coloana „Marcă”, rând de marcă exact unde
   trebuie, toate codurile prezente); `scripts/check-cert-table-mobile.mjs` măsoară tabelul la 390 px în WebKit. Pe scurt,
   în `08-GHID_CONTINUT.md` §9.
+
+## D-2026-11-28-01
+- CAT-004: catalogul de trimis după apel e al nostru, generat din fișele publicate (owner, 28.11.2026, varianta (a)).
+  Flipsnack (abonament, actualizat de mână) și doar un PDF au fost respinse.
+- Pasul 1: pagina `/catalog/` de răsfoit, câte un produs pe pagină (poză, standard, cel mult două avantaje, mărimi,
+  link spre fișă și „Adaugă la ofertă”), cu copertă, „Cum lucrăm”, cuprins și contact. Pe telefon o pagină pe ecran,
+  pe desktop două; glisare nativă (scroll-snap) și săgeți. Logica paginilor e în `src/lib/catalog-book.ts`, testată
+  în `tests/catalog-book.test.mjs`.
+- Pagina e `noindex` și lipsește din sitemap: conținutul e al fișelor, care sunt deja indexate. Fără prețuri și fără
+  numărul de produse (D-2026-11-21-03). Pe telefon, butonul WhatsApp fix e ascuns aici (acoperea „Adaugă la ofertă”);
+  WhatsApp e în bara de răsfoire.
+- Pasul 2, după aprobarea paginii: PDF-ul cu linkuri, din aceeași pagină.
+- Impact: catalogul se actualizează la fiecare build, odată cu fișele.
+
+## D-2026-11-28-02
+- CAT-004, pasul 2: PDF-ul catalogului îl face browserul, din butonul „Salvează ca PDF” de pe `/catalog/` (owner,
+  28.11.2026). Varianta cu un fișier generat automat la fiecare build a fost respinsă: cerea două dependențe noi și un
+  design de PDF desenat separat de pagină.
+- Stilul de tipărire pune fiecare pagină a catalogului pe o foaie A5 (148 × 210 mm), cu fondul închis
+  (`print-color-adjust: exact`), fără header, footer, bară și „Adaugă la ofertă”. În PDF rămân linkurile spre fișe,
+  WhatsApp, telefon, email și hartă; cuprinsul duce la pagina din PDF.
+- Înainte de tipărire, fiecare poză trece pe o variantă JPEG de 600 px pe fond alb (`<nume>-print.jpg`, din
+  `npm run catalog:cards`, `printSrc` în `src/lib/catalog-images.js`). Chrome păstrează JPEG-ul așa cum e, dar WebP-ul
+  îl reîncodează fără pierderi: cu WebP, PDF-ul avea 13 MB (44 MB pe un ecran Retina), prea mare pentru un email; cu
+  JPEG are 2 MB. `tests/catalog-cards.test.mjs` pică dacă un produs publicat nu are varianta.
+- Impact: PDF-ul e mereu la zi (se face din pagina live). Pe iPhone, salvarea trece prin meniul de tipărire.

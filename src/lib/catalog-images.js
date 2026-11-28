@@ -51,3 +51,14 @@ export function packshotImage(data) {
   const images = data.colours[0].images;
   return images.find((i) => (i.kind ?? 'packshot') === 'packshot') ?? images[0];
 }
+
+/**
+ * „/images/products/x/09-PS.webp” -> „/images/products/x/09-PS-print.jpg”: varianta JPEG de 600 px, pe fond alb, pe care
+ * /catalog/ o pune în locul pozei înainte de „Salvează ca PDF”. Chrome păstrează JPEG-ul așa cum e în PDF, dar WebP-ul
+ * îl reîncodează fără pierderi: cu WebP, PDF-ul ieșea de 13 MB (44 MB pe Retina), prea mare pentru un email.
+ * Orice altă cale rămâne neschimbată.
+ */
+export function printSrc(src) {
+  if (typeof src !== 'string' || !LOCAL_PRODUCT_IMAGE.test(src) || src.endsWith('-card.webp')) return src;
+  return src.replace(/\.webp$/, '-print.jpg');
+}

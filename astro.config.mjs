@@ -34,9 +34,12 @@ export default defineConfig({
     googleReviews,
     react(),
     sitemap({
-      // Nu lista paginile noindex (LP-uri) sau de confirmare în sitemap
+      // Nu lista paginile noindex (LP-uri, catalogul de răsfoit) sau de confirmare în sitemap
       filter: (page) =>
-        !page.includes('/lp/') && !page.includes('/confirmare') && !page.includes('/preview/'),
+        !page.includes('/lp/') &&
+        !page.includes('/confirmare') &&
+        !page.includes('/preview/') &&
+        !page.endsWith('/catalog/'),
     })
   ],
   output: 'static',
