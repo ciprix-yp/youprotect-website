@@ -11,6 +11,7 @@ import ContactIcon from '../components/global/ContactIcon.astro';
 import { activeBrandPages } from '../lib/catalog-brands';
 import { bookSections, coverItems, editionLabel, pickBenefits, splitContents, FRONT_PAGES } from '../lib/catalog-book';
 import { toCardProps } from '../lib/product-card';
+import { printSrc } from '../lib/catalog-images.js';
 import { CTA_DISCUSS, RESPONSE_TIME, RISK_FREE_TESTING, SITE } from '../lib/site';
 import { whatsappHref } from '../lib/whatsapp';
 
@@ -23,7 +24,7 @@ const lastPage = FRONT_PAGES + productCount + 1;
 const brandNames = activeBrandPages(entries.map((e) => e.data)).map((b) => b.name);
 const brandsText = brandNames.length > 1 ? `${brandNames.slice(0, -1).join(', ')} și ${brandNames.at(-1)}` : brandNames.join('');
 const edition = editionLabel(new Date());
-const cover = coverItems(sections).map((e) => toCardProps(e));
+const cover = coverItems(sections).map((e) => ({ ...toCardProps(e), print: printSrc(e.data.colours[0].images[0].src) }));
 const responseTime = RESPONSE_TIME.replace(/ (\S+)$/, ' $1');
 const phone = SITE.telephoneDisplay.replace(/ /g, ' ');
 const waHref = whatsappHref('/catalog/');
@@ -74,7 +75,7 @@ const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white
             <div class="cb-mosaic">
               {cover.map((c) => (
                 <div class="cb-tile img-well">
-                  <img src={c.image} alt={c.name} width="600" height="600" fetchpriority="high" />
+                  <img src={c.image} alt={c.name} width="600" height="600" fetchpriority="high" data-print={c.print} />
                 </div>
               ))}
             </div>
@@ -169,6 +170,7 @@ const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white
                   <img
                     src={p.card.image}
                     srcset={productSrcset(p.card.image, p.full)}
+                    data-print={printSrc(p.full)}
                     sizes={productSizes}
                     alt={p.card.name}
                     width="600"
@@ -256,6 +258,13 @@ const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white
           <path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6" />
         </svg>
       </button>
+      {/* „Salvează ca PDF” (CAT-004, pasul 2, D-2026-11-28-02): browserul face PDF-ul din stilul de tipărire de mai jos. */}
+      <button type="button" class="cb-bar-btn cb-bar-pdf" data-cb-pdf aria-label="Salvează catalogul ca PDF">
+        <svg class="cb-icon" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14" />
+        </svg>
+        <span class="cb-pdf-short" aria-hidden="true">PDF</span><span class="cb-pdf-long" aria-hidden="true">Salvează ca PDF</span>
+      </button>
       {/* Pe telefon, butonul WhatsApp fix acoperea „Adaugă la ofertă” de pe pagini (Footer.astro); aici e în bară. */}
       <a href={waHref} target="_blank" rel="noopener noreferrer" class="cb-bar-btn cb-bar-wa" aria-label="Scrie-ne pe WhatsApp" data-track-location="catalog-rasfoire">
         <ContactIcon name="whatsapp" class="cb-icon" />
@@ -326,6 +335,41 @@ const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white
     if (location.hash) jumpTo(location.hash);
     update();
   }
+
+  // „Salvează ca PDF”: înainte de fereastra de tipărire a browserului (acolo alegi „Salvează ca PDF”), fiecare poză
+  // trece pe varianta JPEG de 600 px (data-print; cu WebP, PDF-ul avea 13–44 MB) și se încarcă (pozele sunt lazy).
+  // Cu Cmd/Ctrl+P, beforeprint face același schimb, dar fără să aștepte încărcarea.
+  const loadAll = () => {
+    const imgs = [...document.querySelectorAll<HTMLImageElement>('[data-cb-book] img')];
+    for (const img of imgs) {
+      img.loading = 'eager';
+      const jpg = img.dataset.print;
+      if (jpg && !img.src.endsWith(jpg)) {
+        img.removeAttribute('srcset');
+        img.src = jpg;
+      }
+    }
+    return imgs.map((img) =>
+      img.complete
+        ? Promise.resolve()
+        : new Promise((done) => {
+            img.addEventListener('load', done, { once: true });
+            img.addEventListener('error', done, { once: true });
+          }),
+    );
+  };
+  addEventListener('beforeprint', () => void loadAll());
+  const pdf = document.querySelector<HTMLButtonElement>('[data-cb-pdf]');
+  pdf?.addEventListener('click', async () => {
+    pdf.disabled = true;
+    pdf.setAttribute('aria-busy', 'true');
+    await Promise.race([Promise.all(loadAll()), new Promise((done) => setTimeout(done, 15_000))]);
+    pdf.disabled = false;
+    pdf.removeAttribute('aria-busy');
+    // Același eveniment ca track() din src/lib/track.ts (importul ar scoate scriptul din pagină, peste 4 KB).
+    dispatchEvent(new CustomEvent('yp:track', { detail: { name: 'catalog_pdf', params: {} } }));
+    print();
+  });
 </script>
 
 <style>
@@ -754,6 +798,25 @@ const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white
   .cb-bar-wa {
     color: #25d366;
   }
+  .cb-bar-pdf {
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .cb-bar-pdf[aria-busy='true'] {
+    cursor: progress;
+  }
+  .cb-pdf-long {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .cb-pdf-short {
+      display: none;
+    }
+    .cb-pdf-long {
+      display: inline;
+    }
+  }
   @media (min-width: 768px) {
     .cb-bar-wa {
       display: none;
@@ -780,6 +843,55 @@ const linkInline = 'text-yp-yellow underline underline-offset-4 hover:text-white
     .cb-bar-btn:hover:not(:disabled) {
       border-color: var(--color-yp-yellow);
       color: var(--color-yp-yellow);
+    }
+  }
+  /* Tipărirea și „Salvează ca PDF”: fiecare pagină a catalogului pe o foaie A5, cu fondul închis (print-color-adjust),
+     fără header, footer, bară și „Adaugă la ofertă”. Linkurile rămân în PDF: spre fișe, WhatsApp și, din cuprins, spre
+     pagina din PDF. Textul e în cqi, deci foaia arată ca pagina de pe ecran, doar mai mare. */
+  @page {
+    size: 148mm 210mm;
+    margin: 0;
+  }
+  @media print {
+    :global(html),
+    :global(body) {
+      background: var(--color-yp-black) !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    :global(body > :not(main)) {
+      display: none !important;
+    }
+    .cb {
+      --pw: 148mm;
+      padding: 0;
+    }
+    .cb-frame {
+      width: 148mm;
+    }
+    .cb-book {
+      display: block;
+      overflow: visible;
+      border-radius: 0;
+    }
+    .cb-page {
+      height: 210mm;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      break-inside: avoid;
+    }
+    .cb-page + .cb-page {
+      break-before: page;
+    }
+    .cb-blank,
+    .cb-bar,
+    .cb-foot :global(button) {
+      display: none !important;
+    }
+    /* Pe ecran linkul are 14 px, cât „Adaugă la ofertă”; pe foaie, butonul lipsește, iar linkul ține de text. */
+    .cb-more {
+      font-size: 4cqi;
     }
   }
 </style>

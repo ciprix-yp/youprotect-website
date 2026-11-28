@@ -346,8 +346,8 @@ Format task:
        ChatGPT (`scripts/seo/ai-visibility.mjs`).
 
 ### CAT-004 Catalog interactiv de trimis după apel
-- Status: `IN_PROGRESS` (28.11.2026: owner-ul a ales varianta (a), D-2026-11-28-01; pasul 1, pagina `/catalog/`, e în
-  PR; pasul 2, PDF-ul, după aprobare)
+- Status: `DONE` (28.11.2026): pagina `/catalog/` (PR #128, D-2026-11-28-01) și butonul „Salvează ca PDF”
+  (D-2026-11-28-02)
 - Owner: `User` (alege varianta), `Claude` (execuție)
 - Scope: cererea owner-ului din 25.11.2026: un catalog profesionist, interactiv, „gen Flipsnack”, cu butoane spre
   „Hai să discutăm” și WhatsApp. Se trimite pe email după apel și răspunde la obiecția 9 din
