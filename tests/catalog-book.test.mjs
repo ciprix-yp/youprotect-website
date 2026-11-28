@@ -115,3 +115,24 @@ guard('/catalog/: numărul din cuprins e pagina pe care începe categoria', () =
   }
   assert.equal(ids.at(-1), 'contact');
 });
+
+guard('/catalog/: fiecare poză are varianta JPEG pentru PDF, iar stilul de tipărire pune o pagină pe o foaie A5', () => {
+  const page = html();
+  const book = page.slice(page.indexOf('data-cb-book'), page.indexOf('class="cb-bar"'));
+  // Logo-ul de pe copertă (192 px) nu contează la mărimea PDF-ului; pozele de produs da.
+  const imgs = (book.match(/<img\b[^>]*>/g) ?? []).filter((img) => !img.includes('cb-logo'));
+  assert.ok(imgs.length > published().length, 'cartea are mai puține poze decât produse');
+  for (const img of imgs) {
+    const print = /data-print="([^"]+)"/.exec(img)?.[1];
+    assert.ok(print, `poză fără data-print: ${img.slice(0, 120)}`);
+    assert.match(print, /^\/images\/products\/[a-z0-9-]+\/[A-Za-z0-9_-]+-print\.jpg$/);
+    assert.ok(existsSync(join(DIST, print)), `${print} lipsește din dist/ (npm run catalog:cards)`);
+  }
+  assert.match(page, /data-cb-pdf/, 'lipsește butonul „Salvează ca PDF”');
+  const css = readdirSync(join(DIST, '_astro'))
+    .filter((f) => f.endsWith('.css'))
+    .map((f) => readFileSync(join(DIST, '_astro', f), 'utf8'))
+    .join('\n');
+  assert.match(css, /@page\{size:148mm 210mm;margin:0\}/);
+  assert.match(css, /body>:not\(main\)\{display:none!important\}/);
+});
