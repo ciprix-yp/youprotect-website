@@ -272,3 +272,6 @@ Manual: fiecare afirmație are sursă; textul sună a om, nu a broșură; fiecar
   - Portretul real (ex. Alexandra Pop pe /despre-noi/): o fotografie primită de la owner, în afara `poze-actiune.json`,
     fără metadate și fără credit vizibil atâta timp cât autorul nu e confirmat; creditul se pune doar după ce autorul e
     confirmat.
+- Întrebări frecvente (27.11.2026, D-2026-11-27-03): se pun doar prin `FaqList` (`src/components/FaqList.astro`),
+  mereu pliate (`<details>` nativ, răspunsurile rămân în HTML), cu același array și pentru JSON-LD `FAQPage`. Tabelul
+  „Certificările fiecărui model” rămâne pliat, pe 2 coloane (model, certificări), fără coloana „Marcă”.

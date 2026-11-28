@@ -13,6 +13,7 @@ import type { BrandPage } from '../../lib/catalog-brands';
 import { PERSONALIZATION_PAGE, productsWithLogoZones } from '../../lib/personalization';
 import { jsonLd } from '../../lib/json-ld';
 import ActionPhoto from '../media/ActionPhoto.astro';
+import FaqList from '../FaqList.astro';
 import { imageGraph } from '../../lib/poze-actiune';
 import { CTA_DISCUSS, RISK_FREE_TESTING, SITE } from '../../lib/site';
 import { btnPrimary, btnSecondary, breadcrumbNav, sectionTitle } from '../../lib/ui';
@@ -172,23 +173,11 @@ const faqSchema = {
     și verificăm dacă îl putem aduce.
   </p>
 
-  <CertificationsTable products={products} headingClass={sectionTitle} />
+  <CertificationsTable products={products} headingClass={sectionTitle} hideBrand />
 
   <section class="mt-14 max-w-3xl" aria-labelledby="intrebari">
     <h2 id="intrebari" class={sectionTitle}>Întrebări frecvente</h2>
-    <dl class="space-y-6">
-      {faq.map((item) => (
-        <div>
-          <dt class="text-yp-white font-medium">{item.q}</dt>
-          <dd class="mt-2 text-yp-white/75 leading-relaxed">
-            {item.a}
-            {item.link && (
-              <a href={item.link.href} class="block w-fit py-2 text-yp-yellow underline underline-offset-4 hover:text-yp-white">{item.link.label}</a>
-            )}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <FaqList items={faq} />
   </section>
 
   <nav class="mt-14 pt-8 border-t border-yp-white/10" aria-label="Alte mărci">

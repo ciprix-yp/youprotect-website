@@ -8,6 +8,7 @@
 import { getCollection } from "astro:content";
 import LegalPage from "../components/legal/LegalPage.astro";
 import { joinRo } from "../lib/catalog-categories";
+import FaqList from "../components/FaqList.astro";
 import { jsonLd } from "../lib/json-ld";
 import { riskFreeExclusions } from "../lib/risk-free-scope";
 import { SITE, CTA_DISCUSS } from "../lib/site";
@@ -139,12 +140,7 @@ const faqSchema = {
   <section aria-labelledby="intrebari">
     <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
     <h2 id="intrebari">Întrebări frecvente despre testare</h2>
-    {faq.map((item) => (
-      <>
-        <h3>{item.q}</h3>
-        <p>{item.a}</p>
-      </>
-    ))}
+    <FaqList items={faq} class="mt-6" />
   </section>
 
   <h2>Cum începi</h2>
