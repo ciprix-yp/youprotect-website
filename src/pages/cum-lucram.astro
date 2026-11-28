@@ -1,27 +1,74 @@
 ---
+// Cum lucrăm (SEO-003, 27.11.2026): pașii spun ce faci tu, ce facem noi și termenul (08 §7, „Cum lucrăm / proces”);
+// răspunde la obiecția „avem deja un furnizor” (09 §5). Doar fapte confirmate: consultanța gratuită, recomandarea pe
+// roluri și planificarea comenzilor (homepage), showroom-ul cu cabină de probă, personalizarea, testarea
+// (RISK_FREE_TESTING), programarea discuției din calendar (/confirmare/) și termenul din RESPONSE_TIME.
 import { jsonLd } from "../lib/json-ld";
 import ActionPhoto from "../components/media/ActionPhoto.astro";
 import { imageGraph } from "../lib/poze-actiune";
 import InnerPageLayout from "../layouts/InnerPageLayout.astro";
-import { CTA_DISCUSS } from "../lib/site";
+import { CTA_DISCUSS, RESPONSE_TIME, RISK_FREE_TESTING, SITE } from "../lib/site";
+
+const inlineLink = "text-yp-white underline decoration-yp-white/30 underline-offset-4 hover:text-yp-yellow";
+
+const industries = [
+  { label: "Construcții și instalații", href: "/industrii/constructii/" },
+  { label: "Transport și logistică", href: "/industrii/logistica/" },
+  { label: "Producție și manufactură", href: "/industrii/productie/" },
+];
+// Termenul de răspuns, cu ultimul cuvânt lipit de cel dinainte, ca „ore.” să nu rămână singur pe rând.
+const responseTime = RESPONSE_TIME.replace(/ (\S+)$/, "\u00a0$1");
+
+// Întrebările de pe pagină, și în FAQPage.
+const faq = [
+  {
+    q: "Cum alegi echipamentele de protecție potrivite pentru echipă?",
+    a: "Pornești de la evaluarea riscurilor de la fiecare loc de muncă: ea spune ce echipament de protecție trebuie, iar angajatorul o face înainte să aleagă (HG\u00a0nr.\u00a01.048/2006, art.\u00a014). Apoi alegi pe rol, după ce face omul și unde lucrează: pe șantier, în depozit, în hală, la frig sau pe ploaie. Oamenii probează mărimea și modelul, iar înainte de comanda mare testezi produsele cu câțiva dintre ei.",
+  },
+  {
+    q: "Cât costă discuția și recomandarea?",
+    a: "Nimic. Consultanța la alegerea echipamentelor de protecție și recomandarea pentru fiecare rol sunt gratuite.",
+  },
+  {
+    q: "În cât timp primesc oferta?",
+    a: `O primești ${RESPONSE_TIME} de la cerere, cu prețurile pentru cantitățile echipei tale.`,
+  },
+  {
+    q: "Avem deja un furnizor. De ce am schimba?",
+    a: "Nu schimbi dintr-odată. Testezi produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru, iar noi măsurăm împreună cât rezistă și cât te costă pe zi de purtare față de ce folosești acum. Pe rolurile unde nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi integral.",
+  },
+  {
+    q: "Cum programez discuția?",
+    a: `Apeși „${CTA_DISCUSS}”, răspunzi la câteva întrebări despre echipă, apoi îți alegi ziua și ora din calendar. Dacă nu alegi, revenim noi ${RESPONSE_TIME}.`,
+  },
+  {
+    q: "Pot veni cu echipa să probeze în Satu\u00a0Mare?",
+    a: `Da. Showroom-ul You Protect e în ${SITE.address.addressLocality}, pe ${SITE.address.streetAddress}, județul Satu\u00a0Mare, și are cabină de probă. Programul e de luni până vineri, între 09:00 și 17:00.`,
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })),
+};
 ---
 
 <InnerPageLayout
-  title="Cum lucrăm — proces de echipare pentru firme"
-  description="Cum lucrăm cu firmele: consultanță gratuită, echipamente de protecție și haine de lucru alese pe riscurile echipei, ofertă personalizată, testare fără riscuri."
-  heroTitle="Partenerul celor care construiesc viitorul"
-  heroSubtitle="La You Protect, nu oferim doar echipamente de protecție și haine de lucru. Construim un proces de achiziție mai clar, mai sigur și mai ușor de gestionat pentru companiile care vor să își echipeze oamenii bine, fără improvizații și fără pierdere inutilă de timp. Direcția noastră este simplă: respect pentru oameni, soluții potrivite și o imagine profesională care se vede în teren."
+  title="Cum alegem echipamentele de protecție pentru firme"
+  description={`Cum lucrăm: discuție gratuită, recomandare pe fiecare rol, ofertă ${RESPONSE_TIME} și testare 90 de zile cu oamenii tăi, înainte de comanda mare.`}
+  heroTitle="Cum alegem echipamentele de protecție pentru firma ta"
+  heroSubtitle={`You Protect, din Vetiș, Satu Mare, te ajută să alegi echipamentele de protecție și hainele de lucru pentru fiecare rol din echipă. Discutăm, primești oferta ${RESPONSE_TIME}, apoi testezi produsele cu câțiva oameni înainte să echipezi toată firma.`}
   breadcrumb="Cum lucrăm"
   heroPhoto="S01"
-  ctaHeading="Pregătit să ridici standardul echipei tale?"
-  ctaSubheading="Consultanță gratuită, recomandări clare și decizii mai simple."
+  ctaHeading="Spune-ne ce face echipa ta"
   ctaButtonText={CTA_DISCUSS}
   ctaSecondaryButtonText="Vezi catalogul"
   ctaSecondaryButtonLink="/produse/"
 >
   <script type="application/ld+json" set:html={jsonLd(imageGraph(["S01", "M05", "M01", "S16"]))} />
 
-  <!-- Client Profile Typographic -->
+  <!-- Pentru cine -->
   <section class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5">
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -29,64 +76,57 @@ import { CTA_DISCUSS } from "../lib/site";
           <h2
             class="text-4xl md:text-5xl md:leading-none font-light text-white leading-tight sticky top-32"
           >
-            Cu cine lucrăm <br />cel mai bine?
+            Pentru echipe de pe șantier, din depozit și din&nbsp;hală
           </h2>
         </div>
 
         <div class="lg:w-2/3 space-y-16">
           <div>
-            <h4
+            <h3
               class="text-2xl text-white font-medium mb-4 flex items-center gap-4"
             >
-              <span class="text-yp-yellow text-xl">01/</span> Companii cu viziune
-            </h4>
+              <span class="text-yp-yellow text-xl">01/</span> Ai deja un furnizor, dar ceva nu merge
+            </h3>
             <p
               class="text-neutral-400 text-lg leading-relaxed pl-10 md:pl-12"
             >
-              Lucrăm bine cu firme care înțeleg că echipamentele de protecție și hainele de lucru nu sunt doar o obligație. Sunt parte din standardul companiei, din respectul față de oameni și din felul în care echipa este percepută în piață. De regulă, ne potrivim cel mai bine cu firme care au deja o bază stabilă și vor să facă lucrurile mai profesionist, nu doar mai ieftin.
+              Mărimile nu se potrivesc, echipamentul se rupe repede sau oamenii nu-l poartă. Nu schimbi furnizorul
+              dintr-odată: testezi produsele cu câțiva oameni pe rol, 90 de zile, și le compari cu ce folosești acum.
             </p>
           </div>
 
           <div>
-            <h4
+            <h3
               class="text-2xl text-white font-medium mb-4 flex items-center gap-4"
             >
-              <span class="text-yp-yellow text-xl">02/</span> Companii care vor claritate și eficiență
-            </h4>
+              <span class="text-yp-yellow text-xl">02/</span> Cumperi o dată sau de două ori pe an
+            </h3>
             <p
               class="text-neutral-400 text-lg leading-relaxed pl-10 md:pl-12"
             >
-              Ne potrivim cu decidenți care s-au săturat de achiziții dezorganizate, comparații fără sfârșit și soluții alese în grabă. Lucrăm bine cu firme care caută un partener consultativ, care apreciază claritatea, durabilitatea și un proces simplificat de achiziție.
+              Planificăm împreună comenzile și livrările, ca oamenii să nu rămână fără echipament între două comenzi.
+              Când ne scrii, poți spune și în ce lună comanzi de obicei.
             </p>
           </div>
 
           <div>
-            <h4
+            <h3
               class="text-2xl text-white font-medium mb-4 flex items-center gap-4"
             >
-              <span class="text-yp-yellow text-xl">03/</span> Industriile noastre forte
-            </h4>
+              <span class="text-yp-yellow text-xl">03/</span> Lucrezi într-una din industriile noastre
+            </h3>
             <div class="pl-10 md:pl-12">
-              <p class="text-neutral-400 text-lg mb-4">Lucrăm în special cu firme din:</p>
               <ul
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 text-neutral-400 text-lg font-light mb-6"
+                class="grid grid-cols-1 md:grid-cols-2 gap-x-4 text-neutral-400 text-lg font-light"
               >
-                <li class="flex items-center gap-3">
-                  <span class="w-1.5 h-1.5 rounded-full bg-white/20"></span> Construcții și instalații
-                </li>
-                <li class="flex items-center gap-3">
-                  <span class="w-1.5 h-1.5 rounded-full bg-white/20"></span> Transport și logistică
-                </li>
-                <li class="flex items-center gap-3">
-                  <span class="w-1.5 h-1.5 rounded-full bg-white/20"></span> Producție și manufactură
-                </li>
-                <li class="flex items-center gap-3">
-                  <span class="w-1.5 h-1.5 rounded-full bg-white/20"></span> Energie, utilități și servicii tehnice
-                </li>
+                {industries.map((i) => (
+                  <li class="flex min-h-11 items-center gap-3">
+                    <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-white/20"></span>
+                    <a href={i.href} class={`${inlineLink} inline-flex min-h-11 items-center`}>{i.label}</a>
+                  </li>
+                ))}
               </ul>
-              <p class="text-neutral-400 text-lg leading-relaxed">
-                Aceste industrii au în comun un lucru important: oamenii din teren reprezintă direct compania, iar echiparea lor influențează atât siguranța, cât și percepția de profesionalism.
-              </p>
+              <p class="mt-4 text-neutral-400 text-lg leading-relaxed">Lucrăm și cu firme din energie, utilități și servicii tehnice.</p>
             </div>
           </div>
 
@@ -94,7 +134,9 @@ import { CTA_DISCUSS } from "../lib/site";
             class="border-l-2 border-yp-yellow pl-6 py-2 mt-8"
           >
             <p class="text-neutral-300 italic">
-              <strong>Notă importantă:</strong> Nu suntem alegerea potrivită pentru companiile care caută strict cel mai mic preț, fără interes pentru calitate, confort, imagine sau potrivirea reală a produselor cu activitatea din teren.
+              Dacă alegi strict după cel mai mic preț pe bucată, nu suntem alegerea potrivită. Noi comparăm costul pe zi
+              de purtare: îl calculezi în <a href="/calculator-cost-echipamente/" class={inlineLink}>calculatorul de cost</a>
+              sau îl măsurăm împreună în&nbsp;test.
             </p>
           </div>
         </div>
@@ -102,12 +144,12 @@ import { CTA_DISCUSS } from "../lib/site";
     </div>
   </section>
 
-  <!-- Cei 4 Piloni -->
+  <!-- Ce primești -->
   <section class="py-16 md:py-24 lg:py-32 bg-yp-black border-y border-white/5">
     <div class="max-w-7xl mx-auto px-4">
       <div class="mb-16 text-center">
         <h2 class="text-3xl md:text-4xl md:leading-10 font-light leading-tight text-white">
-          Ce stă la baza <br />modului nostru de lucru
+          Ce primește echipa ta
         </h2>
       </div>
 
@@ -115,36 +157,40 @@ import { CTA_DISCUSS } from "../lib/site";
         <div class="sd-rise bg-white/5 p-8 md:p-12 rounded-xs border border-white/10 relative overflow-hidden group">
           <div class="absolute top-0 right-0 w-32 h-32 bg-yp-yellow/5 rounded-bl-[100px] -mr-8 -mt-8"></div>
           <div class="text-yp-yellow text-xl font-medium mb-6 border-b border-yp-yellow/30 pb-4 inline-block">01/</div>
-          <h4 class="text-2xl text-white font-medium mb-4 relative z-10">Respect pentru oameni</h4>
+          <h3 class="text-2xl text-white font-medium mb-4 relative z-10">Oamenii probează înainte de comandă</h3>
           <p class="text-neutral-400 text-lg leading-relaxed relative z-10">
-            Credem că felul în care îți echipezi echipa spune cât respect ai pentru ea. De aceea, nu alegem produse doar după fișe tehnice sau preț, ci și după cum se simt oamenii în ele, cât de potrivite sunt pentru activitatea lor și ce mesaj transmite compania prin felul în care îi prezintă.
+            În showroom-ul din Vetiș, probează în cabină mărimea și modelul. Comanda o faci după ce știi ce li se
+            potrivește.
           </p>
         </div>
 
         <div class="sd-rise bg-white/5 p-8 md:p-12 rounded-xs border border-white/10 relative overflow-hidden group">
           <div class="absolute top-0 right-0 w-32 h-32 bg-yp-yellow/5 rounded-bl-[100px] -mr-8 -mt-8"></div>
           <div class="text-yp-yellow text-xl font-medium mb-6 border-b border-yp-yellow/30 pb-4 inline-block">02/</div>
-          <h4 class="text-2xl text-white font-medium mb-4 relative z-10">Imagine profesională</h4>
+          <h3 class="text-2xl text-white font-medium mb-4 relative z-10">O recomandare pentru fiecare rol</h3>
           <p class="text-neutral-400 text-lg leading-relaxed relative z-10">
-            O echipă bine echipată și bine prezentată inspiră mai multă încredere. În relația cu clienții, partenerii sau beneficiarii, imaginea profesională nu este un detaliu. Este parte din percepția de seriozitate, ordine și standard.
+            Pentru fiecare rol primești echipamentul potrivit și motivul pentru care l-am ales. Nu o listă lungă de
+            produse din care să alegi singur.
           </p>
         </div>
 
         <div class="sd-rise bg-white/5 p-8 md:p-12 rounded-xs border border-white/10 relative overflow-hidden group">
           <div class="absolute top-0 right-0 w-32 h-32 bg-yp-yellow/5 rounded-bl-[100px] -mr-8 -mt-8"></div>
           <div class="text-yp-yellow text-xl font-medium mb-6 border-b border-yp-yellow/30 pb-4 inline-block">03/</div>
-          <h4 class="text-2xl text-white font-medium mb-4 relative z-10">Cost real mai bun</h4>
+          <h3 class="text-2xl text-white font-medium mb-4 relative z-10">Compari costul pe zi de&nbsp;purtare</h3>
           <p class="text-neutral-400 text-lg leading-relaxed relative z-10">
-            Nu ne uităm doar la prețul de achiziție, ci la costul real în timp: durabilitate, confort, frecvența înlocuirii, riscul de alegere greșită și timpul pierdut cu decizii slabe. Uneori, produsul aparent mai ieftin costă mai mult după câteva luni.
+            Un produs mai scump poate costa mai puțin pe an. Cât te costă pe an și pe zi de purtare vezi în calculator,
+            cu prețurile tale, iar în test măsurăm împreună.
           </p>
         </div>
 
         <div class="sd-rise bg-white/5 p-8 md:p-12 rounded-xs border border-white/10 relative overflow-hidden group">
           <div class="absolute top-0 right-0 w-32 h-32 bg-yp-yellow/5 rounded-bl-[100px] -mr-8 -mt-8"></div>
           <div class="text-yp-yellow text-xl font-medium mb-6 border-b border-yp-yellow/30 pb-4 inline-block">04/</div>
-          <h4 class="text-2xl text-white font-medium mb-4 relative z-10">Claritate în achiziție</h4>
+          <h3 class="text-2xl text-white font-medium mb-4 relative z-10">Haine de lucru cu logoul firmei</h3>
           <p class="text-neutral-400 text-lg leading-relaxed relative z-10">
-            Procesul nostru este gândit să reducă haosul, comparațiile inutile și deciziile luate în grabă. Te ajutăm să alegi mai clar, să comanzi mai simplu și să ai mai mult control asupra unei zone care, în multe firme, consumă prea mult timp și energie.
+            Tricourile, gecile, vestele și pantalonii primesc logoul prin broderie, serigrafie sau transfer termic, la
+            partenerii noștri.
           </p>
         </div>
       </div>
@@ -160,38 +206,40 @@ import { CTA_DISCUSS } from "../lib/site";
     </div>
   </section>
 
-  <!-- 3 Steps Typographic -->
+  <!-- Pașii -->
   <section
     class="py-16 md:py-24 lg:py-32 bg-[#0a0a0a] border-y border-white/5"
   >
     <div class="max-w-7xl mx-auto px-4">
       <div class="mb-20 text-center">
         <h2 class="text-3xl md:text-4xl md:leading-10 font-light leading-tight text-white">
-          Formula noastră este simplă: <br/>consultăm, recomandăm, testăm
+          În trei pași: <br/>discutăm, primești oferta, testezi
         </h2>
         <p
           class="mt-6 text-neutral-400 text-lg max-w-2xl mx-auto"
         >
-          Nu credem în procese complicate și nici în vânzare cu presiune. Credem într-un mod clar de lucru, care scoate ghicitul din achiziție și îți oferă mai mult control asupra deciziei.
+          Tu ne spui ce face echipa ta. Restul îl pregătim noi, iar discuția și recomandarea sunt gratuite.
         </p>
       </div>
 
       <div class="flex flex-col gap-24 lg:gap-32">
-        <!-- Step 1 -->
+        <!-- Pasul 1 -->
         <div
           class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"
         >
           <div class="col-span-1 lg:col-span-5">
-              <h4 class="text-3xl lg:text-4xl font-light text-white mb-6">
-                Începem cu o consultanță gratuită
-              </h4>
+              <h3 class="text-3xl lg:text-4xl font-light text-white mb-6">
+                Ne spui ce face echipa și unde&nbsp;lucrează
+              </h3>
               <p
                 class="text-lg text-neutral-400 leading-relaxed mb-6"
               >
-                Începem cu o discuție aplicată despre compania ta, echipa ta, condițiile reale de lucru și ce vrei să îmbunătățești în procesul de achiziție. Nu pornim de la catalog, ci de la contextul concret în care oamenii tăi lucrează zilnic.
+                Apeși „{CTA_DISCUSS}”, răspunzi la câteva întrebări și îți alegi ziua și ora din calendar. Dacă nu
+                alegi, revenim noi {responseTime}.
               </p>
               <p class="text-lg text-neutral-400 leading-relaxed">
-                În această etapă, vrem să înțelegem ce folosiți acum, ce nu funcționează bine, unde se pierde timp și unde există lipsă de coerență. Scopul nu este să îți vindem repede ceva, ci să vedem ce ți se potrivește cu adevărat.
+                În discuție ne spui unde lucrează oamenii (pe șantier, în depozit, în hală, la frig sau pe ploaie), ce
+                folosesc acum și ce nu merge. Dacă vrei, veniți în showroom-ul din Vetiș și probați în&nbsp;cabină.
               </p>
           </div>
           <div class="col-span-1 lg:col-span-7">
@@ -208,7 +256,7 @@ import { CTA_DISCUSS } from "../lib/site";
           </div>
         </div>
 
-        <!-- Step 2 -->
+        <!-- Pasul 2 -->
         <div
           class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"
         >
@@ -229,36 +277,39 @@ import { CTA_DISCUSS } from "../lib/site";
           <div
             class="col-span-1 lg:col-span-5 order-1 lg:order-2"
           >
-              <h4 class="text-3xl lg:text-4xl font-light text-white mb-6">
-                Construim o propunere clară și personalizată
-              </h4>
+              <h3 class="text-3xl lg:text-4xl font-light text-white mb-6">
+                Primești recomandarea pe roluri și&nbsp;oferta
+              </h3>
               <p
                 class="text-lg text-neutral-400 leading-relaxed mb-6"
               >
-                După ce înțelegem nevoile, selectăm variante relevante de echipamente individuale de protecție și haine de lucru. Construim o propunere clară, adaptată activității, bugetului, frecvenței de utilizare și imaginii pe care vrei să o transmită echipa ta.
+                Pentru fiecare rol alegem echipamentul de protecție și hainele de lucru potrivite activității, bugetului
+                și imaginii firmei, cu motivul fiecărei alegeri. Oferta o primești {responseTime}.
               </p>
               <p class="text-lg text-neutral-400 leading-relaxed">
-                Aici este una dintre diferențele importante You Protect: nu trimitem doar o listă de produse și un preț. Venim cu recomandări argumentate, astfel încât să înțelegi de ce un produs este potrivit, unde merită să investești și unde poți simplifica.
+                Îți spunem și unde poți simplifica. Dacă vrei logoul firmei pe haine, personalizarea intră în aceeași
+                ofertă, cu un singur&nbsp;interlocutor.
               </p>
           </div>
         </div>
 
-        <!-- Step 3 (ancora #testare: aici duce linkul din „Testezi fără riscuri”, RISK_FREE_TESTING) -->
+        <!-- Pasul 3 (ancora #testare: aici duce linkul din „Testezi fără riscuri”, RISK_FREE_TESTING) -->
         <div
           id="testare"
           class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center scroll-mt-28"
         >
           <div class="col-span-1 lg:col-span-5">
-              <h4 class="text-3xl lg:text-4xl font-light text-white mb-6">
-                Testezi înainte să decizi
-              </h4>
+              <h3 class="text-3xl lg:text-4xl font-light text-white mb-6">
+                Testezi înainte să echipezi toată&nbsp;firma
+              </h3>
               <p
                 class="text-lg text-neutral-400 leading-relaxed mb-6"
               >
-                Înainte să echipezi toată firma, testezi produsele cu 3–5 oameni pe rol, 90 de zile, în condiții reale de lucru. Urmărim împreună uzura și părerea celor care le poartă, apoi calculăm cât te costă pe zi de purtare față de ce folosești acum. Pe rolurile unde nu ies mai eficiente și nu ești mulțumit, îți dăm banii înapoi integral. <a href="/testare-fara-riscuri/" class="text-yp-yellow underline underline-offset-4 hover:text-white">Vezi condițiile</a>
+                {RISK_FREE_TESTING.text} <a href={RISK_FREE_TESTING.href} class="text-yp-yellow underline underline-offset-4 hover:text-white">{RISK_FREE_TESTING.linkLabel}</a>
               </p>
               <p class="text-lg text-neutral-400 leading-relaxed">
-                Pentru noi, testarea fără risc nu este doar un argument comercial, ci o parte firească dintr-o decizie sănătoasă. Alegerea bună nu se face din grabă și nici doar din poze. Se face când ai claritate și încredere că soluția chiar funcționează.
+                Testarea nu se aplică la unele echipamente, de exemplu căști, hamuri sau măști: lista e pe pagina cu
+                condițiile. După test comanzi pentru toată echipa, iar noi livrăm în toată&nbsp;România.
               </p>
           </div>
           <div class="col-span-1 lg:col-span-7">
@@ -276,7 +327,7 @@ import { CTA_DISCUSS } from "../lib/site";
         </div>
       </div>
 
-      <!-- CTA after steps -->
+      <!-- CTA după pași -->
       <div class="mt-20 flex flex-col sm:flex-row justify-center items-center gap-4">
         <a href="/programeaza-discutie/"
             class="inline-flex h-12 items-center justify-center rounded-lg bg-yp-yellow px-6 text-sm font-medium text-yp-black transition-colors hover:bg-white">
@@ -290,12 +341,12 @@ import { CTA_DISCUSS } from "../lib/site";
     </div>
   </section>
 
-  <!-- Essential Aspects / Features Typographic Grid -->
+  <!-- Ce mai include -->
   <section class="py-16 md:py-24 lg:py-32 bg-yp-black">
     <div class="max-w-7xl mx-auto px-4">
       <div class="mb-16 text-center lg:text-left">
         <h2 class="text-xl md:text-2xl text-white font-light tracking-wide">
-          Ce include, în mod normal, colaborarea cu You Protect:
+          Ce mai include colaborarea cu You&nbsp;Protect
         </h2>
       </div>
 
@@ -303,45 +354,80 @@ import { CTA_DISCUSS } from "../lib/site";
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-12"
       >
         <div>
-          <h5
+          <h3
             class="text-white text-lg font-medium mb-3 border-b border-white/10 pb-3"
           >
-            Livrări programate
-          </h5>
+            Consultanță gratuită
+          </h3>
           <p class="text-neutral-400 text-sm">
-            Te ajutăm să planifici mai bine aprovizionarea, ca să reduci urgențele, lipsurile și comenzile făcute în grabă.
+            Discuția despre echipă și recomandarea pe roluri nu te costă nimic.
           </p>
         </div>
         <div>
-          <h5
+          <h3
             class="text-white text-lg font-medium mb-3 border-b border-white/10 pb-3"
           >
-            Costuri transparente
-          </h5>
+            O singură ofertă
+          </h3>
           <p class="text-neutral-400 text-sm">
-            Primești claritate în ofertare, fără costuri ascunse și fără surprize care apar după ce decizia a fost deja luată.
+            Echipamentul de protecție, hainele de lucru și personalizarea cu logo vin într-o singură ofertă, de la
+            You&nbsp;Protect.
           </p>
         </div>
         <div>
-          <h5
+          <h3
             class="text-white text-lg font-medium mb-3 border-b border-white/10 pb-3"
           >
-            Identitate profesională coerentă
-          </h5>
+            Documentele producătorului
+          </h3>
           <p class="text-neutral-400 text-sm">
-            Pe lângă protecție și funcționalitate, te ajutăm să construiești o imagine coerentă prin haine de lucru și articole personalizate potrivite firmei tale.
+            În catalog, fiecare produs are fișa lui, cu documentele producătorului și, unde există, standardele declarate
+            de el.
           </p>
         </div>
         <div>
-          <h5
+          <h3
             class="text-white text-lg font-medium mb-3 border-b border-white/10 pb-3"
           >
-            Suport și după livrare
-          </h5>
+            Livrare în toată România
+          </h3>
           <p class="text-neutral-400 text-sm">
-            Rămânem alături de tine și după comandă, pentru ajustări, comenzi recurente, personalizare și continuitate în colaborare.
+            Avem baza în Vetiș, județul Satu Mare, și livrăm firmelor din toată țara.
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Întrebări frecvente -->
+  <section class="py-16 md:py-24 bg-[#050505]" aria-labelledby="intrebari">
+    <script type="application/ld+json" set:html={jsonLd(faqSchema)} />
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="max-w-3xl">
+        <h2 id="intrebari" class="text-3xl md:text-4xl md:leading-10 font-light text-white leading-tight">
+          Întrebări frecvente despre cum lucrăm
+        </h2>
+        <!-- Pliate, ca pe homepage (auditul de încărcare cognitivă, aprobat de Ciprian pe 27.11.2026); răspunsurile pe
+             greutate normală (08 §9). FAQPage rămâne cu toate răspunsurile. -->
+        <div class="mt-10 flex flex-col gap-3">
+          {faq.map((item) => (
+            <details class="group border border-white/10 bg-[#0f0f0f] p-6 [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-white">
+                {item.q}
+                <svg class="h-6 w-6 shrink-0 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed text-yp-white/75">
+                <p>{item.a}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+        <p class="mt-10 text-neutral-400 leading-relaxed">
+          Pe larg, în ghidurile despre <a href="/ghiduri/cost-echipament-protectie-muncitor/" class={inlineLink}>costul echipamentului pe muncitor</a>
+          și <a href="/ghiduri/haine-de-lucru-care-rezista/" class={inlineLink}>hainele de lucru rezistente</a>.
+        </p>
       </div>
     </div>
   </section>

@@ -1,20 +1,24 @@
 ---
-// Ghid: cum alegi haine de lucru care rezistă. Faptele despre standarde, țesături, întărituri și întreținere vin din
-// sursele din src/lib/guides.ts (EVS pentru EN ISO 15797 și EN ISO 13688, paginile MASCOT, OEKO-TEX, HG nr. 1.048/2006).
-// Fără afirmația „gramaj mai mare = mai rezistent”: nicio sursă de producător nu o susține. Modelele din catalog se
-// generează din fișele de produs: categoria de întreținere industrială MASCOT, certificarea EN ISO 15797 și
+// Ghid: cum alegi haine de lucru rezistente. Faptele despre standarde, țesături, întărituri și întreținere vin din
+// sursele din src/lib/guides.ts: EVS pentru EN ISO 15797 și EN ISO 13688, MASCOT, OEKO-TEX, HG nr. 1.048/2006.
+// MASCOT și-a mutat site-ul în noiembrie 2026 și a scos paginile despre ProWash®, categoriile de întreținere, materiale și
+// întreținere; le citez din copiile arhivate (verificate pe 27.11.2026). La categoria C2, MASCOT dă „Wash gently”, fără
+// temperatură. Fără afirmația „gramaj mai mare = mai rezistent”: nicio sursă de producător nu o susține. Modelele din
+// catalog se generează din fișele de produs: categoria de întreținere industrială MASCOT, certificarea EN ISO 15797 și
 // întăriturile declarate de producător.
 import { getCollection } from 'astro:content';
 import GuideLayout, { type GuideFaq } from '../../components/guides/GuideLayout.astro';
 import RiskFreeTesting from '../../components/global/RiskFreeTesting.astro';
 import { activeCategoryPages } from '../../lib/catalog-categories';
 import { CATEGORIES, type CategoryKey } from '../../lib/catalog-taxonomy';
-import { guideBySlug } from '../../lib/guides';
-import { RISK_FREE_TESTING, SITE } from '../../lib/site';
+import { guideBySlug, guideHref } from '../../lib/guides';
+import { RESPONSE_TIME, RISK_FREE_TESTING, SITE } from '../../lib/site';
 
 const guide = guideBySlug('haine-de-lucru-care-rezista');
+const costGuide = guideBySlug('cost-echipament-protectie-muncitor');
 const CALCULATOR = '/calculator-cost-echipamente/';
-const HG_1048 = 'https://legislatie.just.ro/Public/DetaliiDocument/249634';
+const HG_1048 = 'https://legislatie.just.ro/Public/DetaliiDocument/253674';
+const phone = SITE.telephoneDisplay.replace(/ /g, ' ');
 const roCollator = new Intl.Collator('ro', { sensitivity: 'base' });
 
 const CLOTHING = new Set<CategoryKey>(['pantaloni', 'geci-jachete', 'tricouri-polo', 'bluze-hanorace', 'veste', 'reflectorizante', 'camasi']);
@@ -24,16 +28,21 @@ const clothing = published.filter((e) => CLOTHING.has(e.data.category)).sort((a,
 // Categoria de întreținere industrială MASCOT, așa cum e pe fișă („A1”, „A0 (alb) și A1 (bleumarin închis)”).
 const careCategory = (care: string[]): string | null =>
   care.map((c) => c.match(/^Categoria de întreținere industrială (.+)$/)?.[1]).find((c) => c !== undefined) ?? null;
+// Doar codurile, pentru eticheta din rând: „A0 (alb) și A1 (bleumarin închis)” → „A0 / A1”.
+const careCodes = (category: string | null): string | null => category?.match(/\b[ABC][0-3]\b/g)?.join(' / ') ?? null;
 const prowashCode = (certifications: { code: string }[]): string | null =>
   certifications.find((c) => /15797/.test(c.code))?.code ?? null;
 
 const industrial = clothing
-  .map((e) => ({ id: e.id, name: e.data.name, category: careCategory(e.data.care), prowash: prowashCode(e.data.certifications) }))
+  .map((e) => {
+    const category = careCategory(e.data.care);
+    return { id: e.id, name: e.data.name, category, codes: careCodes(category), prowash: prowashCode(e.data.certifications) };
+  })
   .filter((p) => p.prowash !== null || (p.category !== null && p.category.startsWith('A')));
-const domesticCount = clothing.filter((e) => {
+const hasDomestic = clothing.some((e) => {
   const c = careCategory(e.data.care);
   return c !== null && !c.startsWith('A');
-}).length;
+});
 
 // Întăriturile declarate de producător. Din câmpurile „Cusături” și „Întărituri” păstrăm bucățile (despărțite prin „;”)
 // care pomenesc o întăritură, o cusătură rezistentă sau un material de întărire; din „Manșete”, „Genunchi”, „Material” și
@@ -49,7 +58,11 @@ function reinforcements(specs: { label: string; value: string }[]): string[] {
   for (const s of specs) {
     if (SEAMS.has(s.label)) {
       const parts = s.value.split(/;\s*/).filter((p) => SEAM_REINFORCEMENT.test(p));
-      if (parts.length > 0) found.push(`${s.label}: ${lowerFirst(parts.join('; '))}`);
+      if (parts.length === 0) continue;
+      const text = parts.join('; ');
+      // „Cusături: cusătură triplă…” se repetă: când valoarea începe cu numele câmpului, rămâne doar valoarea.
+      const repeats = text.toLocaleLowerCase('ro').startsWith(s.label.slice(0, 5).toLocaleLowerCase('ro'));
+      found.push(repeats ? capitalize(text) : `${s.label}: ${lowerFirst(text)}`);
     } else if (DETAILS.has(s.label)) {
       for (const part of s.value.split(/[;,]\s*/).filter((p) => REINFORCEMENT.test(p))) {
         found.push(s.label === 'Material' || s.label === 'Alte detalii' ? capitalize(part) : `${s.label}: ${lowerFirst(part)}`);
@@ -65,121 +78,118 @@ const reinforced = clothing
 const categoryLinks = activeCategoryPages(published.map((e) => ({ category: e.data.category }))).filter((p) =>
   (['pantaloni', 'geci-jachete', 'tricouri-polo', 'bluze-hanorace'] as CategoryKey[]).includes(p.key),
 );
-const pantsPage = categoryLinks.find((p) => p.key === 'pantaloni');
 
 const answer =
-  'Pornești de la felul în care vor fi spălate hainele și de la locurile unde se uzează. Dacă le spală o spălătorie industrială, alegi modele testate după EN ISO 15797, standardul cu procedeele de spălare industrială pentru testarea hainelor de lucru; la MASCOT, modele din categoriile de întreținere industrială A0–A3. Apoi compari țesătura (compoziția și gramajul), întăriturile din zonele expuse, de exemplu CORDURA®, și cusăturile. OEKO-TEX® STANDARD 100 îți spune că textilele au fost testate pentru substanțe nocive, nu cât rezistă. Cât durează un model pe echipa ta afli purtându-l și spălându-l în condițiile tale.';
+  'Hainele de lucru rezistente sunt cele făcute pentru felul în care le speli și pentru locurile unde se rod. Prima întrebare e cine le spală: oamenii, acasă, sau o spălătorie industrială. Pentru spălătorie alegi modele testate după EN ISO 15797, standardul cu procedeele de spălare industrială pentru testarea hainelor de lucru; la MASCOT le recunoști după ProWash® și după categoriile de întreținere A0–A3. Apoi compari țesătura, întăriturile din zonele expuse și cusăturile. Cât ține un model la munca echipei tale afli purtându-l și spălându-l cum o vei face zi de zi.';
 
-// Categoriile de întreținere industrială de pe pagina MASCOT „Product Care”.
+// Categoriile de întreținere industrială MASCOT (copia arhivată a paginii „Industrial washing and care categories”).
 const careCategories = [
-  { cat: 'A0', wash: 'Industrială, după ISO 15797', max: '85 °C', dry: 'În uscător sau în tunel' },
-  {
-    cat: 'A1, A2, A3',
-    wash: 'Industrială, după ISO 15797. A2 e pentru îmbrăcămintea de protecție și cea în două culori, care se spală separat',
-    max: '75 °C',
-    dry: 'În uscător sau în tunel',
-  },
-  { cat: 'B1', wash: 'Casnică sau industrială, după ISO 6330', max: '60 °C', dry: 'În uscător' },
-  { cat: 'B2', wash: 'Casnică, după ISO 6330', max: '60 °C', dry: 'În uscător' },
-  { cat: 'B3', wash: 'Casnică, după ISO 6330', max: '60 °C', dry: 'Atârnată, la aer' },
-  { cat: 'C1', wash: 'Casnică, după ISO 6330', max: '40 °C', dry: 'În uscător' },
-  { cat: 'C2', wash: 'Casnică, delicată, după ISO 6330', max: 'sub 40 °C', dry: 'Atârnată, la aer' },
+  { cat: 'A0', wash: 'Industrială, după ISO 15797', max: '85 °C', dry: 'Uscător sau\u00a0tunel' },
+  { cat: 'A1, A2, A3', wash: 'Industrială, după ISO 15797', max: '75 °C', dry: 'Uscător sau\u00a0tunel' },
+  { cat: 'B1', wash: 'Casnică sau industrială, după ISO 6330', max: '60 °C', dry: 'Uscător' },
+  { cat: 'B2', wash: 'Casnică, după ISO 6330', max: '60 °C', dry: 'Uscător' },
+  { cat: 'B3', wash: 'Casnică, după ISO 6330', max: '60 °C', dry: 'Atârnată' },
+  { cat: 'C1', wash: 'Casnică, după ISO 6330', max: '40 °C', dry: 'Uscător' },
+  { cat: 'C2', wash: 'Casnică, după ISO 6330', max: 'Program delicat', dry: 'Atârnată' },
 ];
 
 const faq: GuideFaq[] = [
   {
-    q: 'Cum aleg haine de lucru care să reziste mai mult, ca să nu le schimb la câteva luni?',
-    a: 'Alegi după spălare și după uzură. Dacă hainele merg la o spălătorie industrială, iei modele testate după EN ISO 15797 sau, la MASCOT, din categoriile de întreținere industrială A0–A3. Apoi verifici compoziția și gramajul țesăturii, întăriturile din zonele expuse (de exemplu CORDURA®) și cusăturile, speli după instrucțiunile producătorului și testezi modelele pe câțiva oameni înainte de comanda mare.',
+    q: 'Cum aleg haine de lucru rezistente, ca să nu le schimb la câteva luni?',
+    a: 'Alegi după spălare și după locurile unde se rod. Dacă hainele merg la o spălătorie industrială, iei modele testate după EN ISO 15797 sau, la MASCOT, din categoriile de întreținere A0–A3. Apoi verifici țesătura, întăriturile din zonele expuse (de exemplu CORDURA® la buzunarele holster) și cusăturile. Înainte de comanda mare, testezi modelele pe câțiva oameni și le speli cum le vei spăla zi de zi.',
     link: { href: RISK_FREE_TESTING.href, label: 'Cum funcționează testarea fără riscuri' },
   },
   {
-    q: 'Ce înseamnă EN ISO 15797 pe o haină de lucru?',
-    a: 'Înseamnă că haina a fost testată cu procedeele de spălare și finisare industrială din EN ISO 15797. Standardul e baza pentru verificarea stabilității dimensionale, a culorii, a șifonării, a încrețirii cusăturilor, a scămoșării și a aspectului general. MASCOT explică faptul că EN ISO 15797 nu conține cerințe anume, ci arată cât de bine rezistă un produs la spălarea industrială; modelele MASCOT ProWash® sunt testate după procedeele 8B, 6A și 6B.',
+    q: 'Ce înseamnă EN ISO 15797 pe o haină de lucru?',
+    a: 'Înseamnă că haina a fost testată cu procedeele de spălare și finisare industrială din EN ISO 15797. Pe baza lor se verifică stabilitatea dimensională, culoarea, șifonarea, încrețirea cusăturilor, scămoșarea și aspectul general. Standardul nu are cerințe de trecut: arată cât de bine rezistă haina la spălarea industrială. MASCOT își testează modelele ProWash® după procedeele 8B, 6A și 6B.',
   },
   {
     q: 'Ce înseamnă categoria de întreținere industrială A1 la MASCOT?',
-    a: 'Categoria A1 înseamnă că MASCOT recomandă pentru produs un proces de spălare industrială după ISO 15797, la cel mult 75 °C, evitând balsamul de rufe și înălbitorii pe textilele colorate. Categoriile A0–A3 sunt procese industriale. Categoriile B și C urmează ISO 6330, procedeele de spălare casnică; doar B1 e descrisă și ca proces industrial. MASCOT recomandă un test de spălare și uscare pentru toate produsele, mai ales pentru cele din B și C.',
+    a: 'Categoria A1 înseamnă că MASCOT recomandă spălătoriilor un proces industrial după ISO 15797, la cel mult 75 °C, fără balsam de rufe și fără înălbitori pe textilele colorate. A0–A3 sunt procese industriale. B și C urmează ISO 6330, procedeele de spălare casnică; doar B1 e descrisă și ca proces industrial. MASCOT recomandă un test de spălare și uscare pentru toate produsele, mai ales pentru cele din B și C.',
   },
   {
-    q: 'Înseamnă OEKO-TEX® STANDARD 100 că hainele rezistă mai mult?',
-    a: 'Nu. OEKO-TEX® STANDARD 100 e eticheta pentru textile testate pentru substanțe nocive: fiecare fir, nasture și accesoriu, pe o listă de peste 1.000 de substanțe. Cât rezistă haina la uzură sau la spălarea industrială îți spun alte informații, de exemplu testele după EN ISO 15797 și categoria de întreținere declarată de producător.',
+    q: 'Înseamnă OEKO-TEX® STANDARD 100 că hainele rezistă mai mult?',
+    a: 'Nu. OEKO-TEX® STANDARD 100 e eticheta pentru textile testate pentru substanțe nocive, până la fiecare fir, nasture și accesoriu. Cât rezistă haina la purtare și la spălarea industrială îți spun testele după EN ISO 15797 și categoria de întreținere declarată de producător.',
   },
   {
-    q: 'De unde cumpăr haine de lucru pentru spălare industrială, în Satu Mare?',
-    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${SITE.telephoneDisplay}, iar livrarea se face în toată România. Înainte de comanda mare, poți testa hainele cu câțiva oameni din echipă.`,
-    link: pantsPage ? { href: `/produse/${pantsPage.slug}/`, label: 'Vezi pantalonii de lucru din catalog' } : undefined,
+    q: 'De unde cumpăr haine de lucru pentru spălare industrială, în Satu Mare?',
+    a: `De la You Protect, din Vetiș, județul Satu Mare. Ceri ofertă de pe youprotect.ro sau la ${phone} și o primești ${RESPONSE_TIME}. Livrarea se face în toată România, iar înainte de comanda mare poți testa hainele cu câțiva oameni din echipă.`,
+    link: { href: '/cere-oferta/', label: 'Cere ofertă' },
   },
 ];
 ---
 
 <GuideLayout guide={guide} answer={answer} faq={faq} photo="S02">
   <section aria-labelledby="spalare">
-    <h2 id="spalare">Începe cu spălarea: acasă sau la spălătorie</h2>
+    <h2 id="spalare">Cine le spală: oamenii acasă sau o spălătorie</h2>
     <p>
-      Prima întrebare e cine spală hainele: oamenii, acasă, sau o spălătorie industrială. Pentru hainele care merg la
-      spălătorie există un standard de testare: EN ISO 15797. El descrie procedeele de spălare și finisare industrială cu
-      care se testează hainele de lucru, inclusiv, unde e cazul, unele echipamente de protecție. Pe baza lor se verifică
-      stabilitatea dimensională, culoarea, șifonarea, încrețirea cusăturilor, scămoșarea și aspectul general.
+      Pentru hainele care merg la o spălătorie industrială există un standard de testare: EN ISO 15797. El descrie
+      procedeele și echipamentele cu care se testează hainele de lucru făcute pentru spălare industrială, inclusiv, unde e
+      cazul, unele echipamente de protecție. Pe baza lor se verifică stabilitatea dimensională, culoarea, șifonarea,
+      încrețirea cusăturilor, scămoșarea și aspectul general.
     </p>
     <p>
-      Standardul are opt procedee de spălare și două de uscare, iar laboratorul le alege pe cele potrivite țesăturii și
-      utilizării. Nu dă instrucțiuni spălătoriilor și e o simulare de laborator. De aceea, când stabilești definitiv dacă un
-      model merge cu procesul spălătoriei tale, uneori e indicat să-l testezi chiar în spălătoria aceea.
+      Standardul are opt procedee de spălare și două de uscare, și nu se folosesc toate: se aleg cele potrivite țesăturii și
+      utilizării. EN ISO 15797 nu dă instrucțiuni spălătoriilor. E o simulare de laborator, așa că uneori merită testat
+      modelul chiar în spălătoria care îl va spăla.
     </p>
     <p>
-      MASCOT numește ProWash® produsele care rezistă la spălarea și uscarea industrială. La ele verifică dacă își păstrează
-      forma, cât rezistă cusăturile și țesătura, cât intră la spălat și dacă își schimbă sau lasă culoarea. Testele se fac
-      după procedeele 8B, 6A și 6B din EN ISO 15797. MASCOT explică faptul că standardul nu conține cerințe anume: arată cât
-      de bine rezistă produsul la spălarea industrială.
+      MASCOT numește ProWash® produsele care rezistă la spălarea și uscarea industrială. La ele a testat cât își păstrează
+      forma, cât rezistă cusăturile și țesătura, cât intră la spălat și dacă își schimbă sau lasă culoarea, după procedeele
+      8B, 6A și 6B din EN ISO 15797.
+    </p>
+    <p>
+      Dacă oamenii își spală hainele acasă, contează eticheta. MASCOT recomandă să nu le speli niciodată la o temperatură mai
+      mare decât cea de pe ea. Pe fișele din catalog găsești, la întreținere, temperatura maximă și dacă haina merge
+      în uscător.
     </p>
   </section>
 
   <section aria-labelledby="categorii">
-    <h2 id="categorii">Categoriile de întreținere industrială MASCOT</h2>
+    <h2 id="categorii">Categoriile de întreținere MASCOT: A pentru spălătorie, B și C pentru acasă</h2>
     <p>
       MASCOT dă fiecărui produs o categorie de întreținere industrială, cu procesul de spălare pe care îl recomandă
       spălătoriilor. O găsești și pe fișele din catalogul nostru, la întreținere.
     </p>
     <div class="mt-6 overflow-x-auto" tabindex="0" role="region" aria-label="Tabel: categoriile de întreținere MASCOT, derulează orizontal">
-      <table class="w-full text-sm text-left border-collapse">
+      <table class="w-full text-sm text-left border-separate border-spacing-0">
         <caption class="sr-only">Categoriile de întreținere industrială MASCOT: procesul de spălare, temperatura maximă și uscarea</caption>
         <thead>
-          <tr class="border-b border-yp-white/20">
-            <th scope="col" class="py-3 pr-3 font-medium text-yp-white">Categoria</th>
-            <th scope="col" class="py-3 px-2 font-medium text-yp-white">Spălare</th>
-            <th scope="col" class="py-3 px-2 font-medium text-yp-white">Maximum</th>
-            <th scope="col" class="py-3 pl-2 font-medium text-yp-white">Uscare</th>
+          <tr>
+            <th scope="col" class="border-b border-yp-white/30 py-3 pr-3 font-medium text-yp-white">Categoria</th>
+            <th scope="col" class="border-b border-yp-white/30 py-3 px-2 font-medium text-yp-white">Spălare</th>
+            <th scope="col" class="border-b border-yp-white/30 py-3 px-2 font-medium text-yp-white">Maximum</th>
+            <th scope="col" class="border-b border-yp-white/30 py-3 pl-2 font-medium text-yp-white">Uscare</th>
           </tr>
         </thead>
         <tbody>
           {careCategories.map((c) => (
-            <tr class="border-b border-yp-white/10 align-top">
-              <th scope="row" class="py-3 pr-3 font-medium text-yp-yellow whitespace-nowrap">{c.cat}</th>
-              <td class="py-3 px-2">{c.wash}</td>
-              <td class="py-3 px-2 whitespace-nowrap">{c.max}</td>
-              <td class="py-3 pl-2">{c.dry}</td>
+            <tr class="align-top">
+              <th scope="row" class="border-b border-yp-white/20 py-3 pr-3 font-medium text-yp-yellow whitespace-nowrap">{c.cat}</th>
+              <td class="border-b border-yp-white/20 py-3 px-2">{c.wash}</td>
+              <td class="border-b border-yp-white/20 py-3 px-2">{c.max}</td>
+              <td class="border-b border-yp-white/20 py-3 pl-2">{c.dry}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
     <p class="mt-6">
-      Doar categoriile A urmează procedeele de spălare industrială din ISO 15797. B și C urmează ISO 6330, procedeele de
-      spălare casnică; B1 e descrisă de MASCOT ca proces casnic sau industrial. MASCOT recomandă un test de spălare și uscare pentru toate produsele,
-      mai ales pentru cele din categoriile B și C.
+      Doar categoriile A urmează procedeele industriale din ISO 15797; A2 e pentru îmbrăcămintea de protecție și cea
+      în două culori, care se spală separat. B și C urmează ISO 6330, procedeele de spălare
+      casnică; B1 e descrisă de MASCOT ca proces casnic sau industrial. MASCOT recomandă un test de spălare și uscare pentru
+      toate produsele, mai ales pentru cele din B și C.
     </p>
   </section>
 
   <section aria-labelledby="tesatura">
     <h2 id="tesatura">Țesătura: compoziția și gramajul</h2>
-    <p>
-      MASCOT spune că țesătura potrivită depinde de industrie și de mediul în care lucrezi. Câteva repere de la producător:
-    </p>
+    <p>Ce țesătură se potrivește depinde, spune MASCOT, de industrie și de mediul în care lucrezi. Câteva repere de la producător:</p>
     <ul class="mt-4 list-disc pl-5 space-y-2">
       <li>Bumbacul 100 % e un material natural, moale și foarte comod la purtare.</li>
       <li>
-        Amestecul de poliester și bumbac dă, după MASCOT, o țesătură robustă, care își păstrează culoarea și forma și după
-        spălări și uscări dese.
+        Amestecul de poliester și bumbac dă o țesătură robustă, care își păstrează culoarea și forma și după spălări și
+        uscări dese.
       </li>
       <li>
         Gramajul, în g/m², e masa unui metru pătrat de țesătură. Același tip de țesătură vine în mai multe gramaje: la
@@ -187,45 +197,44 @@ const faq: GuideFaq[] = [
       </li>
     </ul>
     <p class="mt-4">
-      Pe fișele din catalog găsești compoziția fiecărui model și, unde producătorul îl declară, gramajul. Ce compoziție și
-      ce gramaj merg la munca oamenilor tăi verifici testând modelele pe echipă.
+      Pe fișele din catalog găsești compoziția fiecărui model și, unde producătorul îl declară, gramajul. Care dintre ele
+      merge la munca oamenilor tăi afli testând modelele pe echipă.
     </p>
   </section>
 
   <section aria-labelledby="intarituri">
     <h2 id="intarituri">Întăriturile și cusăturile</h2>
     <p>
-      MASCOT folosește CORDURA® ca întăritură în locurile care vin des în contact cu mâinile, sculele sau podeaua: tivul și
-      fundul buzunarelor, genunchii, buzunarele pentru genunchiere, cele pentru metru și buzunarele holster.
+      Buzunarele holster și cele pentru metru trebuie să țină când scoți și pui la loc sculele, cuiele și șuruburile de
+      nenumărate ori pe zi. MASCOT folosește CORDURA® în zonele expuse, de exemplu la buzunarele pentru genunchiere, la cele
+      holster și la cele pentru metru, și spune că e de șapte ori mai rezistentă decât bumbacul. În materialul buzunarelor
+      pentru genunchiere folosește și Dyneema®.
     </p>
     <p>
-      Cusăturile contează și ele: la testele ProWash®, MASCOT verifică cât rezistă cusăturile la spălarea industrială, iar
-      EN ISO 15797 e baza pentru verificarea încrețirii cusăturilor. Pe fișele de produs, producătorii arată unde au întărit
-      hainele: cusături duble sau triple, întărituri bartack, inserții din Oxford sau ripstop. Le vezi mai jos, pe modelele
-      din catalog.
+      La testele ProWash®, MASCOT verifică și cât rezistă cusăturile la spălarea industrială. Pe fișele de produs,
+      producătorii arată unde au întărit hainele: cusături duble sau triple, întărituri bartack, inserții din Oxford sau
+      ripstop. Le vezi mai jos, la modelele din catalog.
     </p>
   </section>
 
   <section aria-labelledby="etichete">
-    <h2 id="etichete">Ce îți spun OEKO-TEX® și EN ISO 13688</h2>
+    <h2 id="etichete">Ce îți spun OEKO-TEX® și EN ISO 13688</h2>
     <p>
-      OEKO-TEX® STANDARD 100 e eticheta pentru textile testate pentru substanțe nocive. Fiecare fir, nasture și accesoriu e
-      testat pe o listă de peste 1.000 de substanțe, iar cerințele sunt cu atât mai stricte cu cât contactul cu pielea e mai
-      intens. E o certificare despre substanțele din material, nu despre cât rezistă haina. Valabilitatea o verifici scanând
+      OEKO-TEX® STANDARD 100 e eticheta pentru textile testate pentru substanțe nocive, până la fiecare fir, nasture și
+      accesoriu. Cu cât contactul cu pielea e mai intens, cu atât cerințele sunt mai stricte. E o certificare despre
+      substanțele din material, nu despre cât rezistă haina. Certificatul se emite pe un an: valabilitatea o verifici scanând
       codul QR de pe etichetă sau introducând numărul certificatului în OEKO-TEX® Label Check.
     </p>
     <p>
-      EN ISO 13688 stabilește cerințele generale pentru îmbrăcămintea de protecție: ergonomie, inocuitate, mărimi,
-      îmbătrânire, compatibilitate, marcaj și informațiile pe care le dă producătorul. Se folosește împreună cu standardele
-      care cer o protecție anume.
+      EN ISO 13688 stabilește cerințele generale pentru îmbrăcămintea de protecție: ergonomie, inocuitate, mărimi,
+      îmbătrânire, compatibilitate, marcaj și informațiile pe care le dă producătorul. Se folosește doar împreună cu
+      standardele care cer o protecție anume. Ediția în vigoare e cea din 2013, cu amendamentul A1 din 2021.
     </p>
   </section>
 
   <section aria-labelledby="intretinere">
     <h2 id="intretinere">Întreținerea și cine răspunde de ea</h2>
-    <p>
-      O cale ca hainele să țină mai mult, spune MASCOT, e să le speli după instrucțiuni:
-    </p>
+    <p>O cale ca hainele să țină mai mult, spune MASCOT, e să le speli după instrucțiuni:</p>
     <ul class="mt-4 list-disc pl-5 space-y-2">
       <li>niciodată la o temperatură mai mare decât cea de pe etichetă;</li>
       <li>cu fermoarele închise, ca dinții lor să nu frece țesătura;</li>
@@ -235,42 +244,58 @@ const faq: GuideFaq[] = [
     <p class="mt-4">
       Hainele de lucru și uniformele obișnuite, care nu sunt proiectate special pentru a proteja securitatea și sănătatea
       lucrătorului, nu sunt echipament individual de protecție
-      (<a class="guide-link" href={HG_1048} rel="noopener">HG nr. 1.048/2006, art. 3</a>). Echipamentul individual de
-      protecție îl distribuie gratuit angajatorul, care asigură buna lui funcționare și igiena prin întreținere, reparații
-      și înlocuiri (art. 10). Durata purtării lui se stabilește după gravitatea riscului, frecvența expunerii,
-      caracteristicile postului și performanța echipamentului (art. 7).
+      (<a class="guide-link" href={HG_1048} rel="noopener">HG nr. 1.048/2006, art. 3 alin. (2) lit. a)</a>). Echipamentul
+      individual de protecție îl distribuie gratuit angajatorul, care asigură buna lui funcționare și igiena prin
+      întreținere, reparații și înlocuiri (art. 10). Cât se poartă se stabilește după gravitatea riscului, frecvența
+      expunerii, caracteristicile postului și performanța echipamentului (art. 7).
+    </p>
+    <p>
+      Cum pui în buget costul pe an, cu înlocuirile, afli din
+      <a class="guide-link" href={guideHref(costGuide)}>ghidul despre costul echipamentului pe muncitor</a>.
     </p>
   </section>
 
   <section aria-labelledby="testare">
-    <h2 id="testare">Testează înainte de comanda mare</h2>
+    <h2 id="testare">Testează înainte de comanda&nbsp;mare</h2>
     <p>
-      Cât rezistă un model la munca oamenilor tăi și la spălarea pe care o folosești afli purtându-l și spălându-l așa
-      cum o vei face zi de zi. Testezi câteva modele cu o parte din echipă, apoi compari costul pe an și pe zi de purtare în
+      Testul care contează e la tine: câteva modele, purtate de o parte din echipă și spălate cum le vei spăla zi de zi.
+      Apoi compari costul pe an și pe zi de purtare în
       <a class="guide-link" href={CALCULATOR}>calculatorul de cost</a>, cu prețurile tale.
     </p>
     <RiskFreeTesting variant="box" class="mt-6" />
   </section>
 
   <section aria-labelledby="catalog">
-    <h2 id="catalog">Haine de lucru din catalogul You Protect</h2>
-    <h3>Pentru spălare industrială</h3>
+    <h2 id="catalog">Haine de lucru din catalog, după cum se spală</h2>
+    <h3>Pentru spălătorie industrială</h3>
     {industrial.length > 0 ? (
       <>
-        <p>Modelele cu categorie de întreținere industrială A sau testate după EN ISO 15797, așa cum le declară producătorul:</p>
-        <ul class="mt-4 space-y-1">
+        <p>Modelele cu categorie de întreținere A sau testate după EN ISO 15797, așa cum le declară producătorul:</p>
+        <ul class="mt-4 border-t border-white/10">
           {industrial.map((p) => (
             <li>
-              <a class="guide-link inline-block py-2" href={`/produse/${p.id}/`}>{p.name}</a>
-              {p.category && <span class="text-yp-white/60"> · categoria {p.category}</span>}
-              {p.prowash && <span class="text-yp-white/60"> · {p.prowash}</span>}
+              <a
+                href={`/produse/${p.id}/`}
+                class="flex min-h-11 items-center justify-between gap-4 border-b border-white/10 py-3 text-yp-white transition-colors hover:text-yp-yellow"
+              >
+                <span>
+                  {p.name}
+                  {p.prowash && <span class="mt-0.5 block text-sm text-yp-white/60">{p.prowash}</span>}
+                </span>
+                <span class="flex shrink-0 items-center gap-3">
+                  {p.codes && <span class="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-yp-white/80">{p.codes}</span>}
+                  <svg class="h-4 w-4 text-yp-white/40" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </a>
             </li>
           ))}
         </ul>
-        {domesticCount > 0 && (
+        {hasDomestic && (
           <p class="mt-4">
-            {domesticCount === 1 ? 'Încă un model MASCOT din catalog are' : 'Alte modele MASCOT din catalog au'} categoria B
-            sau C. Categoria fiecăruia o vezi pe fișă, la întreținere.
+            Alte modele MASCOT din catalog au categoria B sau C, pentru spălare acasă. La celelalte mărci, temperatura și
+            uscarea le vezi pe fișă, la întreținere.
           </p>
         )}
       </>
@@ -284,11 +309,21 @@ const faq: GuideFaq[] = [
     {reinforced.length > 0 && (
       <>
         <h3>Cu întărituri declarate de producător</h3>
-        <ul class="mt-4 space-y-3">
+        <ul class="mt-4 border-t border-white/10">
           {reinforced.map((p) => (
             <li>
-              <a class="guide-link inline-block py-1" href={`/produse/${p.id}/`}>{p.name}</a>
-              <span class="block text-sm text-yp-white/60">{p.items.join(' · ')}</span>
+              <a
+                href={`/produse/${p.id}/`}
+                class="flex min-h-11 items-center justify-between gap-4 border-b border-white/10 py-3 text-yp-white transition-colors hover:text-yp-yellow"
+              >
+                <span>
+                  {p.name}
+                  <span class="mt-0.5 block text-sm text-yp-white/60">{p.items.join(' · ')}</span>
+                </span>
+                <svg class="h-4 w-4 shrink-0 text-yp-white/40" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
             </li>
           ))}
         </ul>
@@ -298,9 +333,19 @@ const faq: GuideFaq[] = [
     {categoryLinks.length > 0 && (
       <>
         <p class="mt-6">Tot catalogul, pe categorii:</p>
-        <ul class="mt-2 flex flex-wrap gap-x-6">
+        <ul class="mt-1 flex flex-wrap gap-x-6">
           {categoryLinks.map((c) => (
-            <li><a class="guide-link inline-block py-2" href={`/produse/${c.slug}/`}>{CATEGORIES[c.key]}</a></li>
+            <li>
+              <a
+                class="inline-flex min-h-11 items-center gap-1 text-sm text-yp-yellow transition-colors hover:text-yp-white"
+                href={`/produse/${c.slug}/`}
+              >
+                {CATEGORIES[c.key]}
+                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </li>
           ))}
         </ul>
       </>

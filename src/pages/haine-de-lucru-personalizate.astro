@@ -9,6 +9,7 @@ import { CATEGORIES, type CategoryKey } from "../lib/catalog-taxonomy";
 import { joinRo } from "../lib/catalog-categories";
 import { LOGO_TECHNIQUES, PERSONALIZATION_PAGE, productsWithHiVisLimit, productsWithLogoZones, zonesLabel } from "../lib/personalization";
 import ActionPhoto from "../components/media/ActionPhoto.astro";
+import FaqList from "../components/FaqList.astro";
 import { jsonLd } from "../lib/json-ld";
 import { imageGraph } from "../lib/poze-actiune";
 import { SITE, CTA_DISCUSS } from "../lib/site";
@@ -281,14 +282,7 @@ const sectionHeading = "text-3xl md:text-4xl md:leading-10 font-light text-white
     <div class="max-w-7xl mx-auto px-4">
       <div class="max-w-3xl">
         <h2 id="intrebari" class={sectionHeading}>Întrebări frecvente despre personalizare</h2>
-        <dl class="mt-10 space-y-8">
-          {faq.map((item) => (
-            <div>
-              <dt class="text-lg text-white font-medium">{item.q}</dt>
-              <dd class="mt-2 text-neutral-300 font-light leading-relaxed">{item.a}</dd>
-            </div>
-          ))}
-        </dl>
+        <FaqList items={faq} class="mt-10" />
       </div>
     </div>
   </section>

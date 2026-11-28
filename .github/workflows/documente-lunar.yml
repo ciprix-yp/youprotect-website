@@ -1,6 +1,8 @@
-# Lunar: verifică linkurile către fișele tehnice și declarațiile din catalog (scripts/catalog/check-documents.mjs).
-# Pe 19.11.2026, patru declarații Sir Safety de pe site întorceau HTML sau 404. Dacă un link se strică, job-ul pică
-# și GitHub trimite notificarea; fișa se reface cu scripts/catalog/extract_sirsafety.py --declarations-only.
+# Lunar: verifică linkurile către fișele tehnice și declarațiile din catalog (scripts/catalog/check-documents.mjs) și
+# sursele citate în ghiduri și pe paginile de marcă (scripts/seo/check-sources.mjs).
+# Pe 19.11.2026, patru declarații Sir Safety de pe site întorceau HTML sau 404; pe 27.11.2026, patru surse MASCOT din
+# ghidul despre haine de lucru dădeau 404. Dacă un link se strică, job-ul pică și GitHub trimite notificarea; fișa se
+# reface cu scripts/catalog/extract_sirsafety.py --declarations-only, iar sursa se înlocuiește în src/lib/guides.ts.
 name: documente-lunar
 
 on:
@@ -28,3 +30,7 @@ jobs:
 
       - name: Documentele din catalog sunt PDF-uri
         run: node scripts/catalog/check-documents.mjs
+
+      - name: Sursele din ghiduri răspund
+        if: ${{ !cancelled() }}
+        run: node scripts/seo/check-sources.mjs

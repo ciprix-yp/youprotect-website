@@ -21,3 +21,9 @@ export const pageTitle = 'font-heading text-3xl font-light leading-tight text-yp
 export const pageIntro = 'mt-4 text-base leading-relaxed text-yp-white/75';
 /** Textul lung (pagini legale, ghiduri): rânduri de cel mult ~70 de caractere. */
 export const readingColumn = 'max-w-3xl';
+
+/** Rândul care deschide un <details> (întrebări frecvente, tabelul de certificări): țintă ≥ 44 px, fără marker nativ. */
+export const disclosureSummary =
+  'flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-6 text-lg font-medium text-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-yp-yellow [&::-webkit-details-marker]:hidden';
+/** Chevronul din summary; se rotește cu `group-open:` (părintele <details> are clasa `group`). */
+export const disclosureChevron = 'h-6 w-6 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none';
