@@ -932,3 +932,16 @@
   `tests/certificari-compact.test.mjs` (tabel pliat, fără overflow-x, fără coloana „Marcă”, rând de marcă exact unde
   trebuie, toate codurile prezente); `scripts/check-cert-table-mobile.mjs` măsoară tabelul la 390 px în WebKit. Pe scurt,
   în `08-GHID_CONTINUT.md` §9.
+
+## D-2026-11-28-01
+- CAT-004: catalogul de trimis după apel e al nostru, generat din fișele publicate (owner, 28.11.2026, varianta (a)).
+  Flipsnack (abonament, actualizat de mână) și doar un PDF au fost respinse.
+- Pasul 1: pagina `/catalog/` de răsfoit, câte un produs pe pagină (poză, standard, cel mult două avantaje, mărimi,
+  link spre fișă și „Adaugă la ofertă”), cu copertă, „Cum lucrăm”, cuprins și contact. Pe telefon o pagină pe ecran,
+  pe desktop două; glisare nativă (scroll-snap) și săgeți. Logica paginilor e în `src/lib/catalog-book.ts`, testată
+  în `tests/catalog-book.test.mjs`.
+- Pagina e `noindex` și lipsește din sitemap: conținutul e al fișelor, care sunt deja indexate. Fără prețuri și fără
+  numărul de produse (D-2026-11-21-03). Pe telefon, butonul WhatsApp fix e ascuns aici (acoperea „Adaugă la ofertă”);
+  WhatsApp e în bara de răsfoire.
+- Pasul 2, după aprobarea paginii: PDF-ul cu linkuri, din aceeași pagină.
+- Impact: catalogul se actualizează la fiecare build, odată cu fișele.
