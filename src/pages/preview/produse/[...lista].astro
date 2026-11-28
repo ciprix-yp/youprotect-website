@@ -4,6 +4,7 @@
 // Ruta e [...lista] ca să poată lipsi din build: getStaticPaths întoarce /preview/produse/ sau nimic.
 import { getCollection } from 'astro:content';
 import { isProductionBuild } from '../../../lib/build-env.js';
+import { packshotImage } from '../../../lib/catalog-images.js';
 
 export function getStaticPaths() {
   return isProductionBuild() ? [] : [{ params: { lista: undefined } }];
@@ -35,7 +36,7 @@ const toReview = products.filter((p) => p.data.status !== 'published').length;
         <li class="min-w-0">
           <a href={`/preview/produse/${id}/`} class="group block border border-yp-white/10 hover:border-yp-yellow/60 transition-colors h-full">
             <div class="bg-white aspect-square">
-              <img src={data.colours[0].images[0].src} alt={data.name} width="600" height="600" loading="lazy" class="w-full h-full object-contain p-6" />
+              <img src={packshotImage(data).src} alt={data.name} width="600" height="600" loading="lazy" class="w-full h-full object-contain p-6" />
             </div>
             <div class="p-5">
               <p class="text-xs uppercase tracking-[0.16em] text-yp-yellow">{CATEGORIES[data.category]}</p>

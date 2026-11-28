@@ -1,7 +1,7 @@
 """Download the Romanian EU declarations of conformity from the Sir Safety B2B portal (D-2026-11-19-11).
 
 Usage:
-  secret run youprotect-website -- uv run --no-project --with pypdf --with pikepdf --with pillow \\
+  secret run youprotect-website -- uv run --no-project --with pypdf --with pikepdf --with pillow==13.0.0 \\
       python -I scripts/catalog/fetch_declarations_sirsafety.py
 
 - Logs in with SIRSAFETY_B2B_USER / SIRSAFETY_B2B_PASSWORD (Keychain, through `secret run`). Read-only: it only

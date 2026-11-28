@@ -80,6 +80,13 @@
       "swatch": null,
       "images": [
         {
+          "src": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/YE-Cccd3921c.webp",
+          "thumb": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/YE-Cccd3921c-thumb.webp",
+          "view": "Cccd3921c",
+          "kind": "studio",
+          "alt": "Vesta reflectorizantă Portwest Berlin S476, galbenă, purtată peste un tricou bleumarin, văzută din față"
+        },
+        {
           "src": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/YE-PS.webp",
           "thumb": "/images/products/vesta-reflectorizanta-executive-portwest-berlin-s476/YE-PS-thumb.webp",
           "view": "PS"
@@ -114,6 +121,7 @@
       "spin": []
     }
   ],
+  "cardColour": "YE",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "XS–7XL",
@@ -199,6 +207,6 @@
   ],
   "source": {
     "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
-    "assembledAt": "2026-11-20"
+    "assembledAt": "2026-11-27"
   }
 }

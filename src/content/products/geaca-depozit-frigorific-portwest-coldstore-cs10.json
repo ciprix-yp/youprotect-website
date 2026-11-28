@@ -104,6 +104,13 @@
       "swatch": null,
       "images": [
         {
+          "src": "/images/products/geaca-depozit-frigorific-portwest-coldstore-cs10/NV-Cdd3a814e.webp",
+          "thumb": "/images/products/geaca-depozit-frigorific-portwest-coldstore-cs10/NV-Cdd3a814e-thumb.webp",
+          "view": "Cdd3a814e",
+          "kind": "studio",
+          "alt": "Geaca Portwest ColdStore CS10, bleumarin, purtată cu pantalonii asortați, văzută din față"
+        },
+        {
           "src": "/images/products/geaca-depozit-frigorific-portwest-coldstore-cs10/NV-PS.webp",
           "thumb": "/images/products/geaca-depozit-frigorific-portwest-coldstore-cs10/NV-PS-thumb.webp",
           "view": "PS"
@@ -112,6 +119,7 @@
       "spin": []
     }
   ],
+  "cardColour": "NV",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "S–6XL",
@@ -193,6 +201,6 @@
   ],
   "source": {
     "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
-    "assembledAt": "2026-11-20"
+    "assembledAt": "2026-11-27"
   }
 }

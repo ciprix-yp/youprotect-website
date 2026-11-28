@@ -90,12 +90,15 @@
         {
           "src": "/images/products/combinezon-protectie-tip-5-6-sir-safety-chemtex-mc3442/K1-PS.webp",
           "thumb": "/images/products/combinezon-protectie-tip-5-6-sir-safety-chemtex-mc3442/K1-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Combinezonul Sir Safety Chemtex alb, purtat de un om care ține casca sub braț"
         }
       ],
       "spin": []
     }
   ],
+  "cardColour": "K1",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "M–2XL",
@@ -179,7 +182,7 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-19"
+    "assembledAt": "2026-11-27"
   },
   "riskFreeTesting": false
 }

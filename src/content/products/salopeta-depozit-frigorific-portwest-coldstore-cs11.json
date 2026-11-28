@@ -105,6 +105,13 @@
       "swatch": null,
       "images": [
         {
+          "src": "/images/products/salopeta-depozit-frigorific-portwest-coldstore-cs11/NV-C3d2443df.webp",
+          "thumb": "/images/products/salopeta-depozit-frigorific-portwest-coldstore-cs11/NV-C3d2443df-thumb.webp",
+          "view": "C3d2443df",
+          "kind": "studio",
+          "alt": "Salopeta Portwest ColdStore CS11, bleumarin, purtată peste un tricou alb, văzută din față"
+        },
+        {
           "src": "/images/products/salopeta-depozit-frigorific-portwest-coldstore-cs11/NV-PS.webp",
           "thumb": "/images/products/salopeta-depozit-frigorific-portwest-coldstore-cs11/NV-PS-thumb.webp",
           "view": "PS"
@@ -113,6 +120,7 @@
       "spin": []
     }
   ],
+  "cardColour": "NV",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "S–6XL",
@@ -193,6 +201,6 @@
   ],
   "source": {
     "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
-    "assembledAt": "2026-11-20"
+    "assembledAt": "2026-11-27"
   }
 }

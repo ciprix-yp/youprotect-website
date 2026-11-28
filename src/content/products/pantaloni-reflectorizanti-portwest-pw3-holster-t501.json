@@ -126,6 +126,14 @@
       "swatch": null,
       "images": [
         {
+          "src": "/images/products/pantaloni-reflectorizanti-portwest-pw3-holster-t501/RBK-C23ab3d37.webp",
+          "thumb": "/images/products/pantaloni-reflectorizanti-portwest-pw3-holster-t501/RBK-C23ab3d37-thumb.webp",
+          "view": "C23ab3d37",
+          "kind": "scena",
+          "focus": "50% 60%",
+          "alt": "Pantalonii reflectorizanți Portwest PW3 Holster T501, roșu cu negru, purtați, văzuți din față de la talie în jos"
+        },
+        {
           "src": "/images/products/pantaloni-reflectorizanti-portwest-pw3-holster-t501/RBK-PS.webp",
           "thumb": "/images/products/pantaloni-reflectorizanti-portwest-pw3-holster-t501/RBK-PS-thumb.webp",
           "view": "PS"
@@ -160,6 +168,7 @@
       "spin": []
     }
   ],
+  "cardColour": "RBK",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "28–48",
@@ -246,6 +255,6 @@
   ],
   "source": {
     "feed": "Portwest: fișierele de date ale contului și documentele în română (documents.portwest.com)",
-    "assembledAt": "2026-11-20"
+    "assembledAt": "2026-11-27"
   }
 }

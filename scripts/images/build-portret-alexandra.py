@@ -1,7 +1,7 @@
 """Build the WebP variants of the founder portrait used in the hero of /despre-noi/.
 
 Usage (needs Pillow, which is not in the system Python):
-  mise exec uv@0.13.6 -- uv run --no-project --with pillow python -I scripts/images/build-portret-alexandra.py
+  mise exec uv@0.13.6 -- uv run --no-project --with pillow==13.0.0 python -I scripts/images/build-portret-alexandra.py
 
 Input : .catalog-work/images/portret-alexandra-20261126/original/IMG_7981.jpg (local, gitignored: a COPY of the
         file received from the owner; the original in Downloads is never touched). JPEG 1536x2304 (2:3), sRGB.
@@ -27,7 +27,9 @@ from pathlib import Path
 try:
     from PIL import Image, ImageCms, ImageOps
 except ImportError:
-    sys.exit("Pillow lipsește. Rulează: uv run --no-project --with pillow python -I scripts/images/build-portret-alexandra.py")
+    sys.exit(
+        "Pillow lipsește. Rulează: uv run --no-project --with pillow==13.0.0 python -I scripts/images/build-portret-alexandra.py"
+    )
 
 warnings.simplefilter("error", Image.DecompressionBombWarning)
 

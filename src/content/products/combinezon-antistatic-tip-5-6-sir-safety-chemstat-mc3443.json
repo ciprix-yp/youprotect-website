@@ -93,12 +93,15 @@
         {
           "src": "/images/products/combinezon-antistatic-tip-5-6-sir-safety-chemstat-mc3443/P0-PS.webp",
           "thumb": "/images/products/combinezon-antistatic-tip-5-6-sir-safety-chemstat-mc3443/P0-PS-thumb.webp",
-          "view": "PS"
+          "view": "PS",
+          "kind": "studio",
+          "alt": "Combinezonul antistatic Sir Safety Chemstat albastru, purtat de un om cu ochelari de protecție"
         }
       ],
       "spin": []
     }
   ],
+  "cardColour": "P0",
   "otherColoursCount": 0,
   "sizes": {
     "summary": "M–2XL",
@@ -183,7 +186,7 @@
   ],
   "source": {
     "feed": "sirsafety.com: pagina produsului și fișa tehnică (EN)",
-    "assembledAt": "2026-11-19"
+    "assembledAt": "2026-11-27"
   },
   "riskFreeTesting": false
 }
