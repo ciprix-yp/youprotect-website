@@ -8,7 +8,9 @@ const currentYear = new Date().getFullYear();
 // bifeze); acolo, pe telefon, linkul WhatsApp e sub titlul paginii, iar butonul fix apare doar de la tabletă în sus.
 // Calculatorul e tot o pagină cu formular (26.11.2026): pe telefon, butonul fix acoperea „Următorul pas” și „Vezi
 // rezultatul”; linkul WhatsApp e în primul pas („Ai o echipă de 1–4 persoane?”).
-const onFormPage = ["/cere-oferta", "/programeaza-discutie", "/calculator-cost-echipamente"].some((p) =>
+// Catalogul de răsfoit (/catalog/, 28.11.2026): pe telefon, butonul fix acoperea „Adaugă la ofertă” de pe pagini;
+// WhatsApp e în bara de răsfoire de sub carte.
+const onFormPage = ["/cere-oferta", "/programeaza-discutie", "/calculator-cost-echipamente", "/catalog"].some((p) =>
   Astro.url.pathname.startsWith(p),
 );
 const waHref = whatsappHref(Astro.url.pathname);
